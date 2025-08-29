@@ -72,7 +72,7 @@ export function AppSidebar() {
     isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
 
   return (
-    <Sidebar className="w-80" collapsible="icon">
+    <Sidebar className="w-80" collapsible="offcanvas">
       <SidebarContent className="bg-sidebar-background">
         {/* User Profile Section */}
         <div className="p-6 border-b border-sidebar-border">
