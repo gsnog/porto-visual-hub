@@ -1,3 +1,4 @@
+// src/components/AppSidebar.tsx
 import { useState } from "react"
 import { 
   LayoutDashboard, 
@@ -24,7 +25,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
@@ -58,21 +59,31 @@ const bottomMenuItems = [
 ]
 
 export function AppSidebar() {
-  const { state } = useSidebar()
+  useSidebar() // garante que estamos dentro do Provider; remove se o linter reclamar de "unused"
   const location = useLocation()
   const currentPath = location.pathname
-  const collapsed = state === "collapsed"
   
   const [estoqueOpen, setEstoqueOpen] = useState(currentPath.startsWith('/estoque'))
   const [financeiroOpen, setFinanceiroOpen] = useState(currentPath.startsWith('/financeiro'))
   const [isDayMode, setIsDayMode] = useState(true)
 
-  const isActive = (path: string) => currentPath === path
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
 
   return (
-    <Sidebar className="w-80" collapsible="offcanvas">
+    <Sidebar
+      collapsible="offcanvas"
+      className="bg-sidebar text-sidebar-foreground"
+      style={
+        {
+          // ajuste opcional da largura do sidebar no desktop
+          ["--sidebar-width" as any]: "20rem",
+        } as React.CSSProperties
+      }
+    >
+      {/* Rail para reabrir quando estiver fechado no desktop */}
+      <SidebarRail />
+
       <SidebarContent className="bg-sidebar-background">
         {/* User Profile Section */}
         <div className="p-6 border-b border-sidebar-border">
@@ -80,12 +91,10 @@ export function AppSidebar() {
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg">
               PP
             </div>
-            {!collapsed && (
-              <div>
-                <h3 className="font-semibold text-sidebar-foreground">Pedro Piaes</h3>
-                <p className="text-sm text-muted-foreground">Desenvolvedor</p>
-              </div>
-            )}
+            <div>
+              <h3 className="font-semibold text-sidebar-foreground">Pedro Piaes</h3>
+              <p className="text-sm text-muted-foreground">Desenvolvedor</p>
+            </div>
           </div>
         </div>
 
@@ -98,7 +107,7 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild>
                       <NavLink to={item.url} className={getNavCls}>
                         <item.icon className="h-5 w-5" />
-                        {!collapsed && <span>{item.title}</span>}
+                        <span>{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -111,15 +120,11 @@ export function AppSidebar() {
                     className={currentPath.startsWith('/estoque') ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
                   >
                     <Package className="h-5 w-5" />
-                    {!collapsed && (
-                      <>
-                        <span>Estoque</span>
-                        {estoqueOpen ? <ChevronDown className="h-4 w-4 ml-auto" /> : <ChevronRight className="h-4 w-4 ml-auto" />}
-                      </>
-                    )}
+                    <span>Estoque</span>
+                    {estoqueOpen ? <ChevronDown className="h-4 w-4 ml-auto" /> : <ChevronRight className="h-4 w-4 ml-auto" />}
                   </SidebarMenuButton>
                   
-                  {estoqueOpen && !collapsed && (
+                  {estoqueOpen && (
                     <div className="ml-6 mt-2 space-y-1">
                       {estoqueItems.map((subItem) => (
                         <SidebarMenuButton key={subItem.title} asChild size="sm">
@@ -146,15 +151,11 @@ export function AppSidebar() {
                     className={currentPath.startsWith('/financeiro') ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
                   >
                     <CreditCard className="h-5 w-5" />
-                    {!collapsed && (
-                      <>
-                        <span>Financeiro</span>
-                        {financeiroOpen ? <ChevronDown className="h-4 w-4 ml-auto" /> : <ChevronRight className="h-4 w-4 ml-auto" />}
-                      </>
-                    )}
+                    <span>Financeiro</span>
+                    {financeiroOpen ? <ChevronDown className="h-4 w-4 ml-auto" /> : <ChevronRight className="h-4 w-4 ml-auto" />}
                   </SidebarMenuButton>
                   
-                  {financeiroOpen && !collapsed && (
+                  {financeiroOpen && (
                     <div className="ml-6 mt-2 space-y-1">
                       {financeiroItems.map((subItem) => (
                         <SidebarMenuButton key={subItem.title} asChild size="sm">
@@ -179,7 +180,7 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild>
                       <NavLink to={item.url} className={getNavCls}>
                         <item.icon className="h-5 w-5" />
-                        {!collapsed && <span>{item.title}</span>}
+                        <span>{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -194,15 +195,13 @@ export function AppSidebar() {
           {/* Day Mode Toggle */}
           <div className="flex items-center gap-3">
             <Sun className="h-5 w-5 text-muted-foreground" />
-            {!collapsed && (
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-sidebar-foreground">Modo Diurno</span>
-                <Switch
-                  checked={isDayMode}
-                  onCheckedChange={setIsDayMode}
-                />
-              </div>
-            )}
+            <div className="flex items-center justify-between w-full">
+              <span className="text-sm text-sidebar-foreground">Modo Diurno</span>
+              <Switch
+                checked={isDayMode}
+                onCheckedChange={setIsDayMode}
+              />
+            </div>
           </div>
 
           {/* Exit Button */}
@@ -211,7 +210,7 @@ export function AppSidebar() {
             className="w-full justify-start text-muted-foreground hover:text-sidebar-foreground"
           >
             <LogOut className="h-5 w-5" />
-            {!collapsed && <span>Sair</span>}
+            <span>Sair</span>
           </Button>
         </div>
       </SidebarContent>
