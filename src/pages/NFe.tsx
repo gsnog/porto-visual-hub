@@ -69,16 +69,16 @@ const NFe = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-6">NF-e</h1>
         
-        <Button className="mb-6">Nova NF-e</Button>
+        <Button className="mb-6 rounded-full">Nova NF-e</Button>
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Input placeholder="Número NF-e" />
+          <Input placeholder="Número NF-e" className="rounded-full" />
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" />
+            <Input placeholder="DD/MM/AAAA" className="rounded-full" />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <Button>Filtrar</Button>
+          <Button className="rounded-full">Filtrar</Button>
         </div>
       </div>
 
@@ -105,7 +105,7 @@ const NFe = () => {
                   <TableCell className="text-center">{nfe.xml}</TableCell>
                   <TableCell className="text-center">{nfe.nf}</TableCell>
                   <TableCell className="text-center">
-                    <Button size="sm">Ações</Button>
+                    <Button size="sm" className="rounded-full">Ações</Button>
                   </TableCell>
                 </TableRow>
               ))}

@@ -18,6 +18,11 @@ import FluxoCaixa from "./pages/FluxoCaixa";
 import NFe from "./pages/NFe";
 import Patrimonio from "./pages/Patrimonio";
 import Relatorio from "./pages/Relatorio";
+import ContasPagar from "./pages/ContasPagar";
+import ContasReceber from "./pages/ContasReceber";
+import LancamentoSaida from "./pages/LancamentoSaida";
+import NovoNFe from "./pages/NovoNFe";
+import SaidasPendentes from "./pages/SaidasPendentes";
 import NotFound from "./pages/NotFound";
 import * as React from "react";
 
@@ -64,7 +69,12 @@ function AppFrame() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
+            <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
+            <Route path="/financeiro/contas-receber" element={<ContasReceber />} />
+            <Route path="/financeiro/lancamento-saida" element={<LancamentoSaida />} />
+            <Route path="/financeiro/saidas-pendentes" element={<SaidasPendentes />} />
             <Route path="/financeiro/xml" element={<NFe />} />
+            <Route path="/novo-nfe" element={<NovoNFe />} />
             <Route path="/estoque/xml" element={<NFe />} />
             <Route path="/patrimonio" element={<Patrimonio />} />
             <Route path="/relatorio" element={<Relatorio />} />
@@ -74,8 +84,6 @@ function AppFrame() {
             <Route path="/estoque/saidas" element={<Dashboard />} />
             <Route path="/estoque/locacoes" element={<Dashboard />} />
             <Route path="/estoque/requisicoes" element={<Dashboard />} />
-            <Route path="/financeiro/contas-receber" element={<Relatorio />} />
-            <Route path="/financeiro/contas-pagar" element={<Relatorio />} />
             <Route path="/novo-usuario" element={<Dashboard />} />
             <Route path="/planos" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
