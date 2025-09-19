@@ -23,6 +23,11 @@ import ContasReceber from "./pages/ContasReceber";
 import LancamentoSaida from "./pages/LancamentoSaida";
 import NovoNFe from "./pages/NovoNFe";
 import SaidasPendentes from "./pages/SaidasPendentes";
+import EstoqueEntradas from "./pages/EstoqueEntradas";
+import EstoqueInventario from "./pages/EstoqueInventario";
+import EstoqueLocacoes from "./pages/EstoqueLocacoes";
+import EstoqueRequisicoes from "./pages/EstoqueRequisicoes";
+import EstoqueSaidas from "./pages/EstoqueSaidas";
 import NotFound from "./pages/NotFound";
 import * as React from "react";
 
@@ -79,11 +84,11 @@ function AppFrame() {
             <Route path="/patrimonio" element={<Patrimonio />} />
             <Route path="/relatorio" element={<Relatorio />} />
             <Route path="/cadastro" element={<Dashboard />} />
-            <Route path="/estoque/entradas" element={<Dashboard />} />
-            <Route path="/estoque/inventario" element={<Dashboard />} />
-            <Route path="/estoque/saidas" element={<Dashboard />} />
-            <Route path="/estoque/locacoes" element={<Dashboard />} />
-            <Route path="/estoque/requisicoes" element={<Dashboard />} />
+            <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
+            <Route path="/estoque/inventario" element={<EstoqueInventario />} />
+            <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
+            <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
+            <Route path="/estoque/requisicoes" element={<EstoqueRequisicoes />} />
             <Route path="/novo-usuario" element={<Dashboard />} />
             <Route path="/planos" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
