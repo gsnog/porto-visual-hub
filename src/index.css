@@ -41,6 +41,12 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
+    /* Custom colors for inputs and tables */
+    --input-background: 0 0% 93.7%; /* #EFEFEF */
+    --input-placeholder: 0 0% 0%; /* Black */
+    --table-background: 0 0% 100%; /* White */
+    --table-hover: 235 46% 25%; /* #22265B */
+
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 231 38% 25%;
     --sidebar-primary: 24 100% 50%;
@@ -97,5 +103,59 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Custom input styles */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="time"],
+  input[type="search"],
+  textarea,
+  .input-custom {
+    background-color: hsl(var(--input-background)) !important;
+  }
+
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="password"]::placeholder,
+  input[type="number"]::placeholder,
+  input[type="tel"]::placeholder,
+  input[type="date"]::placeholder,
+  input[type="datetime-local"]::placeholder,
+  input[type="time"]::placeholder,
+  input[type="search"]::placeholder,
+  textarea::placeholder,
+  .input-custom::placeholder {
+    color: hsl(var(--input-placeholder)) !important;
+    opacity: 1 !important;
+  }
+
+  /* Custom table styles */
+  .table-custom {
+    background-color: hsl(var(--table-background)) !important;
+  }
+
+  .table-custom tbody tr {
+    background-color: hsl(var(--table-background)) !important;
+  }
+
+  .table-custom tbody tr:hover {
+    background-color: hsl(var(--table-hover)) !important;
+    color: white !important;
+  }
+
+  .table-custom tbody tr:hover td {
+    color: white !important;
+  }
+
+  .table-custom tbody tr:hover button {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
   }
 }

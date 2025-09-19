@@ -163,7 +163,7 @@ const ContasPagar = () => {
       {/* Accounts Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
+          <Table className="table-custom">
             <TableHeader>
               <TableRow className="border-b bg-muted/50">
                 <TableHead className="text-xs text-center">Data de Lançamento</TableHead>

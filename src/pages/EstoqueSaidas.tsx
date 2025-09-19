@@ -42,7 +42,7 @@ export default function EstoqueSaidas() {
 
         {/* Table */}
         <div className="bg-muted/30 rounded-lg overflow-hidden">
-          <Table>
+          <Table className="table-custom">
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead className="text-muted-foreground font-medium">Data</TableHead>

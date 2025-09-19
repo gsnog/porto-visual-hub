@@ -91,7 +91,7 @@ const Patrimonio = () => {
 
         <Card className="bg-white rounded-2xl shadow-lg">
           <CardContent className="p-0">
-            <Table>
+            <Table className="table-custom">
               <TableHeader>
                 <TableRow className="border-b border-gray-200">
                   <TableHead className="text-gray-600 font-medium p-6">Código</TableHead>

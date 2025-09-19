@@ -85,7 +85,7 @@ const NFe = () => {
       {/* NFe Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
+          <Table className="table-custom">
             <TableHeader>
               <TableRow className="border-b bg-muted/50">
                 <TableHead className="text-center">Data de Emissão</TableHead>
