@@ -6,6 +6,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function Cadastro() {
+  // classes reutilizáveis
+  const inputClass =
+    "bg-[#efefef] placeholder:text-[#22265B] placeholder:opacity-100"
+  const selectTriggerClass = "bg-[#efefef]"
+  const selectValueClass = "data-[placeholder]:text-[#22265B]"
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 max-w-4xl mx-auto space-y-8">
@@ -18,22 +24,22 @@ export default function Cadastro() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="nomeCompleto">Nome Completo (igual no RG)</Label>
-                <Input id="nomeCompleto" placeholder="Nome Completo (igual no RG)" />
+                <Input id="nomeCompleto" placeholder="Nome Completo (igual no RG)" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dataNascimento">Data de Nascimento</Label>
-                <Input id="dataNascimento" type="date" />
+                <Input id="dataNascimento" type="date" className={inputClass} />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="nomePai">Nome do Pai</Label>
-                <Input id="nomePai" placeholder="Nome do Pai" />
+                <Input id="nomePai" placeholder="Nome do Pai" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nomeMae">Nome da Mãe</Label>
-                <Input id="nomeMae" placeholder="Nome da Mãe" />
+                <Input id="nomeMae" placeholder="Nome da Mãe" className={inputClass} />
               </div>
             </div>
 
@@ -41,8 +47,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Sexo</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="masculino">Masculino</SelectItem>
@@ -53,8 +59,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Estado Civil</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="solteiro">Solteiro(a)</SelectItem>
@@ -66,7 +72,7 @@ export default function Cadastro() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="identidade">Identidade de Gênero</Label>
-                <Input id="identidade" placeholder="Identidade de Gênero" />
+                <Input id="identidade" placeholder="Identidade de Gênero" className={inputClass} />
               </div>
             </div>
 
@@ -74,8 +80,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Raça/Cor</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="branca">Branca</SelectItem>
@@ -89,8 +95,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Grau de Instrução</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="fundamental">Ensino Fundamental</SelectItem>
@@ -106,8 +112,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Nacionalidade</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="brasileira">Brasileira</SelectItem>
@@ -134,8 +140,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Estado</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="sp">São Paulo</SelectItem>
@@ -163,8 +169,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Cidade</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="sao-paulo">São Paulo</SelectItem>
@@ -198,8 +204,8 @@ export default function Cadastro() {
             <div className="space-y-2">
               <Label>Autodeclaração de Uso de Dados</Label>
               <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecionar" />
+                <SelectTrigger className={selectTriggerClass}>
+                  <SelectValue placeholder="Selecionar" className={selectValueClass} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="aceito">Aceito</SelectItem>
@@ -261,11 +267,11 @@ export default function Cadastro() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="celular">Celular</Label>
-                <Input id="celular" placeholder="Celular" />
+                <Input id="celular" placeholder="Celular" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
-                <Input id="email" type="email" placeholder="E-mail" />
+                <Input id="email" type="email" placeholder="E-mail" className={inputClass} />
               </div>
             </div>
           </CardContent>
@@ -280,22 +286,22 @@ export default function Cadastro() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="endereco">Endereço</Label>
-                <Input id="endereco" placeholder="Endereço" />
+                <Input id="endereco" placeholder="Endereço" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="numero">Número</Label>
-                <Input id="numero" placeholder="Número" />
+                <Input id="numero" placeholder="Número" className={inputClass} />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="complemento">Complemento</Label>
-                <Input id="complemento" placeholder="Complemento" />
+                <Input id="complemento" placeholder="Complemento" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cep">CEP</Label>
-                <Input id="cep" placeholder="CEP" />
+                <Input id="cep" placeholder="CEP" className={inputClass} />
               </div>
             </div>
 
@@ -303,8 +309,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Estado</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="sp">São Paulo</SelectItem>
@@ -316,8 +322,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Cidade</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="sao-paulo">São Paulo</SelectItem>
@@ -327,7 +333,7 @@ export default function Cadastro() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bairro">Bairro</Label>
-                <Input id="bairro" placeholder="Bairro" />
+                <Input id="bairro" placeholder="Bairro" className={inputClass} />
               </div>
             </div>
           </CardContent>
@@ -343,8 +349,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Banco</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="001">Banco do Brasil</SelectItem>
@@ -357,8 +363,8 @@ export default function Cadastro() {
               <div className="space-y-2">
                 <Label>Tipo da Conta</Label>
                 <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar" />
+                  <SelectTrigger className={selectTriggerClass}>
+                    <SelectValue placeholder="Selecionar" className={selectValueClass} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="corrente">Conta Corrente</SelectItem>
@@ -371,21 +377,21 @@ export default function Cadastro() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="agencia">Agência</Label>
-                <Input id="agencia" placeholder="Agência" />
+                <Input id="agencia" placeholder="Agência" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="conta">Conta</Label>
-                <Input id="conta" placeholder="Conta" />
+                <Input id="conta" placeholder="Conta" className={inputClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="digito">Dígito</Label>
-                <Input id="digito" placeholder="Dígito" />
+                <Input id="digito" placeholder="Dígito" className={inputClass} />
               </div>
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Caso não possua conta bancária na sua região, será direcionado(a) 
-              para banco mais carta para abertura da conta.
+              Caso não possua conta bancária na sua região, será direcionado(a)
+              para banco mais perto para abertura da conta.
             </p>
           </CardContent>
         </Card>

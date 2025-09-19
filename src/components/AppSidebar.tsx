@@ -1,15 +1,13 @@
 // src/components/AppSidebar.tsx
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { 
   LayoutDashboard, 
   UserPlus, 
   Package, 
-  TrendingUp, 
-  Users, 
   CreditCard,
+  Users, 
   FileText,
   Building,
-  Settings,
   LogOut,
   ChevronRight,
   ChevronDown,
@@ -58,14 +56,45 @@ const bottomMenuItems = [
   { title: "Planos", url: "/planos", icon: FileText },
 ]
 
+// utilidade: aplica o tema no <html>
+function applyTheme(theme: "light" | "dark") {
+  const root = document.documentElement
+  if (theme === "dark") {
+    root.classList.add("dark")
+    root.setAttribute("data-theme", "dark")
+    root.style.colorScheme = "dark"
+  } else {
+    root.classList.remove("dark")
+    root.setAttribute("data-theme", "light")
+    root.style.colorScheme = "light"
+  }
+}
+
 export function AppSidebar() {
-  useSidebar() // garante que estamos dentro do Provider; remove se o linter reclamar de "unused"
+  useSidebar()
   const location = useLocation()
   const currentPath = location.pathname
   
-  const [estoqueOpen, setEstoqueOpen] = useState(currentPath.startsWith('/estoque'))
-  const [financeiroOpen, setFinanceiroOpen] = useState(currentPath.startsWith('/financeiro'))
-  const [isDayMode, setIsDayMode] = useState(true)
+  const [estoqueOpen, setEstoqueOpen] = useState(currentPath.startsWith("/estoque"))
+  const [financeiroOpen, setFinanceiroOpen] = useState(currentPath.startsWith("/financeiro"))
+
+  // tema: inicializa de localStorage > prefers-color-scheme > "light"
+  const initialTheme = useMemo<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light"
+    const saved = localStorage.getItem("theme")
+    if (saved === "light" || saved === "dark") return saved
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches
+    return prefersDark ? "dark" : "light"
+  }, [])
+
+  const [theme, setTheme] = useState<"light" | "dark">(initialTheme)
+
+  useEffect(() => {
+    applyTheme(theme)
+    localStorage.setItem("theme", theme)
+  }, [theme])
+
+  const isDayMode = theme === "light"
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
@@ -76,7 +105,6 @@ export function AppSidebar() {
       className="bg-sidebar text-sidebar-foreground"
       style={
         {
-          // ajuste opcional da largura do sidebar no desktop
           ["--sidebar-width" as any]: "20rem",
         } as React.CSSProperties
       }
@@ -117,7 +145,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton 
                     onClick={() => setEstoqueOpen(!estoqueOpen)}
-                    className={currentPath.startsWith('/estoque') ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
+                    className={currentPath.startsWith("/estoque") ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
                   >
                     <Package className="h-5 w-5" />
                     <span>Estoque</span>
@@ -148,7 +176,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton 
                     onClick={() => setFinanceiroOpen(!financeiroOpen)}
-                    className={currentPath.startsWith('/financeiro') ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
+                    className={currentPath.startsWith("/financeiro") ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
                   >
                     <CreditCard className="h-5 w-5" />
                     <span>Financeiro</span>
@@ -196,10 +224,13 @@ export function AppSidebar() {
           <div className="flex items-center gap-3">
             <Sun className="h-5 w-5 text-muted-foreground" />
             <div className="flex items-center justify-between w-full">
-              <span className="text-sm text-sidebar-foreground">Modo Diurno</span>
+              <span className="text-sm text-sidebar-foreground">
+                {isDayMode ? "Modo Diurno" : "Modo Noturno"}
+              </span>
               <Switch
                 checked={isDayMode}
-                onCheckedChange={setIsDayMode}
+                onCheckedChange={(checked) => setTheme(checked ? "light" : "dark")}
+                aria-label="Alternar modo claro/escuro"
               />
             </div>
           </div>

@@ -11,7 +11,7 @@ export default function LayoutShell() {
       <SidebarInset>
         <header className="flex h-12 items-center gap-2 border-b px-4">
           <SidebarTrigger />
-          <h1 className="font-semibold">Minha App</h1>
+          <h1 className="font-semibold">SerpTech</h1>
         </header>
 
         <main className="p-4">
