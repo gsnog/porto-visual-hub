@@ -28,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
+import styles from "./AppSidebar.module.css"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -75,41 +76,41 @@ export function AppSidebar() {
   const isDayMode = theme === "light"
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
+    `${styles.navLink} ${isActive ? styles.active : ''}`
 
   return (
     <Sidebar
       collapsible="offcanvas"
-      className="border-r border-sidebar-border"
+      className={styles.sidebar}
     >
       <SidebarRail />
 
-      <SidebarContent className="bg-sidebar">
+      <SidebarContent className={styles.sidebarContent}>
         {/* User Profile Section */}
-        <div className="p-6 flex items-center gap-3">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
+        <div className={styles.userProfile}>
+          <div className={styles.userAvatar}>
             PP
           </div>
           {open && (
-            <div className="min-w-0">
-              <h3 className="font-semibold text-sidebar-foreground truncate">Pedro Piaes</h3>
-              <p className="text-sm text-sidebar-foreground/60 truncate">Desenvolvedor</p>
+            <div className={styles.userInfo}>
+              <h3 className={styles.userName}>Pedro Piaes</h3>
+              <p className={styles.userRole}>Desenvolvedor</p>
             </div>
           )}
         </div>
 
-        <Separator className="bg-sidebar-border" />
+        <Separator className={styles.separator} />
 
         {/* Main Menu */}
-        <div className="flex-1 p-4">
+        <div className={styles.mainMenu}>
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
+              <SidebarMenu className={styles.menuList}>
                 {menuItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={item.title} className={styles.menuItem}>
                     <SidebarMenuButton asChild tooltip={item.title}>
                       <NavLink to={item.url} className={getNavCls}>
-                        <item.icon className="h-5 w-5" />
+                        <item.icon className={styles.navIcon} />
                         <span>{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
@@ -120,18 +121,18 @@ export function AppSidebar() {
           </SidebarGroup>
         </div>
 
-        <Separator className="bg-sidebar-border" />
+        <Separator className={styles.separator} />
 
         {/* Bottom Section */}
-        <div className="p-4 space-y-4">
+        <div className={styles.bottomSection}>
           {/* Day Mode Toggle */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-5 h-5">
-              <div className={`w-4 h-4 rounded-full ${isDayMode ? 'bg-sidebar-foreground' : 'bg-sidebar-foreground/60'}`} />
+          <div className={styles.themeToggle}>
+            <div className={styles.themeIcon}>
+              <div className={`${styles.themeDot} ${isDayMode ? styles.themeDotLight : styles.themeDotDark}`} />
             </div>
             {open && (
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-sidebar-foreground">
+              <div className={styles.themeContent}>
+                <span className={styles.themeLabel}>
                   {isDayMode ? "Modo Diurno" : "Modo Noturno"}
                 </span>
                 <Switch
@@ -145,8 +146,8 @@ export function AppSidebar() {
 
           {/* Exit Button */}
           <SidebarMenuButton asChild tooltip="Sair">
-            <button className="w-full justify-start text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent">
-              <LogOut className="h-5 w-5" />
+            <button className={styles.exitButton}>
+              <LogOut className={styles.navIcon} />
               <span>Sair</span>
             </button>
           </SidebarMenuButton>
