@@ -79,7 +79,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      collapsible="offcanvas"
+      collapsible="icon"
       className="border-r border-sidebar-border"
     >
       <SidebarRail />
