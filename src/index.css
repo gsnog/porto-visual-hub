@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 231 38% 25%; /* Dark navy blue background */
+    --background: 231 38% 25%; /* Main content background - dark navy blue */
     --foreground: 0 0% 100%;
 
     --card: 0 0% 100%;
@@ -47,52 +47,55 @@ All colors MUST be HSL.
     --table-background: 0 0% 100%; /* White */
     --table-hover: 235 46% 25%; /* #22265B */
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 231 38% 25%;
-    --sidebar-primary: 24 100% 50%;
+    /* Sidebar colors - Light mode */
+    --sidebar-background: 0 0% 96%; /* #F5F5F5 - light gray */
+    --sidebar-foreground: 0 0% 20%; /* Dark gray text */
+    --sidebar-primary: 24 100% 50%; /* Orange */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 13% 95%;
-    --sidebar-accent-foreground: 231 38% 25%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-accent: 0 0% 90%; /* Slightly darker gray for hover */
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 88%;
     --sidebar-ring: 24 100% 50%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 231 38% 25%; /* Main content background - same dark navy blue */
+    --foreground: 0 0% 100%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 231 38% 25%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 231 38% 25%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 24 100% 50%; /* Orange stays the same */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 231 38% 30%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 231 38% 30%;
+    --muted-foreground: 220 13% 69%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 231 38% 35%;
+    --input: 231 38% 30%;
+    --ring: 24 100% 50%;
+
+    /* Sidebar colors - Dark mode */
+    --sidebar-background: 237 35% 15%; /* #1A1D35 - very dark navy */
+    --sidebar-foreground: 0 0% 100%; /* White text */
+    --sidebar-primary: 24 100% 50%; /* Orange */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 237 35% 20%; /* Slightly lighter navy for hover */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 237 35% 18%;
+    --sidebar-ring: 24 100% 50%;
   }
 }
 
