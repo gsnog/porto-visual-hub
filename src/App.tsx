@@ -3,15 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  SidebarInset,
-  useSidebar, // 👈 vamos usar para fechar quando clicar fora
-} from "@/components/ui/sidebar";
-
+import { SidebarProvider, SidebarInset, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import * as React from "react";
 
 import Dashboard from "./pages/Dashboard";
 import FluxoCaixa from "./pages/FluxoCaixa";
@@ -30,48 +24,42 @@ import EstoqueRequisicoes from "./pages/EstoqueRequisicoes";
 import EstoqueSaidas from "./pages/EstoqueSaidas";
 import Cadastro from "./pages/Cadastro";
 import NotFound from "./pages/NotFound";
-import * as React from "react";
 
 const queryClient = new QueryClient();
 
-/**
- * Componente que fica DENTRO do SidebarProvider.
- * Aqui podemos usar useSidebar() para fechar ao clicar fora.
- */
-function AppFrame() {
-  const { state, setOpen, isMobile } = useSidebar();
+function AppContent() {
+  const { open, setOpen, isMobile } = useSidebar();
 
-  // Fecha o sidebar quando clicar no conteúdo (fora do sidebar) no DESKTOP.
-  const handlePointerDownCapture = React.useCallback(
-    (e: React.PointerEvent) => {
-      if (isMobile) return; // no mobile o Sheet já fecha ao clicar fora
-      if (state !== "expanded") return;
-
+  // Fecha o sidebar quando clicar fora dele
+  const handleClickOutside = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (!open) return;
+      
       const target = e.target as HTMLElement;
-
-      // Ignora cliques dentro do próprio sidebar
+      
+      // Ignora cliques dentro do sidebar
       if (target.closest('[data-sidebar="sidebar"]')) return;
-
-      // Ignora cliques no botão hamburguer
+      
+      // Ignora cliques no botão de toggle
       if (target.closest('[data-sidebar="trigger"]')) return;
-
+      
+      // Fecha o sidebar
       setOpen(false);
     },
-    [isMobile, state, setOpen]
+    [open, setOpen]
   );
 
   return (
-    <>
+    <div className="flex min-h-screen w-full" onClick={handleClickOutside}>
       <AppSidebar />
-
-      {/* Qualquer clique aqui fora do sidebar fecha no desktop */}
-      <SidebarInset onPointerDownCapture={handlePointerDownCapture}>
-        <header className="flex h-12 items-center gap-2 border-b border-border bg-background px-4">
-          <SidebarTrigger />
-          <h1 className="font-semibold">SerpTech</h1>
+      
+      <SidebarInset className="flex-1">
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border bg-background px-6">
+          <SidebarTrigger className="-ml-2" />
+          <h1 className="text-lg font-semibold text-foreground">SerpTech</h1>
         </header>
 
-        <main className="flex-1 bg-background">
+        <main className="flex-1 bg-background p-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
@@ -96,7 +84,7 @@ function AppFrame() {
           </Routes>
         </main>
       </SidebarInset>
-    </>
+    </div>
   );
 }
 
@@ -106,8 +94,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <SidebarProvider>
-          <AppFrame />
+        <SidebarProvider defaultOpen={false}>
+          <AppContent />
         </SidebarProvider>
       </BrowserRouter>
     </TooltipProvider>
