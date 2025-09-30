@@ -1,0 +1,125 @@
+/* ----------------------------------------------
+   Tailwind layers (mantenha as diretivas do seu projeto)
+---------------------------------------------- */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* ==============================================
+   BASE — Inputs, Textareas e Select (shadcn/Radix)
+   ============================================== */
+@layer base {
+  /* Inputs/textarea: fundo e placeholder */
+  input,
+  textarea {
+    background-color: #efefef;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #22265B;
+    opacity: 1; /* evita placeholder “desbotado” */
+  }
+
+  /* Select (shadcn/Radix):
+     O Trigger é um <button role="combobox">.
+     O placeholder do SelectValue vem como [data-placeholder].
+  */
+  button[role="combobox"] {
+    background-color: #efefef;
+  }
+
+  button[role="combobox"] [data-placeholder] {
+    color: #22265B;
+  }
+}
+
+/* ==============================================
+   COMPONENTS — Utilitários de Select e Tabela
+   ============================================== */
+@layer components {
+  /* Alternativa: marque manualmente o Trigger do Select */
+  .select-trigger {
+    background-color: #efefef;
+  }
+  .select-trigger [data-placeholder] {
+    color: #22265B;
+  }
+
+  /* ---------- Tabela: Header cinza, sem hover, texto preto ---------- */
+  /* Use no TableHeader: class="thead-gray thead-no-hover" */
+  .thead-gray {
+    background-color: #E3E3E3;
+  }
+  /* força preto no texto do header */
+  .thead-gray th,
+  .thead-gray [role="columnheader"] {
+    color: #000 !important;
+  }
+  /* bloqueia hover no thead (shadcn usa hover por padrão em <tr>) */
+  .thead-no-hover tr:hover {
+    background-color: #E3E3E3 !important;
+    color: #000 !important;
+    cursor: default !important;
+  }
+
+  /* ---------- Tabela: Linhas brancas + hover #22265B ---------- */
+  /* Aplique no <Table> OU num wrapper do <TableBody>: class="row-hover-brand" */
+  .row-hover-brand tbody tr {
+    background-color: #fff;
+    color: #000;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .row-hover-brand tbody tr:hover {
+    background-color: #22265B !important;
+    color: #fff !important;
+  }
+  /* garante que conteúdo interno (links/botões) também fique branco no hover */
+  .row-hover-brand tbody tr:hover th,
+  .row-hover-brand tbody tr:hover td,
+  .row-hover-brand tbody tr:hover a,
+  .row-hover-brand tbody tr:hover button,
+  .row-hover-brand tbody tr:hover svg {
+    color: #fff !important;
+    fill: #fff !important;
+  }
+}
+
+/* ==============================================
+   THEME TOKENS — Sidebar (light/dark)
+   ============================================== */
+/* Ajuste as cores abaixo conforme seu design system */
+:root,
+[data-theme="light"] {
+  /* tokens do sidebar usados nas suas classes utilitárias */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0b0f19;     /* texto principal */
+  --sidebar-background: #f7f7f8;     /* fundo interno do conteúdo */
+  --sidebar-accent: #e5e7eb;         /* hover/realce */
+  --sidebar-border: #e5e7eb;         /* bordas */
+  --sidebar-primary: #111827;        /* ênfase em itens ativos */
+
+  /* Para que componentes respeitem preferências nativas */
+  color-scheme: light;
+}
+
+.dark,
+[data-theme="dark"] {
+  --sidebar: #0b1220;
+  --sidebar-foreground: #e6e8ee;
+  --sidebar-background: #0f1629;
+  --sidebar-accent: #1c2440;
+  --sidebar-border: #222b4a;
+  --sidebar-primary: #f3f4f6;
+
+  color-scheme: dark;
+}
+
+/* ==============================================
+   Helpers opcionais (reset de foco e etc.)
+   ============================================== */
+/* Melhor visibilidade do foco (ajuste se preferir) */
+:focus-visible {
+  outline: 2px solid #22265B;
+  outline-offset: 2px;
+}

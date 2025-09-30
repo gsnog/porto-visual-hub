@@ -1,17 +1,19 @@
+// src/components/AppSidebar.tsx
 import { useEffect, useMemo, useState } from "react"
 import { 
   LayoutDashboard, 
-  FileText, 
+  UserPlus, 
   Package, 
-  TrendingUp,
+  CreditCard,
+  Users, 
+  FileText,
   Building,
-  UserPlus,
-  Map,
   LogOut,
-  ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  Sun
 } from "lucide-react"
-import { NavLink } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
 
 import {
   Sidebar,
@@ -22,21 +24,36 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
 
-const menuItems = [
+const mainMenuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Cadastro", url: "/cadastro", icon: FileText },
-  { title: "Estoque", url: "/estoque/entradas", icon: Package },
-  { title: "Financeiro", url: "/financeiro/contas-receber", icon: TrendingUp },
+  { title: "Cadastro", url: "/cadastro", icon: UserPlus },
+]
+
+const estoqueItems = [
+  { title: "Entradas", url: "/estoque/entradas" },
+  { title: "Inventário", url: "/estoque/inventario" },
+  { title: "Saídas", url: "/estoque/saidas" },
+  { title: "Locações", url: "/estoque/locacoes" },
+  { title: "Requisições", url: "/estoque/requisicoes" },
+  { title: "XML", url: "/estoque/xml" },
+]
+
+const financeiroItems = [
+  { title: "Contas a Receber", url: "/financeiro/contas-receber" },
+  { title: "Contas a Pagar", url: "/financeiro/contas-pagar" },
+  { title: "Fluxo de Caixa", url: "/financeiro/fluxo-caixa" },
+  { title: "XML", url: "/financeiro/xml" },
+]
+
+const bottomMenuItems = [
   { title: "Patrimônio", url: "/patrimonio", icon: Building },
-  { title: "Novo Usuário", url: "/novo-usuario", icon: UserPlus },
-  { title: "Planos", url: "/planos", icon: Map },
+  { title: "Novo Usuário", url: "/novo-usuario", icon: Users },
+  { title: "Planos", url: "/planos", icon: FileText },
 ]
 
 // utilidade: aplica o tema no <html>
@@ -54,7 +71,12 @@ function applyTheme(theme: "light" | "dark") {
 }
 
 export function AppSidebar() {
-  const { open } = useSidebar()
+  useSidebar()
+  const location = useLocation()
+  const currentPath = location.pathname
+  
+  const [estoqueOpen, setEstoqueOpen] = useState(currentPath.startsWith("/estoque"))
+  const [financeiroOpen, setFinanceiroOpen] = useState(currentPath.startsWith("/financeiro"))
 
   // tema: inicializa de localStorage > prefers-color-scheme > "light"
   const initialTheme = useMemo<"light" | "dark">(() => {
@@ -79,35 +101,111 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      collapsible="icon"
-      className="border-r border-sidebar-border"
+      collapsible="offcanvas"
+      className="bg-sidebar text-sidebar-foreground"
+      style={
+        {
+          ["--sidebar-width" as any]: "20rem",
+        } as React.CSSProperties
+      }
     >
+      {/* Rail para reabrir quando estiver fechado no desktop */}
       <SidebarRail />
 
-      <SidebarContent className="bg-sidebar">
+      <SidebarContent className="bg-sidebar-background">
         {/* User Profile Section */}
-        <div className="p-6 flex items-center gap-3">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
-            PP
-          </div>
-          {open && (
-            <div className="min-w-0">
-              <h3 className="font-semibold text-sidebar-foreground truncate">Pedro Piaes</h3>
-              <p className="text-sm text-sidebar-foreground/60 truncate">Desenvolvedor</p>
+        <div className="p-6 border-b border-sidebar-border">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg">
+              PP
             </div>
-          )}
+            <div>
+              <h3 className="font-semibold text-sidebar-foreground">Pedro Piaes</h3>
+              <p className="text-sm text-muted-foreground">Desenvolvedor</p>
+            </div>
+          </div>
         </div>
 
-        <Separator className="bg-sidebar-border" />
-
-        {/* Main Menu */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 space-y-2">
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-1">
-                {menuItems.map((item) => (
+              <SidebarMenu>
+                {mainMenuItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink to={item.url} className={getNavCls}>
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                
+                {/* Estoque Group */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton 
+                    onClick={() => setEstoqueOpen(!estoqueOpen)}
+                    className={currentPath.startsWith("/estoque") ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
+                  >
+                    <Package className="h-5 w-5" />
+                    <span>Estoque</span>
+                    {estoqueOpen ? <ChevronDown className="h-4 w-4 ml-auto" /> : <ChevronRight className="h-4 w-4 ml-auto" />}
+                  </SidebarMenuButton>
+                  
+                  {estoqueOpen && (
+                    <div className="ml-6 mt-2 space-y-1">
+                      {estoqueItems.map((subItem) => (
+                        <SidebarMenuButton key={subItem.title} asChild size="sm">
+                          <NavLink 
+                            to={subItem.url} 
+                            className={({ isActive }) => 
+                              isActive 
+                                ? "text-primary font-medium" 
+                                : "text-muted-foreground hover:text-sidebar-foreground"
+                            }
+                          >
+                            <span>{subItem.title}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      ))}
+                    </div>
+                  )}
+                </SidebarMenuItem>
+
+                {/* Financeiro Group */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton 
+                    onClick={() => setFinanceiroOpen(!financeiroOpen)}
+                    className={currentPath.startsWith("/financeiro") ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"}
+                  >
+                    <CreditCard className="h-5 w-5" />
+                    <span>Financeiro</span>
+                    {financeiroOpen ? <ChevronDown className="h-4 w-4 ml-auto" /> : <ChevronRight className="h-4 w-4 ml-auto" />}
+                  </SidebarMenuButton>
+                  
+                  {financeiroOpen && (
+                    <div className="ml-6 mt-2 space-y-1">
+                      {financeiroItems.map((subItem) => (
+                        <SidebarMenuButton key={subItem.title} asChild size="sm">
+                          <NavLink 
+                            to={subItem.url} 
+                            className={({ isActive }) => 
+                              isActive 
+                                ? "text-primary font-medium" 
+                                : "text-muted-foreground hover:text-sidebar-foreground"
+                            }
+                          >
+                            <span>{subItem.title}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      ))}
+                    </div>
+                  )}
+                </SidebarMenuItem>
+
+                {bottomMenuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
                       <NavLink to={item.url} className={getNavCls}>
                         <item.icon className="h-5 w-5" />
                         <span>{item.title}</span>
@@ -120,36 +218,31 @@ export function AppSidebar() {
           </SidebarGroup>
         </div>
 
-        <Separator className="bg-sidebar-border" />
-
         {/* Bottom Section */}
-        <div className="p-4 space-y-4">
+        <div className="p-4 border-t border-sidebar-border space-y-4">
           {/* Day Mode Toggle */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-5 h-5">
-              <div className={`w-4 h-4 rounded-full ${isDayMode ? 'bg-sidebar-foreground' : 'bg-sidebar-foreground/60'}`} />
+            <Sun className="h-5 w-5 text-muted-foreground" />
+            <div className="flex items-center justify-between w-full">
+              <span className="text-sm text-sidebar-foreground">
+                {isDayMode ? "Modo Diurno" : "Modo Noturno"}
+              </span>
+              <Switch
+                checked={isDayMode}
+                onCheckedChange={(checked) => setTheme(checked ? "light" : "dark")}
+                aria-label="Alternar modo claro/escuro"
+              />
             </div>
-            {open && (
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm text-sidebar-foreground">
-                  {isDayMode ? "Modo Diurno" : "Modo Noturno"}
-                </span>
-                <Switch
-                  checked={isDayMode}
-                  onCheckedChange={(checked) => setTheme(checked ? "light" : "dark")}
-                  aria-label="Alternar modo claro/escuro"
-                />
-              </div>
-            )}
           </div>
 
           {/* Exit Button */}
-          <SidebarMenuButton asChild tooltip="Sair">
-            <button className="w-full justify-start text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent">
-              <LogOut className="h-5 w-5" />
-              <span>Sair</span>
-            </button>
-          </SidebarMenuButton>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-muted-foreground hover:text-sidebar-foreground"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Sair</span>
+          </Button>
         </div>
       </SidebarContent>
     </Sidebar>
