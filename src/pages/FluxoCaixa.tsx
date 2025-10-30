@@ -91,12 +91,11 @@ const FluxoCaixa = () => {
         <Button className="mb-6">Relatório</Button>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="flex gap-4 items-center">
           <div>
-            <label className="text-sm font-medium text-foreground mb-2 block">Tipo</label>
             <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Nenhum" />
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full">
+                <SelectValue placeholder="Tipo"/>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="entrada">Entrada</SelectItem>
@@ -106,10 +105,9 @@ const FluxoCaixa = () => {
           </div>
           
           <div>
-            <label className="text-sm font-medium text-foreground mb-2 block">Filtrar por</label>
             <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Anual" />
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full">
+                <SelectValue placeholder="Filtrar por" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="mensal">Mensal</SelectItem>
@@ -119,13 +117,9 @@ const FluxoCaixa = () => {
           </div>
           
           <div>
-            <label className="text-sm font-medium text-foreground mb-2 block">Ano</label>
-            <Input placeholder="2025" />
+            <Input placeholder="Ano" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"/>
           </div>
-          
-          <div className="flex items-end">
-            <Button>Filtrar</Button>
-          </div>
+          <Button className="rounded-full">Filtrar</Button>
         </div>
       </div>
 

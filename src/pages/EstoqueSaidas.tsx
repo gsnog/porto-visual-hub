@@ -7,56 +7,52 @@ export default function EstoqueSaidas() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-foreground">Saídas</h1>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3">
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar
           </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
 
-        {/* Filters */}
         <div className="flex gap-4 items-center">
           <Input 
             placeholder="Nome do Item" 
-            className="w-64"
+            className="bg-[#efefef] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
           />
           <div className="relative">
             <Input 
               placeholder="DD/MM/AAAA" 
-              className="w-48 pr-10"
+              className="bg-[#efefef] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-full pr-10"
             />
             <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
 
-        {/* Table */}
-        <div className="bg-muted/30 rounded-lg overflow-hidden">
-          <Table className="table-custom">
+        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
+          <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead className="text-muted-foreground font-medium">Data</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Item</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Setor</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Requisitante</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Quantidade</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Origem</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Destino</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Ações</TableHead>
+              <TableRow className="bg-[#E3E3E3] hover:bg-[#E3E3E3] cursor-default select-none">
+                <TableHead className="!text-black font-medium">Data</TableHead>
+                <TableHead className="!text-black font-medium">Item</TableHead>
+                <TableHead className="!text-black font-medium">Setor</TableHead>
+                <TableHead className="!text-black font-medium">Requisitante</TableHead>
+                <TableHead className="!text-black font-medium">Quantidade</TableHead>
+                <TableHead className="!text-black font-medium">Origem</TableHead>
+                <TableHead className="!text-black font-medium">Destino</TableHead>
+                <TableHead className="!text-black font-medium">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="bg-background hover:bg-muted/50">
+              <TableRow className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors">
                 <TableCell>02/06/2025</TableCell>
                 <TableCell>999</TableCell>
                 <TableCell>xxxxxxxx</TableCell>
@@ -65,7 +61,7 @@ export default function EstoqueSaidas() {
                 <TableCell>xxxxxxxx</TableCell>
                 <TableCell>xxxxxxxx</TableCell>
                 <TableCell>
-                  <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>

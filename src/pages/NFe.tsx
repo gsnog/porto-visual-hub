@@ -72,10 +72,10 @@ const NFe = () => {
         <Button className="mb-6 rounded-full">Nova NF-e</Button>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Input placeholder="Número NF-e" className="rounded-full" />
+        <div className="flex gap-4 items-center">
+          <Input placeholder="Número NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="rounded-full" />
+            <Input placeholder="DD/MM/AAAA" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
           <Button className="rounded-full">Filtrar</Button>

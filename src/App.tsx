@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 
 import Dashboard from "./pages/Dashboard";
@@ -33,15 +33,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SidebarProvider defaultOpen={true}>
-          <div className="flex min-h-screen w-full">
+          {/* gap horizontal entre <AppSidebar /> e <SidebarInset /> */}
+          <div className="flex min-h-screen w-full gap-x-4 md:gap-x-6">
             <AppSidebar />
-            
-            <SidebarInset className="flex-1">
-              <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border bg-background px-6">
-                <SidebarTrigger className="-ml-2" />
-                <h1 className="text-lg font-semibold text-foreground">SerpTech</h1>
-              </header>
 
+            {/* linha divisória + padding interno no conteúdo */}
+            <SidebarInset className="flex-1 border-l border-sidebar-border pl-4 md:pl-6">
               <main className="flex-1 bg-background p-6">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />

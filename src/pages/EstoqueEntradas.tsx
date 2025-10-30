@@ -7,34 +7,29 @@ export default function EstoqueEntradas() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold text-foreground">Entradas</h1>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-3">
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">Novo Item</Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">Upload NF-e</Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">Relatório</Button>
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Novo Item</Button>
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Upload NF-e</Button>
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Relatório</Button>
         </div>
 
-        {/* Filters */}
         <div className="flex gap-4 items-center">
-          <Input placeholder="Nome do Item" className="w-64" />
-          <Input placeholder="NF-e" className="w-64" />
+          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
+          <Input placeholder="NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="w-48 pr-10" />
+            <Input placeholder="DD/MM/AAAA" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
             <CalendarDays className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">Filtrar</Button>
+          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Filtrar</Button>
         </div>
 
-        {/* Table */}
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
             <TableHeader>
-              {/* header sem hover e com texto 100% preto */}
               <TableRow className="bg-[#E3E3E3] hover:bg-[#E3E3E3] cursor-default select-none">
                 <TableHead className="!text-black font-medium">Data</TableHead>
                 <TableHead className="!text-black font-medium">Item</TableHead>
@@ -48,9 +43,7 @@ export default function EstoqueEntradas() {
               </TableRow>
             </TableHeader>
 
-
             <TableBody>
-              {/* Linhas com hover azul e texto branco */}
               <TableRow className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors">
                 <TableCell>02/06/2025</TableCell>
                 <TableCell>999</TableCell>
@@ -61,7 +54,7 @@ export default function EstoqueEntradas() {
                 <TableCell>1</TableCell>
                 <TableCell>R$ 9.999,99</TableCell>
                 <TableCell>
-                  <Button size="sm" className="bg-orange-500 text-white hover:bg-orange-600">
+                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -77,7 +70,7 @@ export default function EstoqueEntradas() {
                 <TableCell>3</TableCell>
                 <TableCell>R$ 149,70</TableCell>
                 <TableCell>
-                  <Button size="sm" className="bg-orange-500 text-white hover:bg-orange-600">
+                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>

@@ -152,10 +152,10 @@ const ContasPagar = () => {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Input placeholder="Beneficiário" className="rounded-full" />
-          <Input placeholder="Documento" className="rounded-full" />
-          <Input placeholder="Valor" className="rounded-full" />
+        <div className="flex gap-4 items-center">
+          <Input placeholder="Beneficiário" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
+          <Input placeholder="Documento" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
+          <Input placeholder="Valor" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
           <Button className="rounded-full">Filtrar</Button>
         </div>
       </div>
