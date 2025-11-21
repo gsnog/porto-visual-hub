@@ -59,7 +59,7 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 231 38% 25%; /* Main content background - same dark navy blue */
+    --background-image: url('/background.svg'); /* Main content background - dark navy blue */
     --foreground: 0 0% 100%;
 
     --card: 231 38% 25%;
