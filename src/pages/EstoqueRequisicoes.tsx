@@ -28,7 +28,7 @@ export default function EstoqueRequisicoes() {
               {/* Filtro de Cidade (Select) */}
               <Select>
                 {/* Estilização do SelectTrigger consistente */}
-                <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full">
+                <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg">
                   <SelectValue placeholder="Cidade" className="!text-black" />
                 </SelectTrigger>
                 <SelectContent>
@@ -43,7 +43,7 @@ export default function EstoqueRequisicoes() {
                 <Input 
                   type="date" // Ativa o seletor de calendário nativo
                   placeholder="Data da Requisição" 
-                  className="rounded-full w-45 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
+                  className="rounded-lg w-45 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
                 />
                 {/* Ícone CalendarDays removido para evitar conflito visual com o input nativo */}
               </div>

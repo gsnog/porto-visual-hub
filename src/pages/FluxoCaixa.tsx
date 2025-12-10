@@ -130,7 +130,7 @@ const FluxoCaixa = () => {
             <Select>
               {/* Estilização do SelectTrigger copiada */}
               <SelectTrigger 
-                className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-full"
+                className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg"
               >
                 <SelectValue placeholder="Tipo" />
               </SelectTrigger>
@@ -145,14 +145,14 @@ const FluxoCaixa = () => {
           {/* Input de CNPJ/Beneficiário */}
           <Input 
             placeholder="Beneficiário/CNPJ" 
-            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
           />
 
           {/* Input de Data de Vencimento/Pagamento com Ícone */}
           <div className="relative">
             <Input 
               placeholder="Data Inicial" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-full pr-10"
+              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
             />
             <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
@@ -160,7 +160,7 @@ const FluxoCaixa = () => {
           <div className="relative">
             <Input 
               placeholder="Data Final" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-full pr-10"
+              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
             />
             <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
