@@ -34,7 +34,7 @@ export default function EstoqueInventario() {
             </SelectContent>
           </Select>
 
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -56,7 +56,7 @@ export default function EstoqueInventario() {
                 <TableCell>1</TableCell>
                 <TableCell>xxxxxxxxxx</TableCell>
                 <TableCell>
-                  <Button size="sm" className="rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -67,7 +67,7 @@ export default function EstoqueInventario() {
                 <TableCell>3</TableCell>
                 <TableCell>un</TableCell>
                 <TableCell>
-                  <Button size="sm" className="rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs">
                     Ações
                   </Button>
                 </TableCell>

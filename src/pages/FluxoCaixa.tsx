@@ -115,10 +115,10 @@ const FluxoCaixa = () => {
         {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
           {/* Estilização dos botões copiada (laranja, rounded-full) */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar Transação
           </Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
@@ -166,7 +166,7 @@ const FluxoCaixa = () => {
           </div>
           
           {/* Botão de Filtrar */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -217,7 +217,7 @@ const FluxoCaixa = () => {
                   <TableCell className="font-semibold">{transacao.saldo}</TableCell>
                   <TableCell className="text-center">
                     {/* Estilização do botão de Ações na tabela copiada */}
-                    <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                    <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                       Detalhes
                     </Button>
                   </TableCell>

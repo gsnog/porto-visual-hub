@@ -14,10 +14,10 @@ export default function EstoqueRequisicoes() {
 
         <div className="flex gap-3 pt-2">
           {/* Estilização dos botões consistente */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar
           </Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
@@ -48,7 +48,7 @@ export default function EstoqueRequisicoes() {
                 {/* Ícone CalendarDays removido para evitar conflito visual com o input nativo */}
               </div>
               
-              <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+              <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
                 Filtrar
               </Button>
             </div>
@@ -89,7 +89,7 @@ export default function EstoqueRequisicoes() {
                 <TableCell className="text-green-600 font-medium">Aprovada</TableCell>
                 <TableCell>Entregue</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -108,7 +108,7 @@ export default function EstoqueRequisicoes() {
                 <TableCell className="text-yellow-600 font-medium">Pendente</TableCell>
                 <TableCell>Pendente</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>

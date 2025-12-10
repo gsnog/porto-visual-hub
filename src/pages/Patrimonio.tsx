@@ -96,7 +96,7 @@ const Patrimonio = () => {
             <Button 
               onClick={handleAddNew}
               // Estilização consistente: laranja e rounded-full
-              className="rounded-full bg-orange-500 hover:bg-orange-600 text-white"
+              className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
             >
               <FileText className="h-4 w-4 mr-2" />
               Novo Patrimônio
@@ -119,7 +119,7 @@ const Patrimonio = () => {
               />
             </div>
             
-            <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+            <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
               Filtrar
             </Button>
           </div>
@@ -156,7 +156,7 @@ const Patrimonio = () => {
                         onClick={() => handleViewDetails(asset)}
                         size="sm"
                         // Estilização do botão consistente
-                        className="rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs"
+                        className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs"
                       >
                         Detalhes
                       </Button>
@@ -180,7 +180,7 @@ const Patrimonio = () => {
             <Button 
               onClick={handleBackToList}
               variant="ghost"
-              className="text-orange-500 hover:bg-orange-50/20 px-3 py-2 rounded-full font-semibold"
+              className="text-orange-500 hover:bg-orange-50/20 px-3 py-2 rounded-lg font-semibold"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Voltar
@@ -260,7 +260,7 @@ const Patrimonio = () => {
                     <Button 
                       onClick={handleSubmitAdd}
                       // Estilização consistente
-                      className="rounded-full bg-orange-500 hover:bg-orange-600 text-white"
+                      className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
                     >
                       Adicionar Patrimônio
                     </Button>
@@ -268,7 +268,7 @@ const Patrimonio = () => {
                       onClick={handleCancelAdd}
                       variant="outline"
                       // Estilização consistente
-                      className="rounded-full border-orange-500 text-orange-500 hover:bg-orange-500 text-xs"
+                      className="rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 text-xs"
                     >
                       Cancelar
                     </Button>
@@ -291,7 +291,7 @@ const Patrimonio = () => {
             <Button 
               onClick={handleBackToList}
               variant="ghost"
-              className="text-orange-500 hover:bg-orange-50/20 px-3 py-2 rounded-full font-semibold"
+              className="text-orange-500 hover:bg-orange-50/20 px-3 py-2 rounded-lg font-semibold"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Voltar à Lista
@@ -335,13 +335,13 @@ const Patrimonio = () => {
                   {/* Botões de Ação na seção de Detalhes */}
                   <div className="flex gap-4 justify-start pt-8">
                     <Button 
-                      className="rounded-full bg-orange-500 hover:bg-orange-600 text-white"
+                      className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
                     >
                       Editar
                     </Button>
                     <Button 
                       onClick={handleDelete}
-                      className="rounded-full bg-red-500 hover:bg-red-600 text-white"
+                      className="rounded-lg bg-red-500 hover:bg-red-600 text-white"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
                       Excluir
