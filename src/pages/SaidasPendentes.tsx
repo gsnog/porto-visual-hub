@@ -37,19 +37,19 @@ const SaidasPendentes = () => {
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Input placeholder="Beneficiário" className="rounded-full" />
-          <Input placeholder="Documento" className="rounded-full" />
-          <Input placeholder="Valor" className="rounded-full" />
+          <Input placeholder="Beneficiário" className="rounded-lg" />
+          <Input placeholder="Documento" className="rounded-lg" />
+          <Input placeholder="Valor" className="rounded-lg" />
         </div>
 
         {/* Date Filters */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="rounded-full" />
+            <Input placeholder="DD/MM/AAAA" className="rounded-lg" />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="rounded-full" />
+            <Input placeholder="DD/MM/AAAA" className="rounded-lg" />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
           <div></div>

@@ -108,14 +108,14 @@ const Patrimonio = () => {
             <Input 
               placeholder="Item / Código" 
               // Estilização consistente: fundo, texto preto
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
+              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
             />
             
             <div className="relative">
               <Input 
                 type="date" // Correção para seletor de data
                 placeholder="Data de Aquisição" 
-                className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-full"
+                className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg"
               />
             </div>
             
@@ -199,7 +199,7 @@ const Patrimonio = () => {
                       Item*
                     </label>
                     <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
-                      <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-full w-full">
+                      <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full">
                         <SelectValue placeholder="Selecione o tipo de item" />
                       </SelectTrigger>
                       <SelectContent>
@@ -221,7 +221,7 @@ const Patrimonio = () => {
                       type="date" // Correção para seletor de data
                       value={formData.dataAquisicao}
                       onChange={handleInputChange}
-                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-full w-full"
+                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full"
                     />
                   </div>
 
@@ -236,7 +236,7 @@ const Patrimonio = () => {
                       placeholder="Ex: 1500.00"
                       value={formData.valor}
                       onChange={handleInputChange}
-                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-full w-full pr-10"
+                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full pr-10"
                     />
                     <DollarSign className="absolute right-3 top-[50px] transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   </div>
@@ -251,7 +251,7 @@ const Patrimonio = () => {
                       type="number"
                       value={formData.quantidade}
                       onChange={handleInputChange}
-                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-full w-full"
+                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full"
                     />
                   </div>
 

@@ -23,7 +23,7 @@ export default function EstoqueLocacoes() {
           {/* Input Locador */}
           <Input 
             placeholder="Locador" 
-            className="rounded-full w-64 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3"
+            className="rounded-lg w-64 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3"
           />
           
           {/* Input de Data de Início - AGORA FUNCIONAL */}
@@ -33,7 +33,7 @@ export default function EstoqueLocacoes() {
               type="date" 
               // O placeholder é mantido para contexto, mas o campo de data nativo pode sobrescrevê-lo
               placeholder="Data de Início" 
-              className="rounded-full w-48 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
+              className="rounded-lg w-48 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
             />
             {/* Ícone CalendarDays removido para evitar conflito visual com o input nativo */}
           </div>
@@ -44,7 +44,7 @@ export default function EstoqueLocacoes() {
             <Input 
               type="date"
               placeholder="Data Final (Prev.)" 
-              className="rounded-full w-48 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
+              className="rounded-lg w-48 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
             />
             {/* Ícone CalendarDays removido */}
           </div>
