@@ -12,19 +12,19 @@ export default function EstoqueEntradas() {
         </div>
 
         <div className="flex gap-3">
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Novo Item</Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Upload NF-e</Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Relatório</Button>
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">Novo Item</Button>
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">Upload NF-e</Button>
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">Relatório</Button>
         </div>
 
         <div className="flex gap-4 items-center">
-          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
-          <Input placeholder="NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
+          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
+          <Input placeholder="NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
+            <Input placeholder="DD/MM/AAAA" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
             <CalendarDays className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">Filtrar</Button>
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">Filtrar</Button>
         </div>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
@@ -54,7 +54,7 @@ export default function EstoqueEntradas() {
                 <TableCell>1</TableCell>
                 <TableCell>R$ 9.999,99</TableCell>
                 <TableCell>
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -70,7 +70,7 @@ export default function EstoqueEntradas() {
                 <TableCell>3</TableCell>
                 <TableCell>R$ 149,70</TableCell>
                 <TableCell>
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>

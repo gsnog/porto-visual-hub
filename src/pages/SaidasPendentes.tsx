@@ -31,29 +31,29 @@ const SaidasPendentes = () => {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mb-6">
-          <Button className="rounded-full">Adicionar</Button>
-          <Button className="rounded-full" variant="outline">Relatório</Button>
+          <Button className="rounded-lg">Adicionar</Button>
+          <Button className="rounded-lg" variant="outline">Relatório</Button>
         </div>
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Input placeholder="Beneficiário" className="rounded-full" />
-          <Input placeholder="Documento" className="rounded-full" />
-          <Input placeholder="Valor" className="rounded-full" />
+          <Input placeholder="Beneficiário" className="rounded-lg" />
+          <Input placeholder="Documento" className="rounded-lg" />
+          <Input placeholder="Valor" className="rounded-lg" />
         </div>
 
         {/* Date Filters */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="rounded-full" />
+            <Input placeholder="DD/MM/AAAA" className="rounded-lg" />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="rounded-full" />
+            <Input placeholder="DD/MM/AAAA" className="rounded-lg" />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
           <div></div>
-          <Button className="rounded-full">Filtrar</Button>
+          <Button className="rounded-lg">Filtrar</Button>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ const SaidasPendentes = () => {
                   <TableCell className="text-center text-sm">{saida.formaPagamento}</TableCell>
                   <TableCell className="text-center text-sm">{saida.valorTotal}</TableCell>
                   <TableCell className="text-center">
-                    <Button size="sm" className="rounded-full text-xs">Ações</Button>
+                    <Button size="sm" className="rounded-lg text-xs">Ações</Button>
                   </TableCell>
                 </TableRow>
               ))}

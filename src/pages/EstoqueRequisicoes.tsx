@@ -14,10 +14,10 @@ export default function EstoqueRequisicoes() {
 
         <div className="flex gap-3 pt-2">
           {/* Estilização dos botões consistente */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar
           </Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
@@ -28,7 +28,7 @@ export default function EstoqueRequisicoes() {
               {/* Filtro de Cidade (Select) */}
               <Select>
                 {/* Estilização do SelectTrigger consistente */}
-                <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full">
+                <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg">
                   <SelectValue placeholder="Cidade" className="!text-black" />
                 </SelectTrigger>
                 <SelectContent>
@@ -43,12 +43,12 @@ export default function EstoqueRequisicoes() {
                 <Input 
                   type="date" // Ativa o seletor de calendário nativo
                   placeholder="Data da Requisição" 
-                  className="rounded-full w-45 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
+                  className="rounded-lg w-45 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
                 />
                 {/* Ícone CalendarDays removido para evitar conflito visual com o input nativo */}
               </div>
               
-              <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+              <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
                 Filtrar
               </Button>
             </div>
@@ -89,7 +89,7 @@ export default function EstoqueRequisicoes() {
                 <TableCell className="text-green-600 font-medium">Aprovada</TableCell>
                 <TableCell>Entregue</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -108,7 +108,7 @@ export default function EstoqueRequisicoes() {
                 <TableCell className="text-yellow-600 font-medium">Pendente</TableCell>
                 <TableCell>Pendente</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>

@@ -13,10 +13,10 @@ export default function EstoqueSaidas() {
 
         {/* Botões de Ação */}
         <div className="flex gap-3 pt-2">
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar
           </Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
@@ -26,18 +26,18 @@ export default function EstoqueSaidas() {
           <Input 
             placeholder="Nome do Item" 
             // CORRIGIDO: Adicionado text-black para o texto digitado
-            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
           />
           <div className="relative">
             <Input 
               type="date" // CORRIGIDO: Ativa o seletor de calendário nativo
               placeholder="DD/MM/AAAA" 
               // CORRIGIDO: Adicionado text-black e removido pr-10, pois o ícone CalendarDays foi removido
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10 w-48 rounded-full"
+              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10 w-48 rounded-lg"
             />
             {/* Ícone CalendarDays removido para evitar conflito com o campo type="date" */}
           </div>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -67,7 +67,7 @@ export default function EstoqueSaidas() {
                 <TableCell>Almoxarifado SP</TableCell>
                 <TableCell>Setor Montagem</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>

@@ -117,14 +117,14 @@ const ContasPagar = () => {
         {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
           {/* Estilização dos botões copiada (laranja, rounded-full) */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar
           </Button>
           {/* Estilização aplicada aos outros botões para consistência */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Pendentes (1)
           </Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
@@ -134,18 +134,18 @@ const ContasPagar = () => {
           {/* Estilização dos inputs copiada (text-black e placeholder) */}
           <Input 
             placeholder="Beneficiário" 
-            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
           />
           <Input 
             placeholder="Documento" 
-            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
           />
           
           {/* Input de Valor com Ícone (como em ContasReceber) */}
           <div className="relative">
             <Input 
               placeholder="Valor Mínimo" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-full pr-10"
+              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
             />
             <DollarSign className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
@@ -154,13 +154,13 @@ const ContasPagar = () => {
           <div className="relative">
             <Input 
               placeholder="Próx. Vencimento" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-full pr-10"
+              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
             />
             <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
           
           {/* Botão de Filtrar */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -215,7 +215,7 @@ const ContasPagar = () => {
                   </TableCell>
                   <TableCell className="text-center">
                     {/* Estilização do botão de Ações na tabela copiada */}
-                    <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                    <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                       Ações
                     </Button>
                   </TableCell>

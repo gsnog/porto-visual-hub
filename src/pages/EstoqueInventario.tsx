@@ -5,8 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export default function EstoqueInventario() {
   const inputClass =
-    "bg-[#efefef] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
-  const selectTriggerClass = "bg-[#efefef] text-black placeholder:text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full"
+    "bg-[#efefef] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
+  const selectTriggerClass = "bg-[#efefef] text-black placeholder:text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
   const selectValueClass =
     "data-[placeholder]:!text-[#22265B] data-[placeholder]:opacity-100"
 
@@ -21,7 +21,7 @@ export default function EstoqueInventario() {
         </div>
 
         <div className="flex gap-4 items-center">
-          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-full" />
+          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
 
           <Select>
             <SelectTrigger className={selectTriggerClass}>
@@ -34,7 +34,7 @@ export default function EstoqueInventario() {
             </SelectContent>
           </Select>
 
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -56,7 +56,7 @@ export default function EstoqueInventario() {
                 <TableCell>1</TableCell>
                 <TableCell>xxxxxxxxxx</TableCell>
                 <TableCell>
-                  <Button size="sm" className="rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -67,7 +67,7 @@ export default function EstoqueInventario() {
                 <TableCell>3</TableCell>
                 <TableCell>un</TableCell>
                 <TableCell>
-                  <Button size="sm" className="rounded-full bg-orange-500 hover:bg-orange-600 text-white text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs">
                     Ações
                   </Button>
                 </TableCell>
