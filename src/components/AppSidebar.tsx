@@ -192,7 +192,7 @@ export function AppSidebar() {
 
       <SidebarContent className="bg-sidebar text-[--sidebar-text] relative overflow-visible">
         <div className="p-6 flex items-center gap-5">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shrink-0" style={{ backgroundColor: '#FF8000' }}>
             PP
           </div>
           <div className={`min-w-0 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
