@@ -59,11 +59,11 @@ const NFe = () => {
         {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
           {/* Estilização dos botões copiada (laranja, rounded-full) */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             <FileText className="h-4 w-4 mr-2" />
             Nova NF-e
           </Button>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Relatório
           </Button>
         </div>
@@ -86,7 +86,7 @@ const NFe = () => {
           </div>
           
           {/* Botão de Filtrar */}
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -123,11 +123,11 @@ const NFe = () => {
                   </TableCell>
                   <TableCell className="text-center space-x-2">
                     {/* Botões de Ações na tabela com ícones */}
-                    <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                    <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                       <Eye className="h-3 w-3 mr-1" />
                       Visualizar
                     </Button>
-                    <Button size="sm" variant="outline" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                    <Button size="sm" variant="outline" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                       <Download className="h-3 w-3 mr-1" />
                       XML
                     </Button>

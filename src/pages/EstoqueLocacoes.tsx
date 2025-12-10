@@ -13,7 +13,7 @@ export default function EstoqueLocacoes() {
 
         {/* Botão de Ação */}
         <div className="flex gap-3 pt-2">
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Nova Locação
           </Button>
         </div>
@@ -48,7 +48,7 @@ export default function EstoqueLocacoes() {
             />
             {/* Ícone CalendarDays removido */}
           </div>
-          <Button className="rounded-full bg-orange-500 hover:bg-orange-600 text-white">
+          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Filtrar
           </Button>
         </div>
@@ -82,7 +82,7 @@ export default function EstoqueLocacoes() {
                 <TableCell>10, 5</TableCell>
                 <TableCell>Em Andamento</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>
@@ -98,7 +98,7 @@ export default function EstoqueLocacoes() {
                 <TableCell>2</TableCell>
                 <TableCell className="text-green-600 font-medium">Finalizada</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-full bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
                     Ações
                   </Button>
                 </TableCell>
