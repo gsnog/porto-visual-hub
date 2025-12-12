@@ -161,8 +161,6 @@ export function AppSidebar() {
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
 
-  const ICON_SIZE = 22
-
   return (
     <Sidebar
       collapsible="icon"
@@ -225,10 +223,10 @@ export function AppSidebar() {
                         tooltip={item.title}
                       >
                         <div className="flex items-center gap-3">
-                          <item.icon size={ICON_SIZE} className="text-[--sidebar-text]" />
+                          <item.icon   size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }}className="text-[--sidebar-text]"  />
                           <span className="text-lg">{item.title}</span>
                         </div>
-                        {openMenus[item.title] ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                        {openMenus[item.title] ? <ChevronDown size={22} /> : <ChevronRight size={22} />}
                       </SidebarMenuButton>
                       
                       {openMenus[item.title] && (
@@ -254,7 +252,7 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild tooltip={item.title}>
                         <NavLink to={item.url} className={getNavCls}>
-                          <item.icon size={ICON_SIZE} className="text-[--sidebar-text]" />
+                          <item.icon   size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }}className="text-[--sidebar-text]"  />
                           <span className="text-[--sidebar-text] text-lg">{item.title}</span>
                         </NavLink>
                       </SidebarMenuButton>
