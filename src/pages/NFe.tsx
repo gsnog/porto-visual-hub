@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { CalendarDays, Download, Eye, FileText } from "lucide-react" // Usando CalendarDays para consistência
+import { Download, Eye, FileText } from "lucide-react"
 
 const NFe = () => {
   const nfes = [
@@ -29,7 +28,6 @@ const NFe = () => {
       nf: "NFe 54321",
       status: "Em Processamento"
     },
-    // Removendo itens repetidos para manter a concisão
   ]
 
   // Função auxiliar para definir a cor do status
@@ -47,9 +45,8 @@ const NFe = () => {
   }
 
   return (
-    // Estrutura do container principal copiada
-    <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+    <div className="flex flex-col h-full bg-background overflow-hidden">
+      <div className="p-6 space-y-6 overflow-y-auto">
         
         {/* Título */}
         <div className="flex items-center justify-between">
@@ -57,8 +54,7 @@ const NFe = () => {
         </div>
         
         {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
-          {/* Estilização dos botões copiada (laranja, rounded-full) */}
+        <div className="flex gap-3 pt-2 flex-wrap">
           <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             <FileText className="h-4 w-4 mr-2" />
             Nova NF-e
@@ -73,17 +69,15 @@ const NFe = () => {
           {/* Input de Número NF-e */}
           <Input 
             placeholder="Número NF-e" 
-            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-40 sm:w-52 rounded-lg"
           />
 
-          {/* Input de Data de Emissão com Ícone */}
-          <div className="relative">
-            <Input 
-              placeholder="Data de Emissão" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
-            />
-            <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
+          {/* Input de Data de Emissão */}
+          <Input 
+            type="date"
+            placeholder="Data de Emissão" 
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-40 sm:w-44 rounded-lg"
+          />
           
           {/* Botão de Filtrar */}
           <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
@@ -92,50 +86,49 @@ const NFe = () => {
         </div>
 
         {/* NFe Table */}
-        <div className="rounded-lg overflow-x-auto border border-[#E3E3E3] mt-6">
-          <Table>
-            <TableHeader className="whitespace-nowrap">
-              {/* Estilização do cabeçalho da tabela copiada */}
-              <TableRow className="bg-[#E3E3E3] hover:bg-[#E3E3E3] cursor-default select-none">
-                <TableHead className="!text-black font-medium">Data Emissão</TableHead>
-                <TableHead className="!text-black font-medium">Número</TableHead>
-                <TableHead className="!text-black font-medium">NF</TableHead>
-                <TableHead className="!text-black font-medium">Valor Total</TableHead>
-                <TableHead className="!text-black font-medium">Chave de Acesso (XML)</TableHead>
-                <TableHead className="!text-black font-medium">Status</TableHead>
-                <TableHead className="!text-black font-medium text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="whitespace-nowrap">
+        <div className="rounded-lg border border-[#E3E3E3] mt-6 overflow-hidden">
+          <table className="table-fixed w-full">
+            <thead>
+              <tr className="bg-[#E3E3E3] h-14">
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left">Data Emissão</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[10%] p-2 sm:p-3 text-left">Número</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left">NF</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left">Valor Total</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[25%] p-2 sm:p-3 text-left hidden lg:table-cell">Chave de Acesso</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left">Status</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[17%] p-2 sm:p-3 text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
               {nfes.map((nfe, index) => (
-                // Estilização das linhas copiada
-                <TableRow 
+                <tr 
                   key={index} 
-                  className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors"
+                  className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors h-16 border-b border-gray-200"
                 >
-                  <TableCell className="text-center">{nfe.dataEmissao}</TableCell>
-                  <TableCell className="text-center">{nfe.numero}</TableCell>
-                  <TableCell className="text-center">{nfe.nf}</TableCell>
-                  <TableCell className="font-semibold">{nfe.valorTotal}</TableCell>
-                  <TableCell className="text-xs">{nfe.chaveAcesso}</TableCell>
-                  <TableCell>
+                  <td className="text-center text-[14px] sm:text-base p-2 sm:p-3 truncate">{nfe.dataEmissao}</td>
+                  <td className="text-center text-[14px] sm:text-base p-2 sm:p-3 truncate">{nfe.numero}</td>
+                  <td className="text-center text-[14px] sm:text-base p-2 sm:p-3 truncate">{nfe.nf}</td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3 font-semibold truncate">{nfe.valorTotal}</td>
+                  <td className="text-[12px] sm:text-[13px] p-2 sm:p-3 truncate hidden lg:table-cell" title={nfe.chaveAcesso}>{nfe.chaveAcesso}</td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3">
                     <span className={getStatusColor(nfe.status)}>{nfe.status}</span>
-                  </TableCell>
-                  <TableCell className="text-center space-x-2">
-                    {/* Botões de Ações na tabela com ícones */}
-                    <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
-                      <Eye className="h-3 w-3 mr-1" />
-                      Visualizar
-                    </Button>
-                    <Button size="sm" variant="outline" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
-                      <Download className="h-3 w-3 mr-1" />
-                      XML
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                  </td>
+                  <td className="text-center p-2 sm:p-3">
+                    <div className="flex gap-1 justify-center flex-wrap">
+                      <Button size="sm" className="rounded bg-orange-500 text-white hover:bg-orange-600 text-[11px] sm:text-xs h-7 px-2">
+                        <Eye className="h-3 w-3 mr-1" />
+                        Ver
+                      </Button>
+                      <Button size="sm" className="rounded bg-orange-500 text-white hover:bg-orange-600 text-[11px] sm:text-xs h-7 px-2">
+                        <Download className="h-3 w-3 mr-1" />
+                        XML
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

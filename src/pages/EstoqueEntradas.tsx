@@ -18,11 +18,19 @@ export default function EstoqueEntradas() {
         </div>
 
         <div className="flex gap-4 items-center">
-          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
-          <Input placeholder="NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
+          <Input 
+            placeholder="Nome do Item" 
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
+          />
+          <Input 
+            placeholder="NF-e" 
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
+          />
           <div className="relative">
-            <Input placeholder="DD/MM/AAAA" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
-            <CalendarDays className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              type="date" 
+              className="bg-[#efefef] text-black h-10 px-3 w-64 rounded-lg [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-3 [&::-webkit-calendar-picker-indicator]:cursor-pointer" 
+            />
           </div>
           <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">Filtrar</Button>
         </div>

@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { CalendarDays } from "lucide-react" // Ícone para o filtro de data
 
 // Componentes de Card de Sumário Simples (para consistência visual)
 const SummaryCard = ({ title, value, colorClass }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
-    <h3 className="text-lg font-semibold mb-2">{title}</h3>
+    <h3 className="text-lg font-semibold mb-3">{title}</h3>
+    <div className="border-t border-white/30 mb-3"></div>
     <p className="text-2xl font-bold">{value}</p>
   </div>
 );
@@ -73,18 +72,16 @@ const FluxoCaixa = () => {
   // Função auxiliar para definir a cor da linha com base no tipo (Entrada/Saída)
   const getRowClass = (tipo) => {
     if (tipo === 'Entrada') {
-      return 'bg-green-50 hover:bg-green-100 transition-colors'; // Fundo levemente verde para entrada
+      return 'bg-green-50 hover:bg-green-100 transition-colors';
     } else if (tipo === 'Saída') {
-      return 'bg-red-50 hover:bg-red-100 transition-colors'; // Fundo levemente vermelho para saída
+      return 'bg-red-50 hover:bg-red-100 transition-colors';
     }
     return 'bg-white hover:bg-[#22265B] hover:text-white transition-colors';
   }
 
-
   return (
-    // Estrutura do container principal copiada
-    <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+    <div className="flex flex-col h-full bg-background overflow-hidden">
+      <div className="p-6 space-y-6 overflow-y-auto">
         
         {/* Título */}
         <div className="flex items-center justify-between">
@@ -96,25 +93,24 @@ const FluxoCaixa = () => {
           <SummaryCard 
             title="Total de Entradas" 
             value="R$ 94.439,88" 
-            colorClass="bg-green-500" // Cor para Entradas
+            colorClass="bg-green-500"
           />
           
           <SummaryCard 
             title="Total de Saídas" 
             value="R$ 12.500,00" 
-            colorClass="bg-red-500" // Cor para Saídas
+            colorClass="bg-red-500"
           />
           
           <SummaryCard 
             title="Saldo Atual" 
             value="R$ 81.939,88" 
-            colorClass="bg-blue-500" // Cor Primária
+            colorClass="bg-blue-500"
           />
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
-          {/* Estilização dos botões copiada (laranja, rounded-full) */}
+        <div className="flex gap-3 pt-2 flex-wrap">
           <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
             Adicionar Transação
           </Button>
@@ -126,9 +122,8 @@ const FluxoCaixa = () => {
         {/* Filters */}
         <div className="flex gap-4 items-center flex-wrap">
           {/* Filtro de Tipo (Select) */}
-          <div className="w-48">
+          <div className="w-40 sm:w-48">
             <Select>
-              {/* Estilização do SelectTrigger copiada */}
               <SelectTrigger 
                 className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg"
               >
@@ -145,25 +140,29 @@ const FluxoCaixa = () => {
           {/* Input de CNPJ/Beneficiário */}
           <Input 
             placeholder="Beneficiário/CNPJ" 
-            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
+            className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-40 sm:w-52 rounded-lg"
           />
 
-          {/* Input de Data de Vencimento/Pagamento com Ícone */}
-          <div className="relative">
-            <Input 
-              placeholder="Data Inicial" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
-            />
-            <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
+          {/* Input de Data Inicial */}
+          <Input 
+            type="date"
+            placeholder="Data Inicial"
+            className="bg-[#efefef] text-black h-10 px-3 w-40 sm:w-44 rounded-lg [&::-webkit-calendar-picker-indicator]:opacity-100"
+            style={{
+              colorScheme: 'light'
+            }}
+            onFocus={(e) => e.target.showPicker?.()}
+          />
 
-          <div className="relative">
-            <Input 
-              placeholder="Data Final" 
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg pr-10"
-            />
-            <CalendarDays className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
+          {/* Input de Data Final */}
+          <Input 
+            type="date"
+            className="bg-[#efefef] text-black h-10 px-3 w-40 sm:w-44 rounded-lg [&::-webkit-calendar-picker-indicator]:opacity-100"
+            style={{
+              colorScheme: 'light'
+            }}
+            onFocus={(e) => e.target.showPicker?.()}
+          />
           
           {/* Botão de Filtrar */}
           <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
@@ -174,57 +173,54 @@ const FluxoCaixa = () => {
         {/* Tabela de Transações */}
         <h2 className="text-xl font-semibold text-foreground mt-8 mb-4">Transações Recentes</h2>
         
-        <div className="rounded-lg overflow-x-auto border border-[#E3E3E3]">
-          <Table>
-            <TableHeader className="whitespace-nowrap">
-              {/* Estilização do cabeçalho da tabela copiada */}
-              <TableRow className="bg-[#E3E3E3] hover:bg-[#E3E3E3] cursor-default select-none">
-                <TableHead className="!text-black font-medium">Data Venc.</TableHead>
-                <TableHead className="!text-black font-medium">Data Pag.</TableHead>
-                <TableHead className="!text-black font-medium">Tipo</TableHead>
-                <TableHead className="!text-black font-medium">Beneficiário/Cliente</TableHead>
-                <TableHead className="!text-black font-medium">CNPJ</TableHead>
-                <TableHead className="!text-black font-medium">Status</TableHead>
-                <TableHead className="!text-black font-medium">Valor Total</TableHead>
-                <TableHead className="!text-black font-medium">Saldo Parcial</TableHead>
-                <TableHead className="!text-black font-medium text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="whitespace-nowrap">
+        <div className="rounded-lg border border-[#E3E3E3] overflow-hidden">
+          <table className="table-fixed w-full">
+            <thead>
+              <tr className="bg-[#E3E3E3] h-14">
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[10%] p-2 sm:p-3 text-left">Data Venc.</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[10%] p-2 sm:p-3 text-left">Data Pag.</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[8%] p-2 sm:p-3 text-left">Tipo</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[15%] p-2 sm:p-3 text-left">Beneficiário</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left hidden md:table-cell">CNPJ</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[10%] p-2 sm:p-3 text-left">Status</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left">Valor Total</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[12%] p-2 sm:p-3 text-left hidden lg:table-cell">Saldo</th>
+                <th className="!text-black font-medium text-[14px] sm:text-base w-[11%] p-2 sm:p-3 text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
               {transacoes.map((transacao, index) => (
-                // Estilização das linhas com cores condicionais e hover consistente
-                <TableRow 
+                <tr 
                   key={index} 
-                  className={getRowClass(transacao.tipo) + ' text-black'}
+                  className={getRowClass(transacao.tipo) + ' text-black h-16 border-b border-gray-200'}
                 >
-                  <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
-                  <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
-                  <TableCell>
-                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700' : 'text-red-700'}>
+                  <td className="text-center text-[14px] sm:text-base p-2 sm:p-3 truncate">{transacao.dataVencimento}</td>
+                  <td className="text-center text-[14px] sm:text-base p-2 sm:p-3 truncate">{transacao.dataPagamento}</td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3">
+                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>
                       {transacao.tipo}
                     </span>
-                  </TableCell>
-                  <TableCell>{transacao.beneficiario}</TableCell>
-                  <TableCell>{transacao.cnpj}</TableCell>
-                  <TableCell>
+                  </td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3 truncate" title={transacao.beneficiario}>{transacao.beneficiario}</td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3 truncate hidden md:table-cell">{transacao.cnpj}</td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3">
                     <span className={getStatusColor(transacao.status)}>{transacao.status}</span>
-                  </TableCell>
-                  <TableCell>
+                  </td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3 truncate">
                     <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
                       {transacao.valorTotal}
                     </span>
-                  </TableCell>
-                  <TableCell className="font-semibold">{transacao.saldo}</TableCell>
-                  <TableCell className="text-center">
-                    {/* Estilização do botão de Ações na tabela copiada */}
-                    <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
+                  </td>
+                  <td className="text-[14px] sm:text-base p-2 sm:p-3 font-semibold truncate hidden lg:table-cell">{transacao.saldo}</td>
+                  <td className="text-center p-2 sm:p-3">
+                    <Button size="lg" className="rounded bg-orange-500 text-white hover:bg-orange-600 text-[14px] h-8 px-3">
                       Detalhes
                     </Button>
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
