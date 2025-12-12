@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
 import { 
-  LayoutDashboard, 
-  FileText, 
+  LayoutGrid, 
+  ClipboardList, 
   Package, 
   TrendingUp,
-  Building,
-  UserPlus,
-  Map,
+  Building2,
+  UserRoundPlus,
+  MapPinned,
   LogOut,
   ChevronDown,
   ChevronRight
@@ -27,8 +27,8 @@ import {
 import { Separator } from "@/components/ui/separator"
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Cadastro", url: "/cadastro", icon: FileText },
+  { title: "Dashboard", url: "/", icon: LayoutGrid },
+  { title: "Cadastro", url: "/cadastro", icon: ClipboardList },
   { 
     title: "Estoque", 
     icon: Package,
@@ -52,9 +52,9 @@ const menuItems = [
       { title: "XML", url: "/financeiro/xml" },
     ]
   },
-  { title: "Patrimônio", url: "/patrimonio", icon: Building },
-  { title: "Novo Usuário", url: "/novo-usuario", icon: UserPlus },
-  { title: "Planos", url: "/planos", icon: Map },
+  { title: "Patrimônio", url: "/patrimonio", icon: Building2 },
+  { title: "Novo Usuário", url: "/novo-usuario", icon: UserRoundPlus },
+  { title: "Planos", url: "/planos", icon: MapPinned },
 ]
 
 const MenuToggleIcon = ({ isOpen }: { isOpen: boolean }) => (
