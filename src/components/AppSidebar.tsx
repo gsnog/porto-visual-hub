@@ -159,7 +159,7 @@ export function AppSidebar() {
 
   const isDayMode = theme === "light"
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
+    isActive ? "bg-sidebar-accent text-sidebar-primary font-medium rounded-lg border-2 border-[#FF8000]" : "hover:bg-sidebar-accent/50"
 
   const ICON_SIZE = 22
 
@@ -221,7 +221,7 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
                         onClick={() => toggleMenu(item.title)}
-                        className={`w-full justify-between ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70" : ""}`}
+                        className={`w-full justify-between ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70 rounded-lg border-2 border-[#FF8000]" : ""}`}
                         tooltip={item.title}
                       >
                         <div className="flex items-center gap-3">
