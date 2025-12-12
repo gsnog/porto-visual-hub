@@ -221,7 +221,7 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
                         onClick={() => toggleMenu(item.title)}
-                        className={`w-full justify-between ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70 rounded-lg border-2 border-[#FF8000]" : ""}`}
+                        className="w-full justify-between"
                         tooltip={item.title}
                       >
                         <div className="flex items-center gap-3">
@@ -239,7 +239,7 @@ export function AppSidebar() {
                                 to={subItem.url}
                                 className={({isActive}) =>
                                   `pl-9 pr-3 py-2 !text-base ${
-                                    isActive ? "font-semibold text-sidebar-primary" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
+                                    isActive ? "font-semibold text-sidebar-primary rounded-lg border-2 border-[#FF8000]" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
                                   }`
                                 }
                               >
