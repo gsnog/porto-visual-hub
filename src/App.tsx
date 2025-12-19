@@ -22,6 +22,7 @@ import EstoqueLocacoes from "./pages/EstoqueLocacoes";
 import EstoqueRequisicoes from "./pages/EstoqueRequisicoes";
 import EstoqueSaidas from "./pages/EstoqueSaidas";
 import OrdemCompra from "./pages/OrdemCompra";
+import NovaOrdemCompra from "./pages/NovaOrdemCompra";
 import OrdemServico from "./pages/OrdemServico";
 import Cadastro from "./pages/Cadastro";
 import NotFound from "./pages/NotFound";
@@ -61,6 +62,7 @@ const App = () => (
                   <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
                   <Route path="/estoque/requisicoes" element={<EstoqueRequisicoes />} />
                   <Route path="/estoque/ordem-compra" element={<OrdemCompra />} />
+                  <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
                   <Route path="/estoque/ordem-servico" element={<OrdemServico />} />
                   <Route path="/novo-usuario" element={<Cadastro />} />
                   <Route path="/planos" element={<Dashboard />} />
