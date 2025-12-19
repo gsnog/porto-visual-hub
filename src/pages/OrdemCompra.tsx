@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,13 +19,20 @@ import {
 import { Search } from "lucide-react";
 
 export default function OrdemCompra() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Ordem de Compra</h1>
 
       {/* Botões de ação */}
       <div className="flex flex-wrap items-center gap-3">
-        <Button className="bg-green-600 hover:bg-green-700">Nova Ordem</Button>
+        <Button
+          className="bg-green-600 hover:bg-green-700"
+          onClick={() => navigate("/estoque/ordem-compra/nova")}
+        >
+          Nova Ordem
+        </Button>
         <Button variant="outline">Relatório</Button>
       </div>
 
