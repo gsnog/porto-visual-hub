@@ -37,9 +37,11 @@ const menuItems = [
       { title: "Entradas", url: "/estoque/entradas" },
       { title: "Inventário", url: "/estoque/inventario" },
       { title: "Locações", url: "/estoque/locacoes" },
+      { title: "Ordem de Compra", url: "/estoque/ordem-compra" },
+      { title: "Ordem de Serviço", url: "/estoque/ordem-servico" },
       { title: "Requisições", url: "/estoque/requisicoes" },
       { title: "Saídas", url: "/estoque/saidas" },
-    ] 
+    ]
   },
   { 
     title: "Financeiro", 
