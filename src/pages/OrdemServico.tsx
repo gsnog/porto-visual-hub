@@ -29,9 +29,9 @@ export default function OrdemServico() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="manutencao">Manutenção</SelectItem>
-              <SelectItem value="instalacao">Instalação</SelectItem>
-              <SelectItem value="reparo">Reparo</SelectItem>
+              <SelectItem value="servicoes_gerais">Serviços Gerais</SelectItem>
+              <SelectItem value="patrimonio">Patrimônio</SelectItem>
+              <SelectItem value="suporte">Suporte</SelectItem>
             </SelectContent>
           </Select>
         </div>

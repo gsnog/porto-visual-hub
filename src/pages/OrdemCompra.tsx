@@ -37,9 +37,9 @@ export default function OrdemCompra() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="pendente">Pendente</SelectItem>
+              <SelectItem value="analise">Análise</SelectItem>
               <SelectItem value="aprovado">Aprovado</SelectItem>
-              <SelectItem value="cancelado">Cancelado</SelectItem>
+              <SelectItem value="negado">Negado</SelectItem>
             </SelectContent>
           </Select>
         </div>
