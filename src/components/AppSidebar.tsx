@@ -86,7 +86,6 @@ const menuItems = [
   },
   { title: "Patrimônio", url: "/patrimonio", icon: Building2 },
   { title: "Novo Usuário", url: "/novo-usuario", icon: UserRoundPlus },
-  { title: "Planos", url: "/planos", icon: MapPinned },
 ]
 
 const MenuToggleIcon = ({ isOpen }: { isOpen: boolean }) => (
