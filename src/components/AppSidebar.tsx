@@ -170,19 +170,30 @@ export function AppSidebar() {
   const { open } = useSidebar()
   const location = useLocation()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({})
+  const [activeMainItem, setActiveMainItem] = useState<string | null>(null)
 
   const toggleMenu = (title: string) => {
     setOpenMenus(prev => ({ ...prev, [title]: !prev[title] }))
+    setActiveMainItem(title)
   }
   
   useEffect(() => {
     const newOpenMenus: Record<string, boolean> = {}
+    let foundActive: string | null = null
+    
     for (const item of menuItems) {
-      if (item.basePath && location.pathname.startsWith(item.basePath)) {
+      if (item.url && location.pathname === item.url) {
+        foundActive = item.title
+      } else if (item.basePath && location.pathname.startsWith(item.basePath)) {
         newOpenMenus[item.title] = true
+        foundActive = item.title
       }
     }
+    
     setOpenMenus(prev => ({ ...prev, ...newOpenMenus }))
+    if (foundActive) {
+      setActiveMainItem(foundActive)
+    }
   }, [location.pathname])
 
   const initialTheme = useMemo<"light" | "dark">(() => {
@@ -201,8 +212,14 @@ export function AppSidebar() {
   }, [theme])
 
   const isDayMode = theme === "light"
-  const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive ? "bg-sidebar-accent text-sidebar-primary font-medium" : "hover:bg-sidebar-accent/50"
+  
+  const isMainItemActive = (item: typeof menuItems[0]) => {
+    return activeMainItem === item.title
+  }
+  
+  const getMainItemBorderClass = (item: typeof menuItems[0]) => {
+    return isMainItemActive(item) ? "border-l-4 border-[#FF8000]" : "border-l-4 border-transparent"
+  }
 
   return (
     <Sidebar
@@ -259,7 +276,7 @@ export function AppSidebar() {
               <SidebarMenu className="space-y-6">
                 {menuItems.map((item) => (
                   item.subItems ? (
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.title} className={getMainItemBorderClass(item)}>
                       <SidebarMenuButton
                         onClick={() => toggleMenu(item.title)}
                         className={`w-full justify-between ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70" : ""}`}
@@ -324,9 +341,9 @@ export function AppSidebar() {
                       )}
                     </SidebarMenuItem>
                   ) : (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild tooltip={item.title}>
-                        <NavLink to={item.url} className={getNavCls}>
+                    <SidebarMenuItem key={item.title} className={getMainItemBorderClass(item)}>
+                      <SidebarMenuButton asChild tooltip={item.title} onClick={() => setActiveMainItem(item.title)}>
+                        <NavLink to={item.url} className="hover:bg-sidebar-accent/50">
                           <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
                           <span className="text-[--sidebar-text] text-lg">{item.title}</span>
                         </NavLink>
