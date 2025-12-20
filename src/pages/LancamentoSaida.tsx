@@ -1,126 +1,121 @@
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Calendar } from "lucide-react"
+import { Label } from "@/components/ui/label"
 
 const LancamentoSaida = () => {
   return (
-    <div className="flex-1 p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-6">Lançamento de Saída</h1>
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-semibold text-foreground">Lançamento de Saída</h1>
         
-        <Card>
-          <CardContent className="p-8 space-y-6">
-            {/* Beneficiário */}
+        <div className="max-w-4xl space-y-6">
+          <div>
+            <Label className="text-sm font-medium text-foreground mb-2 block">Beneficiário</Label>
+            <Select>
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectValue placeholder="Selecione o beneficiário" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover">
+                <SelectItem value="beneficiario1">Beneficiário 1</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">Beneficiário</label>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Centro de Custo</Label>
               <Select>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="beneficiario1">Beneficiário 1</SelectItem>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="centro1">Centro 1</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Centro de Custo e Plano de Contas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Centro de Custo</label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="-" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="centro1">Centro 1</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Plano de Contas</label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="-" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="plano1">Plano 1</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Primeira linha de valores */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <Input placeholder="Documento" />
-              </div>
-              <div>
-                <Input placeholder="Valor do Título" />
-              </div>
-              <div>
-                <Input placeholder="Multa" />
-              </div>
-            </div>
-
-            {/* Segunda linha de valores */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <Input placeholder="Encargos" />
-              </div>
-              <div>
-                <Input placeholder="Juros" />
-              </div>
-              <div>
-                <Input placeholder="Desconto" />
-              </div>
-            </div>
-
-            {/* Valor Total */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Input placeholder="Valor Total" />
-              </div>
-            </div>
-
-            {/* Datas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Data de Faturamento</label>
-                <div className="relative">
-                  <Input placeholder="DD/MM/AAAA" />
-                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Data de Vencimento</label>
-                <div className="relative">
-                  <Input placeholder="DD/MM/AAAA" />
-                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-            </div>
-
-            {/* Documento PDF */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Documento PDF</label>
-              </div>
-              <div>
-                <Button className="w-full">Escolher Ficheiro</Button>
-              </div>
-            </div>
-
-            {/* Descrição */}
+            
             <div>
-              <Textarea placeholder="Descrição" className="min-h-[100px]" />
+              <Label className="text-sm font-medium text-foreground mb-2 block">Plano de Contas</Label>
+              <Select>
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                  <SelectValue placeholder="-" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="plano1">Plano 1</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Documento</Label>
+              <Input placeholder="Documento" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Valor do Título</Label>
+              <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Multa</Label>
+              <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Encargos</Label>
+              <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Juros</Label>
+              <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Desconto</Label>
+              <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Valor Total</Label>
+              <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Data de Faturamento</Label>
+              <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Data de Vencimento</Label>
+              <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+            <div>
+              <Label className="text-sm font-medium text-foreground mb-2 block">Documento PDF</Label>
+            </div>
+            <div>
+              <Button className="w-full rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Escolher Ficheiro</Button>
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium text-foreground mb-2 block">Descrição</Label>
+            <Textarea placeholder="Descrição" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 min-h-[100px] px-3 rounded-lg" />
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
+            <Button variant="outline" className="rounded-lg border-primary text-primary hover:bg-primary/10">Cancelar</Button>
+          </div>
+        </div>
       </div>
     </div>
   )
