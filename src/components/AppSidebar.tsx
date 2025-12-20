@@ -9,7 +9,8 @@ import {
   MapPinned,
   LogOut,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Anchor
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 
@@ -28,7 +29,37 @@ import { Separator } from "@/components/ui/separator"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid },
-  { title: "Cadastro", url: "/cadastro", icon: ClipboardList },
+  { 
+    title: "Cadastro", 
+    icon: ClipboardList,
+    basePath: "/cadastro",
+    subItems: [
+      { 
+        title: "Estoque", 
+        subItems: [
+          { title: "Formas de Apresentação", url: "/cadastro/estoque/formas-apresentacao" },
+          { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
+          { title: "Itens", url: "/cadastro/estoque/itens" },
+          { title: "Setores", url: "/cadastro/estoque/setores" },
+          { title: "Unidades", url: "/cadastro/estoque/unidades" },
+        ]
+      },
+      { 
+        title: "Financeiro", 
+        subItems: [
+          { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
+          { title: "Clientes", url: "/cadastro/financeiro/clientes" },
+          { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
+          { title: "Centro de Receita", url: "/cadastro/financeiro/centro-receita" },
+          { title: "Contábil", url: "/cadastro/financeiro/contabil" },
+          { title: "Categorias", url: "/cadastro/financeiro/categorias" },
+          { title: "Fornecedores", url: "/cadastro/financeiro/fornecedores" },
+          { title: "Subcategorias", url: "/cadastro/financeiro/subcategorias" },
+          { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
+        ]
+      },
+    ]
+  },
   { 
     title: "Estoque", 
     icon: Package,
@@ -54,9 +85,19 @@ const menuItems = [
       { title: "XML", url: "/financeiro/xml" },
     ]
   },
+  { 
+    title: "Operacional", 
+    icon: Anchor,
+    basePath: "/operacional",
+    subItems: [
+      { title: "Setor", url: "/operacional/setor" },
+      { title: "Embarcações", url: "/operacional/embarcacoes" },
+      { title: "Operação", url: "/operacional/operacao" },
+      { title: "Serviços", url: "/operacional/servicos" },
+    ]
+  },
   { title: "Patrimônio", url: "/patrimonio", icon: Building2 },
   { title: "Novo Usuário", url: "/novo-usuario", icon: UserRoundPlus },
-  { title: "Planos", url: "/planos", icon: MapPinned },
 ]
 
 const MenuToggleIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -225,7 +266,7 @@ export function AppSidebar() {
                         tooltip={item.title}
                       >
                         <div className="flex items-center gap-3">
-                          <item.icon   size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }}className="text-[--sidebar-text]"  />
+                          <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
                           <span className="text-lg">{item.title}</span>
                         </div>
                         {openMenus[item.title] ? <ChevronDown size={22} /> : <ChevronRight size={22} />}
@@ -234,18 +275,50 @@ export function AppSidebar() {
                       {openMenus[item.title] && (
                         <div className="mt-3 space-y-3">
                           {item.subItems.map(subItem => (
-                            <SidebarMenuButton key={subItem.title} asChild tooltip={subItem.title} className="h-auto">
-                              <NavLink
-                                to={subItem.url}
-                                className={({isActive}) =>
-                                  `pl-9 pr-3 py-2 !text-base ${
-                                    isActive ? "font-semibold text-sidebar-primary" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
-                                  }`
-                                }
-                              >
-                                <span>{subItem.title}</span>
-                              </NavLink>
-                            </SidebarMenuButton>
+                            'subItems' in subItem && subItem.subItems ? (
+                              <div key={subItem.title}>
+                                <SidebarMenuButton
+                                  onClick={() => toggleMenu(`${item.title}-${subItem.title}`)}
+                                  className="pl-9 pr-3 py-2 w-full justify-between"
+                                  tooltip={subItem.title}
+                                >
+                                  <span className="!text-base font-medium text-[--sidebar-text]">{subItem.title}</span>
+                                  {openMenus[`${item.title}-${subItem.title}`] ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                                </SidebarMenuButton>
+                                
+                                {openMenus[`${item.title}-${subItem.title}`] && (
+                                  <div className="mt-2 space-y-2">
+                                    {subItem.subItems.map(nestedItem => (
+                                      <SidebarMenuButton key={nestedItem.title} asChild tooltip={nestedItem.title} className="h-auto">
+                                        <NavLink
+                                          to={nestedItem.url}
+                                          className={({isActive}) =>
+                                            `pl-14 pr-3 py-2 !text-sm ${
+                                              isActive ? "font-semibold text-sidebar-primary" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
+                                            }`
+                                          }
+                                        >
+                                          <span>{nestedItem.title}</span>
+                                        </NavLink>
+                                      </SidebarMenuButton>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <SidebarMenuButton key={subItem.title} asChild tooltip={subItem.title} className="h-auto">
+                                <NavLink
+                                  to={'url' in subItem ? subItem.url : '#'}
+                                  className={({isActive}) =>
+                                    `pl-9 pr-3 py-2 !text-base ${
+                                      isActive ? "font-semibold text-sidebar-primary" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
+                                    }`
+                                  }
+                                >
+                                  <span>{subItem.title}</span>
+                                </NavLink>
+                              </SidebarMenuButton>
+                            )
                           ))}
                         </div>
                       )}
@@ -254,7 +327,7 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild tooltip={item.title}>
                         <NavLink to={item.url} className={getNavCls}>
-                          <item.icon   size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }}className="text-[--sidebar-text]"  />
+                          <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
                           <span className="text-[--sidebar-text] text-lg">{item.title}</span>
                         </NavLink>
                       </SidebarMenuButton>

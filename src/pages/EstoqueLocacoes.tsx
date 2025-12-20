@@ -1,106 +1,52 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { CalendarDays } from "lucide-react"
+import { Search } from "lucide-react"
 
 export default function EstoqueLocacoes() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-foreground">Locações</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Locações</h1>
+
+        <div className="flex flex-wrap gap-4 items-center">
+          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Nova Locação</Button>
         </div>
 
-        {/* Botão de Ação */}
-        <div className="flex gap-3 pt-2">
-          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
-            Nova Locação
+        <div className="flex flex-wrap gap-4 items-center">
+          <Input placeholder="Locador" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
+          <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" />
+          <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" />
+          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Search className="w-4 h-4 mr-2" />Filtrar
           </Button>
         </div>
 
-        {/* Filtros */}
-        <div className="flex gap-4 items-center flex-wrap">
-          {/* Input Locador */}
-          <Input 
-            placeholder="Locador" 
-            className="rounded-lg w-64 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3"
-          />
-          
-          {/* Input de Data de Início - AGORA FUNCIONAL */}
-          <div className="relative">
-            {/* Usando type="date" para ativar o seletor de calendário nativo do navegador */}
-            <Input 
-              type="date" 
-              // O placeholder é mantido para contexto, mas o campo de data nativo pode sobrescrevê-lo
-              placeholder="Data de Início" 
-              className="rounded-lg w-48 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
-            />
-            {/* Ícone CalendarDays removido para evitar conflito visual com o input nativo */}
-          </div>
-          
-          {/* Input de Previsão de Finalização - AGORA FUNCIONAL */}
-          <div className="relative">
-             {/* Usando type="date" para ativar o seletor de calendário nativo do navegador */}
-            <Input 
-              type="date"
-              placeholder="Data Final (Prev.)" 
-              className="rounded-lg w-48 bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-10"
-            />
-            {/* Ícone CalendarDays removido */}
-          </div>
-          <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
-            Filtrar
-          </Button>
-        </div>
+        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-        {/* Tabela de Locações */}
-        <div className="rounded-lg overflow-x-auto border border-[#E3E3E3]">
+        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
-            <TableHeader className="whitespace-nowrap">
-              <TableRow className="bg-[#E3E3E3] hover:bg-[#E3E3E3] cursor-default select-none">
-                <TableHead className="!text-black font-medium">Unidade</TableHead>
-                <TableHead className="!text-black font-medium">Início</TableHead>
-                <TableHead className="!text-black font-medium">Fim (Previsto)</TableHead>
-                <TableHead className="!text-black font-medium">Fim (Real)</TableHead>
-                <TableHead className="!text-black font-medium">Locador</TableHead>
-                <TableHead className="!text-black font-medium">Contrato</TableHead>
-                <TableHead className="!text-black font-medium">Itens</TableHead>
-                <TableHead className="!text-black font-medium">Quantidades</TableHead>
-                <TableHead className="!text-black font-medium">Status</TableHead>
-                <TableHead className="!text-black font-medium text-center">Ações</TableHead>
+            <TableHeader>
+              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
+                <TableHead className="!text-white font-medium text-center">Unidade</TableHead>
+                <TableHead className="!text-white font-medium text-center">Início</TableHead>
+                <TableHead className="!text-white font-medium text-center">Fim (Previsto)</TableHead>
+                <TableHead className="!text-white font-medium text-center">Locador</TableHead>
+                <TableHead className="!text-white font-medium text-center">Contrato</TableHead>
+                <TableHead className="!text-white font-medium text-center">Status</TableHead>
+                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody className="whitespace-nowrap">
-              <TableRow className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors">
-                <TableCell>Unidade A</TableCell>
-                <TableCell>02/06/2025</TableCell>
-                <TableCell>02/07/2025</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>João Silva</TableCell>
-                <TableCell>CONTR-001</TableCell>
-                <TableCell>Cadeira, Mesa</TableCell>
-                <TableCell>10, 5</TableCell>
-                <TableCell>Em Andamento</TableCell>
+            <TableBody>
+              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                <TableCell className="text-center">Unidade A</TableCell>
+                <TableCell className="text-center">02/06/2025</TableCell>
+                <TableCell className="text-center">02/07/2025</TableCell>
+                <TableCell className="text-center">João Silva</TableCell>
+                <TableCell className="text-center">CONTR-001</TableCell>
+                <TableCell className="text-center">Em Andamento</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
-                    Ações
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors">
-                <TableCell>Unidade B</TableCell>
-                <TableCell>01/05/2025</TableCell>
-                <TableCell>01/06/2025</TableCell>
-                <TableCell>30/05/2025</TableCell>
-                <TableCell>Maria Souza</TableCell>
-                <TableCell>CONTR-002</TableCell>
-                <TableCell>Equip. Audiovisual</TableCell>
-                <TableCell>2</TableCell>
-                <TableCell className="text-green-600 font-medium">Finalizada</TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-orange-500 text-white hover:bg-orange-600 text-xs">
-                    Ações
-                  </Button>
+                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
                 </TableCell>
               </TableRow>
             </TableBody>
