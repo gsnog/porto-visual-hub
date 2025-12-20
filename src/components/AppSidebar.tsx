@@ -284,12 +284,12 @@ export function AppSidebar() {
                       >
                         <div className="flex items-center gap-3">
                           <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
-                          <span className="text-lg">{item.title}</span>
+                          {open && <span className="text-lg">{item.title}</span>}
                         </div>
-                        {openMenus[item.title] ? <ChevronDown size={22} /> : <ChevronRight size={22} />}
+                        {open && (openMenus[item.title] ? <ChevronDown size={22} /> : <ChevronRight size={22} />)}
                       </SidebarMenuButton>
                       
-                      {openMenus[item.title] && (
+                      {open && openMenus[item.title] && (
                         <div className="mt-3 space-y-3">
                           {item.subItems.map(subItem => (
                             'subItems' in subItem && subItem.subItems ? (
@@ -345,7 +345,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild tooltip={item.title} onClick={() => setActiveMainItem(item.title)}>
                         <NavLink to={item.url} className="hover:bg-sidebar-accent/50">
                           <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
-                          <span className="text-[--sidebar-text] text-lg">{item.title}</span>
+                          {open && <span className="text-[--sidebar-text] text-lg">{item.title}</span>}
                         </NavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
