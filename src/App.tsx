@@ -28,6 +28,24 @@ import NovaOrdemServico from "./pages/NovaOrdemServico";
 import Cadastro from "./pages/Cadastro";
 import NotFound from "./pages/NotFound";
 
+// Cadastro - Estoque
+import FormasApresentacao from "./pages/cadastro/estoque/FormasApresentacao";
+import FornecedoresEstoque from "./pages/cadastro/estoque/Fornecedores";
+import Itens from "./pages/cadastro/estoque/Itens";
+import Setores from "./pages/cadastro/estoque/Setores";
+import Unidades from "./pages/cadastro/estoque/Unidades";
+
+// Cadastro - Financeiro
+import ContaBancaria from "./pages/cadastro/financeiro/ContaBancaria";
+import Clientes from "./pages/cadastro/financeiro/Clientes";
+import CentroCusto from "./pages/cadastro/financeiro/CentroCusto";
+import CentroReceita from "./pages/cadastro/financeiro/CentroReceita";
+import Contabil from "./pages/cadastro/financeiro/Contabil";
+import Categorias from "./pages/cadastro/financeiro/Categorias";
+import FornecedoresFinanceiro from "./pages/cadastro/financeiro/Fornecedores";
+import Subcategorias from "./pages/cadastro/financeiro/Subcategorias";
+import PlanoContas from "./pages/cadastro/financeiro/PlanoContas";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -56,7 +74,6 @@ const App = () => (
                   <Route path="/estoque/xml" element={<NFe />} />
                   <Route path="/patrimonio" element={<Patrimonio />} />
                   <Route path="/relatorio" element={<Relatorio />} />
-                  <Route path="/cadastro" element={<Cadastro />} />
                   <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
                   <Route path="/estoque/inventario" element={<EstoqueInventario />} />
                   <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
@@ -66,6 +83,25 @@ const App = () => (
                   <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
                   <Route path="/estoque/ordem-servico" element={<OrdemServico />} />
                   <Route path="/estoque/ordem-servico/nova" element={<NovaOrdemServico />} />
+                  
+                  {/* Cadastro - Estoque */}
+                  <Route path="/cadastro/estoque/formas-apresentacao" element={<FormasApresentacao />} />
+                  <Route path="/cadastro/estoque/fornecedores" element={<FornecedoresEstoque />} />
+                  <Route path="/cadastro/estoque/itens" element={<Itens />} />
+                  <Route path="/cadastro/estoque/setores" element={<Setores />} />
+                  <Route path="/cadastro/estoque/unidades" element={<Unidades />} />
+                  
+                  {/* Cadastro - Financeiro */}
+                  <Route path="/cadastro/financeiro/conta-bancaria" element={<ContaBancaria />} />
+                  <Route path="/cadastro/financeiro/clientes" element={<Clientes />} />
+                  <Route path="/cadastro/financeiro/centro-custo" element={<CentroCusto />} />
+                  <Route path="/cadastro/financeiro/centro-receita" element={<CentroReceita />} />
+                  <Route path="/cadastro/financeiro/contabil" element={<Contabil />} />
+                  <Route path="/cadastro/financeiro/categorias" element={<Categorias />} />
+                  <Route path="/cadastro/financeiro/fornecedores" element={<FornecedoresFinanceiro />} />
+                  <Route path="/cadastro/financeiro/subcategorias" element={<Subcategorias />} />
+                  <Route path="/cadastro/financeiro/plano-contas" element={<PlanoContas />} />
+                  
                   <Route path="/novo-usuario" element={<Cadastro />} />
                   <Route path="/planos" element={<Dashboard />} />
                   <Route path="*" element={<NotFound />} />
