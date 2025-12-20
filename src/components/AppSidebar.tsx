@@ -9,7 +9,8 @@ import {
   MapPinned,
   LogOut,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Anchor
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 
@@ -82,6 +83,17 @@ const menuItems = [
       { title: "Contas a Pagar", url: "/financeiro/contas-pagar" },
       { title: "Fluxo de Caixa", url: "/financeiro/fluxo-caixa" },
       { title: "XML", url: "/financeiro/xml" },
+    ]
+  },
+  { 
+    title: "Operacional", 
+    icon: Anchor,
+    basePath: "/operacional",
+    subItems: [
+      { title: "Setor", url: "/operacional/setor" },
+      { title: "Embarcações", url: "/operacional/embarcacoes" },
+      { title: "Operação", url: "/operacional/operacao" },
+      { title: "Serviços", url: "/operacional/servicos" },
     ]
   },
   { title: "Patrimônio", url: "/patrimonio", icon: Building2 },
