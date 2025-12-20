@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const Contabil = () => {
   return (
@@ -11,18 +9,7 @@ const Contabil = () => {
 
         <div className="flex flex-wrap gap-4 items-center">
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            Novo Registro
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Buscar..." 
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
+            Adicionar
           </Button>
         </div>
 
@@ -32,9 +19,7 @@ const Contabil = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Código</TableHead>
-                <TableHead className="!text-white font-medium text-center">Descrição</TableHead>
-                <TableHead className="!text-white font-medium text-center">Tipo</TableHead>
+                <TableHead className="!text-white font-medium text-center">Contábil</TableHead>
                 <TableHead className="!text-white font-medium text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>

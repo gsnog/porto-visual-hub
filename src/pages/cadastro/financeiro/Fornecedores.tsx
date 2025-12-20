@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
 
 const FornecedoresFinanceiro = () => {
@@ -39,6 +39,7 @@ const FornecedoresFinanceiro = () => {
                 <TableHead className="!text-white font-medium text-center">Fornecedor</TableHead>
                 <TableHead className="!text-white font-medium text-center">CNPJ/CPF</TableHead>
                 <TableHead className="!text-white font-medium text-center">Razão Social</TableHead>
+                <TableHead className="!text-white font-medium text-center">Vendedor</TableHead>
                 <TableHead className="!text-white font-medium text-center">Email</TableHead>
                 <TableHead className="!text-white font-medium text-center">Telefone</TableHead>
                 <TableHead className="!text-white font-medium text-center">Ações</TableHead>
