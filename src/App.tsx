@@ -46,6 +46,12 @@ import FornecedoresFinanceiro from "./pages/cadastro/financeiro/Fornecedores";
 import Subcategorias from "./pages/cadastro/financeiro/Subcategorias";
 import PlanoContas from "./pages/cadastro/financeiro/PlanoContas";
 
+// Operacional
+import SetorOperacional from "./pages/operacional/Setor";
+import Embarcacoes from "./pages/operacional/Embarcacoes";
+import Operacao from "./pages/operacional/Operacao";
+import Servicos from "./pages/operacional/Servicos";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -101,6 +107,12 @@ const App = () => (
                   <Route path="/cadastro/financeiro/fornecedores" element={<FornecedoresFinanceiro />} />
                   <Route path="/cadastro/financeiro/subcategorias" element={<Subcategorias />} />
                   <Route path="/cadastro/financeiro/plano-contas" element={<PlanoContas />} />
+                  
+                  {/* Operacional */}
+                  <Route path="/operacional/setor" element={<SetorOperacional />} />
+                  <Route path="/operacional/embarcacoes" element={<Embarcacoes />} />
+                  <Route path="/operacional/operacao" element={<Operacao />} />
+                  <Route path="/operacional/servicos" element={<Servicos />} />
                   
                   <Route path="/novo-usuario" element={<Cadastro />} />
                   <Route path="/planos" element={<Dashboard />} />
