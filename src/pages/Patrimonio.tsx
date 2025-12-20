@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Trash2, FileText, DollarSign } from "lucide-react" // Adicionando FileText e DollarSign
-import { CalendarDays } from "lucide-react"
+import { ArrowLeft, Trash2, FileText, DollarSign, Search } from "lucide-react"
 
 type Asset = {
   id: string
@@ -16,7 +15,6 @@ type Asset = {
   quantidade: string
 }
 
-// Atualizado com a estrutura de dados mais completa
 const mockAssets: Asset[] = [
   { id: "1", codigo: "0001", item: "Automóvel", dataAquisicao: "30/01/2025", valor: "R$ 1.000,00", quantidade: "1" },
   { id: "2", codigo: "0002", item: "Equipamento", dataAquisicao: "15/02/2025", valor: "R$ 5.500,00", quantidade: "5" },
@@ -53,110 +51,84 @@ const Patrimonio = () => {
 
   const handleCancelAdd = () => {
     setCurrentView('list')
-    setFormData({
-      item: '',
-      dataAquisicao: '',
-      valor: '',
-      quantidade: ''
-    })
+    setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
   }
 
   const handleSubmitAdd = () => {
-    // In a real app, this would submit to an API
     console.log("Adding asset:", formData)
     setCurrentView('list')
-    setFormData({
-      item: '',
-      dataAquisicao: '',
-      valor: '',
-      quantidade: ''
-    })
+    setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
   }
 
   const handleDelete = () => {
-    // In a real app, this would delete from API
     console.log("Deleting asset:", selectedAsset?.id)
     setCurrentView('list')
     setSelectedAsset(null)
   }
   
-  // Função auxiliar para atualizar o estado do formulário
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData(prev => ({ ...prev, [id]: value }));
   }
 
-  // List View
   if (currentView === 'list') {
     return (
       <div className="flex flex-col h-full bg-background">
         <div className="p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-foreground">Patrimônio</h1>
+          <h1 className="text-2xl font-semibold text-foreground">Patrimônio</h1>
+          
+          <div className="flex flex-wrap gap-4 items-center">
             <Button 
               onClick={handleAddNew}
-              // Estilização consistente: laranja e rounded-full
-              className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
+              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <FileText className="h-4 w-4 mr-2" />
               Novo Patrimônio
             </Button>
           </div>
           
-          {/* Filtros */}
-          <div className="flex gap-4 items-center flex-wrap">
+          <div className="flex flex-wrap gap-4 items-center">
             <Input 
               placeholder="Item / Código" 
-              // Estilização consistente: fundo, texto preto
-              className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
+              className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
             />
-            
-            <div className="relative">
-              <Input 
-                type="date" // Correção para seletor de data
-                placeholder="Data de Aquisição" 
-                className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-48 rounded-lg"
-              />
-            </div>
-            
-            <Button className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white">
+            <Input 
+              type="date"
+              className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg"
+            />
+            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Search className="w-4 h-4 mr-2" />
               Filtrar
             </Button>
           </div>
 
+          <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-          {/* Tabela de Patrimônio */}
-          <div className="rounded-lg overflow-x-auto border border-[#E3E3E3]">
+          <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
             <Table>
-              <TableHeader className="whitespace-nowrap">
-                {/* Estilização do cabeçalho da tabela consistente */}
-                <TableRow className="bg-[#E3E3E3] hover:bg-[#E3E3E3] cursor-default select-none">
-                  <TableHead className="!text-black font-medium">Código</TableHead>
-                  <TableHead className="!text-black font-medium">Item</TableHead>
-                  <TableHead className="!text-black font-medium">Data de Aquisição</TableHead>
-                  <TableHead className="!text-black font-medium">Valor Unitário</TableHead>
-                  <TableHead className="!text-black font-medium">Quantidade</TableHead>
-                  <TableHead className="!text-black font-medium text-center">Ações</TableHead>
+              <TableHeader>
+                <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
+                  <TableHead className="!text-white font-medium text-center">Código</TableHead>
+                  <TableHead className="!text-white font-medium text-center">Item</TableHead>
+                  <TableHead className="!text-white font-medium text-center">Data de Aquisição</TableHead>
+                  <TableHead className="!text-white font-medium text-center">Valor Unitário</TableHead>
+                  <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
+                  <TableHead className="!text-white font-medium text-center">Ações</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="whitespace-nowrap">
+              <TableBody>
                 {mockAssets.map((asset) => (
-                  <TableRow 
-                    key={asset.id} 
-                    // Estilização da linha consistente (hover azul escuro)
-                    className="bg-white text-black hover:bg-[#22265B] hover:text-white transition-colors"
-                  >
-                    <TableCell>{asset.codigo}</TableCell>
-                    <TableCell>{asset.item}</TableCell>
-                    <TableCell>{asset.dataAquisicao}</TableCell>
-                    <TableCell>{asset.valor}</TableCell>
-                    <TableCell>{asset.quantidade}</TableCell>
+                  <TableRow key={asset.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{asset.codigo}</TableCell>
+                    <TableCell className="text-center">{asset.item}</TableCell>
+                    <TableCell className="text-center">{asset.dataAquisicao}</TableCell>
+                    <TableCell className="text-center">{asset.valor}</TableCell>
+                    <TableCell className="text-center">{asset.quantidade}</TableCell>
                     <TableCell className="text-center">
                       <Button 
                         onClick={() => handleViewDetails(asset)}
                         size="sm"
-                        // Estilização do botão consistente
-                        className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs"
+                        className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
                       >
                         Detalhes
                       </Button>
@@ -171,7 +143,6 @@ const Patrimonio = () => {
     )
   }
 
-  // Add Form View
   if (currentView === 'add') {
     return (
       <div className="flex flex-col h-full bg-background">
@@ -180,7 +151,7 @@ const Patrimonio = () => {
             <Button 
               onClick={handleBackToList}
               variant="ghost"
-              className="text-orange-500 hover:bg-orange-50/20 px-3 py-2 rounded-lg font-semibold"
+              className="text-primary hover:bg-primary/10 px-3 py-2 rounded-lg font-semibold"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Voltar
@@ -188,101 +159,82 @@ const Patrimonio = () => {
             <h1 className="text-2xl font-semibold text-foreground mt-4">Adicionar Novo Patrimônio</h1>
           </div>
 
-          <div className="flex justify-start">
-            <Card className="w-full max-w-2xl bg-white rounded-lg shadow-lg border border-[#E3E3E3]">
-              <CardContent className="p-8">
-                <div className="space-y-6">
-                  
-                  {/* Item */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Item*
-                    </label>
-                    <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
-                      <SelectTrigger className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full">
-                        <SelectValue placeholder="Selecione o tipo de item" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="automovel">Automóvel</SelectItem>
-                        <SelectItem value="equipamento">Equipamento</SelectItem>
-                        <SelectItem value="mobiliario">Mobiliário</SelectItem>
-                        <SelectItem value="software">Software</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Data de Aquisição */}
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Data de Aquisição*
-                    </label>
-                    <Input 
-                      id="dataAquisicao"
-                      type="date" // Correção para seletor de data
-                      value={formData.dataAquisicao}
-                      onChange={handleInputChange}
-                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full"
-                    />
-                  </div>
-
-                  {/* Valor */}
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Valor Unitário (R$)*
-                    </label>
-                    <Input 
-                      id="valor"
-                      type="text"
-                      placeholder="Ex: 1500.00"
-                      value={formData.valor}
-                      onChange={handleInputChange}
-                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full pr-10"
-                    />
-                    <DollarSign className="absolute right-3 top-[50px] transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  </div>
-
-                  {/* Quantidade */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quantidade
-                    </label>
-                    <Input 
-                      id="quantidade"
-                      type="number"
-                      value={formData.quantidade}
-                      onChange={handleInputChange}
-                      className="bg-[#efefef] text-black placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full"
-                    />
-                  </div>
-
-                  {/* Botões do Formulário */}
-                  <div className="flex gap-4 justify-start pt-6">
-                    <Button 
-                      onClick={handleSubmitAdd}
-                      // Estilização consistente
-                      className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
-                    >
-                      Adicionar Patrimônio
-                    </Button>
-                    <Button 
-                      onClick={handleCancelAdd}
-                      variant="outline"
-                      // Estilização consistente
-                      className="rounded-lg border-orange-500 text-orange-500 hover:bg-orange-500 text-xs"
-                    >
-                      Cancelar
-                    </Button>
-                  </div>
+          <Card className="w-full max-w-2xl bg-white rounded-lg shadow-lg border border-[#E3E3E3]">
+            <CardContent className="p-8">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Item*</label>
+                  <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
+                    <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-full">
+                      <SelectValue placeholder="Selecione o tipo de item" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="automovel">Automóvel</SelectItem>
+                      <SelectItem value="equipamento">Equipamento</SelectItem>
+                      <SelectItem value="mobiliario">Mobiliário</SelectItem>
+                      <SelectItem value="software">Software</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Data de Aquisição*</label>
+                  <Input 
+                    id="dataAquisicao"
+                    type="date"
+                    value={formData.dataAquisicao}
+                    onChange={handleInputChange}
+                    className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-full"
+                  />
+                </div>
+
+                <div className="relative">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Valor Unitário (R$)*</label>
+                  <Input 
+                    id="valor"
+                    type="text"
+                    placeholder="Ex: 1500.00"
+                    value={formData.valor}
+                    onChange={handleInputChange}
+                    className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg w-full pr-10"
+                  />
+                  <DollarSign className="absolute right-3 top-[50px] transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
+                  <Input 
+                    id="quantidade"
+                    type="number"
+                    value={formData.quantidade}
+                    onChange={handleInputChange}
+                    className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-full"
+                  />
+                </div>
+
+                <div className="flex gap-4 justify-start pt-6">
+                  <Button 
+                    onClick={handleSubmitAdd}
+                    className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    Adicionar Patrimônio
+                  </Button>
+                  <Button 
+                    onClick={handleCancelAdd}
+                    variant="outline"
+                    className="rounded-lg border-primary text-primary hover:bg-primary/10"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     )
   }
 
-  // Details View
   if (currentView === 'details' && selectedAsset) {
     return (
       <div className="flex flex-col h-full bg-background">
@@ -291,7 +243,7 @@ const Patrimonio = () => {
             <Button 
               onClick={handleBackToList}
               variant="ghost"
-              className="text-orange-500 hover:bg-orange-50/20 px-3 py-2 rounded-lg font-semibold"
+              className="text-primary hover:bg-primary/10 px-3 py-2 rounded-lg font-semibold"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Voltar à Lista
@@ -301,56 +253,49 @@ const Patrimonio = () => {
             </h1>
           </div>
 
-          <div className="flex justify-start">
-            <Card className="w-full max-w-2xl bg-white rounded-lg shadow-lg border border-[#E3E3E3]">
-              <CardContent className="p-8">
-                <div className="space-y-4">
-                  
-                  {/* Detalhes organizados em linhas */}
-                  <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
-                    <label className="text-sm font-medium text-gray-600">Código:</label>
-                    <p className="text-base font-semibold text-gray-900">{selectedAsset.codigo}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
-                    <label className="text-sm font-medium text-gray-600">Item:</label>
-                    <p className="text-base font-semibold text-gray-900">{selectedAsset.item}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
-                    <label className="text-sm font-medium text-gray-600">Data de Aquisição:</label>
-                    <p className="text-base font-semibold text-gray-900">{selectedAsset.dataAquisicao}</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
-                    <label className="text-sm font-medium text-gray-600">Valor Unitário:</label>
-                    <p className="text-base font-semibold text-gray-900">{selectedAsset.valor}</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
-                    <label className="text-sm font-medium text-gray-600">Quantidade em Estoque:</label>
-                    <p className="text-base font-semibold text-gray-900">{selectedAsset.quantidade}</p>
-                  </div>
-
-                  {/* Botões de Ação na seção de Detalhes */}
-                  <div className="flex gap-4 justify-start pt-8">
-                    <Button 
-                      className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
-                    >
-                      Editar
-                    </Button>
-                    <Button 
-                      onClick={handleDelete}
-                      className="rounded-lg bg-red-500 hover:bg-red-600 text-white"
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Excluir
-                    </Button>
-                  </div>
+          <Card className="w-full max-w-2xl bg-white rounded-lg shadow-lg border border-[#E3E3E3]">
+            <CardContent className="p-8">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
+                  <label className="text-sm font-medium text-gray-600">Código:</label>
+                  <p className="text-base font-semibold text-gray-900">{selectedAsset.codigo}</p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+
+                <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
+                  <label className="text-sm font-medium text-gray-600">Item:</label>
+                  <p className="text-base font-semibold text-gray-900">{selectedAsset.item}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
+                  <label className="text-sm font-medium text-gray-600">Data de Aquisição:</label>
+                  <p className="text-base font-semibold text-gray-900">{selectedAsset.dataAquisicao}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
+                  <label className="text-sm font-medium text-gray-600">Valor Unitário:</label>
+                  <p className="text-base font-semibold text-gray-900">{selectedAsset.valor}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">
+                  <label className="text-sm font-medium text-gray-600">Quantidade em Estoque:</label>
+                  <p className="text-base font-semibold text-gray-900">{selectedAsset.quantidade}</p>
+                </div>
+
+                <div className="flex gap-4 justify-start pt-8">
+                  <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+                    Editar
+                  </Button>
+                  <Button 
+                    onClick={handleDelete}
+                    className="rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Excluir
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     )
