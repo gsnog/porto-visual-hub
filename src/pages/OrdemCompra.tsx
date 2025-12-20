@@ -1,114 +1,96 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
 
 export default function OrdemCompra() {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Ordem de Compra</h1>
+    <div className="flex flex-col h-full bg-background">
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-semibold text-foreground">Ordem de Compra</h1>
 
-      {/* Botões de ação */}
-      <div className="flex flex-wrap items-center gap-3">
-        <Button
-          className="bg-green-600 hover:bg-green-700"
-          onClick={() => navigate("/estoque/ordem-compra/nova")}
-        >
-          Nova Ordem
-        </Button>
-        <Button variant="outline">Relatório</Button>
-      </div>
+        <div className="flex flex-wrap gap-4 items-center">
+          <Button
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            onClick={() => navigate("/estoque/ordem-compra/nova")}
+          >
+            Nova Ordem
+          </Button>
+          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+            Relatório
+          </Button>
+        </div>
 
-      {/* Filtros */}
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="w-48">
+        <div className="flex flex-wrap gap-4 items-center">
           <Select>
-            <SelectTrigger className="rounded-lg">
+            <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-popover">
               <SelectItem value="todos">Todos</SelectItem>
               <SelectItem value="analise">Análise</SelectItem>
               <SelectItem value="aprovado">Aprovado</SelectItem>
               <SelectItem value="negado">Negado</SelectItem>
             </SelectContent>
           </Select>
+
+          <Input 
+            type="date" 
+            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
+          />
+
+          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Search className="w-4 h-4 mr-2" />
+            Filtrar
+          </Button>
         </div>
 
-        <div>
-          <Input type="date" className="w-40 rounded-lg" />
+        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+
+        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
+                <TableHead className="!text-white font-medium text-center">ID</TableHead>
+                <TableHead className="!text-white font-medium text-center">Data</TableHead>
+                <TableHead className="!text-white font-medium text-center">Data Compra</TableHead>
+                <TableHead className="!text-white font-medium text-center">Data Entrega</TableHead>
+                <TableHead className="!text-white font-medium text-center">Item</TableHead>
+                <TableHead className="!text-white font-medium text-center">Marca</TableHead>
+                <TableHead className="!text-white font-medium text-center">Qtd</TableHead>
+                <TableHead className="!text-white font-medium text-center">Requisitante</TableHead>
+                <TableHead className="!text-white font-medium text-center">Setor</TableHead>
+                <TableHead className="!text-white font-medium text-center">Status</TableHead>
+                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                <TableCell className="text-center">1</TableCell>
+                <TableCell className="text-center">19/12/2024</TableCell>
+                <TableCell className="text-center">20/12/2024</TableCell>
+                <TableCell className="text-center">25/12/2024</TableCell>
+                <TableCell className="text-center">Papel A4</TableCell>
+                <TableCell className="text-center">Chamex</TableCell>
+                <TableCell className="text-center">100</TableCell>
+                <TableCell className="text-center">João Silva</TableCell>
+                <TableCell className="text-center">Administrativo</TableCell>
+                <TableCell className="text-center">
+                  <span className="text-green-600 font-medium">Aprovado</span>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
+                    Ações
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
-
-        <Button className="gap-2">
-          <Search size={16} />
-          Filtrar
-        </Button>
-      </div>
-
-      {/* Paginação info */}
-      <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
-
-      {/* Tabela */}
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Data</TableHead>
-              <TableHead>Data de Compra</TableHead>
-              <TableHead>Data de Entrega</TableHead>
-              <TableHead>Item</TableHead>
-              <TableHead>Marca</TableHead>
-              <TableHead>Quantidade</TableHead>
-              <TableHead>Requisitante</TableHead>
-              <TableHead>Unidade</TableHead>
-              <TableHead>Setor</TableHead>
-              <TableHead>Gestor</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Status da Compra</TableHead>
-              <TableHead>Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell>19/12/2024</TableCell>
-              <TableCell>20/12/2024</TableCell>
-              <TableCell>25/12/2024</TableCell>
-              <TableCell>Papel A4</TableCell>
-              <TableCell>Chamex</TableCell>
-              <TableCell>100</TableCell>
-              <TableCell>João Silva</TableCell>
-              <TableCell>Resma</TableCell>
-              <TableCell>Administrativo</TableCell>
-              <TableCell>Maria Santos</TableCell>
-              <TableCell>Aprovado</TableCell>
-              <TableCell>Em Processo</TableCell>
-              <TableCell>
-                <Button variant="outline" size="sm">
-                  Ações
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
       </div>
     </div>
   );
