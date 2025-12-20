@@ -27,7 +27,6 @@ import OrdemServico from "./pages/OrdemServico";
 import NovaOrdemServico from "./pages/NovaOrdemServico";
 import Cadastro from "./pages/Cadastro";
 import NotFound from "./pages/NotFound";
-import NovoUsuario from "./pages/NovoUsuario";
 
 // Cadastro - Estoque
 import FormasApresentacao from "./pages/cadastro/estoque/FormasApresentacao";
@@ -90,9 +89,6 @@ const App = () => (
                   <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
                   <Route path="/estoque/ordem-servico" element={<OrdemServico />} />
                   <Route path="/estoque/ordem-servico/nova" element={<NovaOrdemServico />} />
-<<<<<<< HEAD
-                  <Route path="/novo-usuario" element={<NovoUsuario />} />
-=======
                   
                   {/* Cadastro - Estoque */}
                   <Route path="/cadastro/estoque/formas-apresentacao" element={<FormasApresentacao />} />
@@ -119,7 +115,6 @@ const App = () => (
                   <Route path="/operacional/servicos" element={<Servicos />} />
                   
                   <Route path="/novo-usuario" element={<Cadastro />} />
->>>>>>> 955fc2bef83f9964c05eb90bcf99cc1a25fcc21f
                   <Route path="/planos" element={<Dashboard />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
