@@ -161,13 +161,6 @@ export default function NovaContaReceber() {
             >
               Cancelar
             </Button>
-            <Button 
-              onClick={() => navigate("/financeiro/contas-receber")}
-              variant="outline"
-              className="rounded-lg px-6 border-[#22265B]"
-            >
-              Voltar
-            </Button>
           </div>
         </div>
       </div>
