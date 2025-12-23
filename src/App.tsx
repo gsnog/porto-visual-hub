@@ -12,6 +12,8 @@ import NFe from "./pages/NFe";
 import Patrimonio from "./pages/Patrimonio";
 import Relatorio from "./pages/Relatorio";
 import ContasPagar from "./pages/ContasPagar";
+import NovaContaPagar from "./pages/financeiro/NovaContaPagar";
+import RelatorioContasPagar from "./pages/financeiro/RelatorioContasPagar";
 import ContasReceber from "./pages/ContasReceber";
 import NovaContaReceber from "./pages/financeiro/NovaContaReceber";
 import RelatorioContasReceber from "./pages/financeiro/RelatorioContasReceber";
@@ -96,6 +98,8 @@ const App = () => (
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
                   <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
+                  <Route path="/financeiro/contas-pagar/nova" element={<NovaContaPagar />} />
+                  <Route path="/financeiro/contas-pagar/relatorio" element={<RelatorioContasPagar />} />
                   <Route path="/financeiro/contas-receber" element={<ContasReceber />} />
                   <Route path="/financeiro/contas-receber/nova" element={<NovaContaReceber />} />
                   <Route path="/financeiro/contas-receber/relatorio" element={<RelatorioContasReceber />} />
