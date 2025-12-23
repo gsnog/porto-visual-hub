@@ -75,7 +75,7 @@ const ContasReceber = () => {
           <Button onClick={() => navigate("/financeiro/contas-receber/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             Adicionar Conta
           </Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={() => navigate("/financeiro/contas-receber/relatorio")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             Relatório
           </Button>
         </div>
