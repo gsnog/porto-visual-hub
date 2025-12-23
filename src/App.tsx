@@ -57,6 +57,7 @@ import NovoContabil from "./pages/cadastro/financeiro/NovoContabil";
 import Categorias from "./pages/cadastro/financeiro/Categorias";
 import NovaCategoria from "./pages/cadastro/financeiro/NovaCategoria";
 import FornecedoresFinanceiro from "./pages/cadastro/financeiro/Fornecedores";
+import NovoFornecedorFinanceiro from "./pages/cadastro/financeiro/NovoFornecedorFinanceiro";
 import Subcategorias from "./pages/cadastro/financeiro/Subcategorias";
 import PlanoContas from "./pages/cadastro/financeiro/PlanoContas";
 
@@ -133,6 +134,7 @@ const App = () => (
                   <Route path="/cadastro/financeiro/categorias" element={<Categorias />} />
                   <Route path="/cadastro/financeiro/categorias/nova" element={<NovaCategoria />} />
                   <Route path="/cadastro/financeiro/fornecedores" element={<FornecedoresFinanceiro />} />
+                  <Route path="/cadastro/financeiro/fornecedores/novo" element={<NovoFornecedorFinanceiro />} />
                   <Route path="/cadastro/financeiro/subcategorias" element={<Subcategorias />} />
                   <Route path="/cadastro/financeiro/plano-contas" element={<PlanoContas />} />
                   
