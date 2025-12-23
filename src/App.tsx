@@ -51,6 +51,7 @@ import NovoCliente from "./pages/cadastro/financeiro/NovoCliente";
 import CentroCusto from "./pages/cadastro/financeiro/CentroCusto";
 import NovoCentroCusto from "./pages/cadastro/financeiro/NovoCentroCusto";
 import CentroReceita from "./pages/cadastro/financeiro/CentroReceita";
+import NovoCentroReceita from "./pages/cadastro/financeiro/NovoCentroReceita";
 import Contabil from "./pages/cadastro/financeiro/Contabil";
 import Categorias from "./pages/cadastro/financeiro/Categorias";
 import FornecedoresFinanceiro from "./pages/cadastro/financeiro/Fornecedores";
@@ -124,6 +125,7 @@ const App = () => (
                   <Route path="/cadastro/financeiro/centro-custo" element={<CentroCusto />} />
                   <Route path="/cadastro/financeiro/centro-custo/novo" element={<NovoCentroCusto />} />
                   <Route path="/cadastro/financeiro/centro-receita" element={<CentroReceita />} />
+                  <Route path="/cadastro/financeiro/centro-receita/novo" element={<NovoCentroReceita />} />
                   <Route path="/cadastro/financeiro/contabil" element={<Contabil />} />
                   <Route path="/cadastro/financeiro/categorias" element={<Categorias />} />
                   <Route path="/cadastro/financeiro/fornecedores" element={<FornecedoresFinanceiro />} />
