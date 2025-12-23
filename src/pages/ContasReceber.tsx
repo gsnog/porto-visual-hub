@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -12,6 +13,7 @@ const SummaryCard = ({ title, value, colorClass }: { title: string; value: strin
 );
 
 const ContasReceber = () => {
+  const navigate = useNavigate()
   const contas = [
     {
       dataLancamento: "12/05/2025",
@@ -70,7 +72,7 @@ const ContasReceber = () => {
         </div>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={() => navigate("/financeiro/contas-receber/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             Adicionar Conta
           </Button>
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
