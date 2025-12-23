@@ -4,11 +4,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, FileText } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useMemo } from "react"
+
+const mockSaidas = [
+  { id: 1, data: "02/06/2025", item: "Parafuso M8", setor: "Produção", requisitante: "Lucas V.", quantidade: 50, origem: "Almoxarifado SP", destino: "Setor Montagem" },
+  { id: 2, data: "01/06/2025", item: "Cabo HDMI", setor: "TI", requisitante: "Ana F.", quantidade: 2, origem: "TI Central", destino: "Sala de Reuniões" },
+  { id: 3, data: "30/05/2025", item: "Óleo Lubrificante", setor: "Manutenção", requisitante: "Pedro S.", quantidade: 1, origem: "Manutenção", destino: "Linha 1" },
+  { id: 4, data: "28/05/2025", item: "Parafuso M8", setor: "Produção", requisitante: "Maria C.", quantidade: 100, origem: "Almoxarifado RJ", destino: "Setor Acabamento" },
+]
 
 export default function EstoqueSaidas() {
   const navigate = useNavigate()
   const [showRelatorio, setShowRelatorio] = useState(false)
+  const [filterNome, setFilterNome] = useState("")
+  const [filterData, setFilterData] = useState("")
+
+  const filteredSaidas = useMemo(() => {
+    return mockSaidas.filter(saida => {
+      const matchNome = saida.item.toLowerCase().includes(filterNome.toLowerCase())
+      const matchData = filterData ? saida.data.includes(filterData.split("-").reverse().join("/")) : true
+      return matchNome && matchData
+    })
+  }, [filterNome, filterData])
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -68,14 +85,26 @@ export default function EstoqueSaidas() {
         )}
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
-          <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" />
+          <Input 
+            placeholder="Nome do Item" 
+            value={filterNome}
+            onChange={(e) => setFilterNome(e.target.value)}
+            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
+          />
+          <Input 
+            type="date" 
+            value={filterData}
+            onChange={(e) => setFilterData(e.target.value)}
+            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
+          />
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             <Search className="w-4 h-4 mr-2" />Filtrar
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredSaidas.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -92,18 +121,28 @@ export default function EstoqueSaidas() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                <TableCell className="text-center">02/06/2025</TableCell>
-                <TableCell className="text-center">999</TableCell>
-                <TableCell className="text-center">Produção</TableCell>
-                <TableCell className="text-center">Lucas V.</TableCell>
-                <TableCell className="text-center">1</TableCell>
-                <TableCell className="text-center">Almoxarifado SP</TableCell>
-                <TableCell className="text-center">Setor Montagem</TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
-                </TableCell>
-              </TableRow>
+              {filteredSaidas.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    Nenhuma saída encontrada.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredSaidas.map((saida) => (
+                  <TableRow key={saida.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{saida.data}</TableCell>
+                    <TableCell className="text-center">{saida.item}</TableCell>
+                    <TableCell className="text-center">{saida.setor}</TableCell>
+                    <TableCell className="text-center">{saida.requisitante}</TableCell>
+                    <TableCell className="text-center">{saida.quantidade}</TableCell>
+                    <TableCell className="text-center">{saida.origem}</TableCell>
+                    <TableCell className="text-center">{saida.destino}</TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

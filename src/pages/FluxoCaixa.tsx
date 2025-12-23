@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useState, useMemo } from "react"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -13,37 +14,31 @@ const SummaryCard = ({ title, value, colorClass }: { title: string; value: strin
   </div>
 );
 
+const mockTransacoes = [
+  { id: 1, dataVencimento: "02/06/2025", dataPagamento: "02/06/2025", beneficiario: "Fornecedor Alpha", tipo: "Saída", status: "Pendente", valorTotal: "R$ 10.000,00", saldo: "R$ 87.939,88" },
+  { id: 2, dataVencimento: "15/06/2025", dataPagamento: "15/06/2025", beneficiario: "Cliente Beta", tipo: "Entrada", status: "Efetuado", valorTotal: "R$ 5.000,00", saldo: "R$ 92.939,88" },
+  { id: 3, dataVencimento: "20/06/2025", dataPagamento: "-", beneficiario: "Aluguel Junho", tipo: "Saída", status: "Vencido", valorTotal: "R$ 2.500,00", saldo: "R$ 90.439,88" },
+  { id: 4, dataVencimento: "25/06/2025", dataPagamento: "25/06/2025", beneficiario: "Venda Produto X", tipo: "Entrada", status: "Efetuado", valorTotal: "R$ 15.000,00", saldo: "R$ 105.439,88" },
+]
+
 const FluxoCaixa = () => {
   const navigate = useNavigate()
-  const transacoes = [
-    {
-      dataVencimento: "02/06/2025",
-      dataPagamento: "02/06/2025", 
-      beneficiario: "Fornecedor Alpha",
-      tipo: "Saída",
-      status: "Pendente",
-      valorTotal: "R$ 10.000,00",
-      saldo: "R$ 87.939,88"
-    },
-    {
-      dataVencimento: "15/06/2025",
-      dataPagamento: "15/06/2025",
-      beneficiario: "Cliente Beta", 
-      tipo: "Entrada",
-      status: "Efetuado",
-      valorTotal: "R$ 5.000,00",
-      saldo: "R$ 92.939,88"
-    },
-    {
-      dataVencimento: "20/06/2025",
-      dataPagamento: "-",
-      beneficiario: "Aluguel Junho", 
-      tipo: "Saída",
-      status: "Vencido",
-      valorTotal: "R$ 2.500,00",
-      saldo: "R$ 90.439,88"
-    },
-  ]
+  const [filterTipo, setFilterTipo] = useState("")
+  const [filterBeneficiario, setFilterBeneficiario] = useState("")
+  const [filterDataInicio, setFilterDataInicio] = useState("")
+  const [filterDataFim, setFilterDataFim] = useState("")
+
+  const filteredTransacoes = useMemo(() => {
+    return mockTransacoes.filter(trans => {
+      const matchTipo = filterTipo && filterTipo !== "todos" 
+        ? trans.tipo.toLowerCase() === filterTipo 
+        : true
+      const matchBeneficiario = trans.beneficiario.toLowerCase().includes(filterBeneficiario.toLowerCase())
+      const matchDataInicio = filterDataInicio ? trans.dataVencimento.includes(filterDataInicio.split("-").reverse().join("/")) : true
+      const matchDataFim = filterDataFim ? trans.dataVencimento.includes(filterDataFim.split("-").reverse().join("/")) : true
+      return matchTipo && matchBeneficiario && matchDataInicio && matchDataFim
+    })
+  }, [filterTipo, filterBeneficiario, filterDataInicio, filterDataFim])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -79,27 +74,33 @@ const FluxoCaixa = () => {
         </div>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Select>
+          <Select value={filterTipo} onValueChange={setFilterTipo}>
             <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg">
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
             <SelectContent className="bg-popover">
               <SelectItem value="todos">Todos</SelectItem>
               <SelectItem value="entrada">Entrada</SelectItem>
-              <SelectItem value="saida">Saída</SelectItem>
+              <SelectItem value="saída">Saída</SelectItem>
             </SelectContent>
           </Select>
           
           <Input 
             placeholder="Beneficiário" 
+            value={filterBeneficiario}
+            onChange={(e) => setFilterBeneficiario(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
           />
           <Input 
             type="date"
+            value={filterDataInicio}
+            onChange={(e) => setFilterDataInicio(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
           />
           <Input 
             type="date"
+            value={filterDataFim}
+            onChange={(e) => setFilterDataFim(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
           />
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -108,7 +109,9 @@ const FluxoCaixa = () => {
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredTransacoes.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -125,32 +128,40 @@ const FluxoCaixa = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transacoes.map((transacao, index) => (
-                <TableRow key={index} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                  <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
-                  <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
-                  <TableCell className="text-center">
-                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>
-                      {transacao.tipo}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-center">{transacao.beneficiario}</TableCell>
-                  <TableCell className="text-center">
-                    <span className={getStatusColor(transacao.status)}>{transacao.status}</span>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
-                      {transacao.valorTotal}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-center font-semibold">{transacao.saldo}</TableCell>
-                  <TableCell className="text-center">
-                    <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                      Detalhes
-                    </Button>
+              {filteredTransacoes.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    Nenhuma transação encontrada.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredTransacoes.map((transacao) => (
+                  <TableRow key={transacao.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
+                    <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
+                    <TableCell className="text-center">
+                      <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>
+                        {transacao.tipo}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-center">{transacao.beneficiario}</TableCell>
+                    <TableCell className="text-center">
+                      <span className={getStatusColor(transacao.status)}>{transacao.status}</span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
+                        {transacao.valorTotal}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-center font-semibold">{transacao.saldo}</TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
+                        Detalhes
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

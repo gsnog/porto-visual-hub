@@ -4,11 +4,34 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, FileText } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useState, useMemo } from "react"
+
+const mockEntradas = [
+  { id: 1, data: "02/06/2025", item: "Parafuso M8", validade: "05/06/2025", notaFiscal: "123456", estoqueDestinado: "Almoxarifado SP", custoUnitario: "R$ 0,50", quantidade: 100, custoTotal: "R$ 50,00" },
+  { id: 2, data: "01/06/2025", item: "Cabo HDMI", validade: "01/06/2027", notaFiscal: "789012", estoqueDestinado: "TI Central", custoUnitario: "R$ 25,00", quantidade: 10, custoTotal: "R$ 250,00" },
+  { id: 3, data: "30/05/2025", item: "Óleo Lubrificante", validade: "30/05/2026", notaFiscal: "345678", estoqueDestinado: "Manutenção", custoUnitario: "R$ 45,00", quantidade: 5, custoTotal: "R$ 225,00" },
+  { id: 4, data: "28/05/2025", item: "Parafuso M8", validade: "28/05/2026", notaFiscal: "901234", estoqueDestinado: "Almoxarifado RJ", custoUnitario: "R$ 0,55", quantidade: 200, custoTotal: "R$ 110,00" },
+]
 
 export default function EstoqueEntradas() {
   const navigate = useNavigate()
   const [showRelatorio, setShowRelatorio] = useState(false)
+  const [filterNome, setFilterNome] = useState("")
+  const [filterNFe, setFilterNFe] = useState("")
+  const [filterData, setFilterData] = useState("")
+
+  const filteredEntradas = useMemo(() => {
+    return mockEntradas.filter(entrada => {
+      const matchNome = entrada.item.toLowerCase().includes(filterNome.toLowerCase())
+      const matchNFe = entrada.notaFiscal.toLowerCase().includes(filterNFe.toLowerCase())
+      const matchData = filterData ? entrada.data.includes(filterData.split("-").reverse().join("/")) : true
+      return matchNome && matchNFe && matchData
+    })
+  }, [filterNome, filterNFe, filterData])
+
+  const handleFiltrar = () => {
+    // Filtering is already reactive via useMemo
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -35,7 +58,7 @@ export default function EstoqueEntradas() {
                 <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-28 rounded-lg border border-[#22265B]">
                   <SelectValue placeholder="Anual" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-popover">
                   <SelectItem value="anual">Anual</SelectItem>
                   <SelectItem value="mensal">Mensal</SelectItem>
                   <SelectItem value="semanal">Semanal</SelectItem>
@@ -69,15 +92,32 @@ export default function EstoqueEntradas() {
         )}
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Input placeholder="Nome do Item" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
-          <Input placeholder="NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" />
-          <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Input 
+            placeholder="Nome do Item" 
+            value={filterNome}
+            onChange={(e) => setFilterNome(e.target.value)}
+            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
+          />
+          <Input 
+            placeholder="NF-e" 
+            value={filterNFe}
+            onChange={(e) => setFilterNFe(e.target.value)}
+            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
+          />
+          <Input 
+            type="date" 
+            value={filterData}
+            onChange={(e) => setFilterData(e.target.value)}
+            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
+          />
+          <Button onClick={handleFiltrar} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             <Search className="w-4 h-4 mr-2" />Filtrar
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredEntradas.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -95,19 +135,29 @@ export default function EstoqueEntradas() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                <TableCell className="text-center">02/06/2025</TableCell>
-                <TableCell className="text-center">999</TableCell>
-                <TableCell className="text-center">05/06/2025</TableCell>
-                <TableCell className="text-center">999999</TableCell>
-                <TableCell className="text-center">xxxxxxxxx</TableCell>
-                <TableCell className="text-center">R$ 9.999,99</TableCell>
-                <TableCell className="text-center">1</TableCell>
-                <TableCell className="text-center">R$ 9.999,99</TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
-                </TableCell>
-              </TableRow>
+              {filteredEntradas.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                    Nenhuma entrada encontrada.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredEntradas.map((entrada) => (
+                  <TableRow key={entrada.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{entrada.data}</TableCell>
+                    <TableCell className="text-center">{entrada.item}</TableCell>
+                    <TableCell className="text-center">{entrada.validade}</TableCell>
+                    <TableCell className="text-center">{entrada.notaFiscal}</TableCell>
+                    <TableCell className="text-center">{entrada.estoqueDestinado}</TableCell>
+                    <TableCell className="text-center">{entrada.custoUnitario}</TableCell>
+                    <TableCell className="text-center">{entrada.quantidade}</TableCell>
+                    <TableCell className="text-center">{entrada.custoTotal}</TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

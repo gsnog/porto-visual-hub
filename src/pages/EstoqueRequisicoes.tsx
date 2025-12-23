@@ -4,9 +4,42 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useState, useMemo } from "react"
+
+const mockRequisicoes = [
+  { id: 1, data: "12/05/2025", item: "Cabo HDMI", quantidade: 1, requisitante: "Ana F.", setor: "TI", status: "Aprovada" },
+  { id: 2, data: "10/05/2025", item: "Papel A4", quantidade: 5, requisitante: "Carlos M.", setor: "Administrativo", status: "Pendente" },
+  { id: 3, data: "08/05/2025", item: "Toner HP", quantidade: 2, requisitante: "Pedro S.", setor: "TI", status: "Aprovada" },
+  { id: 4, data: "05/05/2025", item: "Parafuso M8", quantidade: 50, requisitante: "Lucas V.", setor: "Produção", status: "Rejeitada" },
+]
 
 export default function EstoqueRequisicoes() {
   const navigate = useNavigate()
+  const [filterCidade, setFilterCidade] = useState("")
+  const [filterData, setFilterData] = useState("")
+
+  const filteredRequisicoes = useMemo(() => {
+    return mockRequisicoes.filter(req => {
+      const matchCidade = filterCidade && filterCidade !== "todos" 
+        ? req.setor.toLowerCase().includes(filterCidade.toLowerCase()) 
+        : true
+      const matchData = filterData ? req.data.includes(filterData.split("-").reverse().join("/")) : true
+      return matchCidade && matchData
+    })
+  }, [filterCidade, filterData])
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Aprovada':
+        return 'text-green-600 font-medium';
+      case 'Pendente':
+        return 'text-yellow-600 font-medium';
+      case 'Rejeitada':
+        return 'text-red-600 font-medium';
+      default:
+        return 'text-gray-600';
+    }
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -19,22 +52,31 @@ export default function EstoqueRequisicoes() {
         </div>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Select>
+          <Select value={filterCidade} onValueChange={setFilterCidade}>
             <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-64 rounded-lg">
-              <SelectValue placeholder="Cidade" />
+              <SelectValue placeholder="Setor" />
             </SelectTrigger>
             <SelectContent className="bg-popover">
-              <SelectItem value="sao-paulo">São Paulo</SelectItem>
-              <SelectItem value="rio-janeiro">Rio de Janeiro</SelectItem>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="ti">TI</SelectItem>
+              <SelectItem value="producao">Produção</SelectItem>
+              <SelectItem value="administrativo">Administrativo</SelectItem>
             </SelectContent>
           </Select>
-          <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" />
+          <Input 
+            type="date" 
+            value={filterData}
+            onChange={(e) => setFilterData(e.target.value)}
+            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
+          />
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             <Search className="w-4 h-4 mr-2" />Filtrar
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredRequisicoes.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -50,17 +92,29 @@ export default function EstoqueRequisicoes() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                <TableCell className="text-center">12/05/2025</TableCell>
-                <TableCell className="text-center">Cabo HDMI</TableCell>
-                <TableCell className="text-center">1</TableCell>
-                <TableCell className="text-center">Ana F.</TableCell>
-                <TableCell className="text-center">TI</TableCell>
-                <TableCell className="text-center"><span className="text-green-600 font-medium">Aprovada</span></TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
-                </TableCell>
-              </TableRow>
+              {filteredRequisicoes.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    Nenhuma requisição encontrada.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredRequisicoes.map((req) => (
+                  <TableRow key={req.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{req.data}</TableCell>
+                    <TableCell className="text-center">{req.item}</TableCell>
+                    <TableCell className="text-center">{req.quantidade}</TableCell>
+                    <TableCell className="text-center">{req.requisitante}</TableCell>
+                    <TableCell className="text-center">{req.setor}</TableCell>
+                    <TableCell className="text-center">
+                      <span className={getStatusColor(req.status)}>{req.status}</span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
