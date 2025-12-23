@@ -21,6 +21,7 @@ import NovaEntrada from "./pages/estoque/NovaEntrada";
 import UploadNFe from "./pages/estoque/UploadNFe";
 import EstoqueInventario from "./pages/EstoqueInventario";
 import EstoqueLocacoes from "./pages/EstoqueLocacoes";
+import NovaLocacao from "./pages/estoque/NovaLocacao";
 import EstoqueRequisicoes from "./pages/EstoqueRequisicoes";
 import EstoqueSaidas from "./pages/EstoqueSaidas";
 import OrdemCompra from "./pages/OrdemCompra";
@@ -105,6 +106,7 @@ const App = () => (
                   <Route path="/estoque/inventario" element={<EstoqueInventario />} />
                   <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
                   <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
+                  <Route path="/estoque/locacoes/nova" element={<NovaLocacao />} />
                   <Route path="/estoque/requisicoes" element={<EstoqueRequisicoes />} />
                   <Route path="/estoque/ordem-compra" element={<OrdemCompra />} />
                   <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
