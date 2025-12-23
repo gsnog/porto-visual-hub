@@ -15,11 +15,11 @@ export default function UploadNFe() {
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Upload de Nota Fiscal Eletrônica (XML)</h1>
 
-        <div className="space-y-6 max-w-2xl">
-          <div className="flex items-center gap-4">
-            <label className="w-52 text-sm font-medium text-foreground">Unidade:</label>
+        <div className="space-y-4 max-w-2xl">
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-52">Unidade</label>
             <Select>
-              <SelectTrigger className="bg-muted text-foreground h-10 rounded-lg w-40">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-40 border border-[#22265B]">
                 <SelectValue placeholder="---------" />
               </SelectTrigger>
               <SelectContent>
@@ -29,10 +29,10 @@ export default function UploadNFe() {
             </Select>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-52 text-sm font-medium text-foreground">Projeto:</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-52">Projeto</label>
             <Select>
-              <SelectTrigger className="bg-muted text-foreground h-10 rounded-lg w-40">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-40 border border-[#22265B]">
                 <SelectValue placeholder="---------" />
               </SelectTrigger>
               <SelectContent>
@@ -42,23 +42,26 @@ export default function UploadNFe() {
             </Select>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-52 text-sm font-medium text-foreground">Selecione o PDF da NF:</label>
-            <Input type="file" accept=".pdf" className="bg-muted text-foreground h-10 px-3 flex-1 rounded-lg file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-52">Selecione o PDF da NF</label>
+            <Input type="file" accept=".pdf" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-52 text-sm font-medium text-foreground">Selecione o PDF dos boletos:</label>
-            <Input type="file" accept=".pdf" className="bg-muted text-foreground h-10 px-3 flex-1 rounded-lg file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-52">Selecione o PDF dos boletos</label>
+            <Input type="file" accept=".pdf" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-52 text-sm font-medium text-foreground">Selecione o arquivo XML:</label>
-            <Input type="file" accept=".xml" className="bg-muted text-foreground h-10 px-3 flex-1 rounded-lg file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-52">Selecione o arquivo XML</label>
+            <Input type="file" accept=".xml" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
           </div>
 
-          <div className="pt-4">
-            <Button onClick={handleEnviar} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <div className="flex gap-3 pt-4">
+            <Button 
+              onClick={handleEnviar}
+              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+            >
               Enviar XML
             </Button>
           </div>
