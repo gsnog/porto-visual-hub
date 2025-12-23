@@ -21,7 +21,7 @@ const NovaUnidade = () => {
 
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Nome do Unidade</label>
+            <label className="text-foreground font-medium w-40">Nome do Unidade</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 

@@ -1,50 +1,69 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useNavigate } from "react-router-dom"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useNavigate } from "react-router-dom";
 
 const NovoServico = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const handleSalvar = () => {
+    navigate("/operacional/servicos");
+  };
+
+  const handleCancelar = () => {
+    navigate("/operacional/servicos");
+  };
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Adicionar Serviço</h1>
-        
-        <div className="max-w-2xl space-y-6">
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Nome:</Label>
-            <div>
-              <Input className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
-              <span className="text-xs text-muted-foreground">Obrigatório</span>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Descrição:</Label>
-            <div>
-              <Textarea 
-                className="bg-white !text-[#22265B] min-h-[200px] px-3 py-2 rounded-lg border border-border resize-none" 
+        <div className="space-y-4 max-w-2xl">
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Nome</label>
+            <div className="flex-1">
+              <Input 
+                placeholder="" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
               />
-              <span className="text-xs text-muted-foreground">Obrigatório</span>
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Valor:</Label>
-            <div>
-              <Input defaultValue="0" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
-              <span className="text-xs text-muted-foreground">Obrigatório</span>
+          <div className="flex items-start gap-8">
+            <label className="text-foreground font-medium w-40 pt-2">Descrição</label>
+            <div className="flex-1">
+              <Textarea 
+                placeholder="" 
+                className="bg-[#efefef] !text-[#22265B] px-3 rounded-lg border border-[#22265B] w-80 min-h-[150px]" 
+              />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4">
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Valor</label>
+            <div className="flex-1">
+              <Input 
+                defaultValue="0" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
+              />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-4">
             <Button 
-              variant="outline" 
-              className="rounded-lg border-primary text-primary hover:bg-primary/10"
-              onClick={() => navigate("/operacional/servicos")}
+              onClick={handleSalvar}
+              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+            >
+              Salvar
+            </Button>
+            <Button 
+              onClick={handleCancelar}
+              variant="destructive"
+              className="rounded-lg px-6"
             >
               Cancelar
             </Button>
@@ -52,7 +71,7 @@ const NovoServico = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NovoServico
+export default NovoServico;

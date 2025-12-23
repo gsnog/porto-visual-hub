@@ -26,7 +26,7 @@ const NovoFornecedorFinanceiro = () => {
 
         <div className="space-y-4 max-w-2xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">CNPJ</label>
+            <label className="text-foreground font-medium w-40">CNPJ</label>
             <div className="flex gap-3">
               <Input 
                 placeholder="" 
@@ -42,7 +42,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">CPF</label>
+            <label className="text-foreground font-medium w-40">CPF</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -50,7 +50,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Nome</label>
+            <label className="text-foreground font-medium w-40">Nome</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -58,7 +58,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Razão Social</label>
+            <label className="text-foreground font-medium w-40">Razão Social</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -66,7 +66,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-start gap-8">
-            <label className="text-foreground font-medium w-28 pt-2">Endereço</label>
+            <label className="text-foreground font-medium w-40 pt-2">Endereço</label>
             <Textarea 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] px-3 rounded-lg border border-[#22265B] w-80 min-h-[120px]" 
@@ -74,7 +74,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Vendedor</label>
+            <label className="text-foreground font-medium w-40">Vendedor</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -82,7 +82,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Email</label>
+            <label className="text-foreground font-medium w-40">Email</label>
             <Input 
               type="email"
               placeholder="fornecedor@example.com" 
@@ -91,7 +91,7 @@ const NovoFornecedorFinanceiro = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Telefone</label>
+            <label className="text-foreground font-medium w-40">Telefone</label>
             <Input 
               placeholder="(99) 9999-9999" 
               className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B]/50 h-10 px-3 rounded-lg border border-[#22265B] w-64" 

@@ -22,7 +22,7 @@ const NovoCentroCusto = () => {
 
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-32">Diretoria</label>
+            <label className="text-foreground font-medium w-40">Diretoria</label>
             <div className="flex-1">
               <div className="flex gap-3">
                 <Select>
@@ -43,7 +43,7 @@ const NovoCentroCusto = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-32">Gerência</label>
+            <label className="text-foreground font-medium w-40">Gerência</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -51,7 +51,7 @@ const NovoCentroCusto = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-32">Departamento</label>
+            <label className="text-foreground font-medium w-40">Departamento</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 

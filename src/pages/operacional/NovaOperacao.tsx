@@ -1,32 +1,42 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useNavigate } from "react-router-dom"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 const NovaOperacao = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const handleSalvar = () => {
+    navigate("/operacional/operacao");
+  };
+
+  const handleCancelar = () => {
+    navigate("/operacional/operacao");
+  };
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Adicionar Operação</h1>
-        
-        <div className="max-w-3xl space-y-6">
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Data de Entrada</Label>
-            <div>
-              <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-48" />
-              <span className="text-xs text-muted-foreground block mt-1">Obrigatório</span>
+
+        <div className="space-y-4 max-w-3xl">
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Data de Entrada</label>
+            <div className="flex-1">
+              <Input 
+                type="date" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-48" 
+              />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Embarcação</Label>
-            <div>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Embarcação</label>
+            <div className="flex-1">
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 rounded-lg w-32">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-28 border border-[#22265B]">
                   <SelectValue placeholder="---------" />
                 </SelectTrigger>
                 <SelectContent>
@@ -34,23 +44,26 @@ const NovaOperacao = () => {
                   <SelectItem value="embarcacao2">Embarcação 2</SelectItem>
                 </SelectContent>
               </Select>
-              <span className="text-xs text-muted-foreground block mt-1">Obrigatório</span>
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Previsão de Entrega</Label>
-            <div>
-              <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-48" />
-              <span className="text-xs text-muted-foreground block mt-1">Obrigatório</span>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Previsão de Entrega</label>
+            <div className="flex-1">
+              <Input 
+                type="date" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-48" 
+              />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Serviço:</Label>
-            <div className="space-y-2">
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Serviço</label>
+            <div className="flex-1">
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 rounded-lg w-64">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-64 border border-[#22265B]">
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
@@ -60,7 +73,7 @@ const NovaOperacao = () => {
               </Select>
               <Button 
                 size="sm"
-                className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6 mt-2"
                 onClick={() => navigate("/operacional/servicos/novo")}
               >
                 Adicionar Serviço
@@ -68,11 +81,11 @@ const NovaOperacao = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Setor:</Label>
-            <div className="space-y-2">
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Setor</label>
+            <div className="flex-1">
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 rounded-lg w-64">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-64 border border-[#22265B]">
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
@@ -82,7 +95,7 @@ const NovaOperacao = () => {
               </Select>
               <Button 
                 size="sm"
-                className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6 mt-2"
                 onClick={() => navigate("/operacional/setor/novo")}
               >
                 Adicionar Setor
@@ -90,23 +103,32 @@ const NovaOperacao = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Data de Início:</Label>
-            <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-48" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Data de Início</label>
+            <Input 
+              type="date" 
+              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-48" 
+            />
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Desconto:</Label>
-            <Input defaultValue="R$ 0,00" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-64" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Desconto</label>
+            <Input 
+              defaultValue="R$ 0,00" 
+              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
+            />
           </div>
 
-          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
-            <Label className="text-sm font-medium text-foreground pt-2">Valor Adicional:</Label>
-            <Input defaultValue="R$ 0,00" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-64" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Valor Adicional</label>
+            <Input 
+              defaultValue="R$ 0,00" 
+              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
+            />
           </div>
 
-          <div className="flex gap-4">
-            <Button variant="outline" className="rounded-lg border-border text-foreground hover:bg-muted">
+          <div className="flex gap-3">
+            <Button variant="outline" className="rounded-lg border-[#22265B] text-foreground hover:bg-muted px-6">
               Adicionar Serviço
             </Button>
           </div>
@@ -136,12 +158,17 @@ const NovaOperacao = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4">
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
+          <div className="flex gap-3 pt-4">
             <Button 
-              variant="outline" 
-              className="rounded-lg border-primary text-primary hover:bg-primary/10"
-              onClick={() => navigate("/operacional/operacao")}
+              onClick={handleSalvar}
+              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+            >
+              Salvar
+            </Button>
+            <Button 
+              onClick={handleCancelar}
+              variant="destructive"
+              className="rounded-lg px-6"
             >
               Cancelar
             </Button>
@@ -149,7 +176,7 @@ const NovaOperacao = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NovaOperacao
+export default NovaOperacao;

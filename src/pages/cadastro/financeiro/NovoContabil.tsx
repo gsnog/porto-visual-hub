@@ -21,7 +21,7 @@ const NovoContabil = () => {
 
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-24">Nome</label>
+            <label className="text-foreground font-medium w-40">Nome</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
