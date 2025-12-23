@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useState, useMemo } from "react"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -12,40 +13,27 @@ const SummaryCard = ({ title, value, colorClass }: { title: string; value: strin
   </div>
 );
 
+const mockContas = [
+  { id: 1, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Efetuado" },
+  { id: 2, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Em Aberto" },
+  { id: 3, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ALPHA TECNOLOGIA", documento: "NF 1234", valorTitulo: "R$ 12.345,00", valorTotalRecebido: "R$ 0,00", proximoVencimento: "15/12/2025", status: "Vencido" },
+  { id: 4, dataLancamento: "10/05/2025", dataFaturamento: "28/04/2025", cliente: "BETA CORP", documento: "NF 5678", valorTitulo: "R$ 8.500,00", valorTotalRecebido: "R$ 4.250,00", proximoVencimento: "10/01/2026", status: "Pago Parcial" },
+]
+
 const ContasReceber = () => {
   const navigate = useNavigate()
-  const contas = [
-    {
-      dataLancamento: "12/05/2025",
-      dataFaturamento: "30/04/2025",
-      cliente: "ABEEMAR",
-      documento: "NI",
-      valorTitulo: "R$ 659,88",
-      valorTotalRecebido: "R$ 659,88",
-      proximoVencimento: "XX/XX/XXXX",
-      status: "Efetuado",
-    },
-    {
-      dataLancamento: "12/05/2025",
-      dataFaturamento: "30/04/2025",
-      cliente: "ABEEMAR",
-      documento: "NI",
-      valorTitulo: "R$ 659,88",
-      valorTotalRecebido: "R$ 659,88",
-      proximoVencimento: "XX/XX/XXXX",
-      status: "Em Aberto",
-    },
-    {
-      dataLancamento: "12/05/2025",
-      dataFaturamento: "30/04/2025",
-      cliente: "ALPHA TECNOLOGIA",
-      documento: "NF 1234",
-      valorTitulo: "R$ 12.345,00",
-      valorTotalRecebido: "R$ 0,00",
-      proximoVencimento: "15/12/2025",
-      status: "Vencido",
-    },
-  ]
+  const [filterCliente, setFilterCliente] = useState("")
+  const [filterDocumento, setFilterDocumento] = useState("")
+  const [filterData, setFilterData] = useState("")
+
+  const filteredContas = useMemo(() => {
+    return mockContas.filter(conta => {
+      const matchCliente = conta.cliente.toLowerCase().includes(filterCliente.toLowerCase())
+      const matchDocumento = conta.documento.toLowerCase().includes(filterDocumento.toLowerCase())
+      const matchData = filterData ? conta.dataFaturamento.includes(filterData.split("-").reverse().join("/")) : true
+      return matchCliente && matchDocumento && matchData
+    })
+  }, [filterCliente, filterDocumento, filterData])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -55,6 +43,8 @@ const ContasReceber = () => {
         return 'text-yellow-600 font-medium';
       case 'Vencido':
         return 'text-red-600 font-medium';
+      case 'Pago Parcial':
+        return 'text-blue-600 font-medium';
       default:
         return 'text-gray-600';
     }
@@ -83,14 +73,20 @@ const ContasReceber = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Input 
             placeholder="Cliente" 
+            value={filterCliente}
+            onChange={(e) => setFilterCliente(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
           />
           <Input 
             placeholder="Documento" 
+            value={filterDocumento}
+            onChange={(e) => setFilterDocumento(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
           />
           <Input 
             type="date"
+            value={filterData}
+            onChange={(e) => setFilterData(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
           />
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -99,7 +95,9 @@ const ContasReceber = () => {
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredContas.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -117,25 +115,33 @@ const ContasReceber = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {contas.map((conta, index) => (
-                <TableRow key={index} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                  <TableCell className="text-center">{conta.dataLancamento}</TableCell>
-                  <TableCell className="text-center">{conta.dataFaturamento}</TableCell>
-                  <TableCell className="text-center">{conta.cliente}</TableCell>
-                  <TableCell className="text-center">{conta.documento}</TableCell>
-                  <TableCell className="text-center">{conta.valorTitulo}</TableCell>
-                  <TableCell className="text-center">{conta.valorTotalRecebido}</TableCell>
-                  <TableCell className="text-center">{conta.proximoVencimento}</TableCell>
-                  <TableCell className="text-center">
-                    <span className={getStatusColor(conta.status)}>{conta.status}</span>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                      Ações
-                    </Button>
+              {filteredContas.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                    Nenhuma conta encontrada.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredContas.map((conta) => (
+                  <TableRow key={conta.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{conta.dataLancamento}</TableCell>
+                    <TableCell className="text-center">{conta.dataFaturamento}</TableCell>
+                    <TableCell className="text-center">{conta.cliente}</TableCell>
+                    <TableCell className="text-center">{conta.documento}</TableCell>
+                    <TableCell className="text-center">{conta.valorTitulo}</TableCell>
+                    <TableCell className="text-center">{conta.valorTotalRecebido}</TableCell>
+                    <TableCell className="text-center">{conta.proximoVencimento}</TableCell>
+                    <TableCell className="text-center">
+                      <span className={getStatusColor(conta.status)}>{conta.status}</span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
+                        Ações
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

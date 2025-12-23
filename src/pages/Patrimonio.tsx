@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -28,12 +28,23 @@ type ViewState = 'list' | 'add' | 'details'
 const Patrimonio = () => {
   const [currentView, setCurrentView] = useState<ViewState>('list')
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
+  const [filterNome, setFilterNome] = useState("")
+  const [filterData, setFilterData] = useState("")
   const [formData, setFormData] = useState({
     item: '',
     dataAquisicao: '',
     valor: '',
     quantidade: ''
   })
+
+  const filteredAssets = useMemo(() => {
+    return mockAssets.filter(asset => {
+      const matchNome = asset.item.toLowerCase().includes(filterNome.toLowerCase()) || 
+                        asset.codigo.toLowerCase().includes(filterNome.toLowerCase())
+      const matchData = filterData ? asset.dataAquisicao.includes(filterData.split("-").reverse().join("/")) : true
+      return matchNome && matchData
+    })
+  }, [filterNome, filterData])
 
   const handleViewDetails = (asset: Asset) => {
     setSelectedAsset(asset)

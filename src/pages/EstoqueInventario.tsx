@@ -3,8 +3,30 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
+import { useState, useMemo } from "react"
+
+const mockInventario = [
+  { id: 1, item: "Parafuso M8", quantidade: 250, unidade: "Almoxarifado SP" },
+  { id: 2, item: "Cabo HDMI", quantidade: 8, unidade: "TI Central" },
+  { id: 3, item: "Óleo Lubrificante", quantidade: 4, unidade: "Manutenção" },
+  { id: 4, item: "Papel A4", quantidade: 50, unidade: "Almoxarifado SP" },
+  { id: 5, item: "Toner HP", quantidade: 3, unidade: "TI Central" },
+]
 
 export default function EstoqueInventario() {
+  const [filterNome, setFilterNome] = useState("")
+  const [filterCidade, setFilterCidade] = useState("")
+
+  const filteredInventario = useMemo(() => {
+    return mockInventario.filter(item => {
+      const matchNome = item.item.toLowerCase().includes(filterNome.toLowerCase())
+      const matchCidade = filterCidade && filterCidade !== "todos" 
+        ? item.unidade.toLowerCase().includes(filterCidade.toLowerCase()) 
+        : true
+      return matchNome && matchCidade
+    })
+  }, [filterNome, filterCidade])
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
@@ -13,17 +35,20 @@ export default function EstoqueInventario() {
         <div className="flex flex-wrap gap-4 items-center">
           <Input 
             placeholder="Nome do Item" 
+            value={filterNome}
+            onChange={(e) => setFilterNome(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
           />
 
-          <Select>
+          <Select value={filterCidade} onValueChange={setFilterCidade}>
             <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-64 rounded-lg">
               <SelectValue placeholder="Cidade" className="!text-[#22265B]" />
             </SelectTrigger>
             <SelectContent className="bg-popover">
-              <SelectItem value="sao-paulo">São Paulo</SelectItem>
-              <SelectItem value="rio-janeiro">Rio de Janeiro</SelectItem>
-              <SelectItem value="belo-horizonte">Belo Horizonte</SelectItem>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="sp">São Paulo</SelectItem>
+              <SelectItem value="rj">Rio de Janeiro</SelectItem>
+              <SelectItem value="central">Central</SelectItem>
             </SelectContent>
           </Select>
 
@@ -33,7 +58,9 @@ export default function EstoqueInventario() {
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredInventario.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -47,27 +74,26 @@ export default function EstoqueInventario() {
             </TableHeader>
 
             <TableBody>
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                <TableCell className="text-center">999</TableCell>
-                <TableCell className="text-center">1</TableCell>
-                <TableCell className="text-center">xxxxxxxxxx</TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                    Ações
-                  </Button>
-                </TableCell>
-              </TableRow>
-
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                <TableCell className="text-center">Cabo HDMI</TableCell>
-                <TableCell className="text-center">3</TableCell>
-                <TableCell className="text-center">un</TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                    Ações
-                  </Button>
-                </TableCell>
-              </TableRow>
+              {filteredInventario.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                    Nenhum item encontrado.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredInventario.map((item) => (
+                  <TableRow key={item.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{item.item}</TableCell>
+                    <TableCell className="text-center">{item.quantidade}</TableCell>
+                    <TableCell className="text-center">{item.unidade}</TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
+                        Ações
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
