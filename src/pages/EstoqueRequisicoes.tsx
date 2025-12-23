@@ -3,15 +3,18 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 export default function EstoqueRequisicoes() {
+  const navigate = useNavigate()
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Requisições</h1>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
+          <Button onClick={() => navigate("/estoque/requisicoes/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
         </div>
 
