@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -13,6 +14,7 @@ const SummaryCard = ({ title, value, colorClass }: { title: string; value: strin
 );
 
 const FluxoCaixa = () => {
+  const navigate = useNavigate()
   const transacoes = [
     {
       dataVencimento: "02/06/2025",
@@ -71,7 +73,7 @@ const FluxoCaixa = () => {
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             Adicionar Transação
           </Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={() => navigate("/financeiro/fluxo-caixa/relatorio")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
             Relatório
           </Button>
         </div>

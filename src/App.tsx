@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 
 import Dashboard from "./pages/Dashboard";
 import FluxoCaixa from "./pages/FluxoCaixa";
+import RelatorioFluxoCaixa from "./pages/financeiro/RelatorioFluxoCaixa";
 import NFe from "./pages/NFe";
 import Patrimonio from "./pages/Patrimonio";
 import Relatorio from "./pages/Relatorio";
@@ -97,6 +98,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
+                  <Route path="/financeiro/fluxo-caixa/relatorio" element={<RelatorioFluxoCaixa />} />
                   <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
                   <Route path="/financeiro/contas-pagar/nova" element={<NovaContaPagar />} />
                   <Route path="/financeiro/contas-pagar/relatorio" element={<RelatorioContasPagar />} />
