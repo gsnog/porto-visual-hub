@@ -101,10 +101,14 @@ const Patrimonio = () => {
           <div className="flex flex-wrap gap-4 items-center">
             <Input 
               placeholder="Item / Código" 
+              value={filterNome}
+              onChange={(e) => setFilterNome(e.target.value)}
               className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
             />
             <Input 
               type="date"
+              value={filterData}
+              onChange={(e) => setFilterData(e.target.value)}
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg"
             />
             <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -113,7 +117,9 @@ const Patrimonio = () => {
             </Button>
           </div>
 
-          <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+          <p className="text-sm text-muted-foreground">
+            {filteredAssets.length} resultado(s) encontrado(s).
+          </p>
 
           <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
             <Table>
@@ -128,24 +134,32 @@ const Patrimonio = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockAssets.map((asset) => (
-                  <TableRow key={asset.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                    <TableCell className="text-center">{asset.codigo}</TableCell>
-                    <TableCell className="text-center">{asset.item}</TableCell>
-                    <TableCell className="text-center">{asset.dataAquisicao}</TableCell>
-                    <TableCell className="text-center">{asset.valor}</TableCell>
-                    <TableCell className="text-center">{asset.quantidade}</TableCell>
-                    <TableCell className="text-center">
-                      <Button 
-                        onClick={() => handleViewDetails(asset)}
-                        size="sm"
-                        className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
-                      >
-                        Detalhes
-                      </Button>
+                {filteredAssets.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      Nenhum patrimônio encontrado.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  filteredAssets.map((asset) => (
+                    <TableRow key={asset.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                      <TableCell className="text-center">{asset.codigo}</TableCell>
+                      <TableCell className="text-center">{asset.item}</TableCell>
+                      <TableCell className="text-center">{asset.dataAquisicao}</TableCell>
+                      <TableCell className="text-center">{asset.valor}</TableCell>
+                      <TableCell className="text-center">{asset.quantidade}</TableCell>
+                      <TableCell className="text-center">
+                        <Button 
+                          onClick={() => handleViewDetails(asset)}
+                          size="sm"
+                          className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
+                        >
+                          Detalhes
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
