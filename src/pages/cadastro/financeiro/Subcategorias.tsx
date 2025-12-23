@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 
 const Subcategorias = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Subcategoria Financeiras</h1>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button 
+            onClick={() => navigate("/cadastro/financeiro/subcategorias/nova")}
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
             Nova Subcategoria Financeira
           </Button>
         </div>
