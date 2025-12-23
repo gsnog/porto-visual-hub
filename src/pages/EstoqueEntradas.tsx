@@ -34,8 +34,23 @@ export default function EstoqueEntradas() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+    <>
+      {/* Override styles for this page only */}
+      <style>{`
+        [data-sidebar="sidebar"] {
+          background: #22265B !important;
+          background-image: url('/background.svg') !important;
+          background-size: cover !important;
+        }
+        [data-sidebar="sidebar"] * {
+          color: white !important;
+        }
+        [data-sidebar="sidebar"] [data-sidebar="menu-button"]:hover {
+          background: rgba(255,255,255,0.1) !important;
+        }
+      `}</style>
+      <div className="flex flex-col h-full bg-sidebar" style={{ background: 'hsl(0 0% 96%)' }}>
+        <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Entradas</h1>
 
         <div className="flex flex-wrap gap-4 items-center">
@@ -162,6 +177,7 @@ export default function EstoqueEntradas() {
           </Table>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
