@@ -3,9 +3,26 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+
+const mockSetores = [
+  { id: 1, nome: "Motor" },
+  { id: 2, nome: "Pintura" },
+  { id: 3, nome: "Elétrica" },
+  { id: 4, nome: "Fibra" },
+  { id: 5, nome: "Acabamento" },
+]
 
 const Setor = () => {
   const navigate = useNavigate();
+  const [filterNome, setFilterNome] = useState("");
+
+  const filteredSetores = useMemo(() => {
+    return mockSetores.filter(setor => 
+      setor.nome.toLowerCase().includes(filterNome.toLowerCase())
+    )
+  }, [filterNome])
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
@@ -23,6 +40,8 @@ const Setor = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Input 
             placeholder="Setor" 
+            value={filterNome}
+            onChange={(e) => setFilterNome(e.target.value)}
             className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
           />
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -31,7 +50,9 @@ const Setor = () => {
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <p className="text-sm text-muted-foreground">
+          {filteredSetores.length} resultado(s) encontrado(s).
+        </p>
 
         <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
           <Table>
@@ -42,11 +63,22 @@ const Setor = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                <TableCell colSpan={2} className="text-center py-8">
-                  Nenhum setor encontrado.
-                </TableCell>
-              </TableRow>
+              {filteredSetores.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={2} className="text-center py-8 text-muted-foreground">
+                    Nenhum setor encontrado.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredSetores.map((setor) => (
+                  <TableRow key={setor.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableCell className="text-center">{setor.nome}</TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
