@@ -2,15 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CentroCusto = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Centros de Custo</h1>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button 
+            onClick={() => navigate("/cadastro/financeiro/centro-custo/novo")}
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
             Novo Centro de Custo
           </Button>
         </div>
