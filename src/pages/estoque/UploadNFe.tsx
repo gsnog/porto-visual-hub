@@ -64,6 +64,13 @@ export default function UploadNFe() {
             >
               Enviar XML
             </Button>
+            <Button 
+              onClick={() => navigate("/estoque/entradas")}
+              variant="destructive"
+              className="rounded-lg px-6"
+            >
+              Voltar
+            </Button>
           </div>
         </div>
       </div>
