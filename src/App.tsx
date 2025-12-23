@@ -36,6 +36,7 @@ import NovoFornecedor from "./pages/cadastro/estoque/NovoFornecedor";
 import Itens from "./pages/cadastro/estoque/Itens";
 import NovoItem from "./pages/cadastro/estoque/NovoItem";
 import Setores from "./pages/cadastro/estoque/Setores";
+import NovoSetor from "./pages/cadastro/estoque/NovoSetor";
 import Unidades from "./pages/cadastro/estoque/Unidades";
 
 // Cadastro - Financeiro
@@ -101,6 +102,7 @@ const App = () => (
                   <Route path="/cadastro/estoque/itens" element={<Itens />} />
                   <Route path="/cadastro/estoque/itens/novo" element={<NovoItem />} />
                   <Route path="/cadastro/estoque/setores" element={<Setores />} />
+                  <Route path="/cadastro/estoque/setores/novo" element={<NovoSetor />} />
                   <Route path="/cadastro/estoque/unidades" element={<Unidades />} />
                   
                   {/* Cadastro - Financeiro */}
