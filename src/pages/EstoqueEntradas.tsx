@@ -39,8 +39,6 @@ export default function EstoqueEntradas() {
       <style>{`
         [data-sidebar="sidebar"] {
           background: #22265B !important;
-          background-image: url('/background.svg') !important;
-          background-size: cover !important;
         }
         [data-sidebar="sidebar"] * {
           color: white !important;
@@ -49,7 +47,7 @@ export default function EstoqueEntradas() {
           background: rgba(255,255,255,0.1) !important;
         }
       `}</style>
-      <div className="flex flex-col h-full bg-sidebar" style={{ background: 'hsl(0 0% 96%)' }}>
+      <div className="flex flex-col h-full" style={{ background: '#FFFFFF' }}>
         <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Entradas</h1>
 
