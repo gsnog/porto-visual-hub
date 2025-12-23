@@ -10,7 +10,7 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
-  Anchor
+  BarChart3
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 
@@ -87,7 +87,7 @@ const menuItems = [
   },
   { 
     title: "Operacional", 
-    icon: Anchor,
+    icon: BarChart3,
     basePath: "/operacional",
     subItems: [
       { title: "Setor", url: "/operacional/setor" },
