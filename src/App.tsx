@@ -42,6 +42,10 @@ import NovaUnidade from "./pages/cadastro/estoque/NovaUnidade";
 
 // Cadastro - Financeiro
 import ContaBancaria from "./pages/cadastro/financeiro/ContaBancaria";
+import NovaContaBancaria from "./pages/cadastro/financeiro/NovaContaBancaria";
+import ConciliacaoBancaria from "./pages/cadastro/financeiro/ConciliacaoBancaria";
+import Transferencias from "./pages/cadastro/financeiro/Transferencias";
+import NovaTransferencia from "./pages/cadastro/financeiro/NovaTransferencia";
 import Clientes from "./pages/cadastro/financeiro/Clientes";
 import CentroCusto from "./pages/cadastro/financeiro/CentroCusto";
 import CentroReceita from "./pages/cadastro/financeiro/CentroReceita";
@@ -109,6 +113,10 @@ const App = () => (
                   
                   {/* Cadastro - Financeiro */}
                   <Route path="/cadastro/financeiro/conta-bancaria" element={<ContaBancaria />} />
+                  <Route path="/cadastro/financeiro/conta-bancaria/nova" element={<NovaContaBancaria />} />
+                  <Route path="/cadastro/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
+                  <Route path="/cadastro/financeiro/transferencias" element={<Transferencias />} />
+                  <Route path="/cadastro/financeiro/transferencias/nova" element={<NovaTransferencia />} />
                   <Route path="/cadastro/financeiro/clientes" element={<Clientes />} />
                   <Route path="/cadastro/financeiro/centro-custo" element={<CentroCusto />} />
                   <Route path="/cadastro/financeiro/centro-receita" element={<CentroReceita />} />

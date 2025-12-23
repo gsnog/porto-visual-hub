@@ -8,18 +8,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 const ContaBancaria = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Contas Bancárias</h1>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button 
+            onClick={() => navigate("/cadastro/financeiro/conta-bancaria/nova")}
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
             Nova Conta
           </Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button 
+            onClick={() => navigate("/cadastro/financeiro/conciliacao-bancaria")}
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
             Conciliação Bancária
           </Button>
           <DropdownMenu>
@@ -30,8 +39,12 @@ const ContaBancaria = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-popover border border-border">
-              <DropdownMenuItem>Transferência Interna</DropdownMenuItem>
-              <DropdownMenuItem>Transferência Externa</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/cadastro/financeiro/transferencias")}>
+                Transferências
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/cadastro/financeiro/transferencias/nova")}>
+                Nova Transferência
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
