@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Download, Eye, FileText, Search } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const NFe = () => {
+  const navigate = useNavigate()
   const nfes = [
     {
       dataEmissao: "02/06/2025",
@@ -50,7 +52,10 @@ const NFe = () => {
         <h1 className="text-2xl font-semibold text-foreground">Notas Fiscais Eletrônicas (NF-e)</h1>
         
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button 
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            onClick={() => navigate("/nfe/nova")}
+          >
             <FileText className="h-4 w-4 mr-2" />
             Nova NF-e
           </Button>
