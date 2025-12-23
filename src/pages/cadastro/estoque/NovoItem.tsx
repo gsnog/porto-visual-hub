@@ -37,7 +37,7 @@ const NovoItem = () => {
             <label className="text-foreground font-medium w-40">Nomenclaturas</label>
             <div className="flex gap-3">
               <Select>
-                <SelectTrigger className="bg-primary text-primary-foreground h-10 px-3 rounded-lg w-52 border-0">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
                   <SelectValue placeholder="Selecionar Nomenclaturas" />
                 </SelectTrigger>
                 <SelectContent>
@@ -74,7 +74,7 @@ const NovoItem = () => {
             <div className="flex-1">
               <div className="flex gap-3">
                 <Select>
-                  <SelectTrigger className="bg-primary text-primary-foreground h-10 px-3 rounded-lg w-52 border-0">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
                     <SelectValue placeholder="Selecionar Fornecedores" />
                   </SelectTrigger>
                   <SelectContent>
@@ -94,7 +94,7 @@ const NovoItem = () => {
             <label className="text-foreground font-medium w-40">Setor</label>
             <div className="flex gap-3">
               <Select>
-                <SelectTrigger className="bg-primary text-primary-foreground h-10 px-3 rounded-lg w-52 border-0">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
                   <SelectValue placeholder="Selecionar Setores" />
                 </SelectTrigger>
                 <SelectContent>
