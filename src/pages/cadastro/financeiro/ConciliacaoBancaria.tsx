@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 
 const ConciliacaoBancaria = () => {
   const navigate = useNavigate();
@@ -11,11 +10,9 @@ const ConciliacaoBancaria = () => {
         <div className="flex items-center gap-4">
           <Button 
             onClick={() => navigate("/cadastro/financeiro/conta-bancaria")}
-            variant="outline"
-            size="icon"
-            className="rounded-lg"
+            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
           >
-            <ArrowLeft className="w-5 h-5" />
+            Voltar
           </Button>
           <h1 className="text-2xl font-semibold text-foreground">Conciliações Efetuadas</h1>
         </div>
