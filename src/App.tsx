@@ -17,6 +17,8 @@ import LancamentoSaida from "./pages/LancamentoSaida";
 import NovoNFe from "./pages/NovoNFe";
 import SaidasPendentes from "./pages/SaidasPendentes";
 import EstoqueEntradas from "./pages/EstoqueEntradas";
+import NovaEntrada from "./pages/estoque/NovaEntrada";
+import UploadNFe from "./pages/estoque/UploadNFe";
 import EstoqueInventario from "./pages/EstoqueInventario";
 import EstoqueLocacoes from "./pages/EstoqueLocacoes";
 import EstoqueRequisicoes from "./pages/EstoqueRequisicoes";
@@ -98,6 +100,8 @@ const App = () => (
                   <Route path="/patrimonio" element={<Patrimonio />} />
                   <Route path="/relatorio" element={<Relatorio />} />
                   <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
+                  <Route path="/estoque/entradas/nova" element={<NovaEntrada />} />
+                  <Route path="/estoque/entradas/upload-nfe" element={<UploadNFe />} />
                   <Route path="/estoque/inventario" element={<EstoqueInventario />} />
                   <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
                   <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
