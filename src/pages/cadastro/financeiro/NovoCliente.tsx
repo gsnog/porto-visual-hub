@@ -26,7 +26,7 @@ const NovoCliente = () => {
 
         <div className="space-y-4 max-w-2xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">CNPJ</label>
+            <label className="text-foreground font-medium w-40">CNPJ</label>
             <div className="flex-1">
               <div className="flex gap-3">
                 <Input 
@@ -45,7 +45,7 @@ const NovoCliente = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">CPF</label>
+            <label className="text-foreground font-medium w-40">CPF</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -53,7 +53,7 @@ const NovoCliente = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Nome</label>
+            <label className="text-foreground font-medium w-40">Nome</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 
@@ -64,7 +64,7 @@ const NovoCliente = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Razão Social</label>
+            <label className="text-foreground font-medium w-40">Razão Social</label>
             <Input 
               placeholder="" 
               className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
@@ -72,7 +72,7 @@ const NovoCliente = () => {
           </div>
 
           <div className="flex items-start gap-8">
-            <label className="text-foreground font-medium w-28 pt-2">Endereço</label>
+            <label className="text-foreground font-medium w-40 pt-2">Endereço</label>
             <div className="flex-1">
               <Textarea 
                 placeholder="" 
@@ -83,7 +83,7 @@ const NovoCliente = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Email</label>
+            <label className="text-foreground font-medium w-40">Email</label>
             <div className="flex-1">
               <Input 
                 type="email"
@@ -95,7 +95,7 @@ const NovoCliente = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-28">Telefone</label>
+            <label className="text-foreground font-medium w-40">Telefone</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 

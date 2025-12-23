@@ -21,7 +21,7 @@ const NovaFormaApresentacao = () => {
 
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-24">Forma</label>
+            <label className="text-foreground font-medium w-40">Forma</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 

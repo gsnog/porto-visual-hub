@@ -22,7 +22,7 @@ const NovaContaBancaria = () => {
 
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Tipo</label>
+            <label className="text-foreground font-medium w-40">Tipo</label>
             <Select>
               <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-40 border border-[#22265B]">
                 <SelectValue placeholder="---------" />
@@ -36,7 +36,7 @@ const NovaContaBancaria = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Código do Banco</label>
+            <label className="text-foreground font-medium w-40">Código do Banco</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 
@@ -47,7 +47,7 @@ const NovaContaBancaria = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Banco</label>
+            <label className="text-foreground font-medium w-40">Banco</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 
@@ -58,7 +58,7 @@ const NovaContaBancaria = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Agência</label>
+            <label className="text-foreground font-medium w-40">Agência</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 
@@ -69,7 +69,7 @@ const NovaContaBancaria = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Número da Conta</label>
+            <label className="text-foreground font-medium w-40">Número da Conta</label>
             <div className="flex-1">
               <Input 
                 placeholder="" 
@@ -80,7 +80,7 @@ const NovaContaBancaria = () => {
           </div>
 
           <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-36">Saldo</label>
+            <label className="text-foreground font-medium w-40">Saldo</label>
             <div className="flex-1">
               <Input 
                 placeholder="0,0" 
