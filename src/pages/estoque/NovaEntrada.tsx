@@ -20,17 +20,17 @@ export default function NovaEntrada() {
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Adicionar Entrada</h1>
 
-        <div className="space-y-4 max-w-xl">
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Data</label>
-            <Input type="date" className="bg-muted text-foreground h-10 px-3 flex-1 rounded-lg" />
+        <div className="space-y-4 max-w-2xl">
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Data</label>
+            <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" />
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Item</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Item</label>
             <div className="flex-1">
               <Select>
-                <SelectTrigger className="bg-muted text-foreground h-10 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
                   <SelectValue placeholder="---------" />
                 </SelectTrigger>
                 <SelectContent>
@@ -38,23 +38,23 @@ export default function NovaEntrada() {
                   <SelectItem value="item2">Item 2</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-destructive mt-1">Obrigatório</p>
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Validade</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Validade</label>
             <div className="flex-1">
-              <Input type="date" className="bg-muted text-foreground h-10 px-3 w-full rounded-lg" />
-              <p className="text-xs text-muted-foreground mt-1">Opcional, caso o produto não tenha validade</p>
+              <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" />
+              <span className="text-muted-foreground text-sm mt-1 block">Opcional, caso o produto não tenha validade</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Estoque de Origem</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Estoque de Origem</label>
             <div className="flex-1">
               <Select>
-                <SelectTrigger className="bg-muted text-foreground h-10 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
                   <SelectValue placeholder="---------" />
                 </SelectTrigger>
                 <SelectContent>
@@ -62,15 +62,15 @@ export default function NovaEntrada() {
                   <SelectItem value="origem2">Estoque 2</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-muted-foreground mt-1">Caso seja nova compra deixar vazio</p>
+              <span className="text-muted-foreground text-sm mt-1 block">Caso seja nova compra deixar vazio</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Estoque de Destino</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Estoque de Destino</label>
             <div className="flex-1">
               <Select>
-                <SelectTrigger className="bg-muted text-foreground h-10 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
                   <SelectValue placeholder="---------" />
                 </SelectTrigger>
                 <SelectContent>
@@ -78,14 +78,14 @@ export default function NovaEntrada() {
                   <SelectItem value="destino2">Estoque 2</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-xs text-destructive mt-1">Obrigatório</p>
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Operação</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Operação</label>
             <Select>
-              <SelectTrigger className="bg-muted text-foreground h-10 rounded-lg flex-1">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-28 border border-[#22265B]">
                 <SelectValue placeholder="---------" />
               </SelectTrigger>
               <SelectContent>
@@ -95,48 +95,55 @@ export default function NovaEntrada() {
             </Select>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Custo Unitário</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Custo Unitário</label>
             <div className="flex-1">
-              <Input type="text" className="bg-muted text-foreground h-10 px-3 w-full rounded-lg" />
-              <p className="text-xs text-destructive mt-1">Obrigatório</p>
+              <Input type="text" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Quantidade</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Quantidade</label>
             <div className="flex-1">
-              <Input type="number" className="bg-muted text-foreground h-10 px-3 w-full rounded-lg" />
-              <p className="text-xs text-destructive mt-1">Obrigatório</p>
+              <Input type="number" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Custo Total</label>
-            <Input type="text" className="bg-muted text-foreground h-10 px-3 flex-1 rounded-lg" />
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Custo Total</label>
+            <Input type="text" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" />
           </div>
 
-          <div className="flex items-center gap-4">
-            <label className="w-40 text-sm font-medium text-foreground">Nota Fiscal</label>
+          <div className="flex items-center gap-8">
+            <label className="text-foreground font-medium w-40">Nota Fiscal</label>
             <div className="flex-1">
-              <Input type="text" className="bg-muted text-foreground h-10 px-3 w-full rounded-lg" />
-              <p className="text-xs text-destructive mt-1">Obrigatório</p>
+              <Input type="text" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" />
+              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
             </div>
           </div>
 
-          <div className="flex items-start gap-4">
-            <label className="w-40 text-sm font-medium text-foreground pt-2">Observação</label>
+          <div className="flex items-start gap-8">
+            <label className="text-foreground font-medium w-40 pt-2">Observação</label>
             <div className="flex-1">
-              <Textarea className="bg-muted text-foreground min-h-[120px] rounded-lg" />
-              <p className="text-xs text-muted-foreground mt-1">Opcional</p>
+              <Textarea className="bg-[#efefef] !text-[#22265B] px-3 rounded-lg border border-[#22265B] w-80 min-h-[150px]" />
+              <span className="text-muted-foreground text-sm mt-1 block">Opcional</span>
             </div>
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button onClick={handleSalvar} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button 
+              onClick={handleSalvar}
+              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+            >
               Salvar
             </Button>
-            <Button onClick={handleCancelar} variant="secondary" className="rounded-lg">
+            <Button 
+              onClick={handleCancelar}
+              variant="destructive"
+              className="rounded-lg px-6"
+            >
               Cancelar
             </Button>
           </div>
