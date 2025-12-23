@@ -75,9 +75,13 @@ import NovoPlanoContas from "./pages/cadastro/financeiro/NovoPlanoContas";
 
 // Operacional
 import SetorOperacional from "./pages/operacional/Setor";
+import NovoSetorOperacional from "./pages/operacional/NovoSetor";
 import Embarcacoes from "./pages/operacional/Embarcacoes";
+import NovaEmbarcacao from "./pages/operacional/NovaEmbarcacao";
 import Operacao from "./pages/operacional/Operacao";
+import NovaOperacao from "./pages/operacional/NovaOperacao";
 import Servicos from "./pages/operacional/Servicos";
+import NovoServico from "./pages/operacional/NovoServico";
 
 const queryClient = new QueryClient();
 
@@ -166,9 +170,13 @@ const App = () => (
                   
                   {/* Operacional */}
                   <Route path="/operacional/setor" element={<SetorOperacional />} />
+                  <Route path="/operacional/setor/novo" element={<NovoSetorOperacional />} />
                   <Route path="/operacional/embarcacoes" element={<Embarcacoes />} />
+                  <Route path="/operacional/embarcacoes/nova" element={<NovaEmbarcacao />} />
                   <Route path="/operacional/operacao" element={<Operacao />} />
+                  <Route path="/operacional/operacao/nova" element={<NovaOperacao />} />
                   <Route path="/operacional/servicos" element={<Servicos />} />
+                  <Route path="/operacional/servicos/novo" element={<NovoServico />} />
                   
                   <Route path="/novo-usuario" element={<Cadastro />} />
                   <Route path="/planos" element={<Dashboard />} />
