@@ -30,6 +30,7 @@ import NotFound from "./pages/NotFound";
 
 // Cadastro - Estoque
 import FormasApresentacao from "./pages/cadastro/estoque/FormasApresentacao";
+import NovaFormaApresentacao from "./pages/cadastro/estoque/NovaFormaApresentacao";
 import FornecedoresEstoque from "./pages/cadastro/estoque/Fornecedores";
 import Itens from "./pages/cadastro/estoque/Itens";
 import Setores from "./pages/cadastro/estoque/Setores";
@@ -92,6 +93,7 @@ const App = () => (
                   
                   {/* Cadastro - Estoque */}
                   <Route path="/cadastro/estoque/formas-apresentacao" element={<FormasApresentacao />} />
+                  <Route path="/cadastro/estoque/formas-apresentacao/nova" element={<NovaFormaApresentacao />} />
                   <Route path="/cadastro/estoque/fornecedores" element={<FornecedoresEstoque />} />
                   <Route path="/cadastro/estoque/itens" element={<Itens />} />
                   <Route path="/cadastro/estoque/setores" element={<Setores />} />
