@@ -38,6 +38,7 @@ import NovoItem from "./pages/cadastro/estoque/NovoItem";
 import Setores from "./pages/cadastro/estoque/Setores";
 import NovoSetor from "./pages/cadastro/estoque/NovoSetor";
 import Unidades from "./pages/cadastro/estoque/Unidades";
+import NovaUnidade from "./pages/cadastro/estoque/NovaUnidade";
 
 // Cadastro - Financeiro
 import ContaBancaria from "./pages/cadastro/financeiro/ContaBancaria";
@@ -104,6 +105,7 @@ const App = () => (
                   <Route path="/cadastro/estoque/setores" element={<Setores />} />
                   <Route path="/cadastro/estoque/setores/novo" element={<NovoSetor />} />
                   <Route path="/cadastro/estoque/unidades" element={<Unidades />} />
+                  <Route path="/cadastro/estoque/unidades/nova" element={<NovaUnidade />} />
                   
                   {/* Cadastro - Financeiro */}
                   <Route path="/cadastro/financeiro/conta-bancaria" element={<ContaBancaria />} />
