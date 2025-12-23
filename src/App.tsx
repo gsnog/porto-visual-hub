@@ -61,6 +61,7 @@ import NovoFornecedorFinanceiro from "./pages/cadastro/financeiro/NovoFornecedor
 import Subcategorias from "./pages/cadastro/financeiro/Subcategorias";
 import NovaSubcategoria from "./pages/cadastro/financeiro/NovaSubcategoria";
 import PlanoContas from "./pages/cadastro/financeiro/PlanoContas";
+import NovoPlanoContas from "./pages/cadastro/financeiro/NovoPlanoContas";
 
 // Operacional
 import SetorOperacional from "./pages/operacional/Setor";
@@ -139,6 +140,7 @@ const App = () => (
                   <Route path="/cadastro/financeiro/subcategorias" element={<Subcategorias />} />
                   <Route path="/cadastro/financeiro/subcategorias/nova" element={<NovaSubcategoria />} />
                   <Route path="/cadastro/financeiro/plano-contas" element={<PlanoContas />} />
+                  <Route path="/cadastro/financeiro/plano-contas/novo" element={<NovoPlanoContas />} />
                   
                   {/* Operacional */}
                   <Route path="/operacional/setor" element={<SetorOperacional />} />
