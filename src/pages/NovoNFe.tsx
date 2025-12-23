@@ -1,50 +1,69 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useNavigate } from "react-router-dom"
+import { ArrowLeft } from "lucide-react"
 
 const NovoNFe = () => {
+  const navigate = useNavigate()
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Nova NF-e</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Adicionar NF-e</h1>
         
         <div className="max-w-2xl space-y-6">
-          <div>
-            <Label className="text-sm font-medium text-foreground mb-2 block">Número</Label>
-            <Input placeholder="Número da NF-e" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
+            <Label className="text-sm font-medium text-foreground pt-2">Numero</Label>
             <div>
-              <Label className="text-sm font-medium text-foreground">Documento PDF</Label>
-            </div>
-            <div>
-              <Button className="w-full rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Escolher Ficheiro</Button>
+              <Input className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
+              <span className="text-xs text-muted-foreground">Obrigatório</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
+            <Label className="text-sm font-medium text-foreground pt-2">PDF</Label>
             <div>
-              <Label className="text-sm font-medium text-foreground">Documento XML</Label>
-            </div>
-            <div>
-              <Button className="w-full rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Escolher Ficheiro</Button>
+              <input type="file" accept=".pdf" className="text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80" />
+              <span className="text-xs text-muted-foreground block mt-1">Opcional</span>
             </div>
           </div>
 
-          <div>
-            <Label className="text-sm font-medium text-foreground mb-2 block">Valor Total</Label>
-            <Input placeholder="R$ 0,00" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" />
+          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
+            <Label className="text-sm font-medium text-foreground pt-2">XML</Label>
+            <div>
+              <input type="file" accept=".xml" className="text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-muted file:text-foreground hover:file:bg-muted/80" />
+              <span className="text-xs text-muted-foreground block mt-1">Opcional</span>
+            </div>
           </div>
 
-          <div>
-            <Label className="text-sm font-medium text-foreground mb-2 block">Data de Faturamento</Label>
-            <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
+          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
+            <Label className="text-sm font-medium text-foreground pt-2">Valor Total</Label>
+            <div>
+              <Input className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg" />
+              <span className="text-xs text-muted-foreground">Obrigatório</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[200px_1fr] gap-4 items-start">
+            <Label className="text-sm font-medium text-foreground pt-2">Data de Faturamento</Label>
+            <div>
+              <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-48" />
+              <span className="text-xs text-muted-foreground block mt-1">Obrigatório</span>
+            </div>
           </div>
 
           <div className="flex gap-4 pt-4">
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Gerar</Button>
+            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
             <Button variant="outline" className="rounded-lg border-primary text-primary hover:bg-primary/10">Cancelar</Button>
+            <Button 
+              variant="outline" 
+              className="rounded-lg border-primary text-primary hover:bg-primary/10"
+              onClick={() => navigate("/nfe")}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar
+            </Button>
           </div>
         </div>
       </div>
