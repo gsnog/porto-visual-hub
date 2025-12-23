@@ -110,7 +110,7 @@ const MenuToggleIcon = ({ isOpen }: { isOpen: boolean }) => (
     style={{ transform: isOpen ? "none" : "scaleX(-1)", transition: "transform .3s ease-in-out" }}
     className="shrink-0"
   >
-    <circle cx="37" cy="37" r="33" fill="#FF8000"/>
+    <circle cx="37" cy="37" r="33" fill="hsl(30, 100%, 50%)"/>
     <path d="M38.3714 50L46 50L35.6286 37.5L46 25L38.3714 25L28 37.5L38.3714 50Z" fill="white" />
   </svg>
 )
@@ -218,7 +218,7 @@ export function AppSidebar() {
   }
   
   const getMainItemBorderClass = (item: typeof menuItems[0]) => {
-    return isMainItemActive(item) ? "border-l-4 border-[#FF8000]" : "border-l-4 border-transparent"
+    return isMainItemActive(item) ? "border-l-4 border-primary" : "border-l-4 border-transparent"
   }
 
   return (
@@ -250,7 +250,7 @@ export function AppSidebar() {
 
       <SidebarContent className="bg-sidebar text-[--sidebar-text] relative overflow-visible">
         <div className="p-6 flex items-center gap-5">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shrink-0" style={{ backgroundColor: '#FF8000' }}>
+          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
             PP
           </div>
           <div className={`min-w-0 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>

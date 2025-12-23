@@ -401,7 +401,7 @@ export default function Cadastro() {
           <Button variant="outline" className="px-8">
             Cancelar
           </Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white px-8">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8">
             Salvar
           </Button>
         </div>
