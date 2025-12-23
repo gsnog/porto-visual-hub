@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
 
 const NovoNFe = () => {
   const navigate = useNavigate()
@@ -55,14 +54,12 @@ const NovoNFe = () => {
 
           <div className="flex gap-4 pt-4">
             <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
-            <Button variant="outline" className="rounded-lg border-primary text-primary hover:bg-primary/10">Cancelar</Button>
             <Button 
               variant="outline" 
               className="rounded-lg border-primary text-primary hover:bg-primary/10"
               onClick={() => navigate("/nfe")}
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
+              Cancelar
             </Button>
           </div>
         </div>
