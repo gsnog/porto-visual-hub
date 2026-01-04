@@ -265,24 +265,24 @@ export function AppSidebar() {
         <div className="flex-1 p-4 overflow-y-auto">
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-6">
+              <SidebarMenu className="space-y-4">
                 {menuItems.map((item) => (
                   item.subItems ? (
                     <SidebarMenuItem key={item.title} className={getMainItemBorderClass(item)}>
                       <SidebarMenuButton
                         onClick={() => toggleMenu(item.title)}
-                        className={`w-full justify-between ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70" : ""}`}
+                        className={`w-full justify-between px-3 py-2.5 ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70" : ""}`}
                         tooltip={item.title}
                       >
                         <div className="flex items-center gap-3">
-                          <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
-                          {open && <span className="text-lg">{item.title}</span>}
+                          <item.icon className="h-5 w-5 shrink-0 text-sidebar-foreground" />
+                          {open && <span className="text-base text-sidebar-foreground">{item.title}</span>}
                         </div>
-                        {open && (openMenus[item.title] ? <ChevronDown size={22} /> : <ChevronRight size={22} />)}
+                        {open && (openMenus[item.title] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
                       </SidebarMenuButton>
                       
                       {open && openMenus[item.title] && (
-                        <div className="mt-3 space-y-3">
+                        <div className="mt-2 space-y-1">
                           {item.subItems.map(subItem => (
                             'subItems' in subItem && subItem.subItems ? (
                               <div key={subItem.title}>
@@ -291,19 +291,19 @@ export function AppSidebar() {
                                   className="pl-9 pr-3 py-2 w-full justify-between"
                                   tooltip={subItem.title}
                                 >
-                                  <span className="!text-base font-medium text-[--sidebar-text]">{subItem.title}</span>
-                                  {openMenus[`${item.title}-${subItem.title}`] ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                                  <span className="text-sm font-medium text-sidebar-foreground">{subItem.title}</span>
+                                  {openMenus[`${item.title}-${subItem.title}`] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                                 </SidebarMenuButton>
                                 
                                 {openMenus[`${item.title}-${subItem.title}`] && (
-                                  <div className="mt-2 space-y-2">
+                                  <div className="mt-1 space-y-1">
                                     {subItem.subItems.map(nestedItem => (
                                       <SidebarMenuButton key={nestedItem.title} asChild tooltip={nestedItem.title} className="h-auto">
                                         <NavLink
                                           to={nestedItem.url}
                                           className={({isActive}) =>
-                                            `pl-14 pr-3 py-2 !text-sm ${
-                                              isActive ? "font-semibold text-sidebar-primary" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
+                                            `pl-14 pr-3 py-1.5 text-sm ${
+                                              isActive ? "font-semibold text-sidebar-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
                                             }`
                                           }
                                         >
@@ -319,8 +319,8 @@ export function AppSidebar() {
                                 <NavLink
                                   to={'url' in subItem ? subItem.url : '#'}
                                   className={({isActive}) =>
-                                    `pl-9 pr-3 py-2 !text-base ${
-                                      isActive ? "font-semibold text-sidebar-primary" : "text-[--sidebar-text-muted] hover:text-[--sidebar-text]"
+                                    `pl-9 pr-3 py-1.5 text-sm ${
+                                      isActive ? "font-semibold text-sidebar-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
                                     }`
                                   }
                                 >
@@ -334,10 +334,12 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                   ) : (
                     <SidebarMenuItem key={item.title} className={getMainItemBorderClass(item)}>
-                      <SidebarMenuButton asChild tooltip={item.title} onClick={() => setActiveMainItem(item.title)}>
+                      <SidebarMenuButton asChild tooltip={item.title} onClick={() => setActiveMainItem(item.title)} className="px-3 py-2.5">
                         <NavLink to={item.url} className="hover:bg-sidebar-accent/50">
-                          <item.icon size={22} style={{ width: '22px', height: '22px', minWidth: '22px', minHeight: '22px' }} className="text-[--sidebar-text]" />
-                          {open && <span className="text-[--sidebar-text] text-lg">{item.title}</span>}
+                          <div className="flex items-center gap-3">
+                            <item.icon className="h-5 w-5 shrink-0 text-sidebar-foreground" />
+                            {open && <span className="text-base text-sidebar-foreground">{item.title}</span>}
+                          </div>
                         </NavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
