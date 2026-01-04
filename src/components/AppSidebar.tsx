@@ -153,16 +153,8 @@ function applyTheme(theme: "light" | "dark") {
   const root = document.documentElement
   if (theme === "dark") {
     root.classList.add("dark")
-    root.setAttribute("data-theme", "dark")
-    root.style.colorScheme = "dark"
-    root.style.setProperty("--sidebar-text", "#ffffff")
-    root.style.setProperty("--sidebar-text-muted", "rgba(255, 255, 255, 0.6)")
   } else {
     root.classList.remove("dark")
-    root.setAttribute("data-theme", "light")
-    root.style.colorScheme = "light"
-    root.style.setProperty("--sidebar-text", "#000000")
-    root.style.setProperty("--sidebar-text-muted", "rgba(0, 0, 0, 0.6)")
   }
 }
 
