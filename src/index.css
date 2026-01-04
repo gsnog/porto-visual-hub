@@ -148,12 +148,12 @@ All colors MUST be HSL.
     opacity: 0.7 !important;
   }
 
-  /* Date input specific styles for dark mode */
-  .dark input[type="date"],
-  .dark input[type="datetime-local"],
-  .dark input[type="time"] {
-    background-color: hsl(var(--input-background)) !important;
-    color: hsl(var(--input-placeholder)) !important;
+  /* Date input specific styles */
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="time"] {
+    background-color: #efefef !important;
+    color: #22265B !important;
   }
 
   .dark input[type="date"]::-webkit-calendar-picker-indicator,
