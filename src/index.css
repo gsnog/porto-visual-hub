@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,94 +10,100 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background-image: url('/background.svg'); /* Main content background - dark navy blue */
-    --foreground: 0 0% 100%;
-
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 231 38% 25%;
-
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 231 38% 25%;
-
-    --primary: 30 100% 50%; /* #FF8000 Orange accent color */
+    --popover-foreground: 222 47% 11%;
+    --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 231 38% 30%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 231 38% 30%;
-    --muted-foreground: 220 13% 69%;
-
-    --accent: 30 100% 50%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
-    --success: 142 71% 45%;
+    --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-
-    --border: 231 38% 35%;
-    --input: 0 0% 100%;
-    --ring: 30 100% 50%;
-
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 24 95% 53%;
     --radius: 0.75rem;
 
-    /* Custom colors for inputs and tables */
-    --input-background: 0 0% 93.7%; /* #EFEFEF */
-    --input-placeholder: 0 0% 0%; /* Black */
-    --table-background: 0 0% 100%; /* White */
-    --table-hover: 235 46% 25%; /* #22265B */
-
     /* Sidebar colors - Light mode */
-    --sidebar-background: 0 0% 96%; /* #F5F5F5 - light gray */
-    --sidebar-foreground: 0 0% 20%; /* Dark gray text */
-    --sidebar-primary: 30 100% 50%; /* #FF8000 Orange */
+    --sidebar-background: 222 47% 15%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 24 95% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 90%; /* Slightly darker gray for hover */
-    --sidebar-accent-foreground: 0 0% 20%;
-    --sidebar-border: 0 0% 88%;
-    --sidebar-ring: 30 100% 50%;
+    --sidebar-accent: 222 47% 20%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 47% 20%;
+    --sidebar-ring: 24 95% 53%;
+    --sidebar-muted: 220 20% 70%;
+
+    /* Chart colors */
+    --chart-1: 24 95% 53%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 222 47% 15%;
+    --chart-4: 220 14% 60%;
+    --chart-5: 0 84% 60%;
+
+    /* Custom colors for inputs and tables */
+    --input-background: 0 0% 93.7%;
+    --input-placeholder: 0 0% 0%;
+    --table-background: 0 0% 100%;
+    --table-hover: 235 46% 25%;
   }
 
   .dark {
-    --background-image: url('/background.svg'); /* Main content background - dark navy blue */
-    --foreground: 0 0% 100%;
-
-    --card: 231 38% 25%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 231 38% 25%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 30 100% 50%; /* #FF8000 Orange stays the same */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 15%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 15%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 231 38% 30%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 231 38% 30%;
-    --muted-foreground: 220 13% 69%;
-
-    --accent: 30 100% 50%;
+    --secondary: 222 47% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 47% 20%;
+    --muted-foreground: 220 20% 70%;
+    --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 231 38% 35%;
-    --input: 231 38% 30%;
-    --ring: 30 100% 50%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --border: 222 47% 20%;
+    --input: 222 47% 20%;
+    --ring: 24 95% 53%;
 
     /* Sidebar colors - Dark mode */
-    --sidebar-background: 237 35% 15%; /* #1A1D35 - very dark navy */
-    --sidebar-foreground: 0 0% 100%; /* White text */
-    --sidebar-primary: 30 100% 50%; /* #FF8000 Orange */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 24 95% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 237 35% 20%; /* Slightly lighter navy for hover */
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 237 35% 18%;
-    --sidebar-ring: 30 100% 50%;
+    --sidebar-accent: 222 47% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 47% 15%;
+    --sidebar-ring: 24 95% 53%;
+    --sidebar-muted: 220 20% 70%;
+
+    /* Chart colors - dark mode */
+    --chart-1: 24 95% 53%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 222 47% 15%;
+    --chart-4: 220 14% 60%;
+    --chart-5: 0 84% 60%;
+
+    /* Custom colors for inputs and tables - dark mode */
+    --input-background: 222 47% 20%;
+    --input-placeholder: 210 40% 98%;
+    --table-background: 222 47% 15%;
+    --table-hover: 222 47% 25%;
   }
 }
 
@@ -104,19 +112,9 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  html {
-    background-color: #22265B;
-    background-image: url('/background.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-  }
-
   body {
-    @apply text-foreground;
-    background: transparent;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
     min-height: 100vh;
   }
 
@@ -147,7 +145,7 @@ All colors MUST be HSL.
   textarea::placeholder,
   .input-custom::placeholder {
     color: hsl(var(--input-placeholder)) !important;
-    opacity: 1 !important;
+    opacity: 0.7 !important;
   }
 
   /* Custom table styles */
