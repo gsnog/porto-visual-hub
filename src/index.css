@@ -148,6 +148,20 @@ All colors MUST be HSL.
     opacity: 0.7 !important;
   }
 
+  /* Date input specific styles for dark mode */
+  .dark input[type="date"],
+  .dark input[type="datetime-local"],
+  .dark input[type="time"] {
+    color: hsl(var(--input-placeholder)) !important;
+    color-scheme: dark;
+  }
+
+  .dark input[type="date"]::-webkit-calendar-picker-indicator,
+  .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+  .dark input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
   /* Custom table styles */
   .table-custom {
     background-color: hsl(var(--table-background)) !important;
