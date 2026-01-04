@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, DollarSign, Package, Users } from "lucide-react"
+import { PortfolioChart } from "@/components/PortfolioChart"
 
 const Dashboard = () => {
   return (
@@ -9,7 +10,7 @@ const Dashboard = () => {
         <p className="text-muted-foreground">Visão geral do seu sistema</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="border border-[#E3E3E3] rounded-lg">
+          <Card className="border border-border rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Receitas</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -20,7 +21,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#E3E3E3] rounded-lg">
+          <Card className="border border-border rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">NF-e Emitidas</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
@@ -31,7 +32,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#E3E3E3] rounded-lg">
+          <Card className="border border-border rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Clientes Ativos</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -42,7 +43,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#E3E3E3] rounded-lg">
+          <Card className="border border-border rounded-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Crescimento</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -54,8 +55,11 @@ const Dashboard = () => {
           </Card>
         </div>
 
+        {/* Portfolio Chart */}
+        <PortfolioChart />
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="border border-[#E3E3E3] rounded-lg">
+          <Card className="border border-border rounded-lg">
             <CardHeader>
               <CardTitle>Atividades Recentes</CardTitle>
             </CardHeader>
@@ -86,7 +90,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#E3E3E3] rounded-lg">
+          <Card className="border border-border rounded-lg">
             <CardHeader>
               <CardTitle>Resumo Financeiro</CardTitle>
             </CardHeader>
@@ -94,11 +98,11 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Contas a Receber</span>
-                  <span className="font-medium text-green-600">R$ 25.430,00</span>
+                  <span className="font-medium text-success">R$ 25.430,00</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Contas a Pagar</span>
-                  <span className="font-medium text-red-600">R$ 8.234,00</span>
+                  <span className="font-medium text-destructive">R$ 8.234,00</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Saldo Atual</span>
