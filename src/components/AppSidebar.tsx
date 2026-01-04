@@ -241,13 +241,13 @@ export function AppSidebar() {
       )}
 
       <SidebarContent className="bg-sidebar text-[--sidebar-text] relative overflow-visible">
-        <div className="p-6 flex items-center gap-5">
-          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
+        <div className="p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shrink-0">
             PP
           </div>
           <div className={`min-w-0 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-            <h3 className="font-semibold truncate text-[--sidebar-text]">Pedro Piaes</h3>
-            <p className="text-sm truncate text-[--sidebar-text-muted]">Desenvolvedor</p>
+            <h3 className="font-semibold truncate text-sm text-sidebar-foreground">Pedro Piaes</h3>
+            <p className="text-xs truncate text-sidebar-muted">Desenvolvedor</p>
           </div>
         </div>
 
@@ -262,47 +262,47 @@ export function AppSidebar() {
 
         <Separator className="bg-sidebar-border" />
 
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 px-3 py-2 overflow-y-auto">
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-4">
+              <SidebarMenu className="space-y-1">
                 {menuItems.map((item) => (
                   item.subItems ? (
                     <SidebarMenuItem key={item.title} className={getMainItemBorderClass(item)}>
                       <SidebarMenuButton
                         onClick={() => toggleMenu(item.title)}
-                        className={`w-full justify-between px-3 py-2.5 ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70" : ""}`}
+                        className={`w-full justify-between px-2 py-1.5 ${location.pathname.startsWith(item.basePath || "") ? "bg-sidebar-accent/70" : ""}`}
                         tooltip={item.title}
                       >
-                        <div className="flex items-center gap-3">
-                          <item.icon className="h-5 w-5 shrink-0 text-sidebar-foreground" />
-                          {open && <span className="text-base text-sidebar-foreground">{item.title}</span>}
+                        <div className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4 shrink-0 text-sidebar-foreground" />
+                          {open && <span className="text-sm text-sidebar-foreground">{item.title}</span>}
                         </div>
-                        {open && (openMenus[item.title] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
+                        {open && (openMenus[item.title] ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />)}
                       </SidebarMenuButton>
                       
                       {open && openMenus[item.title] && (
-                        <div className="mt-2 space-y-1">
+                        <div className="mt-1 space-y-0.5">
                           {item.subItems.map(subItem => (
                             'subItems' in subItem && subItem.subItems ? (
                               <div key={subItem.title}>
                                 <SidebarMenuButton
                                   onClick={() => toggleMenu(`${item.title}-${subItem.title}`)}
-                                  className="pl-9 pr-3 py-2 w-full justify-between"
+                                  className="pl-7 pr-2 py-1 w-full justify-between"
                                   tooltip={subItem.title}
                                 >
-                                  <span className="text-sm font-medium text-sidebar-foreground">{subItem.title}</span>
-                                  {openMenus[`${item.title}-${subItem.title}`] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                  <span className="text-xs font-medium text-sidebar-foreground">{subItem.title}</span>
+                                  {openMenus[`${item.title}-${subItem.title}`] ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
                                 </SidebarMenuButton>
                                 
                                 {openMenus[`${item.title}-${subItem.title}`] && (
-                                  <div className="mt-1 space-y-1">
+                                  <div className="mt-0.5 space-y-0.5">
                                     {subItem.subItems.map(nestedItem => (
                                       <SidebarMenuButton key={nestedItem.title} asChild tooltip={nestedItem.title} className="h-auto">
                                         <NavLink
                                           to={nestedItem.url}
                                           className={({isActive}) =>
-                                            `pl-14 pr-3 py-1.5 text-sm ${
+                                            `pl-10 pr-2 py-1 text-xs ${
                                               isActive ? "font-semibold text-sidebar-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
                                             }`
                                           }
@@ -319,7 +319,7 @@ export function AppSidebar() {
                                 <NavLink
                                   to={'url' in subItem ? subItem.url : '#'}
                                   className={({isActive}) =>
-                                    `pl-9 pr-3 py-1.5 text-sm ${
+                                    `pl-7 pr-2 py-1 text-xs ${
                                       isActive ? "font-semibold text-sidebar-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
                                     }`
                                   }
@@ -334,11 +334,11 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                   ) : (
                     <SidebarMenuItem key={item.title} className={getMainItemBorderClass(item)}>
-                      <SidebarMenuButton asChild tooltip={item.title} onClick={() => setActiveMainItem(item.title)} className="px-3 py-2.5">
+                      <SidebarMenuButton asChild tooltip={item.title} onClick={() => setActiveMainItem(item.title)} className="px-2 py-1.5">
                         <NavLink to={item.url} className="hover:bg-sidebar-accent/50">
-                          <div className="flex items-center gap-3">
-                            <item.icon className="h-5 w-5 shrink-0 text-sidebar-foreground" />
-                            {open && <span className="text-base text-sidebar-foreground">{item.title}</span>}
+                          <div className="flex items-center gap-2">
+                            <item.icon className="h-4 w-4 shrink-0 text-sidebar-foreground" />
+                            {open && <span className="text-sm text-sidebar-foreground">{item.title}</span>}
                           </div>
                         </NavLink>
                       </SidebarMenuButton>
@@ -352,26 +352,26 @@ export function AppSidebar() {
 
         <Separator className="bg-sidebar-border" />
         
-        <div className="p-4 space-y-10">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-5 h-5">
+        <div className="p-3 space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-4 h-4">
             </div>
             <div className={`flex items-center justify-between w-full transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-              <span className="text-sm">
+              <span className="text-xs">
                 {isDayMode ? "Modo Diurno" : "Modo Noturno"}
               </span>
               <ThemeToggleSvg
-                className="ml-4"
+                className="ml-2"
                 checked={isDayMode}
                 onChange={(next) => setTheme(next ? "light" : "dark")}
               />
             </div>
           </div>
 
-          <SidebarMenuButton asChild tooltip="Sair">
-            <button className="w-full justify-start hover:bg-sidebar-accent text-[--sidebar-text-muted] hover:text-[--sidebar-text]">
-              <LogOut className="h-5 w-5 text-[--sidebar-text-muted]" />
-              <span>Sair</span>
+          <SidebarMenuButton asChild tooltip="Sair" className="py-1.5">
+            <button className="w-full justify-start hover:bg-sidebar-accent text-sidebar-muted hover:text-sidebar-foreground">
+              <LogOut className="h-4 w-4 text-sidebar-muted" />
+              <span className="text-sm">Sair</span>
             </button>
           </SidebarMenuButton>
         </div>
