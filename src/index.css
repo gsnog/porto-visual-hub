@@ -1,12 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -26,7 +22,7 @@ All colors MUST be HSL.
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --success: 142 76% 36%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
     --warning: 45 93% 47%;
     --warning-foreground: 0 0% 0%;
@@ -35,16 +31,30 @@ All colors MUST be HSL.
     --ring: 24 95% 53%;
     --radius: 0.75rem;
 
-    /* Sidebar colors - Light mode */
+    /* Sidebar colors */
+    --sidebar-bg: 220 40% 13%;
+    --sidebar-foreground: 220 20% 85%;
+    --sidebar-accent: 24 95% 53%;
+    --sidebar-hover: 220 35% 18%;
+    --sidebar-active: 220 35% 20%;
     --sidebar-background: 220 40% 13%;
-    --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 24 95% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 40% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 40% 18%;
     --sidebar-ring: 24 95% 53%;
-    --sidebar-muted: 0 0% 80%;
+    --sidebar-muted: 220 20% 70%;
+
+    /* Status colors */
+    --status-progress: 24 95% 53%;
+    --status-done: 142 71% 45%;
+    --status-pending: 45 93% 47%;
+
+    /* Table colors */
+    --table-header: 220 40% 13%;
+    --table-row-alt: 220 20% 98%;
+    --table-background: 0 0% 100%;
+    --table-hover: 235 46% 25%;
 
     /* Chart colors */
     --chart-1: 24 95% 53%;
@@ -53,49 +63,50 @@ All colors MUST be HSL.
     --chart-4: 220 14% 60%;
     --chart-5: 0 84% 60%;
 
-    /* Custom colors for inputs and tables */
+    /* Input colors */
     --input-background: 0 0% 93.7%;
     --input-placeholder: 0 0% 0%;
-    --table-background: 0 0% 100%;
-    --table-header: 220 40% 13%;
-    --table-hover: 235 46% 25%;
   }
 
   .dark {
     --background: 222 47% 8%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 12%;
-    --popover-foreground: 210 40% 98%;
+    --foreground: 220 20% 95%;
+    --card: 222 47% 11%;
+    --card-foreground: 220 20% 95%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 220 20% 95%;
     --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
     --secondary: 222 47% 15%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 47% 15%;
-    --muted-foreground: 220 20% 70%;
+    --secondary-foreground: 220 20% 95%;
+    --muted: 220 35% 18%;
+    --muted-foreground: 220 20% 65%;
     --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
-    --success: 142 76% 36%;
+    --destructive-foreground: 220 20% 95%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
     --warning: 45 93% 47%;
     --warning-foreground: 0 0% 0%;
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
+    --border: 220 35% 20%;
+    --input: 220 35% 20%;
     --ring: 24 95% 53%;
 
     /* Sidebar colors - Dark mode */
-    --sidebar-background: 220 40% 10%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 24 95% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 40% 15%;
-    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-bg: 220 45% 10%;
+    --sidebar-foreground: 220 20% 85%;
+    --sidebar-background: 220 45% 10%;
+    --sidebar-hover: 220 40% 15%;
+    --sidebar-active: 220 40% 18%;
     --sidebar-border: 220 40% 15%;
-    --sidebar-ring: 24 95% 53%;
-    --sidebar-muted: 220 20% 70%;
+    --sidebar-muted: 220 20% 60%;
+
+    /* Table colors - dark mode */
+    --table-header: 220 40% 15%;
+    --table-row-alt: 222 47% 13%;
+    --table-background: 222 47% 11%;
+    --table-hover: 222 47% 20%;
 
     /* Chart colors - dark mode */
     --chart-1: 24 95% 53%;
@@ -104,16 +115,11 @@ All colors MUST be HSL.
     --chart-4: 220 14% 60%;
     --chart-5: 0 84% 60%;
 
-    /* Custom colors for inputs and tables - dark mode */
+    /* Input colors - dark mode */
     --input-background: 222 47% 18%;
-    --input-placeholder: 210 40% 98%;
-    --table-background: 222 47% 12%;
-    --table-header: 220 40% 10%;
-    --table-hover: 222 47% 20%;
+    --input-placeholder: 220 20% 95%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -122,36 +128,6 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
-  }
-
-  /* Custom input styles */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="number"],
-  input[type="tel"],
-  input[type="date"],
-  input[type="datetime-local"],
-  input[type="time"],
-  input[type="search"],
-  textarea,
-  .input-custom {
-    background-color: hsl(var(--input-background)) !important;
-  }
-
-  input[type="text"]::placeholder,
-  input[type="email"]::placeholder,
-  input[type="password"]::placeholder,
-  input[type="number"]::placeholder,
-  input[type="tel"]::placeholder,
-  input[type="date"]::placeholder,
-  input[type="datetime-local"]::placeholder,
-  input[type="time"]::placeholder,
-  input[type="search"]::placeholder,
-  textarea::placeholder,
-  .input-custom::placeholder {
-    color: hsl(var(--input-placeholder)) !important;
-    opacity: 0.7 !important;
   }
 
   /* Date input specific styles */
@@ -167,8 +143,90 @@ All colors MUST be HSL.
   .dark input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
   }
+}
 
-  /* Custom table styles */
+@layer components {
+  /* Sidebar styles */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 cursor-pointer;
+  }
+  
+  .sidebar-item:hover { 
+    background: hsl(var(--sidebar-hover)); 
+  }
+  
+  .sidebar-item.active { 
+    background: hsl(var(--sidebar-active)); 
+    border-left: 3px solid hsl(var(--sidebar-accent)); 
+  }
+
+  /* Table styles */
+  .table-professional { 
+    @apply w-full border-collapse; 
+  }
+  
+  .table-professional thead { 
+    background: hsl(var(--table-header)); 
+  }
+  
+  .table-professional th { 
+    @apply px-4 py-3 text-left text-sm font-semibold text-white; 
+  }
+  
+  .table-professional tbody tr:nth-child(even) { 
+    background: hsl(var(--table-row-alt)); 
+  }
+  
+  .table-professional tbody tr { 
+    @apply border-b border-border transition-colors duration-150; 
+  }
+  
+  .table-professional tbody tr:hover { 
+    @apply bg-muted/50; 
+  }
+  
+  .table-professional td { 
+    @apply px-4 py-4 text-sm; 
+  }
+
+  /* Status badges */
+  .status-badge { 
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium; 
+  }
+  
+  .status-progress { 
+    background: hsl(var(--status-progress) / 0.15);
+    color: hsl(var(--status-progress)); 
+  }
+  
+  .status-done { 
+    background: hsl(var(--status-done) / 0.15);
+    color: hsl(var(--status-done)); 
+  }
+  
+  .status-pending { 
+    background: hsl(var(--status-pending) / 0.15);
+    color: hsl(45 93% 35%); 
+  }
+
+  /* Filter styles */
+  .filter-input { 
+    @apply h-10 px-4 rounded-lg border border-border bg-card text-sm transition-all duration-200; 
+  }
+  
+  .filter-input:focus { 
+    @apply outline-none ring-2 ring-primary/20 border-primary; 
+  }
+
+  .filter-card {
+    @apply bg-card rounded-lg shadow-sm border border-border p-4;
+  }
+
+  .filter-label {
+    @apply text-xs text-muted-foreground mb-1.5 block;
+  }
+
+  /* Legacy table-custom for backwards compatibility */
   .table-custom {
     background-color: hsl(var(--table-background)) !important;
   }
@@ -187,7 +245,7 @@ All colors MUST be HSL.
   }
 
   .table-custom tbody tr:nth-child(even) {
-    background-color: hsl(var(--muted)) !important;
+    background-color: hsl(var(--table-row-alt)) !important;
   }
 
   .table-custom tbody tr:hover {
@@ -203,49 +261,5 @@ All colors MUST be HSL.
     color: white !important;
     background-color: rgba(255, 255, 255, 0.2) !important;
     border-color: rgba(255, 255, 255, 0.3) !important;
-  }
-
-  /* Focus ring for inputs */
-  input:focus,
-  textarea:focus,
-  select:focus {
-    outline: none !important;
-    ring: 2px !important;
-    ring-color: hsl(var(--primary)) !important;
-    border-color: hsl(var(--primary)) !important;
-  }
-}
-
-/* Status badges */
-@layer components {
-  .badge-status {
-    @apply px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  .badge-em-andamento {
-    @apply bg-primary/20 text-primary;
-  }
-
-  .badge-finalizado {
-    @apply bg-success/20 text-success;
-  }
-
-  .badge-pendente {
-    @apply bg-warning/20 text-warning-foreground;
-    background-color: hsl(45 93% 47% / 0.2);
-    color: hsl(45 93% 35%);
-  }
-
-  /* Filter card styling */
-  .filter-card {
-    @apply bg-card rounded-lg shadow-sm border border-border p-4;
-  }
-
-  .filter-label {
-    @apply text-xs text-muted-foreground mb-1.5 block;
-  }
-
-  .filter-input {
-    @apply border border-border rounded-lg px-3 py-2 text-sm w-full focus:ring-2 focus:ring-primary focus:border-primary;
   }
 }
