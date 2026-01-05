@@ -10,7 +10,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 220 20% 97%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -28,26 +28,28 @@ All colors MUST be HSL.
     --destructive-foreground: 0 0% 100%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 0%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 24 95% 53%;
     --radius: 0.75rem;
 
-    /* Sidebar colors - Light mode (same as dark for consistent white text) */
-    --sidebar-background: 222 47% 15%;
+    /* Sidebar colors - Light mode */
+    --sidebar-background: 220 40% 13%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 24 95% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 20%;
+    --sidebar-accent: 220 40% 18%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 47% 20%;
+    --sidebar-border: 220 40% 18%;
     --sidebar-ring: 24 95% 53%;
     --sidebar-muted: 0 0% 80%;
 
     /* Chart colors */
     --chart-1: 24 95% 53%;
     --chart-2: 142 76% 36%;
-    --chart-3: 222 47% 15%;
+    --chart-3: 220 40% 13%;
     --chart-4: 220 14% 60%;
     --chart-5: 0 84% 60%;
 
@@ -55,21 +57,22 @@ All colors MUST be HSL.
     --input-background: 0 0% 93.7%;
     --input-placeholder: 0 0% 0%;
     --table-background: 0 0% 100%;
+    --table-header: 220 40% 13%;
     --table-hover: 235 46% 25%;
   }
 
   .dark {
-    --background: 222 47% 11%;
+    --background: 222 47% 8%;
     --foreground: 210 40% 98%;
-    --card: 222 47% 15%;
+    --card: 222 47% 12%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 47% 15%;
+    --popover: 222 47% 12%;
     --popover-foreground: 210 40% 98%;
     --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 222 47% 20%;
+    --secondary: 222 47% 15%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 222 47% 20%;
+    --muted: 222 47% 15%;
     --muted-foreground: 220 20% 70%;
     --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
@@ -77,33 +80,36 @@ All colors MUST be HSL.
     --destructive-foreground: 210 40% 98%;
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
-    --border: 222 47% 20%;
-    --input: 222 47% 20%;
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 0%;
+    --border: 222 47% 18%;
+    --input: 222 47% 18%;
     --ring: 24 95% 53%;
 
     /* Sidebar colors - Dark mode */
-    --sidebar-background: 222 47% 11%;
+    --sidebar-background: 220 40% 10%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 24 95% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 15%;
+    --sidebar-accent: 220 40% 15%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 15%;
+    --sidebar-border: 220 40% 15%;
     --sidebar-ring: 24 95% 53%;
     --sidebar-muted: 220 20% 70%;
 
     /* Chart colors - dark mode */
     --chart-1: 24 95% 53%;
     --chart-2: 142 76% 36%;
-    --chart-3: 222 47% 15%;
+    --chart-3: 220 40% 13%;
     --chart-4: 220 14% 60%;
     --chart-5: 0 84% 60%;
 
     /* Custom colors for inputs and tables - dark mode */
-    --input-background: 222 47% 20%;
+    --input-background: 222 47% 18%;
     --input-placeholder: 210 40% 98%;
-    --table-background: 222 47% 15%;
-    --table-hover: 222 47% 25%;
+    --table-background: 222 47% 12%;
+    --table-header: 220 40% 10%;
+    --table-hover: 222 47% 20%;
   }
 }
 
@@ -167,8 +173,21 @@ All colors MUST be HSL.
     background-color: hsl(var(--table-background)) !important;
   }
 
+  .table-custom thead {
+    background-color: hsl(var(--table-header)) !important;
+  }
+
+  .table-custom thead th {
+    color: white !important;
+    font-weight: 600 !important;
+  }
+
   .table-custom tbody tr {
     background-color: hsl(var(--table-background)) !important;
+  }
+
+  .table-custom tbody tr:nth-child(even) {
+    background-color: hsl(var(--muted)) !important;
   }
 
   .table-custom tbody tr:hover {
@@ -184,5 +203,49 @@ All colors MUST be HSL.
     color: white !important;
     background-color: rgba(255, 255, 255, 0.2) !important;
     border-color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  /* Focus ring for inputs */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none !important;
+    ring: 2px !important;
+    ring-color: hsl(var(--primary)) !important;
+    border-color: hsl(var(--primary)) !important;
+  }
+}
+
+/* Status badges */
+@layer components {
+  .badge-status {
+    @apply px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-em-andamento {
+    @apply bg-primary/20 text-primary;
+  }
+
+  .badge-finalizado {
+    @apply bg-success/20 text-success;
+  }
+
+  .badge-pendente {
+    @apply bg-warning/20 text-warning-foreground;
+    background-color: hsl(45 93% 47% / 0.2);
+    color: hsl(45 93% 35%);
+  }
+
+  /* Filter card styling */
+  .filter-card {
+    @apply bg-card rounded-lg shadow-sm border border-border p-4;
+  }
+
+  .filter-label {
+    @apply text-xs text-muted-foreground mb-1.5 block;
+  }
+
+  .filter-input {
+    @apply border border-border rounded-lg px-3 py-2 text-sm w-full focus:ring-2 focus:ring-primary focus:border-primary;
   }
 }
