@@ -18,6 +18,7 @@ import { NavLink, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
 import logoSerp from "@/assets/logo-serp.png"
+import logoIcone from "@/assets/SERP - Logo (1).png"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid },
@@ -139,9 +140,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       {/* Logo */}
       <div className="flex h-20 items-center justify-center border-b border-white/10 px-4">
         {collapsed ? (
-          <span className="text-2xl font-bold text-primary">S</span>
+          <img src={logoIcone} alt="S" className="h-10 object-contain" />
         ) : (
-          <img src={logoSerp} alt="SERP" className="h-10 object-contain" />
+          <img src={logoSerp} alt="SERP" className="h-20 object-contain" />
         )}
       </div>
 
