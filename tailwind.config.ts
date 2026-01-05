@@ -43,6 +43,10 @@ export default {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'
 				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
+				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
@@ -80,6 +84,7 @@ export default {
 				'input-bg': 'hsl(var(--input-background))',
 				'input-placeholder': 'hsl(var(--input-placeholder))',
 				'table-bg': 'hsl(var(--table-background))',
+				'table-header': 'hsl(var(--table-header))',
 				'table-hover': 'hsl(var(--table-hover))'
 			},
 			borderRadius: {

@@ -6,7 +6,6 @@ import {
   TrendingUp,
   Building2,
   UserRoundPlus,
-  MapPinned,
   LogOut,
   ChevronDown,
   ChevronRight,
@@ -28,6 +27,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
+import logoSerp from "@/assets/logo-serp.png"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid },
@@ -112,7 +112,7 @@ const MenuToggleIcon = ({ isOpen }: { isOpen: boolean }) => (
     style={{ transform: isOpen ? "none" : "scaleX(-1)", transition: "transform .3s ease-in-out" }}
     className="shrink-0"
   >
-    <circle cx="37" cy="37" r="33" fill="hsl(30, 100%, 50%)"/>
+    <circle cx="37" cy="37" r="33" fill="hsl(24, 95%, 53%)"/>
     <path d="M38.3714 50L46 50L35.6286 37.5L46 25L38.3714 25L28 37.5L38.3714 50Z" fill="white" />
   </svg>
 )
@@ -242,15 +242,14 @@ export function AppSidebar() {
         </div>
       )}
 
-      <SidebarContent className="bg-sidebar text-[--sidebar-text] relative overflow-visible">
-        <div className="p-6 flex items-center gap-5">
-          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
-            PP
-          </div>
-          <div className={`min-w-0 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-            <h3 className="font-semibold truncate text-[--sidebar-text]">Pedro Piaes</h3>
-            <p className="text-sm truncate text-[--sidebar-text-muted]">Desenvolvedor</p>
-          </div>
+      <SidebarContent className="bg-sidebar text-sidebar-foreground relative overflow-visible">
+        {/* Logo SERP */}
+        <div className="p-6 flex items-center justify-center">
+          <img 
+            src={logoSerp} 
+            alt="SERP Logo" 
+            className={`transition-all duration-300 ${open ? "h-12" : "h-8"}`}
+          />
         </div>
 
         <button
@@ -305,7 +304,7 @@ export function AppSidebar() {
                                           to={nestedItem.url}
                                           className={({isActive}) =>
                                             `pl-14 pr-3 py-1.5 text-sm ${
-                                              isActive ? "font-semibold text-sidebar-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
+                                              isActive ? "font-semibold text-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
                                             }`
                                           }
                                         >
@@ -322,7 +321,7 @@ export function AppSidebar() {
                                   to={'url' in subItem ? subItem.url : '#'}
                                   className={({isActive}) =>
                                     `pl-9 pr-3 py-1.5 text-sm ${
-                                      isActive ? "font-semibold text-sidebar-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
+                                      isActive ? "font-semibold text-primary" : "text-sidebar-muted hover:text-sidebar-foreground"
                                     }`
                                   }
                                 >
@@ -354,7 +353,7 @@ export function AppSidebar() {
 
         <Separator className="bg-sidebar-border" />
         
-        <div className="p-4 space-y-10">
+        <div className="p-4 space-y-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-5 h-5">
               {isDayMode ? (
@@ -364,7 +363,7 @@ export function AppSidebar() {
               )}
             </div>
             <div className={`flex items-center justify-between w-full transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-              <span className="text-sm">
+              <span className="text-sm text-sidebar-foreground">
                 {isDayMode ? "Modo Diurno" : "Modo Noturno"}
               </span>
               <ThemeToggleSvg
@@ -376,8 +375,8 @@ export function AppSidebar() {
           </div>
 
           <SidebarMenuButton asChild tooltip="Sair">
-            <button className="w-full justify-start hover:bg-red-500/20 text-red-500 hover:text-red-400">
-              <LogOut className="h-5 w-5 text-red-500" />
+            <button className="w-full justify-start hover:bg-destructive/20 text-destructive hover:text-destructive">
+              <LogOut className="h-5 w-5 text-destructive" />
               <span>Sair</span>
             </button>
           </SidebarMenuButton>
