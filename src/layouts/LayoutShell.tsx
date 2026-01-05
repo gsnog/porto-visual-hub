@@ -1,7 +1,9 @@
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/AppSidebar"
-import { Header } from "@/components/Header"
+import { useState } from "react"
 import { Outlet, useLocation } from "react-router-dom"
+import { AppSidebar } from "@/components/AppSidebar"
+import { Topbar } from "@/components/Topbar"
+import { ThemeProvider } from "@/hooks/useTheme"
+import { cn } from "@/lib/utils"
 
 const pageTitles: Record<string, { title: string; description?: string }> = {
   "/": { title: "Dashboard", description: "Visão geral do sistema" },
@@ -9,7 +11,7 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/estoque/entradas": { title: "Entradas de Estoque", description: "Controle de entrada de materiais" },
   "/estoque/saidas": { title: "Saídas de Estoque", description: "Controle de saída de materiais" },
   "/estoque/inventario": { title: "Inventário", description: "Controle de inventário" },
-  "/estoque/locacoes": { title: "Locações", description: "Gerenciamento de locações" },
+  "/estoque/locacoes": { title: "Locações", description: "Gerencie todas as locações de unidades" },
   "/estoque/ordem-compra": { title: "Ordem de Compra", description: "Gerenciamento de ordens de compra" },
   "/estoque/ordem-servico": { title: "Ordem de Serviço", description: "Gerenciamento de ordens de serviço" },
   "/estoque/requisicoes": { title: "Requisições", description: "Gerenciamento de requisições" },
@@ -23,23 +25,42 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/operacional/servicos": { title: "Serviços", description: "Gerenciamento de serviços" },
 }
 
-export default function LayoutShell() {
+function LayoutContent() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const location = useLocation()
   const pageInfo = pageTitles[location.pathname] || { title: "SerpTech", description: "Sistema de Gestão" }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AppSidebar />
+    <div className="flex min-h-screen w-full bg-background">
+      <AppSidebar 
+        collapsed={sidebarCollapsed} 
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+      />
 
-        <SidebarInset className="flex-1">
-          <Header title={pageInfo.title} description={pageInfo.description} />
+      <div 
+        className={cn(
+          "flex-1 flex flex-col transition-all duration-300",
+          sidebarCollapsed ? "ml-20" : "ml-72"
+        )}
+      >
+        <Topbar 
+          sidebarCollapsed={sidebarCollapsed}
+          pageTitle={pageInfo.title}
+          pageDescription={pageInfo.description}
+        />
 
-          <main className="p-6">
-            <Outlet />
-          </main>
-        </SidebarInset>
+        <main className="flex-1 p-6">
+          <Outlet />
+        </main>
       </div>
-    </SidebarProvider>
+    </div>
+  )
+}
+
+export default function LayoutShell() {
+  return (
+    <ThemeProvider>
+      <LayoutContent />
+    </ThemeProvider>
   )
 }
