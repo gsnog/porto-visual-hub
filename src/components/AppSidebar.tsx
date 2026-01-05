@@ -10,7 +10,9 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
-  BarChart3
+  BarChart3,
+  Sun,
+  Moon
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 
@@ -355,6 +357,11 @@ export function AppSidebar() {
         <div className="p-4 space-y-10">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-5 h-5">
+              {isDayMode ? (
+                <Sun className="h-5 w-5 text-sidebar-foreground" />
+              ) : (
+                <Moon className="h-5 w-5 text-sidebar-foreground" />
+              )}
             </div>
             <div className={`flex items-center justify-between w-full transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
               <span className="text-sm">
@@ -369,8 +376,8 @@ export function AppSidebar() {
           </div>
 
           <SidebarMenuButton asChild tooltip="Sair">
-            <button className="w-full justify-start hover:bg-sidebar-accent text-[--sidebar-text-muted] hover:text-[--sidebar-text]">
-              <LogOut className="h-5 w-5 text-[--sidebar-text-muted]" />
+            <button className="w-full justify-start hover:bg-red-500/20 text-red-500 hover:text-red-400">
+              <LogOut className="h-5 w-5 text-red-500" />
               <span>Sair</span>
             </button>
           </SidebarMenuButton>
