@@ -175,9 +175,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                           {item.title}
                         </span>
                         {openMenus.includes(item.title) ? (
-                          <ChevronDown className="h-4 w-4 text-primary" />
+                          <ChevronDown className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
                         ) : (
-                          <ChevronRight className="h-4 w-4 text-primary" />
+                          <ChevronRight className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
                         )}
                       </>
                     )}
