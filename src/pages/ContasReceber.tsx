@@ -53,8 +53,6 @@ const ContasReceber = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Contas a Receber</h1>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <SummaryCard title="Total Recebido" value="R$ 87.939,88" colorClass="bg-green-500" />
           <SummaryCard title="Total a Receber" value="R$ 12.345,00" colorClass="bg-red-500" />

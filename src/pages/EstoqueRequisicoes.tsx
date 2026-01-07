@@ -44,8 +44,6 @@ export default function EstoqueRequisicoes() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Requisições</h1>
-
         <div className="flex flex-wrap gap-4 items-center">
           <Button onClick={() => navigate("/estoque/requisicoes/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>

@@ -6,8 +6,6 @@ const Relatorio = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Relatório</h1>
-        
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">Tipo</label>

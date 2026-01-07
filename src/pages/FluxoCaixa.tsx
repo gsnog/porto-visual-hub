@@ -56,8 +56,6 @@ const FluxoCaixa = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Fluxo de Caixa</h1>
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <SummaryCard title="Total de Entradas" value="R$ 94.439,88" colorClass="bg-green-500" />
           <SummaryCard title="Total de Saídas" value="R$ 12.500,00" colorClass="bg-red-500" />

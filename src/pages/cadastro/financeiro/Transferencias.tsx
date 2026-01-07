@@ -10,8 +10,6 @@ const Transferencias = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Transferências</h1>
-
         <div className="flex flex-wrap gap-4 items-center">
           <Button 
             onClick={() => navigate("/cadastro/financeiro/transferencias/nova")}
