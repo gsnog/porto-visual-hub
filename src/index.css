@@ -141,7 +141,7 @@
   .dark input[type="date"]::-webkit-calendar-picker-indicator,
   .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
   .dark input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
+    filter: invert(0.3) sepia(1) saturate(5) hue-rotate(175deg);
   }
 }
 
@@ -187,6 +187,34 @@
   
   .table-professional td { 
     @apply px-4 py-4 text-sm; 
+  }
+
+  /* Dark mode table styles */
+  .dark .table-dark-mode,
+  .dark [data-dark-table] {
+    @apply rounded-lg overflow-hidden;
+    background: hsl(var(--table-background));
+  }
+  
+  .dark .table-dark-mode thead,
+  .dark [data-dark-table] thead {
+    background: hsl(220 40% 18%);
+  }
+  
+  .dark .table-dark-mode tbody tr,
+  .dark [data-dark-table] tbody tr {
+    background: hsl(var(--table-background));
+    border-bottom: 1px solid hsl(220 35% 25%);
+  }
+  
+  .dark .table-dark-mode tbody tr:nth-child(even),
+  .dark [data-dark-table] tbody tr:nth-child(even) {
+    background: hsl(220 40% 14%);
+  }
+  
+  .dark .table-dark-mode tbody tr:hover,
+  .dark [data-dark-table] tbody tr:hover {
+    background: hsl(220 40% 20%);
   }
 
   /* Status badges */

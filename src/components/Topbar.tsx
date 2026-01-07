@@ -17,7 +17,7 @@ export function Topbar({
   return (
     <header 
       className={cn(
-        "sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-card px-6 shadow-sm transition-all duration-300"
+        "sticky top-0 z-40 flex h-16 items-center justify-between bg-card px-6 shadow-sm transition-all duration-300"
       )}
     >
       {/* Left side - Title and description */}
@@ -43,7 +43,7 @@ export function Topbar({
 
         {/* User info */}
         <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[hsl(var(--sidebar-bg))] text-white font-bold text-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
             PP
           </div>
           <div className="hidden sm:flex flex-col">

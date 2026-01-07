@@ -9,8 +9,7 @@ const FormasApresentacao = () => {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Apresentação</h1>
+      <div className="space-y-6">
 
         <div className="flex flex-wrap gap-4 items-center">
           <Button 

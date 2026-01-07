@@ -175,9 +175,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                           {item.title}
                         </span>
                         {openMenus.includes(item.title) ? (
-                          <ChevronDown className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
+                          <ChevronDown className="h-4 w-4 text-primary" />
                         ) : (
-                          <ChevronRight className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
+                          <ChevronRight className="h-4 w-4 text-primary" />
                         )}
                       </>
                     )}
@@ -196,9 +196,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                                 {subItem.title}
                               </span>
                               {openMenus.includes(`${item.title}-${subItem.title}`) ? (
-                                <ChevronDown className="h-3 w-3" />
+                                <ChevronDown className="h-3 w-3 text-primary" />
                               ) : (
-                                <ChevronRight className="h-3 w-3" />
+                                <ChevronRight className="h-3 w-3 text-primary" />
                               )}
                             </button>
                             
