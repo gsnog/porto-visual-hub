@@ -86,8 +86,6 @@ const Patrimonio = () => {
     return (
       <div className="flex flex-col h-full bg-background">
         <div className="p-6 space-y-6">
-          <h1 className="text-2xl font-semibold text-foreground">Patrimônio</h1>
-          
           <div className="flex flex-wrap gap-4 items-center">
             <Button 
               onClick={handleAddNew}
@@ -172,8 +170,6 @@ const Patrimonio = () => {
     return (
       <div className="flex flex-col h-full bg-background">
         <div className="p-6 space-y-6">
-          <h1 className="text-2xl font-semibold text-foreground">Adicionar Novo Patrimônio</h1>
-
           <div className="space-y-4 max-w-2xl">
             <div className="flex items-center gap-8">
               <label className="text-foreground font-medium w-40">Item</label>
