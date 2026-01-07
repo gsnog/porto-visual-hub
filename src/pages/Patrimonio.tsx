@@ -119,16 +119,16 @@ const Patrimonio = () => {
             {filteredAssets.length} resultado(s) encontrado(s).
           </p>
 
-          <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-            <Table>
+          <div className="rounded-xl overflow-hidden shadow-sm">
+            <Table className="table-professional">
               <TableHeader>
-                <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                  <TableHead className="!text-white font-medium text-center">Código</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Data de Aquisição</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Valor Unitário</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+                <TableRow>
+                  <TableHead className="text-center">Código</TableHead>
+                  <TableHead className="text-center">Item</TableHead>
+                  <TableHead className="text-center">Data de Aquisição</TableHead>
+                  <TableHead className="text-center">Valor Unitário</TableHead>
+                  <TableHead className="text-center">Quantidade</TableHead>
+                  <TableHead className="text-center">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -140,7 +140,7 @@ const Patrimonio = () => {
                   </TableRow>
                 ) : (
                   filteredAssets.map((asset) => (
-                    <TableRow key={asset.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                    <TableRow key={asset.id}>
                       <TableCell className="text-center">{asset.codigo}</TableCell>
                       <TableCell className="text-center">{asset.item}</TableCell>
                       <TableCell className="text-center">{asset.dataAquisicao}</TableCell>

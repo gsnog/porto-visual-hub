@@ -37,16 +37,16 @@ const Itens = () => {
 
         <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Id Item</TableHead>
-                <TableHead className="!text-white font-medium text-center">Data de Cadastro</TableHead>
-                <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                <TableHead className="!text-white font-medium text-center">Forma de Apresentação</TableHead>
-                <TableHead className="!text-white font-medium text-center">Setores</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Id Item</TableHead>
+                <TableHead className="text-center">Data de Cadastro</TableHead>
+                <TableHead className="text-center">Item</TableHead>
+                <TableHead className="text-center">Forma de Apresentação</TableHead>
+                <TableHead className="text-center">Setores</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

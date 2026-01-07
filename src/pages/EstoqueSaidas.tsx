@@ -104,18 +104,18 @@ export default function EstoqueSaidas() {
           {filteredSaidas.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Data</TableHead>
-                <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                <TableHead className="!text-white font-medium text-center">Setor</TableHead>
-                <TableHead className="!text-white font-medium text-center">Requisitante</TableHead>
-                <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
-                <TableHead className="!text-white font-medium text-center">Origem</TableHead>
-                <TableHead className="!text-white font-medium text-center">Destino</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Data</TableHead>
+                <TableHead className="text-center">Item</TableHead>
+                <TableHead className="text-center">Setor</TableHead>
+                <TableHead className="text-center">Requisitante</TableHead>
+                <TableHead className="text-center">Quantidade</TableHead>
+                <TableHead className="text-center">Origem</TableHead>
+                <TableHead className="text-center">Destino</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -127,7 +127,7 @@ export default function EstoqueSaidas() {
                 </TableRow>
               ) : (
                 filteredSaidas.map((saida) => (
-                  <TableRow key={saida.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={saida.id}>
                     <TableCell className="text-center">{saida.data}</TableCell>
                     <TableCell className="text-center">{saida.item}</TableCell>
                     <TableCell className="text-center">{saida.setor}</TableCell>

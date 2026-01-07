@@ -51,14 +51,14 @@ const Servicos = () => {
           {filteredServicos.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Nome do Serviço</TableHead>
-                <TableHead className="!text-white font-medium text-center">Descrição</TableHead>
-                <TableHead className="!text-white font-medium text-center">Custo</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Nome do Serviço</TableHead>
+                <TableHead className="text-center">Descrição</TableHead>
+                <TableHead className="text-center">Custo</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -70,7 +70,7 @@ const Servicos = () => {
                 </TableRow>
               ) : (
                 filteredServicos.map((servico) => (
-                  <TableRow key={servico.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={servico.id}>
                     <TableCell className="text-center">{servico.nome}</TableCell>
                     <TableCell className="text-center">{servico.descricao}</TableCell>
                     <TableCell className="text-center">{servico.custo}</TableCell>

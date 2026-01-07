@@ -79,22 +79,22 @@ const NFe = () => {
 
         <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Data Emissão</TableHead>
-                <TableHead className="!text-white font-medium text-center">Número</TableHead>
-                <TableHead className="!text-white font-medium text-center">NF</TableHead>
-                <TableHead className="!text-white font-medium text-center">Valor Total</TableHead>
-                <TableHead className="!text-white font-medium text-center">Chave de Acesso</TableHead>
-                <TableHead className="!text-white font-medium text-center">Status</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Data Emissão</TableHead>
+                <TableHead className="text-center">Número</TableHead>
+                <TableHead className="text-center">NF</TableHead>
+                <TableHead className="text-center">Valor Total</TableHead>
+                <TableHead className="text-center">Chave de Acesso</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {nfes.map((nfe, index) => (
-                <TableRow key={index} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                <TableRow key={index}>
                   <TableCell className="text-center">{nfe.dataEmissao}</TableCell>
                   <TableCell className="text-center">{nfe.numero}</TableCell>
                   <TableCell className="text-center">{nfe.nf}</TableCell>

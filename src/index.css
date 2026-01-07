@@ -51,10 +51,8 @@
     --status-pending: 45 93% 47%;
 
     /* Table colors */
-    --table-header: 220 60% 25%;
-    --table-row-alt: 220 20% 97%;
-    --table-background: 0 0% 100%;
-    --table-hover: 235 46% 25%;
+    --table-header: 220 40% 13%;
+    --table-row-alt: 220 20% 98%;
 
     /* Chart colors */
     --chart-1: 24 95% 53%;
@@ -103,10 +101,8 @@
     --sidebar-muted: 220 20% 60%;
 
     /* Table colors - dark mode */
-    --table-header: 210 40% 20%;
-    --table-row-alt: 210 20% 15%;
-    --table-background: 222 20% 14%;
-    --table-hover: 210 30% 18%;
+    --table-header: 220 40% 15%;
+    --table-row-alt: 222 47% 13%;
 
     /* Chart colors - dark mode */
     --chart-1: 24 95% 53%;
@@ -162,7 +158,7 @@
 
   /* ===== TABELA PROFISSIONAL ===== */
   .table-professional {
-    @apply w-full border-collapse overflow-hidden rounded-lg shadow-sm;
+    @apply w-full border-collapse;
   }
 
   .table-professional thead {
@@ -170,129 +166,49 @@
   }
 
   .table-professional th {
-    @apply px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wide;
-  }
-
-  .table-professional tbody tr {
-    @apply border-b border-border transition-colors duration-150;
+    @apply px-4 py-3 text-left text-sm font-semibold text-white;
   }
 
   .table-professional tbody tr:nth-child(even) {
     background: hsl(var(--table-row-alt));
   }
 
+  .table-professional tbody tr {
+    @apply border-b border-border transition-colors duration-150;
+  }
+
   .table-professional tbody tr:hover {
-    @apply bg-accent/50;
+    @apply bg-muted/50;
   }
 
   .table-professional td {
-    @apply px-4 py-3 text-sm;
-  }
-
-  /* ===== DARK MODE TABLE STYLES ===== */
-  .dark .table-professional {
-    background-color: hsl(222 20% 14%);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  }
-
-  .dark .table-professional thead {
-    background-color: hsl(210 40% 20%);
-  }
-
-  .dark .table-professional th {
-    padding: 1rem 1.5rem;
-    text-align: left;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: hsl(210 40% 80%);
-    border-bottom: 1px solid hsl(210 20% 25%);
-  }
-
-  .dark .table-professional td {
-    padding: 1rem 1.5rem;
-    color: hsl(210 20% 85%);
-    border-bottom: 1px solid hsl(210 20% 20%);
-  }
-
-  .dark .table-professional tbody tr:nth-child(even) {
-    background-color: hsl(210 20% 15%);
-  }
-
-  .dark .table-professional tbody tr:nth-child(odd) {
-    background-color: hsl(222 20% 14%);
-  }
-
-  .dark .table-professional tbody tr:hover {
-    background-color: hsl(210 30% 18%);
+    @apply px-4 py-4 text-sm;
   }
 
   /* ===== BADGES DE STATUS ===== */
   .status-badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
   }
 
-  .status-badge.progress {
-    @apply bg-orange-100 text-orange-800;
+  .status-progress {
+    color: hsl(var(--status-progress));
   }
 
-  .status-badge.done {
-    @apply bg-green-100 text-green-800;
+  .status-done {
+    color: hsl(var(--status-done));
   }
 
-  .status-badge.pending {
-    @apply bg-yellow-100 text-yellow-800;
-  }
-
-  /* Dark mode status badges */
-  .dark .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-
-  .dark .status-badge.progress {
-    background-color: hsl(25 95% 45% / 0.2);
-    color: hsl(25 95% 65%);
-    border: 1px solid hsl(25 95% 45% / 0.3);
-  }
-
-  .dark .status-badge.done {
-    background-color: hsl(142 76% 36% / 0.2);
-    color: hsl(142 76% 56%);
-    border: 1px solid hsl(142 76% 36% / 0.3);
-  }
-
-  .dark .status-badge.pending {
-    background-color: hsl(45 93% 47% / 0.2);
-    color: hsl(45 93% 67%);
-    border: 1px solid hsl(45 93% 47% / 0.3);
-  }
-
-  /* Legacy status badges */
-  .status-progress { 
-    @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400;
-  }
-  
-  .status-done { 
-    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
-  }
-  
-  .status-pending { 
-    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+  .status-pending {
+    color: hsl(var(--status-pending));
   }
 
   /* Filter styles */
-  .filter-input { 
-    @apply h-10 px-4 rounded-lg border border-border bg-card text-sm transition-all duration-200; 
+  .filter-input {
+    @apply h-10 px-4 rounded-lg border border-border bg-card text-sm transition-all duration-200;
   }
-  
-  .filter-input:focus { 
-    @apply outline-none ring-2 ring-primary/20 border-primary; 
+
+  .filter-input:focus {
+    @apply outline-none ring-2 ring-primary/20 border-primary;
   }
 
   .filter-card {

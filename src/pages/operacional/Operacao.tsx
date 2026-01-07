@@ -59,17 +59,17 @@ const Operacao = () => {
           {filteredOperacoes.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Data de Entrada</TableHead>
-                <TableHead className="!text-white font-medium text-center">Barco</TableHead>
-                <TableHead className="!text-white font-medium text-center">Custo Aproximado</TableHead>
-                <TableHead className="!text-white font-medium text-center">Valor Pago</TableHead>
-                <TableHead className="!text-white font-medium text-center">Previsão de Entrega</TableHead>
-                <TableHead className="!text-white font-medium text-center">Data de Entrega</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Data de Entrada</TableHead>
+                <TableHead className="text-center">Barco</TableHead>
+                <TableHead className="text-center">Custo Aproximado</TableHead>
+                <TableHead className="text-center">Valor Pago</TableHead>
+                <TableHead className="text-center">Previsão de Entrega</TableHead>
+                <TableHead className="text-center">Data de Entrega</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -81,7 +81,7 @@ const Operacao = () => {
                 </TableRow>
               ) : (
                 filteredOperacoes.map((op) => (
-                  <TableRow key={op.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={op.id}>
                     <TableCell className="text-center">{op.dataEntrada}</TableCell>
                     <TableCell className="text-center">{op.barco}</TableCell>
                     <TableCell className="text-center">{op.custoAproximado}</TableCell>

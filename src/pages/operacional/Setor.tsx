@@ -52,12 +52,12 @@ const Setor = () => {
           {filteredSetores.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Setor</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Setor</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -69,7 +69,7 @@ const Setor = () => {
                 </TableRow>
               ) : (
                 filteredSetores.map((setor) => (
-                  <TableRow key={setor.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={setor.id}>
                     <TableCell className="text-center">{setor.nome}</TableCell>
                     <TableCell className="text-center">
                       <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>

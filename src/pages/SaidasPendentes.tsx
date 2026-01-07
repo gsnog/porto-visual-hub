@@ -27,21 +27,21 @@ const SaidasPendentes = () => {
 
         <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Data Lançamento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Beneficiário</TableHead>
-                <TableHead className="!text-white font-medium text-center">Documento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Valor Título</TableHead>
-                <TableHead className="!text-white font-medium text-center">Valor Total</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Data Lançamento</TableHead>
+                <TableHead className="text-center">Beneficiário</TableHead>
+                <TableHead className="text-center">Documento</TableHead>
+                <TableHead className="text-center">Valor Título</TableHead>
+                <TableHead className="text-center">Valor Total</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {saidas.map((saida, index) => (
-                <TableRow key={index} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                <TableRow key={index}>
                   <TableCell className="text-center">{saida.dataLancamento}</TableCell>
                   <TableCell className="text-center">{saida.beneficiario}</TableCell>
                   <TableCell className="text-center">{saida.documento}</TableCell>

@@ -97,19 +97,19 @@ const ContasPagar = () => {
           {filteredContas.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Lançamento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Faturamento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Beneficiário</TableHead>
-                <TableHead className="!text-white font-medium text-center">Documento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Título</TableHead>
-                <TableHead className="!text-white font-medium text-center">Total</TableHead>
-                <TableHead className="!text-white font-medium text-center">Vencimento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Status</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Lançamento</TableHead>
+                <TableHead className="text-center">Faturamento</TableHead>
+                <TableHead className="text-center">Beneficiário</TableHead>
+                <TableHead className="text-center">Documento</TableHead>
+                <TableHead className="text-center">Título</TableHead>
+                <TableHead className="text-center">Total</TableHead>
+                <TableHead className="text-center">Vencimento</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,7 +121,7 @@ const ContasPagar = () => {
                 </TableRow>
               ) : (
                 filteredContas.map((conta) => (
-                  <TableRow key={conta.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={conta.id}>
                     <TableCell className="text-center">{conta.dataLancamento}</TableCell>
                     <TableCell className="text-center">{conta.dataFaturamento}</TableCell>
                     <TableCell className="text-center">{conta.beneficiario}</TableCell>
