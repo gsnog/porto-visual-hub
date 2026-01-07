@@ -32,16 +32,16 @@ const Unidades = () => {
 
         <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Unidade</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Unidade</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+              <TableRow>
                 <TableCell className="text-center">jdcnsdlkcsl</TableCell>
                 <TableCell className="text-center">
                   <Button size="sm" className="rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs">

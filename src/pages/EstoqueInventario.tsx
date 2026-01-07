@@ -60,14 +60,14 @@ export default function EstoqueInventario() {
           {filteredInventario.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
-                <TableHead className="!text-white font-medium text-center">Unidade</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Item</TableHead>
+                <TableHead className="text-center">Quantidade</TableHead>
+                <TableHead className="text-center">Unidade</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -80,7 +80,7 @@ export default function EstoqueInventario() {
                 </TableRow>
               ) : (
                 filteredInventario.map((item) => (
-                  <TableRow key={item.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={item.id}>
                     <TableCell className="text-center">{item.item}</TableCell>
                     <TableCell className="text-center">{item.quantidade}</TableCell>
                     <TableCell className="text-center">{item.unidade}</TableCell>

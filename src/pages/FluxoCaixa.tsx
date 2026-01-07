@@ -111,18 +111,18 @@ const FluxoCaixa = () => {
           {filteredTransacoes.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Vencimento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Pagamento</TableHead>
-                <TableHead className="!text-white font-medium text-center">Tipo</TableHead>
-                <TableHead className="!text-white font-medium text-center">Beneficiário</TableHead>
-                <TableHead className="!text-white font-medium text-center">Status</TableHead>
-                <TableHead className="!text-white font-medium text-center">Valor</TableHead>
-                <TableHead className="!text-white font-medium text-center">Saldo</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Vencimento</TableHead>
+                <TableHead className="text-center">Pagamento</TableHead>
+                <TableHead className="text-center">Tipo</TableHead>
+                <TableHead className="text-center">Beneficiário</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Valor</TableHead>
+                <TableHead className="text-center">Saldo</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -134,7 +134,7 @@ const FluxoCaixa = () => {
                 </TableRow>
               ) : (
                 filteredTransacoes.map((transacao) => (
-                  <TableRow key={transacao.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={transacao.id}>
                     <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
                     <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
                     <TableCell className="text-center">

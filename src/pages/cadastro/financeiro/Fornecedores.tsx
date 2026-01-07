@@ -36,17 +36,17 @@ const FornecedoresFinanceiro = () => {
 
         <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Fornecedor</TableHead>
-                <TableHead className="!text-white font-medium text-center">CNPJ/CPF</TableHead>
-                <TableHead className="!text-white font-medium text-center">Razão Social</TableHead>
-                <TableHead className="!text-white font-medium text-center">Vendedor</TableHead>
-                <TableHead className="!text-white font-medium text-center">Email</TableHead>
-                <TableHead className="!text-white font-medium text-center">Telefone</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Fornecedor</TableHead>
+                <TableHead className="text-center">CNPJ/CPF</TableHead>
+                <TableHead className="text-center">Razão Social</TableHead>
+                <TableHead className="text-center">Vendedor</TableHead>
+                <TableHead className="text-center">Email</TableHead>
+                <TableHead className="text-center">Telefone</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

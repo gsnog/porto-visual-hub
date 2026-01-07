@@ -59,15 +59,15 @@ const Embarcacoes = () => {
           {filteredEmbarcacoes.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Nome</TableHead>
-                <TableHead className="!text-white font-medium text-center">Cliente</TableHead>
-                <TableHead className="!text-white font-medium text-center">Dimensão</TableHead>
-                <TableHead className="!text-white font-medium text-center">Setores</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Nome</TableHead>
+                <TableHead className="text-center">Cliente</TableHead>
+                <TableHead className="text-center">Dimensão</TableHead>
+                <TableHead className="text-center">Setores</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -79,7 +79,7 @@ const Embarcacoes = () => {
                 </TableRow>
               ) : (
                 filteredEmbarcacoes.map((emb) => (
-                  <TableRow key={emb.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={emb.id}>
                     <TableCell className="text-center">{emb.nome}</TableCell>
                     <TableCell className="text-center">{emb.cliente}</TableCell>
                     <TableCell className="text-center">{emb.dimensao}</TableCell>

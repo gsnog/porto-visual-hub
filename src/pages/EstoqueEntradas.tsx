@@ -117,19 +117,19 @@ export default function EstoqueEntradas() {
           {filteredEntradas.length} resultado(s) encontrado(s).
         </p>
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Data</TableHead>
-                <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                <TableHead className="!text-white font-medium text-center">Validade</TableHead>
-                <TableHead className="!text-white font-medium text-center">Nota Fiscal</TableHead>
-                <TableHead className="!text-white font-medium text-center">Estoque Destinado</TableHead>
-                <TableHead className="!text-white font-medium text-center">Custo Unitário</TableHead>
-                <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
-                <TableHead className="!text-white font-medium text-center">Custo Total</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Data</TableHead>
+                <TableHead className="text-center">Item</TableHead>
+                <TableHead className="text-center">Validade</TableHead>
+                <TableHead className="text-center">Nota Fiscal</TableHead>
+                <TableHead className="text-center">Estoque Destinado</TableHead>
+                <TableHead className="text-center">Custo Unitário</TableHead>
+                <TableHead className="text-center">Quantidade</TableHead>
+                <TableHead className="text-center">Custo Total</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -141,7 +141,7 @@ export default function EstoqueEntradas() {
                 </TableRow>
               ) : (
                 filteredEntradas.map((entrada) => (
-                  <TableRow key={entrada.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
+                  <TableRow key={entrada.id}>
                     <TableCell className="text-center">{entrada.data}</TableCell>
                     <TableCell className="text-center">{entrada.item}</TableCell>
                     <TableCell className="text-center">{entrada.validade}</TableCell>
