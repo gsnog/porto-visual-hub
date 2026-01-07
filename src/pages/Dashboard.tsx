@@ -5,9 +5,7 @@ import { PortfolioChart } from "@/components/PortfolioChart"
 const Dashboard = () => {
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Visão geral do seu sistema</p>
+      <div className="space-y-6">
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="border border-border rounded-lg">
