@@ -160,17 +160,17 @@
     border-left: 3px solid hsl(var(--sidebar-accent)); 
   }
 
-  /* Table styles */
+  /* ===== TABELA PROFISSIONAL ===== */
   .table-professional {
     @apply w-full border-collapse overflow-hidden rounded-lg shadow-sm;
   }
 
   .table-professional thead {
-    @apply bg-[hsl(var(--table-header))] text-white;
+    background: hsl(var(--table-header));
   }
 
   .table-professional th {
-    @apply px-4 py-3 text-left text-sm font-semibold uppercase tracking-wide;
+    @apply px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wide;
   }
 
   .table-professional tbody tr {
@@ -178,7 +178,7 @@
   }
 
   .table-professional tbody tr:nth-child(even) {
-    @apply bg-[hsl(var(--table-row-alt))];
+    background: hsl(var(--table-row-alt));
   }
 
   .table-professional tbody tr:hover {
@@ -189,32 +189,17 @@
     @apply px-4 py-3 text-sm;
   }
 
-  /* Dark mode table styles */
-  .dark .table-dark-mode,
-  .dark [data-dark-table] {
-    @apply rounded-lg overflow-hidden;
-    background: hsl(var(--table-background));
+  /* Dark mode table adjustments */
+  .dark .table-professional thead {
+    background: hsl(var(--table-header));
   }
-  
-  .dark .table-dark-mode thead,
-  .dark [data-dark-table] thead {
-    background: hsl(220 60% 20%);
+
+  .dark .table-professional tbody tr:nth-child(even) {
+    background: hsl(var(--table-row-alt));
   }
-  
-  .dark .table-dark-mode tbody tr,
-  .dark [data-dark-table] tbody tr {
-    background: hsl(var(--table-background));
-    border-bottom: 1px solid hsl(220 35% 25%);
-  }
-  
-  .dark .table-dark-mode tbody tr:nth-child(even),
-  .dark [data-dark-table] tbody tr:nth-child(even) {
-    background: hsl(220 20% 15%);
-  }
-  
-  .dark .table-dark-mode tbody tr:hover,
-  .dark [data-dark-table] tbody tr:hover {
-    background: hsl(220 40% 20%);
+
+  .dark .table-professional tbody tr:hover {
+    background: hsl(220 40% 20% / 0.5);
   }
 
   /* ===== BADGES DE STATUS ===== */
@@ -234,7 +219,7 @@
     @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
   }
 
-  /* Legacy status badges for backwards compatibility */
+  /* Legacy status badges */
   .status-progress { 
     @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400;
   }
@@ -245,26 +230,6 @@
   
   .status-pending { 
     @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
-  }
-
-  /* Status badges */
-  .status-badge { 
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium; 
-  }
-  
-  .status-progress { 
-    background: hsl(var(--status-progress) / 0.15);
-    color: hsl(var(--status-progress)); 
-  }
-  
-  .status-done { 
-    background: hsl(var(--status-done) / 0.15);
-    color: hsl(var(--status-done)); 
-  }
-  
-  .status-pending { 
-    background: hsl(var(--status-pending) / 0.15);
-    color: hsl(45 93% 35%); 
   }
 
   /* Filter styles */
@@ -282,42 +247,5 @@
 
   .filter-label {
     @apply text-xs text-muted-foreground mb-1.5 block;
-  }
-
-  /* Legacy table-custom for backwards compatibility */
-  .table-custom {
-    background-color: hsl(var(--table-background)) !important;
-  }
-
-  .table-custom thead {
-    background-color: hsl(var(--table-header)) !important;
-  }
-
-  .table-custom thead th {
-    color: white !important;
-    font-weight: 600 !important;
-  }
-
-  .table-custom tbody tr {
-    background-color: hsl(var(--table-background)) !important;
-  }
-
-  .table-custom tbody tr:nth-child(even) {
-    background-color: hsl(var(--table-row-alt)) !important;
-  }
-
-  .table-custom tbody tr:hover {
-    background-color: hsl(var(--table-hover)) !important;
-    color: white !important;
-  }
-
-  .table-custom tbody tr:hover td {
-    color: white !important;
-  }
-
-  .table-custom tbody tr:hover button {
-    color: white !important;
-    background-color: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
   }
 }
