@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 const LancamentoSaida = () => {
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <div className="max-w-4xl space-y-6">
           <div>
             <Label className="text-sm font-medium text-foreground mb-2 block">Beneficiário</Label>

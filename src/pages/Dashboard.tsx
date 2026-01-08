@@ -15,7 +15,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">R$ 87.939,88</div>
-              <p className="text-xs text-muted-foreground">+20.1% em relação ao mês passado</p>
+              <p className="text-xs text-success">+20.1% em relação ao mês passado</p>
             </CardContent>
           </Card>
 
@@ -26,7 +26,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">234</div>
-              <p className="text-xs text-muted-foreground">+15% em relação ao mês passado</p>
+              <p className="text-xs text-success">+15% em relação ao mês passado</p>
             </CardContent>
           </Card>
 
@@ -37,7 +37,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">89</div>
-              <p className="text-xs text-muted-foreground">+8% em relação ao mês passado</p>
+              <p className="text-xs text-success">+8% em relação ao mês passado</p>
             </CardContent>
           </Card>
 
@@ -48,7 +48,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">12.5%</div>
-              <p className="text-xs text-muted-foreground">+2.5% em relação ao mês passado</p>
+              <p className="text-xs text-success">+2.5% em relação ao mês passado</p>
             </CardContent>
           </Card>
         </div>

@@ -9,7 +9,7 @@ export default function RelatorioFluxoCaixa() {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Relatórios</h1>
 
         <div className="space-y-6 max-w-5xl">

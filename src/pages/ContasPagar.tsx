@@ -52,11 +52,11 @@ const ContasPagar = () => {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <SummaryCard title="Total Pago" value="R$ 87.939,88" colorClass="bg-green-500" />
           <SummaryCard title="Total a Pagar" value="R$ 1.800,00" colorClass="bg-red-500" />
-          <SummaryCard title="Valor Total em Títulos" value="R$ 89.739,88" colorClass="bg-blue-500" />
+          <SummaryCard title="Valor Total em Títulos" value="R$ 89.739,88" colorClass="bg-primary" />
         </div>
 
         <div className="flex flex-wrap gap-4 items-center">

@@ -18,7 +18,7 @@ export default function NovaRequisicao() {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <h1 className="text-2xl font-semibold text-foreground">Adicionar Requisição</h1>
 
         <div className="space-y-4 max-w-2xl">
