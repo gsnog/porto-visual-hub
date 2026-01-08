@@ -1,4 +1,4 @@
-import { Search, Calendar, Filter } from "lucide-react"
+import { Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -36,28 +36,22 @@ export function FilterSection({
               <label className="filter-label">{field.label}</label>
               
               {field.type === "text" && (
-                <div className="relative">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                  <Input
-                    type="text"
-                    placeholder={field.placeholder}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    className="filter-input-with-icon"
-                  />
-                </div>
+                <Input
+                  type="text"
+                  placeholder={field.placeholder}
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  className="filter-input"
+                />
               )}
 
               {field.type === "date" && (
-                <div className="relative">
-                  <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                  <Input
-                    type="date"
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    className="filter-input-with-icon"
-                  />
-                </div>
+                <Input
+                  type="date"
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  className="filter-input"
+                />
               )}
 
               {field.type === "select" && field.options && (
