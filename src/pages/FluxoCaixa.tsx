@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
+import { FilterSection } from "@/components/FilterSection"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -34,8 +32,8 @@ const FluxoCaixa = () => {
         ? trans.tipo.toLowerCase() === filterTipo 
         : true
       const matchBeneficiario = trans.beneficiario.toLowerCase().includes(filterBeneficiario.toLowerCase())
-      const matchDataInicio = filterDataInicio ? trans.dataVencimento.includes(filterDataInicio.split("-").reverse().join("/")) : true
-      const matchDataFim = filterDataFim ? trans.dataVencimento.includes(filterDataFim.split("-").reverse().join("/")) : true
+      const matchDataInicio = filterDataInicio ? trans.dataVencimento >= filterDataInicio.split("-").reverse().join("/") : true
+      const matchDataFim = filterDataFim ? trans.dataVencimento <= filterDataFim.split("-").reverse().join("/") : true
       return matchTipo && matchBeneficiario && matchDataInicio && matchDataFim
     })
   }, [filterTipo, filterBeneficiario, filterDataInicio, filterDataFim])
@@ -71,45 +69,46 @@ const FluxoCaixa = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Select value={filterTipo} onValueChange={setFilterTipo}>
-            <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent className="bg-popover">
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="entrada">Entrada</SelectItem>
-              <SelectItem value="saída">Saída</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Input 
-            placeholder="Beneficiário" 
-            value={filterBeneficiario}
-            onChange={(e) => setFilterBeneficiario(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
-          />
-          <Input 
-            type="date"
-            value={filterDataInicio}
-            onChange={(e) => setFilterDataInicio(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
-          />
-          <Input 
-            type="date"
-            value={filterDataFim}
-            onChange={(e) => setFilterDataFim(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredTransacoes.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "select",
+              label: "Tipo",
+              placeholder: "Selecione o tipo",
+              value: filterTipo,
+              onChange: setFilterTipo,
+              options: [
+                { value: "todos", label: "Todos" },
+                { value: "entrada", label: "Entrada" },
+                { value: "saída", label: "Saída" }
+              ],
+              width: "min-w-[160px]"
+            },
+            {
+              type: "text",
+              label: "Beneficiário",
+              placeholder: "Buscar beneficiário...",
+              value: filterBeneficiario,
+              onChange: setFilterBeneficiario,
+              width: "flex-1 min-w-[180px]"
+            },
+            {
+              type: "date",
+              label: "Data Início",
+              value: filterDataInicio,
+              onChange: setFilterDataInicio,
+              width: "min-w-[160px]"
+            },
+            {
+              type: "date",
+              label: "Data Fim",
+              value: filterDataFim,
+              onChange: setFilterDataFim,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredTransacoes.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

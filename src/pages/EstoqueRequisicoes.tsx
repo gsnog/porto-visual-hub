@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
+import { FilterSection } from "@/components/FilterSection"
 
 const mockRequisicoes = [
   { id: 1, data: "12/05/2025", item: "Cabo HDMI", quantidade: 1, requisitante: "Ana F.", setor: "TI", status: "Aprovada" },
@@ -15,18 +13,20 @@ const mockRequisicoes = [
 
 export default function EstoqueRequisicoes() {
   const navigate = useNavigate()
-  const [filterCidade, setFilterCidade] = useState("")
-  const [filterData, setFilterData] = useState("")
+  const [filterSetor, setFilterSetor] = useState("")
+  const [filterDataInicio, setFilterDataInicio] = useState("")
+  const [filterDataFim, setFilterDataFim] = useState("")
 
   const filteredRequisicoes = useMemo(() => {
     return mockRequisicoes.filter(req => {
-      const matchCidade = filterCidade && filterCidade !== "todos" 
-        ? req.setor.toLowerCase().includes(filterCidade.toLowerCase()) 
+      const matchSetor = filterSetor && filterSetor !== "todos" 
+        ? req.setor.toLowerCase().includes(filterSetor.toLowerCase()) 
         : true
-      const matchData = filterData ? req.data.includes(filterData.split("-").reverse().join("/")) : true
-      return matchCidade && matchData
+      const matchDataInicio = filterDataInicio ? req.data >= filterDataInicio.split("-").reverse().join("/") : true
+      const matchDataFim = filterDataFim ? req.data <= filterDataFim.split("-").reverse().join("/") : true
+      return matchSetor && matchDataInicio && matchDataFim
     })
-  }, [filterCidade, filterData])
+  }, [filterSetor, filterDataInicio, filterDataFim])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -49,32 +49,39 @@ export default function EstoqueRequisicoes() {
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Select value={filterCidade} onValueChange={setFilterCidade}>
-            <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-64 rounded-lg">
-              <SelectValue placeholder="Setor" />
-            </SelectTrigger>
-            <SelectContent className="bg-popover">
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="ti">TI</SelectItem>
-              <SelectItem value="producao">Produção</SelectItem>
-              <SelectItem value="administrativo">Administrativo</SelectItem>
-            </SelectContent>
-          </Select>
-          <Input 
-            type="date" 
-            value={filterData}
-            onChange={(e) => setFilterData(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredRequisicoes.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "select",
+              label: "Setor",
+              placeholder: "Selecione o setor",
+              value: filterSetor,
+              onChange: setFilterSetor,
+              options: [
+                { value: "todos", label: "Todos" },
+                { value: "ti", label: "TI" },
+                { value: "producao", label: "Produção" },
+                { value: "administrativo", label: "Administrativo" }
+              ],
+              width: "min-w-[180px]"
+            },
+            {
+              type: "date",
+              label: "Data Início",
+              value: filterDataInicio,
+              onChange: setFilterDataInicio,
+              width: "min-w-[160px]"
+            },
+            {
+              type: "date",
+              label: "Data Fim",
+              value: filterDataFim,
+              onChange: setFilterDataFim,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredRequisicoes.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">
