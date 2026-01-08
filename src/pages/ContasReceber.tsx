@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
+import { FilterSection } from "@/components/FilterSection"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -24,16 +23,18 @@ const ContasReceber = () => {
   const navigate = useNavigate()
   const [filterCliente, setFilterCliente] = useState("")
   const [filterDocumento, setFilterDocumento] = useState("")
-  const [filterData, setFilterData] = useState("")
+  const [filterDataInicio, setFilterDataInicio] = useState("")
+  const [filterDataFim, setFilterDataFim] = useState("")
 
   const filteredContas = useMemo(() => {
     return mockContas.filter(conta => {
       const matchCliente = conta.cliente.toLowerCase().includes(filterCliente.toLowerCase())
       const matchDocumento = conta.documento.toLowerCase().includes(filterDocumento.toLowerCase())
-      const matchData = filterData ? conta.dataFaturamento.includes(filterData.split("-").reverse().join("/")) : true
-      return matchCliente && matchDocumento && matchData
+      const matchDataInicio = filterDataInicio ? conta.dataFaturamento >= filterDataInicio.split("-").reverse().join("/") : true
+      const matchDataFim = filterDataFim ? conta.dataFaturamento <= filterDataFim.split("-").reverse().join("/") : true
+      return matchCliente && matchDocumento && matchDataInicio && matchDataFim
     })
-  }, [filterCliente, filterDocumento, filterData])
+  }, [filterCliente, filterDocumento, filterDataInicio, filterDataFim])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -68,34 +69,41 @@ const ContasReceber = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Cliente" 
-            value={filterCliente}
-            onChange={(e) => setFilterCliente(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
-          />
-          <Input 
-            placeholder="Documento" 
-            value={filterDocumento}
-            onChange={(e) => setFilterDocumento(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
-          />
-          <Input 
-            type="date"
-            value={filterData}
-            onChange={(e) => setFilterData(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredContas.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "text",
+              label: "Cliente",
+              placeholder: "Buscar cliente...",
+              value: filterCliente,
+              onChange: setFilterCliente,
+              width: "flex-1 min-w-[180px]"
+            },
+            {
+              type: "text",
+              label: "Documento",
+              placeholder: "Número do documento...",
+              value: filterDocumento,
+              onChange: setFilterDocumento,
+              width: "min-w-[160px]"
+            },
+            {
+              type: "date",
+              label: "Data Início",
+              value: filterDataInicio,
+              onChange: setFilterDataInicio,
+              width: "min-w-[160px]"
+            },
+            {
+              type: "date",
+              label: "Data Fim",
+              value: filterDataFim,
+              onChange: setFilterDataFim,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredContas.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

@@ -1,0 +1,96 @@
+import { Search, Calendar, Filter } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ReactNode } from "react"
+
+interface FilterField {
+  type: "text" | "date" | "select"
+  label: string
+  placeholder?: string
+  value: string
+  onChange: (value: string) => void
+  options?: { value: string; label: string }[]
+  width?: string
+}
+
+interface FilterSectionProps {
+  fields: FilterField[]
+  onFilter?: () => void
+  resultsCount?: number
+  children?: ReactNode
+}
+
+export function FilterSection({
+  fields,
+  onFilter,
+  resultsCount,
+  children
+}: FilterSectionProps) {
+  return (
+    <div className="space-y-4">
+      <div className="filter-card">
+        <div className="flex flex-wrap gap-4 items-end">
+          {fields.map((field, index) => (
+            <div key={index} className={`flex flex-col gap-1.5 ${field.width || 'min-w-[180px]'}`}>
+              <label className="filter-label">{field.label}</label>
+              
+              {field.type === "text" && (
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder={field.placeholder}
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    className="filter-input-with-icon"
+                  />
+                </div>
+              )}
+
+              {field.type === "date" && (
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input
+                    type="date"
+                    value={field.value}
+                    onChange={(e) => field.onChange(e.target.value)}
+                    className="filter-input-with-icon"
+                  />
+                </div>
+              )}
+
+              {field.type === "select" && field.options && (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="filter-input">
+                    <SelectValue placeholder={field.placeholder} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {field.options.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+          ))}
+          
+          {children}
+
+          <Button onClick={onFilter} className="gap-2 h-10">
+            <Filter className="h-4 w-4" />
+            Filtrar
+          </Button>
+        </div>
+      </div>
+
+      {resultsCount !== undefined && (
+        <p className="text-sm text-muted-foreground">
+          {resultsCount} resultado{resultsCount !== 1 ? "s" : ""} encontrado{resultsCount !== 1 ? "s" : ""}.
+        </p>
+      )}
+    </div>
+  )
+}

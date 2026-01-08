@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
+import { FilterSection } from "@/components/FilterSection"
 
 const mockLocacoes = [
   { id: 1, unidade: "Unidade A", inicio: "02/06/2025", fimPrevisto: "02/07/2025", locador: "João Silva", contrato: "CONTR-001", status: "Em Andamento" },
@@ -20,8 +19,8 @@ export default function EstoqueLocacoes() {
   const filteredLocacoes = useMemo(() => {
     return mockLocacoes.filter(loc => {
       const matchLocador = loc.locador.toLowerCase().includes(filterLocador.toLowerCase())
-      const matchDataInicio = filterDataInicio ? loc.inicio.includes(filterDataInicio.split("-").reverse().join("/")) : true
-      const matchDataFim = filterDataFim ? loc.fimPrevisto.includes(filterDataFim.split("-").reverse().join("/")) : true
+      const matchDataInicio = filterDataInicio ? loc.inicio >= filterDataInicio.split("-").reverse().join("/") : true
+      const matchDataFim = filterDataFim ? loc.fimPrevisto <= filterDataFim.split("-").reverse().join("/") : true
       return matchLocador && matchDataInicio && matchDataFim
     })
   }, [filterLocador, filterDataInicio, filterDataFim])
@@ -44,33 +43,33 @@ export default function EstoqueLocacoes() {
           <Button onClick={() => navigate("/estoque/locacoes/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Nova Locação</Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Locador" 
-            value={filterLocador}
-            onChange={(e) => setFilterLocador(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Input 
-            type="date" 
-            value={filterDataInicio}
-            onChange={(e) => setFilterDataInicio(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-          <Input 
-            type="date" 
-            value={filterDataFim}
-            onChange={(e) => setFilterDataFim(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredLocacoes.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "text",
+              label: "Locador",
+              placeholder: "Buscar locador...",
+              value: filterLocador,
+              onChange: setFilterLocador,
+              width: "flex-1 min-w-[200px]"
+            },
+            {
+              type: "date",
+              label: "Data Início",
+              value: filterDataInicio,
+              onChange: setFilterDataInicio,
+              width: "min-w-[160px]"
+            },
+            {
+              type: "date",
+              label: "Data Fim",
+              value: filterDataFim,
+              onChange: setFilterDataFim,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredLocacoes.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">
