@@ -1,5 +1,12 @@
-import { Bell, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { Bell, ChevronDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface TopbarProps {
   sidebarCollapsed: boolean;
@@ -41,17 +48,35 @@ export function Topbar({
         {/* Divider */}
         <div className="h-8 w-px bg-border" />
 
-        {/* User info */}
-        <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
-            PP
-          </div>
-          <div className="hidden sm:flex flex-col">
-            <span className="text-sm font-semibold text-foreground">Pedro Piaes</span>
-            <span className="text-xs text-muted-foreground">Desenvolvedor</span>
-          </div>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-        </div>
+        {/* User info with dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
+                PP
+              </div>
+              <div className="hidden sm:flex flex-col">
+                <span className="text-sm font-semibold text-foreground">Pedro Piaes</span>
+                <span className="text-xs text-muted-foreground">Desenvolvedor</span>
+              </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48 bg-card border border-border">
+            <DropdownMenuItem className="cursor-pointer gap-2">
+              <Eye className="h-4 w-4" />
+              Visualizar
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer gap-2">
+              <Pencil className="h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer gap-2 text-destructive focus:text-destructive">
+              <Trash2 className="h-4 w-4" />
+              Excluir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

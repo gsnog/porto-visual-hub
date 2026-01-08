@@ -35,7 +35,7 @@ export default function EstoqueEntradas() {
 
   return (
     <div className="flex flex-col h-full bg-background">
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <div className="flex flex-wrap gap-4 items-center">
           <Button onClick={() => navigate("/estoque/entradas/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Novo Item</Button>
           <Button onClick={() => navigate("/estoque/entradas/upload-nfe")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Upload NF-e</Button>
