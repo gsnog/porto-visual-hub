@@ -36,11 +36,11 @@ export default function EstoqueEntradas() {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-4 items-center">
-          <Button onClick={() => navigate("/estoque/entradas/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Novo Item</Button>
-          <Button onClick={() => navigate("/estoque/entradas/upload-nfe")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Upload NF-e</Button>
+          <Button onClick={() => navigate("/estoque/entradas/nova")} className="btn-action">Novo Item</Button>
+          <Button onClick={() => navigate("/estoque/entradas/upload-nfe")} className="btn-action">Upload NF-e</Button>
           <Button 
             onClick={() => setShowRelatorio(!showRelatorio)} 
-            className={`rounded-lg ${showRelatorio ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary/90'} text-primary-foreground`}
+            className={`rounded-lg ${showRelatorio ? 'bg-success hover:bg-success/90' : 'bg-primary hover:bg-primary/90'} text-white transition-all duration-200`}
           >
             <FileText className="w-4 h-4 mr-2" />
             Relatório
@@ -83,7 +83,7 @@ export default function EstoqueEntradas() {
                 <label className="filter-label">Unidade:</label>
                 <Input className="filter-input w-36" />
               </div>
-              <Button className="rounded-lg bg-green-600 hover:bg-green-700 text-white h-10">
+              <Button className="rounded-lg bg-success hover:bg-success/90 text-white h-10 transition-all duration-200">
                 Gerar Relatório
               </Button>
             </div>
@@ -160,7 +160,7 @@ export default function EstoqueEntradas() {
                     <TableCell className="text-center">{entrada.quantidade}</TableCell>
                     <TableCell className="text-center">{entrada.custoTotal}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <Button size="sm" className="btn-action text-xs">Ações</Button>
                     </TableCell>
                   </TableRow>
                 ))

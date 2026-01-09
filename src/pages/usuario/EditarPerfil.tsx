@@ -53,7 +53,7 @@ export default function EditarPerfil() {
                 </Avatar>
                 <button
                   type="button"
-                  className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-colors"
+                  className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200"
                 >
                   <Camera className="h-5 w-5" />
                 </button>
@@ -63,84 +63,84 @@ export default function EditarPerfil() {
             {/* Campos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="nome" className="w-40">Nome Completo</Label>
+                <Label htmlFor="nome" className="form-label">Nome Completo</Label>
                 <Input
                   id="nome"
                   name="nome"
                   value={formData.nome}
                   onChange={handleChange}
-                  className="border-[#22265B]"
+                  className="form-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="w-40">E-mail</Label>
+                <Label htmlFor="email" className="form-label">E-mail</Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="border-[#22265B]"
+                  className="form-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="telefone" className="w-40">Telefone</Label>
+                <Label htmlFor="telefone" className="form-label">Telefone</Label>
                 <Input
                   id="telefone"
                   name="telefone"
                   value={formData.telefone}
                   onChange={handleChange}
-                  className="border-[#22265B]"
+                  className="form-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="cargo" className="w-40">Cargo</Label>
+                <Label htmlFor="cargo" className="form-label">Cargo</Label>
                 <Input
                   id="cargo"
                   name="cargo"
                   value={formData.cargo}
                   onChange={handleChange}
-                  className="border-[#22265B]"
+                  className="form-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="departamento" className="w-40">Departamento</Label>
+                <Label htmlFor="departamento" className="form-label">Departamento</Label>
                 <Input
                   id="departamento"
                   name="departamento"
                   value={formData.departamento}
                   onChange={handleChange}
-                  className="border-[#22265B]"
+                  className="form-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endereco" className="w-40">Endereço</Label>
+                <Label htmlFor="endereco" className="form-label">Endereço</Label>
                 <Input
                   id="endereco"
                   name="endereco"
                   value={formData.endereco}
                   onChange={handleChange}
-                  className="border-[#22265B]"
+                  className="form-input"
                 />
               </div>
             </div>
 
             {/* Botões */}
-            <div className="flex justify-end gap-4 pt-4">
+            <div className="flex justify-end gap-4 pt-6">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => navigate("/usuario/visualizar")}
-                className="text-destructive border-destructive hover:bg-destructive hover:text-white"
+                className="text-destructive border-destructive hover:bg-destructive hover:text-white transition-all duration-200"
               >
                 Cancelar
               </Button>
-              <Button type="submit">
+              <Button type="submit" className="btn-action px-6">
                 Salvar Alterações
               </Button>
             </div>

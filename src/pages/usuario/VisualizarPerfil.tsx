@@ -59,53 +59,53 @@ export default function VisualizarPerfil() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Phone className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">Telefone</p>
-                  <p className="font-medium text-foreground">{usuario.telefone}</p>
+                  <p className="font-medium text-foreground truncate">{usuario.telefone}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">Cargo</p>
-                  <p className="font-medium text-foreground">{usuario.cargo}</p>
+                  <p className="font-medium text-foreground truncate">{usuario.cargo}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Building2 className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">Departamento</p>
-                  <p className="font-medium text-foreground">{usuario.departamento}</p>
+                  <p className="font-medium text-foreground truncate">{usuario.departamento}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Calendar className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">Data de Admissão</p>
-                  <p className="font-medium text-foreground">{usuario.dataAdmissao}</p>
+                  <p className="font-medium text-foreground truncate">{usuario.dataAdmissao}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <MapPin className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">Localização</p>
-                  <p className="font-medium text-foreground">{usuario.endereco}</p>
+                  <p className="font-medium text-foreground truncate">{usuario.endereco}</p>
                 </div>
               </div>
             </div>
