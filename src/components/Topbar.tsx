@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useRef } from "react";
 import { Bell, ChevronDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -14,13 +15,26 @@ interface TopbarProps {
   pageDescription?: string;
 }
 
+// Store previous route outside component to persist across renders
+let previousRoute: string = "/";
+
 export function Topbar({ 
   sidebarCollapsed, 
   pageTitle = "Dashboard",
   pageDescription = "Visão geral do sistema",
 }: TopbarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const notificationCount = 3;
+
+  const handleBellClick = () => {
+    if (location.pathname === "/notificacoes") {
+      navigate(previousRoute);
+    } else {
+      previousRoute = location.pathname;
+      navigate("/notificacoes");
+    }
+  };
 
   return (
     <header 
@@ -38,7 +52,7 @@ export function Topbar({
       <div className="flex items-center gap-4">
         {/* Notifications */}
         <button 
-          onClick={() => navigate("/notificacoes")}
+          onClick={handleBellClick}
           className="relative p-2 rounded-lg hover:bg-muted transition-colors"
         >
           <Bell className="h-5 w-5 text-muted-foreground" />
