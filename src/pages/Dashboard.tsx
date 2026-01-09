@@ -104,39 +104,52 @@ const MetricCard = ({
   trend?: "up" | "down"
   trendValue?: string
   color?: "primary" | "success" | "destructive" | "warning"
-}) => (
-  <Card className="border border-border rounded-lg">
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-      <Icon className={`h-4 w-4 text-${color}`} />
-    </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      {trend && trendValue && (
-        <p className={`text-xs flex items-center gap-1 ${trend === "up" ? "text-success" : "text-destructive"}`}>
-          {trend === "up" ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-          {trendValue}
-        </p>
-      )}
-    </CardContent>
-  </Card>
-)
+}) => {
+  const iconColorClass = {
+    primary: "text-primary",
+    success: "text-success",
+    destructive: "text-destructive",
+    warning: "text-warning"
+  }[color]
 
-const AlertCard = ({ title, count, type }: { title: string; count: number; type: "warning" | "danger" | "info" }) => (
-  <div className={`flex items-center gap-3 p-3 rounded-lg ${
-    type === "danger" ? "bg-destructive/10" : type === "warning" ? "bg-warning/10" : "bg-primary/10"
-  }`}>
-    <AlertTriangle className={`h-5 w-5 ${
-      type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
-    }`} />
-    <div>
-      <p className="text-sm font-medium">{title}</p>
-      <p className={`text-lg font-bold ${
-        type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
-      }`}>{count}</p>
+  return (
+    <Card className="border border-border rounded-lg hover:shadow-md transition-shadow duration-200">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+        <div className={`p-2 rounded-lg bg-opacity-10 ${color === "success" ? "bg-success/10" : color === "destructive" ? "bg-destructive/10" : color === "warning" ? "bg-warning/10" : "bg-primary/10"}`}>
+          <Icon className={`h-4 w-4 ${iconColorClass}`} />
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold tracking-tight">{value}</div>
+        {trend && trendValue && (
+          <p className={`text-sm flex items-center gap-1.5 mt-1 font-medium ${trend === "up" ? "text-success" : "text-destructive"}`}>
+            {trend === "up" ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+            {trendValue}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+const AlertCard = ({ title, count, type }: { title: string; count: number; type: "warning" | "danger" | "info" }) => {
+  const bgClass = type === "danger" ? "bg-destructive/15" : type === "warning" ? "bg-warning/15" : "bg-primary/15"
+  const iconClass = type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
+  const textClass = type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
+  
+  return (
+    <div className={`flex items-center gap-4 p-4 rounded-xl ${bgClass} transition-all duration-200 hover:scale-[1.02]`}>
+      <div className={`p-2 rounded-lg ${type === "danger" ? "bg-destructive/20" : type === "warning" ? "bg-warning/20" : "bg-primary/20"}`}>
+        <AlertTriangle className={`h-5 w-5 ${iconClass}`} />
+      </div>
+      <div>
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <p className={`text-2xl font-bold ${textClass}`}>{count}</p>
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
