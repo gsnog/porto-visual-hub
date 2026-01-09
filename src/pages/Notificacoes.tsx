@@ -131,6 +131,7 @@ export default function Notificacoes() {
               variant={filtro === "todas" ? "default" : "outline"}
               size="sm"
               onClick={() => setFiltro("todas")}
+              className="transition-all duration-200"
             >
               Todas ({notificacoes.length})
             </Button>
@@ -138,6 +139,7 @@ export default function Notificacoes() {
               variant={filtro === "nao-lidas" ? "default" : "outline"}
               size="sm"
               onClick={() => setFiltro("nao-lidas")}
+              className="transition-all duration-200"
             >
               Não lidas ({naoLidas})
             </Button>
@@ -150,7 +152,7 @@ export default function Notificacoes() {
             size="sm"
             onClick={marcarTodasComoLidas}
             disabled={naoLidas === 0}
-            className="gap-2"
+            className="gap-2 transition-all duration-200"
           >
             <CheckCheck className="h-4 w-4" />
             Marcar todas como lidas
@@ -160,7 +162,7 @@ export default function Notificacoes() {
             size="sm"
             onClick={limparTodas}
             disabled={notificacoes.length === 0}
-            className="gap-2 text-destructive hover:text-white hover:bg-destructive"
+            className="gap-2 text-destructive hover:text-white hover:bg-destructive transition-all duration-200"
           >
             <Trash2 className="h-4 w-4" />
             Limpar todas

@@ -5,10 +5,10 @@ import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
-  <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
-    <h3 className="text-lg font-semibold mb-3">{title}</h3>
-    <div className="border-t border-white/30 mb-3"></div>
-    <p className="text-2xl font-bold">{value}</p>
+  <div className={`summary-card ${colorClass}`}>
+    <h3 className="summary-card-title">{title}</h3>
+    <div className="summary-card-divider"></div>
+    <p className="summary-card-value">{value}</p>
   </div>
 );
 
@@ -39,15 +39,15 @@ const ContasPagar = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Efetuado':
-        return 'text-green-600 font-medium';
+        return 'text-success font-semibold';
       case 'Em Aberto':
-        return 'text-yellow-600 font-medium';
+        return 'text-warning font-semibold';
       case 'Vencido':
-        return 'text-red-600 font-medium';
+        return 'text-destructive font-semibold';
       case 'Pago Parcial':
-        return 'text-blue-600 font-medium';
+        return 'text-primary font-semibold';
       default:
-        return 'text-gray-600';
+        return 'text-muted-foreground';
     }
   }
 
@@ -55,16 +55,16 @@ const ContasPagar = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <SummaryCard title="Total Pago" value="R$ 87.939,88" colorClass="bg-green-500" />
-          <SummaryCard title="Total a Pagar" value="R$ 1.800,00" colorClass="bg-red-500" />
+          <SummaryCard title="Total Pago" value="R$ 87.939,88" colorClass="bg-success" />
+          <SummaryCard title="Total a Pagar" value="R$ 1.800,00" colorClass="bg-destructive" />
           <SummaryCard title="Valor Total em Títulos" value="R$ 89.739,88" colorClass="bg-primary" />
         </div>
 
         <div className="flex flex-wrap gap-4 items-center">
-          <Button onClick={() => navigate("/financeiro/contas-pagar/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={() => navigate("/financeiro/contas-pagar/nova")} className="btn-action">
             Adicionar Conta
           </Button>
-          <Button onClick={() => navigate("/financeiro/contas-pagar/relatorio")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={() => navigate("/financeiro/contas-pagar/relatorio")} className="btn-action">
             Relatório
           </Button>
         </div>
@@ -141,7 +141,7 @@ const ContasPagar = () => {
                       <span className={getStatusColor(conta.status)}>{conta.status}</span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
+                      <Button size="sm" className="btn-action text-xs">
                         Ações
                       </Button>
                     </TableCell>
