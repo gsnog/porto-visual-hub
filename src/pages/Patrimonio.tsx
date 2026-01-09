@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Trash2, FileText, Search } from "lucide-react"
+import { ArrowLeft, Trash2, FileText } from "lucide-react"
+import { FilterSection } from "@/components/FilterSection"
 
 type Asset = {
   id: string
@@ -96,28 +97,26 @@ const Patrimonio = () => {
             </Button>
           </div>
           
-          <div className="flex flex-wrap gap-4 items-center">
-            <Input 
-              placeholder="Item / Código" 
-              value={filterNome}
-              onChange={(e) => setFilterNome(e.target.value)}
-              className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg"
-            />
-            <Input 
-              type="date"
-              value={filterData}
-              onChange={(e) => setFilterData(e.target.value)}
-              className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg"
-            />
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-              <Search className="w-4 h-4 mr-2" />
-              Filtrar
-            </Button>
-          </div>
-
-          <p className="text-sm text-muted-foreground">
-            {filteredAssets.length} resultado(s) encontrado(s).
-          </p>
+          <FilterSection
+            fields={[
+              {
+                type: "text",
+                label: "Item / Código",
+                placeholder: "Buscar...",
+                value: filterNome,
+                onChange: setFilterNome,
+                width: "flex-1 min-w-[200px]"
+              },
+              {
+                type: "date",
+                label: "Data de Aquisição",
+                value: filterData,
+                onChange: setFilterData,
+                width: "min-w-[160px]"
+              }
+            ]}
+            resultsCount={filteredAssets.length}
+          />
 
           <div className="rounded-xl overflow-hidden shadow-sm">
             <Table className="table-professional">

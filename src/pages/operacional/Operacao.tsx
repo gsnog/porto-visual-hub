@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
+import { FilterSection } from "@/components/FilterSection";
 
 const mockOperacoes = [
   { id: 1, dataEntrada: "02/06/2025", barco: "Marlin Azul", custoAproximado: "R$ 15.000,00", valorPago: "R$ 15.000,00", previsaoEntrega: "15/06/2025", dataEntrega: "15/06/2025" },
@@ -36,28 +35,26 @@ const Operacao = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Nome do Barco" 
-            value={filterNome}
-            onChange={(e) => setFilterNome(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Input 
-            type="date"
-            value={filterData}
-            onChange={(e) => setFilterData(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredOperacoes.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "text",
+              label: "Nome do Barco",
+              placeholder: "Buscar barco...",
+              value: filterNome,
+              onChange: setFilterNome,
+              width: "flex-1 min-w-[200px]"
+            },
+            {
+              type: "date",
+              label: "Data de Entrada",
+              value: filterData,
+              onChange: setFilterData,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredOperacoes.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">
