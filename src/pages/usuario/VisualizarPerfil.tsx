@@ -49,13 +49,13 @@ export default function VisualizarPerfil() {
 
             {/* Informações */}
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 min-w-0">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                   <Mail className="h-5 w-5 text-primary" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-sm text-muted-foreground">E-mail</p>
-                  <p className="font-medium text-foreground">{usuario.email}</p>
+                  <p className="font-medium text-foreground truncate">{usuario.email}</p>
                 </div>
               </div>
 
