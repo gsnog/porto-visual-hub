@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Bell, ChevronDown, Eye, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -19,6 +19,7 @@ export function Topbar({
   pageTitle = "Dashboard",
   pageDescription = "Visão geral do sistema",
 }: TopbarProps) {
+  const navigate = useNavigate();
   const notificationCount = 3;
 
   return (
@@ -36,7 +37,10 @@ export function Topbar({
       {/* Right side - Notifications, divider, user info */}
       <div className="flex items-center gap-4">
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-muted transition-colors">
+        <button 
+          onClick={() => navigate("/notificacoes")}
+          className="relative p-2 rounded-lg hover:bg-muted transition-colors"
+        >
           <Bell className="h-5 w-5 text-muted-foreground" />
           {notificationCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
@@ -63,15 +67,24 @@ export function Topbar({
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 bg-card border border-border">
-            <DropdownMenuItem className="cursor-pointer gap-2">
+            <DropdownMenuItem 
+              className="cursor-pointer gap-2"
+              onClick={() => navigate("/usuario/visualizar")}
+            >
               <Eye className="h-4 w-4" />
               Visualizar
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer gap-2">
+            <DropdownMenuItem 
+              className="cursor-pointer gap-2"
+              onClick={() => navigate("/usuario/editar")}
+            >
               <Pencil className="h-4 w-4" />
               Editar
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer gap-2 text-destructive focus:text-destructive">
+            <DropdownMenuItem 
+              className="cursor-pointer gap-2 text-destructive hover:!text-white hover:!bg-destructive focus:!text-white focus:!bg-destructive"
+              onClick={() => navigate("/usuario/excluir")}
+            >
               <Trash2 className="h-4 w-4" />
               Excluir
             </DropdownMenuItem>
