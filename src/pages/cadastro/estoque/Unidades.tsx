@@ -1,11 +1,23 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FilterSection } from "@/components/FilterSection";
 
 const Unidades = () => {
   const navigate = useNavigate();
+  const [searchUnidade, setSearchUnidade] = useState("");
+
+  const filterFields = [
+    {
+      type: "text" as const,
+      label: "Unidade",
+      placeholder: "Buscar unidade...",
+      value: searchUnidade,
+      onChange: setSearchUnidade,
+      width: "min-w-[250px]"
+    }
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -13,24 +25,17 @@ const Unidades = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button 
             onClick={() => navigate("/cadastro/estoque/unidades/nova")}
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="btn-action"
           >
             Nova Unidade
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Unidade" 
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <FilterSection 
+          fields={filterFields}
+          onFilter={() => console.log("Filtrar unidades")}
+          resultsCount={1}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

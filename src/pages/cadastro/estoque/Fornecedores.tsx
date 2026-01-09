@@ -1,11 +1,32 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import { FilterSection } from "@/components/FilterSection";
 
 const FornecedoresEstoque = () => {
   const navigate = useNavigate();
+  const [searchNome, setSearchNome] = useState("");
+  const [searchCnpj, setSearchCnpj] = useState("");
+
+  const filterFields = [
+    {
+      type: "text" as const,
+      label: "Nome do Fornecedor",
+      placeholder: "Buscar fornecedor...",
+      value: searchNome,
+      onChange: setSearchNome,
+      width: "min-w-[250px]"
+    },
+    {
+      type: "text" as const,
+      label: "CNPJ",
+      placeholder: "Buscar por CNPJ...",
+      value: searchCnpj,
+      onChange: setSearchCnpj,
+      width: "min-w-[200px]"
+    }
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -13,28 +34,17 @@ const FornecedoresEstoque = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button 
             onClick={() => navigate("/cadastro/estoque/fornecedores/novo")}
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="btn-action"
           >
             Novo Fornecedor
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Nome do Fornecedor" 
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Input 
-            placeholder="CNPJ" 
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <FilterSection 
+          fields={filterFields}
+          onFilter={() => console.log("Filtrar fornecedores")}
+          resultsCount={0}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">
