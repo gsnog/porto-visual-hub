@@ -37,6 +37,10 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/operacional/embarcacoes": { title: "Embarcações", description: "Gerenciamento de embarcações" },
   "/operacional/operacao": { title: "Operação", description: "Gerenciamento de operações" },
   "/operacional/servicos": { title: "Serviços", description: "Gerenciamento de serviços" },
+  "/notificacoes": { title: "Notificações", description: "Central de notificações do sistema" },
+  "/usuario/visualizar": { title: "Meu Perfil", description: "Visualizar informações do perfil" },
+  "/usuario/editar": { title: "Editar Perfil", description: "Alterar informações do perfil" },
+  "/usuario/excluir": { title: "Excluir Conta", description: "Remover conta permanentemente" },
 }
 
 function LayoutContent() {

@@ -82,6 +82,12 @@ import NovaOperacao from "./pages/operacional/NovaOperacao";
 import Servicos from "./pages/operacional/Servicos";
 import NovoServico from "./pages/operacional/NovoServico";
 
+// Usuário
+import VisualizarPerfil from "./pages/usuario/VisualizarPerfil";
+import EditarPerfil from "./pages/usuario/EditarPerfil";
+import ExcluirPerfil from "./pages/usuario/ExcluirPerfil";
+import Notificacoes from "./pages/Notificacoes";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -172,6 +178,12 @@ const App = () => (
             
             <Route path="/novo-usuario" element={<Cadastro />} />
             <Route path="/planos" element={<Dashboard />} />
+            
+            {/* Usuário e Notificações */}
+            <Route path="/usuario/visualizar" element={<VisualizarPerfil />} />
+            <Route path="/usuario/editar" element={<EditarPerfil />} />
+            <Route path="/usuario/excluir" element={<ExcluirPerfil />} />
+            <Route path="/notificacoes" element={<Notificacoes />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
