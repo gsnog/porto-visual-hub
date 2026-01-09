@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { useState, useMemo } from "react";
+import { FilterSection } from "@/components/FilterSection";
 
 const mockOrdens = [
   { id: 1, data: "19/12/2024", dataCompra: "20/12/2024", dataEntrega: "25/12/2024", item: "Papel A4", marca: "Chamex", quantidade: 100, requisitante: "João Silva", setor: "Administrativo", status: "Aprovado" },
@@ -55,35 +53,32 @@ export default function OrdemCompra() {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent className="bg-popover">
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="análise">Análise</SelectItem>
-              <SelectItem value="aprovado">Aprovado</SelectItem>
-              <SelectItem value="negado">Negado</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Input 
-            type="date" 
-            value={filterData}
-            onChange={(e) => setFilterData(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredOrdens.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "select",
+              label: "Status",
+              placeholder: "Selecione...",
+              value: filterStatus,
+              onChange: setFilterStatus,
+              options: [
+                { value: "todos", label: "Todos" },
+                { value: "análise", label: "Análise" },
+                { value: "aprovado", label: "Aprovado" },
+                { value: "negado", label: "Negado" }
+              ],
+              width: "min-w-[180px]"
+            },
+            {
+              type: "date",
+              label: "Data",
+              value: filterData,
+              onChange: setFilterData,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredOrdens.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

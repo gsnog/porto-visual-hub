@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
+import { FilterSection } from "@/components/FilterSection";
 
 const mockSetores = [
   { id: 1, nome: "Motor" },
@@ -35,22 +34,19 @@ const Setor = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Setor" 
-            value={filterNome}
-            onChange={(e) => setFilterNome(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredSetores.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "text",
+              label: "Setor",
+              placeholder: "Buscar setor...",
+              value: filterNome,
+              onChange: setFilterNome,
+              width: "flex-1 min-w-[200px]"
+            }
+          ]}
+          resultsCount={filteredSetores.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

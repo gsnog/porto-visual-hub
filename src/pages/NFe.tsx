@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Download, Eye, FileText, Search } from "lucide-react"
+import { Download, Eye, FileText } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { useState, useMemo } from "react"
+import { FilterSection } from "@/components/FilterSection"
 
 const NFe = () => {
   const navigate = useNavigate()
+  const [filterNumero, setFilterNumero] = useState("")
+  const [filterData, setFilterData] = useState("")
+
   const nfes = [
     {
       dataEmissao: "02/06/2025",
@@ -32,6 +36,14 @@ const NFe = () => {
       status: "Em Processamento"
     },
   ]
+
+  const filteredNfes = useMemo(() => {
+    return nfes.filter(nfe => {
+      const matchNumero = nfe.numero.toLowerCase().includes(filterNumero.toLowerCase())
+      const matchData = filterData ? nfe.dataEmissao.includes(filterData.split("-").reverse().join("/")) : true
+      return matchNumero && matchData
+    })
+  }, [filterNumero, filterData])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -62,22 +74,26 @@ const NFe = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            placeholder="Número NF-e" 
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg"
-          />
-          <Input 
-            type="date"
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg"
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <FilterSection
+          fields={[
+            {
+              type: "text",
+              label: "Número NF-e",
+              placeholder: "Buscar número...",
+              value: filterNumero,
+              onChange: setFilterNumero,
+              width: "flex-1 min-w-[200px]"
+            },
+            {
+              type: "date",
+              label: "Data Emissão",
+              value: filterData,
+              onChange: setFilterData,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredNfes.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">
@@ -93,7 +109,7 @@ const NFe = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {nfes.map((nfe, index) => (
+              {filteredNfes.map((nfe, index) => (
                 <TableRow key={index}>
                   <TableCell className="text-center">{nfe.dataEmissao}</TableCell>
                   <TableCell className="text-center">{nfe.numero}</TableCell>

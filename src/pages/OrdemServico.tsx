@@ -1,10 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { useState, useMemo } from "react";
+import { FilterSection } from "@/components/FilterSection";
 
 const mockOrdens = [
   { id: 1, tipo: "Serviços Gerais", data: "19/12/2024", descricao: "Limpeza geral", responsavel: "João Silva", status: "Concluído" },
@@ -54,41 +52,39 @@ export default function OrdemServico() {
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Select value={filterTipo} onValueChange={setFilterTipo}>
-            <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg">
-              <SelectValue placeholder="Tipo de Ordem" />
-            </SelectTrigger>
-            <SelectContent className="bg-popover">
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="serviços gerais">Serviços Gerais</SelectItem>
-              <SelectItem value="patrimônio">Patrimônio</SelectItem>
-              <SelectItem value="suporte">Suporte</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Input 
-            type="date" 
-            value={filterDataInicio}
-            onChange={(e) => setFilterDataInicio(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-          <Input 
-            type="date" 
-            value={filterDataFim}
-            onChange={(e) => setFilterDataFim(e.target.value)}
-            className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" 
-          />
-
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filteredOrdens.length} resultado(s) encontrado(s).
-        </p>
+        <FilterSection
+          fields={[
+            {
+              type: "select",
+              label: "Tipo de Ordem",
+              placeholder: "Selecione...",
+              value: filterTipo,
+              onChange: setFilterTipo,
+              options: [
+                { value: "todos", label: "Todos" },
+                { value: "serviços gerais", label: "Serviços Gerais" },
+                { value: "patrimônio", label: "Patrimônio" },
+                { value: "suporte", label: "Suporte" }
+              ],
+              width: "min-w-[180px]"
+            },
+            {
+              type: "date",
+              label: "Data Início",
+              value: filterDataInicio,
+              onChange: setFilterDataInicio,
+              width: "min-w-[160px]"
+            },
+            {
+              type: "date",
+              label: "Data Fim",
+              value: filterDataFim,
+              onChange: setFilterDataFim,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredOrdens.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

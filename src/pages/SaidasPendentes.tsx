@@ -1,12 +1,25 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search } from "lucide-react"
+import { useState, useMemo } from "react"
+import { FilterSection } from "@/components/FilterSection"
 
 const SaidasPendentes = () => {
+  const [filterBeneficiario, setFilterBeneficiario] = useState("")
+  const [filterDocumento, setFilterDocumento] = useState("")
+  const [filterData, setFilterData] = useState("")
+
   const saidas = [
-    { dataLancamento: "02/06/2025", beneficiario: "05/06/2025", documento: "NI", valorTitulo: "R$ 1.500,00", valorTotal: "R$ 1.500,00", acoes: "Ações" }
+    { dataLancamento: "02/06/2025", beneficiario: "Empresa ABC", documento: "NI", valorTitulo: "R$ 1.500,00", valorTotal: "R$ 1.500,00" }
   ]
+
+  const filteredSaidas = useMemo(() => {
+    return saidas.filter(saida => {
+      const matchBeneficiario = saida.beneficiario.toLowerCase().includes(filterBeneficiario.toLowerCase())
+      const matchDocumento = saida.documento.toLowerCase().includes(filterDocumento.toLowerCase())
+      const matchData = filterData ? saida.dataLancamento.includes(filterData.split("-").reverse().join("/")) : true
+      return matchBeneficiario && matchDocumento && matchData
+    })
+  }, [filterBeneficiario, filterDocumento, filterData])
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -16,16 +29,34 @@ const SaidasPendentes = () => {
           <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input placeholder="Beneficiário" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg" />
-          <Input placeholder="Documento" className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-52 rounded-lg" />
-          <Input type="date" className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-44 rounded-lg" />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />Filtrar
-          </Button>
-        </div>
-
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <FilterSection
+          fields={[
+            {
+              type: "text",
+              label: "Beneficiário",
+              placeholder: "Buscar beneficiário...",
+              value: filterBeneficiario,
+              onChange: setFilterBeneficiario,
+              width: "flex-1 min-w-[200px]"
+            },
+            {
+              type: "text",
+              label: "Documento",
+              placeholder: "Buscar documento...",
+              value: filterDocumento,
+              onChange: setFilterDocumento,
+              width: "min-w-[180px]"
+            },
+            {
+              type: "date",
+              label: "Data",
+              value: filterData,
+              onChange: setFilterData,
+              width: "min-w-[160px]"
+            }
+          ]}
+          resultsCount={filteredSaidas.length}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">
@@ -40,18 +71,26 @@ const SaidasPendentes = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {saidas.map((saida, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-center">{saida.dataLancamento}</TableCell>
-                  <TableCell className="text-center">{saida.beneficiario}</TableCell>
-                  <TableCell className="text-center">{saida.documento}</TableCell>
-                  <TableCell className="text-center">{saida.valorTitulo}</TableCell>
-                  <TableCell className="text-center">{saida.valorTotal}</TableCell>
-                  <TableCell className="text-center">
-                    <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+              {filteredSaidas.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    Nenhuma saída encontrada.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredSaidas.map((saida, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-center">{saida.dataLancamento}</TableCell>
+                    <TableCell className="text-center">{saida.beneficiario}</TableCell>
+                    <TableCell className="text-center">{saida.documento}</TableCell>
+                    <TableCell className="text-center">{saida.valorTitulo}</TableCell>
+                    <TableCell className="text-center">{saida.valorTotal}</TableCell>
+                    <TableCell className="text-center">
+                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
