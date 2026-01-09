@@ -146,10 +146,17 @@
     color: #22265B !important;
   }
 
+  .dark input[type="date"],
+  .dark input[type="datetime-local"],
+  .dark input[type="time"] {
+    background-color: hsl(var(--card)) !important;
+    color: hsl(var(--foreground)) !important;
+  }
+
   .dark input[type="date"]::-webkit-calendar-picker-indicator,
   .dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
   .dark input[type="time"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.3) sepia(1) saturate(5) hue-rotate(175deg);
+    filter: invert(0.8);
   }
 }
 
