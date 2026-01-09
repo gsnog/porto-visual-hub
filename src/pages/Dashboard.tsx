@@ -2,8 +2,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
+import { PortfolioChart } from "@/components/PortfolioChart"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
   ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3
@@ -158,6 +157,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 // Dashboard Geral
 const DashboardGeral = () => (
   <div className="space-y-6">
+    {/* Gráfico Principal - Balanço do Portfólio */}
+    <PortfolioChart />
+
     {/* Cards - Financeiro */}
     <div>
       <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
@@ -677,54 +679,27 @@ const DashboardPatrimonio = () => (
 // Main Dashboard Component
 const Dashboard = () => {
   const [activeDashboard, setActiveDashboard] = useState<DashboardType>("geral")
-  const [filterPeriodo, setFilterPeriodo] = useState("")
-  const [filterSetor, setFilterSetor] = useState("")
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         {/* Seletor de Dashboard */}
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex bg-secondary rounded-lg p-1">
-            {(["geral", "financeiro", "estoque", "patrimonio"] as DashboardType[]).map((type) => (
-              <Button
-                key={type}
-                variant="ghost"
-                size="sm"
-                onClick={() => setActiveDashboard(type)}
-                className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
-                  activeDashboard === type
-                    ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-transparent"
-                }`}
-              >
-                {type === "patrimonio" ? "Patrimônio" : type.charAt(0).toUpperCase() + type.slice(1)}
-              </Button>
-            ))}
-          </div>
-
-          {/* Filtros */}
-          <div className="flex gap-2 ml-auto">
-            <Input
-              type="date"
-              value={filterPeriodo}
-              onChange={(e) => setFilterPeriodo(e.target.value)}
-              className="filter-input w-40"
-              placeholder="Período"
-            />
-            <Select value={filterSetor} onValueChange={setFilterSetor}>
-              <SelectTrigger className="filter-input w-40">
-                <SelectValue placeholder="Setor" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="producao">Produção</SelectItem>
-                <SelectItem value="manutencao">Manutenção</SelectItem>
-                <SelectItem value="ti">TI</SelectItem>
-                <SelectItem value="administrativo">Administrativo</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex bg-secondary rounded-lg p-1 w-fit">
+          {(["geral", "financeiro", "estoque", "patrimonio"] as DashboardType[]).map((type) => (
+            <Button
+              key={type}
+              variant="ghost"
+              size="sm"
+              onClick={() => setActiveDashboard(type)}
+              className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
+                activeDashboard === type
+                  ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-transparent"
+              }`}
+            >
+              {type === "patrimonio" ? "Patrimônio" : type.charAt(0).toUpperCase() + type.slice(1)}
+            </Button>
+          ))}
         </div>
 
         {/* Dashboard Content */}
