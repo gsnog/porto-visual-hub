@@ -1,9 +1,23 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import { FilterSection } from "@/components/FilterSection";
 
 const Categorias = () => {
   const navigate = useNavigate();
+  const [searchCategoria, setSearchCategoria] = useState("");
+
+  const filterFields = [
+    {
+      type: "text" as const,
+      label: "Categoria",
+      placeholder: "Buscar categoria...",
+      value: searchCategoria,
+      onChange: setSearchCategoria,
+      width: "min-w-[250px]"
+    }
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -11,13 +25,17 @@ const Categorias = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button 
             onClick={() => navigate("/cadastro/financeiro/categorias/nova")}
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="btn-action"
           >
             Nova Categoria
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <FilterSection 
+          fields={filterFields}
+          onFilter={() => console.log("Filtrar categorias")}
+          resultsCount={0}
+        />
 
         <div className="rounded-xl overflow-hidden shadow-sm">
           <Table className="table-professional">

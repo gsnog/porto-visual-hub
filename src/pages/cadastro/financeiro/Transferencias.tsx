@@ -1,11 +1,31 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { FilterSection } from "@/components/FilterSection";
 
 const Transferencias = () => {
   const navigate = useNavigate();
+  const [searchData, setSearchData] = useState("");
+  const [searchContaOrigem, setSearchContaOrigem] = useState("");
+
+  const filterFields = [
+    {
+      type: "date" as const,
+      label: "Data",
+      value: searchData,
+      onChange: setSearchData,
+      width: "min-w-[180px]"
+    },
+    {
+      type: "text" as const,
+      label: "Conta Origem",
+      placeholder: "Buscar conta origem...",
+      value: searchContaOrigem,
+      onChange: setSearchContaOrigem,
+      width: "min-w-[200px]"
+    }
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -13,35 +33,27 @@ const Transferencias = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button 
             onClick={() => navigate("/cadastro/financeiro/transferencias/nova")}
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="btn-action"
           >
             Nova Transferência
           </Button>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Input 
-            type="date"
-            placeholder="Data" 
-            className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 w-64 rounded-lg" 
-          />
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Search className="w-4 h-4 mr-2" />
-            Filtrar
-          </Button>
-        </div>
+        <FilterSection 
+          fields={filterFields}
+          onFilter={() => console.log("Filtrar transferências")}
+          resultsCount={0}
+        />
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
-
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Data</TableHead>
-                <TableHead className="!text-white font-medium text-center">Conta Origem</TableHead>
-                <TableHead className="!text-white font-medium text-center">Conta Destino</TableHead>
-                <TableHead className="!text-white font-medium text-center">Valor</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Data</TableHead>
+                <TableHead className="text-center">Conta Origem</TableHead>
+                <TableHead className="text-center">Conta Destino</TableHead>
+                <TableHead className="text-center">Valor</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

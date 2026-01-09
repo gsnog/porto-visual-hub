@@ -1,9 +1,23 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import { FilterSection } from "@/components/FilterSection";
 
 const Contabil = () => {
   const navigate = useNavigate();
+  const [searchContabil, setSearchContabil] = useState("");
+
+  const filterFields = [
+    {
+      type: "text" as const,
+      label: "Contábil",
+      placeholder: "Buscar contábil...",
+      value: searchContabil,
+      onChange: setSearchContabil,
+      width: "min-w-[250px]"
+    }
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -11,20 +25,24 @@ const Contabil = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <Button 
             onClick={() => navigate("/cadastro/financeiro/contabil/novo")}
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="btn-action"
           >
             Adicionar
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground">Página 1 de 1.</p>
+        <FilterSection 
+          fields={filterFields}
+          onFilter={() => console.log("Filtrar contábil")}
+          resultsCount={0}
+        />
 
-        <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-          <Table>
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <Table className="table-professional">
             <TableHeader>
-              <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                <TableHead className="!text-white font-medium text-center">Contábil</TableHead>
-                <TableHead className="!text-white font-medium text-center">Ações</TableHead>
+              <TableRow>
+                <TableHead className="text-center">Contábil</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
