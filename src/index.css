@@ -169,17 +169,29 @@
   /* Sidebar scrollbar styles - completely hidden */
   [data-sidebar="sidebar"],
   [data-sidebar="content"],
-  .sidebar-scroll {
+  .sidebar-scroll,
+  .sidebar-nav-scroll {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   [data-sidebar="sidebar"]::-webkit-scrollbar,
   [data-sidebar="content"]::-webkit-scrollbar,
-  .sidebar-scroll::-webkit-scrollbar {
+  .sidebar-scroll::-webkit-scrollbar,
+  .sidebar-nav-scroll::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
     width: 0;
     height: 0;
+    background: transparent;
+  }
+
+  /* Ensure no scrollbar track or thumb is visible */
+  .sidebar-nav-scroll::-webkit-scrollbar-track,
+  .sidebar-nav-scroll::-webkit-scrollbar-thumb {
+    background: transparent;
+    display: none;
   }
 
   /* Sidebar styles */

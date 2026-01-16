@@ -155,7 +155,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       </button>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
+      <nav className="flex-1 sidebar-nav-scroll px-3 py-4">
         <ul className="space-y-1">
           {menuItems.map((item) => (
             <li key={item.title}>
