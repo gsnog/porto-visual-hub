@@ -58,6 +58,14 @@ export default function OrdemServico() {
         <FilterSection
           fields={[
             {
+              type: "text",
+              label: "Descrição",
+              placeholder: "Buscar descrição...",
+              value: "",
+              onChange: () => {},
+              width: "flex-1 min-w-[200px]"
+            },
+            {
               type: "select",
               label: "Tipo de Ordem",
               placeholder: "Selecione...",
