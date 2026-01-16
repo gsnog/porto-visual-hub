@@ -57,8 +57,10 @@
     --status-pending: 45 93% 47%;
 
     /* Table colors */
-    --table-header: 220 30% 96%;
-    --table-row-hover: 220 30% 98%;
+    --table-header: 220 40% 13%;
+    --table-row: 0 0% 100%;
+    --table-row-alt: 220 30% 97%;
+    --table-row-hover: 220 30% 95%;
     --table-border: 220 20% 92%;
 
     /* Chart colors */
@@ -118,8 +120,10 @@
 
     /* Table colors - dark mode */
     --table-header: 222 40% 15%;
-    --table-row-hover: 222 40% 13%;
-    --table-border: 222 40% 18%;
+    --table-row: 222 40% 14%;
+    --table-row-alt: 222 40% 16%;
+    --table-row-hover: 222 40% 20%;
+    --table-border: 222 40% 22%;
 
     /* Chart colors - dark mode - brighter for readability */
     --chart-1: 24 95% 55%;
@@ -221,12 +225,29 @@
     @apply px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wide;
   }
 
+  .table-professional tbody {
+    background: hsl(var(--table-row));
+  }
+
   .table-professional tbody tr:nth-child(even) {
     background: hsl(var(--table-row-alt));
   }
 
+  .table-professional tbody tr:nth-child(odd) {
+    background: hsl(var(--table-row));
+  }
+
   .table-professional tbody tr {
-    @apply border-b border-border transition-colors duration-150;
+    @apply border-b transition-colors duration-150;
+    border-color: hsl(var(--table-border));
+  }
+
+  .table-professional tbody tr:hover {
+    background: hsl(var(--table-row-hover)) !important;
+  }
+
+  .table-professional td {
+    @apply px-4 py-4 text-sm;
   }
 
   .table-professional tbody tr:hover {
