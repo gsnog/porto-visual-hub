@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { Plus, FileText } from "lucide-react"
+import { TableActions } from "@/components/TableActions"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -108,8 +109,8 @@ const ContasReceber = () => {
           resultsCount={filteredContas.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Lançamento</TableHead>
@@ -144,9 +145,11 @@ const ContasReceber = () => {
                       <span className={getStatusColor(conta.status)}>{conta.status}</span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                        Ações
-                      </Button>
+                      <TableActions 
+                        onView={() => console.log('View', conta.id)}
+                        onEdit={() => console.log('Edit', conta.id)}
+                        onDelete={() => console.log('Delete', conta.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

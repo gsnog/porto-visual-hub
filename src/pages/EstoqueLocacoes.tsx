@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { Plus } from "lucide-react"
+import { TableActions } from "@/components/TableActions"
 
 const mockLocacoes = [
   { id: 1, unidade: "Unidade A", inicio: "02/06/2025", fimPrevisto: "02/07/2025", locador: "João Silva", contrato: "CONTR-001", status: "Em Andamento" },
@@ -75,8 +76,8 @@ export default function EstoqueLocacoes() {
           resultsCount={filteredLocacoes.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Unidade</TableHead>
@@ -107,7 +108,11 @@ export default function EstoqueLocacoes() {
                       <span className={getStatusColor(loc.status)}>{loc.status}</span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', loc.id)}
+                        onEdit={() => console.log('Edit', loc.id)}
+                        onDelete={() => console.log('Delete', loc.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

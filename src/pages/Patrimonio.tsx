@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Trash2, Plus } from "lucide-react"
 import { FilterSection } from "@/components/FilterSection"
+import { TableActions } from "@/components/TableActions"
 
 type Asset = {
   id: string
@@ -118,8 +119,8 @@ const Patrimonio = () => {
             resultsCount={filteredAssets.length}
           />
 
-          <div className="rounded-xl overflow-hidden shadow-sm">
-            <Table className="table-professional">
+          <div className="rounded-lg overflow-hidden">
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center">Código</TableHead>
@@ -146,13 +147,11 @@ const Patrimonio = () => {
                       <TableCell className="text-center">{asset.valor}</TableCell>
                       <TableCell className="text-center">{asset.quantidade}</TableCell>
                       <TableCell className="text-center">
-                        <Button 
-                          onClick={() => handleViewDetails(asset)}
-                          size="sm"
-                          className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs"
-                        >
-                          Detalhes
-                        </Button>
+                        <TableActions 
+                          onView={() => handleViewDetails(asset)}
+                          onEdit={() => console.log('Edit', asset.id)}
+                          onDelete={() => console.log('Delete', asset.id)}
+                        />
                       </TableCell>
                     </TableRow>
                   ))

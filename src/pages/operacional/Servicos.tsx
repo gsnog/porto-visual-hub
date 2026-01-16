@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
 import { Plus } from "lucide-react";
+import { TableActions } from "@/components/TableActions";
 
 const mockServicos = [
   { id: 1, nome: "Pintura", descricao: "Pintura completa de casco", custo: "R$ 5.000,00" },
@@ -49,8 +50,8 @@ const Servicos = () => {
           resultsCount={filteredServicos.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Nome do Serviço</TableHead>
@@ -73,7 +74,11 @@ const Servicos = () => {
                     <TableCell className="text-center">{servico.descricao}</TableCell>
                     <TableCell className="text-center">{servico.custo}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', servico.id)}
+                        onEdit={() => console.log('Edit', servico.id)}
+                        onDelete={() => console.log('Delete', servico.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

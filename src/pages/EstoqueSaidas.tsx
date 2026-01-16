@@ -6,6 +6,7 @@ import { FileText, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { TableActions } from "@/components/TableActions"
 
 const mockSaidas = [
   { id: 1, data: "02/06/2025", item: "Parafuso M8", setor: "Produção", requisitante: "Lucas V.", quantidade: 50, origem: "Almoxarifado SP", destino: "Setor Montagem" },
@@ -119,8 +120,8 @@ export default function EstoqueSaidas() {
           resultsCount={filteredSaidas.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Data</TableHead>
@@ -151,7 +152,11 @@ export default function EstoqueSaidas() {
                     <TableCell className="text-center">{saida.origem}</TableCell>
                     <TableCell className="text-center">{saida.destino}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', saida.id)}
+                        onEdit={() => console.log('Edit', saida.id)}
+                        onDelete={() => console.log('Delete', saida.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

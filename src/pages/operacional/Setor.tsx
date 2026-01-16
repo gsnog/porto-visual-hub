@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
 import { Plus } from "lucide-react";
+import { TableActions } from "@/components/TableActions";
 
 const mockSetores = [
   { id: 1, nome: "Motor" },
@@ -50,8 +51,8 @@ const Setor = () => {
           resultsCount={filteredSetores.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Setor</TableHead>
@@ -70,7 +71,11 @@ const Setor = () => {
                   <TableRow key={setor.id}>
                     <TableCell className="text-center">{setor.nome}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', setor.id)}
+                        onEdit={() => console.log('Edit', setor.id)}
+                        onDelete={() => console.log('Delete', setor.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))
