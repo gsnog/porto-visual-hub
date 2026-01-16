@@ -57,7 +57,7 @@ export default function Cadastro() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-background items-center">
       <div className="max-w-5xl w-full">
         {/* Progress Steps */}
         <div className="mb-8">
