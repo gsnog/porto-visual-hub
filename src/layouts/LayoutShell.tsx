@@ -17,12 +17,12 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/cadastro/estoque/setores": { title: "Setores", description: "Cadastro de setores do estoque" },
   "/cadastro/estoque/unidades": { title: "Unidades", description: "Cadastro de unidades do estoque" },
   
-  // Cadastro Estoque - Subpáginas (rotas corretas)
-  "/cadastro/estoque/formas-apresentacao/nova": { title: "Formas de Apresentação", description: "Formas de Apresentação > Nova" },
-  "/cadastro/estoque/fornecedores/novo": { title: "Fornecedores", description: "Fornecedores > Novo Fornecedor" },
-  "/cadastro/estoque/itens/novo": { title: "Itens", description: "Itens > Novo Item" },
-  "/cadastro/estoque/setores/novo": { title: "Setores", description: "Setores > Novo Setor" },
-  "/cadastro/estoque/unidades/nova": { title: "Unidades", description: "Unidades > Nova Unidade" },
+  // Cadastro Estoque - Subpáginas
+  "/cadastro/estoque/formas-apresentacao/nova": { title: "Formas de Apresentação", description: "Nova Forma de Apresentação" },
+  "/cadastro/estoque/fornecedores/novo": { title: "Fornecedores", description: "Novo Fornecedor" },
+  "/cadastro/estoque/itens/novo": { title: "Itens", description: "Novo Item" },
+  "/cadastro/estoque/setores/novo": { title: "Setores", description: "Novo Setor" },
+  "/cadastro/estoque/unidades/nova": { title: "Unidades", description: "Nova Unidade" },
   
   // Cadastro Financeiro - Páginas principais
   "/cadastro/financeiro/conta-bancaria": { title: "Conta Bancária", description: "Cadastro de contas bancárias" },
@@ -37,17 +37,17 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/cadastro/financeiro/conciliacao-bancaria": { title: "Conciliação Bancária", description: "Conciliação de contas bancárias" },
   "/cadastro/financeiro/transferencias": { title: "Transferências", description: "Cadastro de transferências" },
   
-  // Cadastro Financeiro - Subpáginas (rotas corretas)
-  "/cadastro/financeiro/conta-bancaria/nova": { title: "Conta Bancária", description: "Conta Bancária > Nova" },
-  "/cadastro/financeiro/clientes/novo": { title: "Clientes", description: "Clientes > Novo Cliente" },
-  "/cadastro/financeiro/centro-custo/novo": { title: "Centro de Custo", description: "Centro de Custo > Novo" },
-  "/cadastro/financeiro/centro-receita/novo": { title: "Centro de Receita", description: "Centro de Receita > Novo" },
-  "/cadastro/financeiro/contabil/novo": { title: "Contábil", description: "Contábil > Novo" },
-  "/cadastro/financeiro/categorias/nova": { title: "Categorias", description: "Categorias > Nova Categoria" },
-  "/cadastro/financeiro/fornecedores/novo": { title: "Fornecedores", description: "Fornecedores > Novo Fornecedor" },
-  "/cadastro/financeiro/subcategorias/nova": { title: "Subcategorias", description: "Subcategorias > Nova" },
-  "/cadastro/financeiro/plano-contas/novo": { title: "Plano de Contas", description: "Plano de Contas > Novo" },
-  "/cadastro/financeiro/transferencias/nova": { title: "Transferências", description: "Transferências > Nova" },
+  // Cadastro Financeiro - Subpáginas
+  "/cadastro/financeiro/conta-bancaria/nova": { title: "Conta Bancária", description: "Nova Conta Bancária" },
+  "/cadastro/financeiro/clientes/novo": { title: "Clientes", description: "Novo Cliente" },
+  "/cadastro/financeiro/centro-custo/novo": { title: "Centro de Custo", description: "Novo Centro de Custo" },
+  "/cadastro/financeiro/centro-receita/novo": { title: "Centro de Receita", description: "Novo Centro de Receita" },
+  "/cadastro/financeiro/contabil/novo": { title: "Contábil", description: "Novo Registro Contábil" },
+  "/cadastro/financeiro/categorias/nova": { title: "Categorias", description: "Nova Categoria" },
+  "/cadastro/financeiro/fornecedores/novo": { title: "Fornecedores", description: "Novo Fornecedor" },
+  "/cadastro/financeiro/subcategorias/nova": { title: "Subcategorias", description: "Nova Subcategoria" },
+  "/cadastro/financeiro/plano-contas/novo": { title: "Plano de Contas", description: "Novo Plano de Contas" },
+  "/cadastro/financeiro/transferencias/nova": { title: "Transferências", description: "Nova Transferência" },
   
   // Estoque - Páginas principais
   "/estoque/entradas": { title: "Entradas de Estoque", description: "Controle de entrada de materiais" },
@@ -58,26 +58,26 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/estoque/ordem-servico": { title: "Ordem de Serviço", description: "Gerenciamento de ordens de serviço" },
   "/estoque/requisicoes": { title: "Requisições", description: "Gerenciamento de requisições" },
   
-  // Estoque - Subpáginas (rotas corretas)
-  "/estoque/entradas/nova": { title: "Entradas de Estoque", description: "Entradas > Nova Entrada" },
-  "/estoque/entradas/upload-nfe": { title: "Entradas de Estoque", description: "Entradas > Upload NF-e" },
-  "/estoque/saidas/nova": { title: "Saídas de Estoque", description: "Saídas > Nova Saída" },
-  "/estoque/locacoes/nova": { title: "Locações", description: "Locações > Nova Locação" },
-  "/estoque/requisicoes/nova": { title: "Requisições", description: "Requisições > Nova Requisição" },
-  "/estoque/ordem-compra/nova": { title: "Ordem de Compra", description: "Ordem de Compra > Nova" },
-  "/estoque/ordem-servico/nova": { title: "Ordem de Serviço", description: "Ordem de Serviço > Nova" },
+  // Estoque - Subpáginas
+  "/estoque/entradas/nova": { title: "Entradas de Estoque", description: "Nova Entrada" },
+  "/estoque/entradas/upload-nfe": { title: "Entradas de Estoque", description: "Upload NF-e" },
+  "/estoque/saidas/nova": { title: "Saídas de Estoque", description: "Nova Saída" },
+  "/estoque/locacoes/nova": { title: "Locações", description: "Nova Locação" },
+  "/estoque/requisicoes/nova": { title: "Requisições", description: "Nova Requisição" },
+  "/estoque/ordem-compra/nova": { title: "Ordem de Compra", description: "Nova Ordem de Compra" },
+  "/estoque/ordem-servico/nova": { title: "Ordem de Serviço", description: "Nova Ordem de Serviço" },
   
   // Financeiro - Páginas principais
   "/financeiro/contas-receber": { title: "Contas a Receber", description: "Gerenciamento de contas a receber" },
   "/financeiro/contas-pagar": { title: "Contas a Pagar", description: "Gerenciamento de contas a pagar" },
   "/financeiro/fluxo-caixa": { title: "Fluxo de Caixa", description: "Controle de fluxo de caixa" },
   
-  // Financeiro - Subpáginas (rotas corretas)
-  "/financeiro/contas-receber/nova": { title: "Contas a Receber", description: "Contas a Receber > Nova" },
-  "/financeiro/contas-pagar/nova": { title: "Contas a Pagar", description: "Contas a Pagar > Nova" },
-  "/financeiro/contas-receber/relatorio": { title: "Contas a Receber", description: "Contas a Receber > Relatório" },
-  "/financeiro/contas-pagar/relatorio": { title: "Contas a Pagar", description: "Contas a Pagar > Relatório" },
-  "/financeiro/fluxo-caixa/relatorio": { title: "Fluxo de Caixa", description: "Fluxo de Caixa > Relatório" },
+  // Financeiro - Subpáginas
+  "/financeiro/contas-receber/nova": { title: "Contas a Receber", description: "Nova Conta a Receber" },
+  "/financeiro/contas-pagar/nova": { title: "Contas a Pagar", description: "Nova Conta a Pagar" },
+  "/financeiro/contas-receber/relatorio": { title: "Contas a Receber", description: "Relatório de Contas a Receber" },
+  "/financeiro/contas-pagar/relatorio": { title: "Contas a Pagar", description: "Relatório de Contas a Pagar" },
+  "/financeiro/fluxo-caixa/relatorio": { title: "Fluxo de Caixa", description: "Relatório de Fluxo de Caixa" },
   
   // Patrimônio
   "/patrimonio": { title: "Patrimônio", description: "Gerenciamento de patrimônio" },
@@ -88,15 +88,15 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/operacional/operacao": { title: "Operação", description: "Gerenciamento de operações" },
   "/operacional/servicos": { title: "Serviços", description: "Gerenciamento de serviços" },
   
-  // Operacional - Subpáginas (rotas corretas)
-  "/operacional/setor/novo": { title: "Setor", description: "Setor > Novo Setor" },
-  "/operacional/embarcacoes/nova": { title: "Embarcações", description: "Embarcações > Nova" },
-  "/operacional/operacao/nova": { title: "Operação", description: "Operação > Nova" },
-  "/operacional/servicos/novo": { title: "Serviços", description: "Serviços > Novo" },
+  // Operacional - Subpáginas
+  "/operacional/setor/novo": { title: "Setor", description: "Novo Setor" },
+  "/operacional/embarcacoes/nova": { title: "Embarcações", description: "Nova Embarcação" },
+  "/operacional/operacao/nova": { title: "Operação", description: "Nova Operação" },
+  "/operacional/servicos/novo": { title: "Serviços", description: "Novo Serviço" },
   
   // NF-e
   "/nfe": { title: "NF-e", description: "Gerenciamento de notas fiscais eletrônicas" },
-  "/nfe/nova": { title: "NF-e", description: "NF-e > Nova Nota Fiscal" },
+  "/nfe/nova": { title: "NF-e", description: "Nova Nota Fiscal" },
   
   // Usuário
   "/notificacoes": { title: "Notificações", description: "Central de notificações do sistema" },
