@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { FileText } from "lucide-react"
+import { FileText, Plus, Upload, ChevronDown } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
@@ -35,14 +35,26 @@ export default function EstoqueEntradas() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <Button onClick={() => navigate("/estoque/entradas/nova")} className="btn-action">Novo Item</Button>
-          <Button onClick={() => navigate("/estoque/entradas/upload-nfe")} className="btn-action">Upload NF-e</Button>
+        <div className="flex flex-wrap gap-3 items-center">
+          <Button onClick={() => navigate("/estoque/entradas/nova")} className="gap-2">
+            <Plus className="w-4 h-4" />
+            Novo Item
+          </Button>
+          <Button 
+            onClick={() => navigate("/estoque/entradas/upload-nfe")} 
+            variant="outline"
+            className="gap-2 border-border"
+          >
+            <Upload className="w-4 h-4" />
+            Upload NF-e
+            <ChevronDown className="w-4 h-4" />
+          </Button>
           <Button 
             onClick={() => setShowRelatorio(!showRelatorio)} 
-            className={`rounded-lg ${showRelatorio ? 'bg-success hover:bg-success/90' : 'bg-primary hover:bg-primary/90'} text-white transition-all duration-200`}
+            variant="outline"
+            className="gap-2 border-border"
           >
-            <FileText className="w-4 h-4 mr-2" />
+            <FileText className="w-4 h-4" />
             Relatório
           </Button>
         </div>
