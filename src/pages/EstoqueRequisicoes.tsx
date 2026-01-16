@@ -60,6 +60,14 @@ export default function EstoqueRequisicoes() {
         <FilterSection
           fields={[
             {
+              type: "text",
+              label: "Item",
+              placeholder: "Buscar item...",
+              value: "",
+              onChange: () => {},
+              width: "flex-1 min-w-[200px]"
+            },
+            {
               type: "select",
               label: "Setor",
               placeholder: "Selecione o setor",
