@@ -37,7 +37,7 @@ export default function ExcluirPerfil() {
       <Card className="border-destructive/50">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-destructive/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded bg-destructive/10">
               <AlertTriangle className="h-6 w-6 text-destructive" />
             </div>
             <div>
@@ -47,7 +47,7 @@ export default function ExcluirPerfil() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+          <div className="p-4 rounded bg-destructive/10 border border-destructive/20">
             <h3 className="font-semibold text-foreground mb-2">Atenção!</h3>
             <ul className="text-sm text-muted-foreground space-y-2">
               <li>• Todos os seus dados serão permanentemente excluídos</li>

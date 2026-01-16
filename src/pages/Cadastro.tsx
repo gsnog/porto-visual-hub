@@ -120,7 +120,7 @@ export default function Cadastro() {
             {currentStep === 1 && (
               <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <User className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -230,7 +230,7 @@ export default function Cadastro() {
             {currentStep === 2 && (
               <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <Phone className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -277,7 +277,7 @@ export default function Cadastro() {
             {currentStep === 3 && (
               <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <MapPin className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -347,7 +347,7 @@ export default function Cadastro() {
             {currentStep === 4 && (
               <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <Landmark className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -409,7 +409,7 @@ export default function Cadastro() {
                   <p className="text-xs text-muted-foreground">Opcional - para pagamentos via PIX</p>
                 </div>
 
-                <div className="p-4 bg-muted/50 rounded-lg border border-border">
+                <div className="p-4 bg-muted/50 rounded border border-border">
                   <p className="text-sm text-muted-foreground">
                     💡 Caso não possua conta bancária, você será direcionado(a) para o banco mais próximo para abertura.
                   </p>
@@ -421,7 +421,7 @@ export default function Cadastro() {
             {currentStep === 5 && (
               <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <FileText className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -431,7 +431,7 @@ export default function Cadastro() {
                 </div>
 
                 {/* CPF e RG */}
-                <div className="p-4 bg-muted/30 rounded-lg border border-border space-y-4">
+                <div className="p-4 bg-muted/30 rounded border border-border space-y-4">
                   <h3 className="font-medium text-foreground">Identificação</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -469,7 +469,7 @@ export default function Cadastro() {
                 </div>
 
                 {/* CTPS */}
-                <div className="p-4 bg-muted/30 rounded-lg border border-border space-y-4">
+                <div className="p-4 bg-muted/30 rounded border border-border space-y-4">
                   <h3 className="font-medium text-foreground">Carteira de Trabalho</h3>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="space-y-2">
@@ -505,7 +505,7 @@ export default function Cadastro() {
                 </div>
 
                 {/* CNH e Outros */}
-                <div className="p-4 bg-muted/30 rounded-lg border border-border space-y-4">
+                <div className="p-4 bg-muted/30 rounded border border-border space-y-4">
                   <h3 className="font-medium text-foreground">Outros Documentos</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
@@ -555,7 +555,7 @@ export default function Cadastro() {
             {currentStep === 6 && (
               <div className="space-y-6 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
                     <Heart className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -564,14 +564,14 @@ export default function Cadastro() {
                   </div>
                 </div>
 
-                <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800 mb-6">
+                <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200 dark:border-blue-800 mb-6">
                   <p className="text-sm text-blue-700 dark:text-blue-300">
                     🔒 Estas informações são confidenciais e utilizadas apenas para fins estatísticos e políticas de inclusão.
                   </p>
                 </div>
 
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded border border-border">
                     <div>
                       <Label className="text-sm font-medium">Você pertence à comunidade LGBTQIA+?</Label>
                       <p className="text-xs text-muted-foreground mt-1">Informação opcional</p>
@@ -592,7 +592,7 @@ export default function Cadastro() {
                     </RadioGroup>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded border border-border">
                     <div>
                       <Label className="text-sm font-medium">Você é uma pessoa neurodivergente?</Label>
                       <p className="text-xs text-muted-foreground mt-1">TEA, TDAH, Dislexia, etc.</p>
@@ -613,7 +613,7 @@ export default function Cadastro() {
                     </RadioGroup>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded border border-border">
                     <div>
                       <Label className="text-sm font-medium">Você é uma pessoa com deficiência?</Label>
                       <p className="text-xs text-muted-foreground mt-1">PCD - Pessoa com Deficiência</p>
@@ -634,7 +634,7 @@ export default function Cadastro() {
                     </RadioGroup>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded border border-border">
                     <div>
                       <Label className="text-sm font-medium">Você tem filho(s)?</Label>
                     </div>

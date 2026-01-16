@@ -85,7 +85,7 @@ export default function EstoqueSaidas() {
                 <label className="filter-label">Unidade:</label>
                 <Input className="filter-input w-36" />
               </div>
-              <Button className="rounded-md bg-green-600 hover:bg-green-700 text-white h-10">
+              <Button className="rounded bg-green-600 hover:bg-green-700 text-white h-10">
                 Gerar Relatório
               </Button>
             </div>
@@ -120,7 +120,7 @@ export default function EstoqueSaidas() {
           resultsCount={filteredSaidas.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
+        <div className="rounded overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>

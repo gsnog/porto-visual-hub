@@ -96,7 +96,7 @@ export default function EstoqueEntradas() {
                 <label className="filter-label">Unidade:</label>
                 <Input className="filter-input w-36" />
               </div>
-              <Button className="rounded-md bg-success hover:bg-success/90 text-white h-10 transition-all duration-200">
+              <Button className="rounded bg-success hover:bg-success/90 text-white h-10 transition-all duration-200">
                 Gerar Relatório
               </Button>
             </div>
@@ -139,7 +139,7 @@ export default function EstoqueEntradas() {
           resultsCount={filteredEntradas.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
+        <div className="rounded overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>

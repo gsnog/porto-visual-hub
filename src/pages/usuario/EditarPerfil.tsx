@@ -46,14 +46,14 @@ export default function EditarPerfil() {
             {/* Avatar */}
             <div className="flex justify-center">
               <div className="relative">
-                <Avatar className="h-32 w-32 rounded-xl">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-4xl font-bold rounded-xl">
+                <Avatar className="h-32 w-32 rounded">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-4xl font-bold rounded">
                     {getInitials(formData.nome)}
                   </AvatarFallback>
                 </Avatar>
                 <button
                   type="button"
-                  className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200"
+                  className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200"
                 >
                   <Camera className="h-5 w-5" />
                 </button>
