@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
+import { Plus } from "lucide-react";
 
 const mockEmbarcacoes = [
   { id: 1, nome: "Marlin Azul", cliente: "João Silva", dimensao: "15m x 4m", setores: "Motor, Pintura" },
@@ -26,11 +27,12 @@ const Embarcacoes = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           <Button 
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="gap-2"
             onClick={() => navigate("/operacional/embarcacoes/nova")}
           >
+            <Plus className="w-4 h-4" />
             Nova Embarcação
           </Button>
         </div>

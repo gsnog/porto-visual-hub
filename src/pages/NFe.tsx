@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Download, Eye, FileText } from "lucide-react"
+import { Download, Eye, FileText, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
@@ -61,15 +61,16 @@ const NFe = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           <Button 
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="gap-2"
             onClick={() => navigate("/nfe/nova")}
           >
-            <FileText className="h-4 w-4 mr-2" />
+            <Plus className="w-4 h-4" />
             Nova NF-e
           </Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button variant="outline" className="gap-2 border-border">
+            <FileText className="w-4 h-4" />
             Relatório
           </Button>
         </div>

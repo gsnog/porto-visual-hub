@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { Plus, FileText } from "lucide-react"
 
 const mockRequisicoes = [
   { id: 1, data: "12/05/2025", item: "Cabo HDMI", quantidade: 1, requisitante: "Ana F.", setor: "TI", status: "Aprovada" },
@@ -44,9 +45,15 @@ export default function EstoqueRequisicoes() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <Button onClick={() => navigate("/estoque/requisicoes/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
+        <div className="flex flex-wrap gap-3 items-center">
+          <Button onClick={() => navigate("/estoque/requisicoes/nova")} className="gap-2">
+            <Plus className="w-4 h-4" />
+            Adicionar
+          </Button>
+          <Button variant="outline" className="gap-2 border-border">
+            <FileText className="w-4 h-4" />
+            Relatório
+          </Button>
         </div>
 
         <FilterSection
