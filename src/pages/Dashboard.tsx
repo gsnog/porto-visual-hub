@@ -242,10 +242,10 @@ const GradientCard = ({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-lg bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
+      className={`relative overflow-hidden rounded bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
     >
       <div className="flex items-start justify-between">
-        <div className="rounded-lg bg-white/20 p-2.5 backdrop-blur-sm">
+        <div className="rounded bg-white/20 p-2.5 backdrop-blur-sm">
           <Icon className="h-5 w-5" />
         </div>
         {trend && (
@@ -288,10 +288,10 @@ const MetricCard = ({
   }[color]
 
   return (
-    <Card className="border border-border rounded-lg hover:shadow-md transition-shadow duration-200">
+    <Card className="border border-border rounded hover:shadow-md transition-shadow duration-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <div className={`p-2 rounded-lg bg-opacity-10 ${color === "success" ? "bg-success/10" : color === "destructive" ? "bg-destructive/10" : color === "warning" ? "bg-warning/10" : "bg-primary/10"}`}>
+        <div className={`p-2 rounded bg-opacity-10 ${color === "success" ? "bg-success/10" : color === "destructive" ? "bg-destructive/10" : color === "warning" ? "bg-warning/10" : "bg-primary/10"}`}>
           <Icon className={`h-4 w-4 ${iconColorClass}`} />
         </div>
       </CardHeader>
@@ -314,8 +314,8 @@ const AlertCard = ({ title, count, type }: { title: string; count: number; type:
   const textClass = type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
   
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-lg ${bgClass} transition-all duration-200 hover:scale-[1.02]`}>
-      <div className={`p-2 rounded-lg ${type === "danger" ? "bg-destructive/20" : type === "warning" ? "bg-warning/20" : "bg-primary/20"}`}>
+    <div className={`flex items-center gap-4 p-4 rounded ${bgClass} transition-all duration-200 hover:scale-[1.02]`}>
+      <div className={`p-2 rounded ${type === "danger" ? "bg-destructive/20" : type === "warning" ? "bg-warning/20" : "bg-primary/20"}`}>
         <AlertTriangle className={`h-5 w-5 ${iconClass}`} />
       </div>
       <div>
@@ -329,7 +329,7 @@ const AlertCard = ({ title, count, type }: { title: string; count: number; type:
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+      <div className="bg-card border border-border rounded p-3 shadow-lg">
         <p className="text-sm text-muted-foreground mb-1">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm font-medium" style={{ color: entry.color }}>
@@ -363,7 +363,7 @@ const DashboardGeral = () => {
   return (
     <div className="space-y-6">
       {/* Filtros */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -472,7 +472,7 @@ const DashboardGeral = () => {
     {/* Gráficos */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Evolução Financeira */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <CardHeader className="px-0 pt-0">
           <CardTitle className="text-base">Evolução Financeira no Tempo</CardTitle>
         </CardHeader>
@@ -493,7 +493,7 @@ const DashboardGeral = () => {
       </Card>
 
       {/* Entradas vs Saídas */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <CardHeader className="px-0 pt-0">
           <CardTitle className="text-base">Entradas vs Saídas por Período</CardTitle>
         </CardHeader>
@@ -513,7 +513,7 @@ const DashboardGeral = () => {
       </Card>
 
       {/* Consumo por Setor */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <CardHeader className="px-0 pt-0">
           <CardTitle className="text-base">Consumo de Estoque por Setor</CardTitle>
         </CardHeader>
@@ -531,7 +531,7 @@ const DashboardGeral = () => {
       </Card>
 
       {/* Distribuição Patrimônio */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <CardHeader className="px-0 pt-0">
           <CardTitle className="text-base">Distribuição do Patrimônio por Tipo</CardTitle>
         </CardHeader>
@@ -561,7 +561,7 @@ const DashboardGeral = () => {
     </div>
 
     {/* Alertas */}
-    <Card className="border border-border rounded-lg p-4">
+    <Card className="border border-border rounded p-4">
       <CardHeader className="px-0 pt-0">
         <CardTitle className="text-base">Alertas</CardTitle>
       </CardHeader>
@@ -574,7 +574,7 @@ const DashboardGeral = () => {
 
     {/* Tabelas */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Top 5 Maiores Custos</CardTitle>
         </CardHeader>
@@ -600,7 +600,7 @@ const DashboardGeral = () => {
         </CardContent>
       </Card>
 
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Top 5 Ativos Patrimoniais</CardTitle>
         </CardHeader>
@@ -628,7 +628,7 @@ const DashboardGeral = () => {
     </div>
 
     {/* Últimas Movimentações */}
-    <Card className="border border-border rounded-lg">
+    <Card className="border border-border rounded">
       <CardHeader>
         <CardTitle className="text-base">Últimas Movimentações Relevantes</CardTitle>
       </CardHeader>
@@ -686,7 +686,7 @@ const DashboardFinanceiro = () => {
   return (
     <div className="space-y-6">
       {/* Filtros */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -793,7 +793,7 @@ const DashboardFinanceiro = () => {
 
       {/* Gráficos - Linha 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Evolução do Fluxo de Caixa</CardTitle>
           </CardHeader>
@@ -816,7 +816,7 @@ const DashboardFinanceiro = () => {
           </div>
         </Card>
 
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Entradas vs Saídas</CardTitle>
           </CardHeader>
@@ -838,7 +838,7 @@ const DashboardFinanceiro = () => {
 
       {/* Gráficos - Linha 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Contas a Receber por Status</CardTitle>
           </CardHeader>
@@ -855,7 +855,7 @@ const DashboardFinanceiro = () => {
           </div>
         </Card>
 
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Contas a Pagar por Status</CardTitle>
           </CardHeader>
@@ -872,7 +872,7 @@ const DashboardFinanceiro = () => {
           </div>
         </Card>
 
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Distribuição por Tipo de Documento</CardTitle>
           </CardHeader>
@@ -903,7 +903,7 @@ const DashboardFinanceiro = () => {
 
       {/* Tabelas - Contas a Receber e Contas a Pagar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-lg">
+        <Card className="border border-border rounded">
           <CardHeader>
             <CardTitle className="text-base">Contas a Receber</CardTitle>
           </CardHeader>
@@ -941,7 +941,7 @@ const DashboardFinanceiro = () => {
           </CardContent>
         </Card>
 
-        <Card className="border border-border rounded-lg">
+        <Card className="border border-border rounded">
           <CardHeader>
             <CardTitle className="text-base">Contas a Pagar</CardTitle>
           </CardHeader>
@@ -981,7 +981,7 @@ const DashboardFinanceiro = () => {
       </div>
 
       {/* Fluxo de Caixa Detalhado */}
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Fluxo de Caixa Detalhado</CardTitle>
         </CardHeader>
@@ -1009,7 +1009,7 @@ const DashboardFinanceiro = () => {
       </Card>
 
       {/* Documentos Fiscais */}
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Documentos Fiscais (XML / NF-e)</CardTitle>
         </CardHeader>
@@ -1085,7 +1085,7 @@ const DashboardEstoque = () => {
   return (
     <div className="space-y-6">
       {/* Filtros */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -1215,7 +1215,7 @@ const DashboardEstoque = () => {
 
       {/* Gráficos - Linha 1: Evolução */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Evolução de Estoque no Tempo</CardTitle>
           </CardHeader>
@@ -1233,7 +1233,7 @@ const DashboardEstoque = () => {
           </div>
         </Card>
 
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Valor Financeiro do Estoque no Tempo</CardTitle>
           </CardHeader>
@@ -1259,7 +1259,7 @@ const DashboardEstoque = () => {
 
       {/* Gráficos - Linha 2: Consumo e Unidade */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Consumo por Setor</CardTitle>
           </CardHeader>
@@ -1276,7 +1276,7 @@ const DashboardEstoque = () => {
           </div>
         </Card>
 
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Estoque por Unidade / Almoxarifado</CardTitle>
           </CardHeader>
@@ -1296,7 +1296,7 @@ const DashboardEstoque = () => {
 
       {/* Tabelas - Top 10 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-lg">
+        <Card className="border border-border rounded">
           <CardHeader>
             <CardTitle className="text-base">Top 10 Itens em Estoque</CardTitle>
           </CardHeader>
@@ -1324,7 +1324,7 @@ const DashboardEstoque = () => {
           </CardContent>
         </Card>
 
-        <Card className="border border-border rounded-lg">
+        <Card className="border border-border rounded">
           <CardHeader>
             <CardTitle className="text-base">Top 10 Itens Mais Consumidos</CardTitle>
           </CardHeader>
@@ -1354,7 +1354,7 @@ const DashboardEstoque = () => {
       </div>
 
       {/* Tabela Inventário */}
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Visão Geral do Inventário</CardTitle>
         </CardHeader>
@@ -1392,7 +1392,7 @@ const DashboardEstoque = () => {
       </Card>
 
       {/* Histórico de Movimentações */}
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Histórico Consolidado de Movimentações</CardTitle>
         </CardHeader>
@@ -1452,7 +1452,7 @@ const DashboardPatrimonio = () => {
   return (
     <div className="space-y-6">
       {/* Filtros */}
-      <Card className="border border-border rounded-lg p-4">
+      <Card className="border border-border rounded p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -1466,7 +1466,7 @@ const DashboardPatrimonio = () => {
               type="date" 
               value={dataAquisicao}
               onChange={(e) => setDataAquisicao(e.target.value)}
-              className="filter-input h-8 px-3 rounded-md border border-input bg-background text-sm"
+              className="filter-input h-8 px-3 rounded border border-input bg-background text-sm"
             />
           </div>
 
@@ -1559,7 +1559,7 @@ const DashboardPatrimonio = () => {
       {/* Gráficos - Primeira linha */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Evolução do Valor Patrimonial */}
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Evolução do Valor Patrimonial</CardTitle>
           </CardHeader>
@@ -1583,7 +1583,7 @@ const DashboardPatrimonio = () => {
         </Card>
 
         {/* Valor do Patrimônio por Tipo */}
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Valor do Patrimônio por Tipo</CardTitle>
           </CardHeader>
@@ -1615,7 +1615,7 @@ const DashboardPatrimonio = () => {
       {/* Gráficos - Segunda linha */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quantidade por Tipo */}
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Quantidade por Tipo</CardTitle>
           </CardHeader>
@@ -1644,7 +1644,7 @@ const DashboardPatrimonio = () => {
         </Card>
 
         {/* Top 5 Itens por Valor Total */}
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Top 5 Itens por Valor Total</CardTitle>
           </CardHeader>
@@ -1662,7 +1662,7 @@ const DashboardPatrimonio = () => {
         </Card>
 
         {/* Aquisições por Período */}
-        <Card className="border border-border rounded-lg p-4">
+        <Card className="border border-border rounded p-4">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-base">Aquisições por Período</CardTitle>
           </CardHeader>
@@ -1684,7 +1684,7 @@ const DashboardPatrimonio = () => {
       </div>
 
       {/* Tabelas */}
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Visão Geral do Patrimônio</CardTitle>
         </CardHeader>
@@ -1718,7 +1718,7 @@ const DashboardPatrimonio = () => {
         </CardContent>
       </Card>
 
-      <Card className="border border-border rounded-lg">
+      <Card className="border border-border rounded">
         <CardHeader>
           <CardTitle className="text-base">Histórico de Aquisições</CardTitle>
         </CardHeader>
@@ -1759,7 +1759,7 @@ const Dashboard = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         {/* Seletor de Dashboard */}
-        <div className="flex bg-secondary rounded-lg p-1 w-fit">
+        <div className="flex bg-secondary rounded p-1 w-fit">
           {(["geral", "financeiro", "estoque", "patrimonio"] as DashboardType[]).map((type) => (
             <Button
               key={type}
