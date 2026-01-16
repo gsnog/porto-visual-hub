@@ -86,6 +86,7 @@ import NovoServico from "./pages/operacional/NovoServico";
 import VisualizarPerfil from "./pages/usuario/VisualizarPerfil";
 import EditarPerfil from "./pages/usuario/EditarPerfil";
 import ExcluirPerfil from "./pages/usuario/ExcluirPerfil";
+import Login from "./pages/Login";
 import Notificacoes from "./pages/Notificacoes";
 
 const queryClient = new QueryClient();
@@ -97,6 +98,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route element={<LayoutShell />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
