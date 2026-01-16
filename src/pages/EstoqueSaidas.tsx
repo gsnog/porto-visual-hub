@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { FileText } from "lucide-react"
+import { FileText, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
@@ -33,13 +33,17 @@ export default function EstoqueSaidas() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <Button onClick={() => navigate("/estoque/saidas/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar Saída</Button>
+        <div className="flex flex-wrap gap-3 items-center">
+          <Button onClick={() => navigate("/estoque/saidas/nova")} className="gap-2">
+            <Plus className="w-4 h-4" />
+            Adicionar Saída
+          </Button>
           <Button 
             onClick={() => setShowRelatorio(!showRelatorio)} 
-            className={`rounded-lg ${showRelatorio ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary/90'} text-primary-foreground`}
+            variant="outline"
+            className="gap-2 border-border"
           >
-            <FileText className="w-4 h-4 mr-2" />
+            <FileText className="w-4 h-4" />
             Relatório
           </Button>
         </div>

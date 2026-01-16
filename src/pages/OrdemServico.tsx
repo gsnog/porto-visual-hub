@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
+import { Plus } from "lucide-react";
 
 const mockOrdens = [
   { id: 1, tipo: "Serviços Gerais", data: "19/12/2024", descricao: "Limpeza geral", responsavel: "João Silva", status: "Concluído" },
@@ -43,11 +44,12 @@ export default function OrdemServico() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           <Button
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="gap-2"
             onClick={() => navigate("/estoque/ordem-servico/nova")}
           >
+            <Plus className="w-4 h-4" />
             Nova Ordem
           </Button>
         </div>

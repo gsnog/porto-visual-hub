@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { Plus } from "lucide-react"
 
 const mockLocacoes = [
   { id: 1, unidade: "Unidade A", inicio: "02/06/2025", fimPrevisto: "02/07/2025", locador: "João Silva", contrato: "CONTR-001", status: "Em Andamento" },
@@ -39,8 +40,11 @@ export default function EstoqueLocacoes() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <Button onClick={() => navigate("/estoque/locacoes/nova")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Nova Locação</Button>
+        <div className="flex flex-wrap gap-3 items-center">
+          <Button onClick={() => navigate("/estoque/locacoes/nova")} className="gap-2">
+            <Plus className="w-4 h-4" />
+            Nova Locação
+          </Button>
         </div>
 
         <FilterSection

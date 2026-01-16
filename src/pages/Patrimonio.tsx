@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Trash2, FileText } from "lucide-react"
+import { ArrowLeft, Trash2, Plus } from "lucide-react"
 import { FilterSection } from "@/components/FilterSection"
 
 type Asset = {
@@ -87,12 +87,12 @@ const Patrimonio = () => {
     return (
       <div className="flex flex-col h-full bg-background">
         <div className="space-y-6">
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex flex-wrap gap-3 items-center">
             <Button 
               onClick={handleAddNew}
-              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="gap-2"
             >
-              <FileText className="h-4 w-4 mr-2" />
+              <Plus className="w-4 h-4" />
               Novo Patrimônio
             </Button>
           </div>

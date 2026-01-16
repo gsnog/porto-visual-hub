@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
+import { Plus, FileText } from "lucide-react";
 
 const mockOrdens = [
   { id: 1, data: "19/12/2024", dataCompra: "20/12/2024", dataEntrega: "25/12/2024", item: "Papel A4", marca: "Chamex", quantidade: 100, requisitante: "João Silva", setor: "Administrativo", status: "Aprovado" },
@@ -41,14 +42,16 @@ export default function OrdemCompra() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           <Button
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="gap-2"
             onClick={() => navigate("/estoque/ordem-compra/nova")}
           >
+            <Plus className="w-4 h-4" />
             Nova Ordem
           </Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button variant="outline" className="gap-2 border-border">
+            <FileText className="w-4 h-4" />
             Relatório
           </Button>
         </div>

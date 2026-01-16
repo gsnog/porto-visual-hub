@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { Plus, FileText } from "lucide-react"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
   <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
@@ -60,11 +61,13 @@ const FluxoCaixa = () => {
           <SummaryCard title="Saldo Atual" value="R$ 81.939,88" colorClass="bg-blue-500" />
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+        <div className="flex flex-wrap gap-3 items-center">
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
             Adicionar Transação
           </Button>
-          <Button onClick={() => navigate("/financeiro/fluxo-caixa/relatorio")} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={() => navigate("/financeiro/fluxo-caixa/relatorio")} variant="outline" className="gap-2 border-border">
+            <FileText className="w-4 h-4" />
             Relatório
           </Button>
         </div>

@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
+import { Plus } from "lucide-react";
 
 const mockSetores = [
   { id: 1, nome: "Motor" },
@@ -25,11 +26,12 @@ const Setor = () => {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           <Button 
-            className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="gap-2"
             onClick={() => navigate("/operacional/setor/novo")}
           >
+            <Plus className="w-4 h-4" />
             Novo Setor
           </Button>
         </div>
