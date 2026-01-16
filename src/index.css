@@ -58,6 +58,7 @@
 
     /* Table colors */
     --table-header: 220 30% 96%;
+    --table-header-foreground: 220 30% 15%;
     --table-row: 0 0% 100%;
     --table-row-alt: 220 30% 97%;
     --table-row-hover: 220 30% 98%;
@@ -120,6 +121,7 @@
 
     /* Table colors - dark mode */
     --table-header: 222 40% 15%;
+    --table-header-foreground: 220 20% 90%;
     --table-row: 222 40% 14%;
     --table-row-alt: 222 40% 16%;
     --table-row-hover: 222 40% 13%;
