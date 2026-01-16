@@ -159,10 +159,46 @@ const historicoMovimentacoesEstoque = [
 ]
 
 const historicoPatrimonio = [
-  { data: "05/01/2026", codigo: "0089", item: "Notebook Dell", valor: "R$ 8.500,00" },
-  { data: "28/12/2025", codigo: "0088", item: "Impressora HP", valor: "R$ 3.200,00" },
-  { data: "15/12/2025", codigo: "0087", item: "Ar Condicionado", valor: "R$ 4.800,00" },
-  { data: "01/12/2025", codigo: "0086", item: "Mesa Escritório", valor: "R$ 1.200,00" },
+  { data: "05/01/2026", codigo: "0089", item: "Notebook Dell", tipo: "Equipamentos", valor: "R$ 8.500,00" },
+  { data: "28/12/2025", codigo: "0088", item: "Impressora HP", tipo: "Equipamentos", valor: "R$ 3.200,00" },
+  { data: "15/12/2025", codigo: "0087", item: "Ar Condicionado", tipo: "Equipamentos", valor: "R$ 4.800,00" },
+  { data: "01/12/2025", codigo: "0086", item: "Mesa Escritório", tipo: "Mobiliário", valor: "R$ 1.200,00" },
+  { data: "20/11/2025", codigo: "0085", item: "Cadeira Ergonômica", tipo: "Mobiliário", valor: "R$ 2.100,00" },
+  { data: "10/11/2025", codigo: "0084", item: "Monitor 27\"", tipo: "Equipamentos", valor: "R$ 1.800,00" },
+]
+
+const patrimonioEvolutionData = [
+  { month: "Jan", valor: 820000 },
+  { month: "Fev", valor: 835000 },
+  { month: "Mar", valor: 848000 },
+  { month: "Abr", valor: 865000 },
+  { month: "Mai", valor: 882000 },
+  { month: "Jun", valor: 900000 },
+]
+
+const patrimonioQuantidadeData = [
+  { name: "Automóveis", value: 12, color: "hsl(var(--primary))" },
+  { name: "Equipamentos", value: 68, color: "hsl(var(--success))" },
+  { name: "Mobiliário", value: 45, color: "hsl(var(--chart-3))" },
+  { name: "Software", value: 31, color: "hsl(var(--chart-4))" },
+]
+
+const aquisicoesPorPeriodoData = [
+  { month: "Jan", aquisicoes: 5, valor: 32000 },
+  { month: "Fev", aquisicoes: 3, valor: 15000 },
+  { month: "Mar", aquisicoes: 7, valor: 45000 },
+  { month: "Abr", aquisicoes: 4, valor: 28000 },
+  { month: "Mai", aquisicoes: 6, valor: 38000 },
+  { month: "Jun", aquisicoes: 8, valor: 45000 },
+]
+
+const visaoGeralPatrimonioData = [
+  { codigo: "0001", item: "Automóvel Ford Ranger", tipo: "Automóveis", valorUnit: "R$ 185.000,00", status: "Ativo" },
+  { codigo: "0002", item: "Caminhão Mercedes", tipo: "Automóveis", valorUnit: "R$ 320.000,00", status: "Ativo" },
+  { codigo: "0003", item: "Equipamento Industrial", tipo: "Equipamentos", valorUnit: "R$ 95.000,00", status: "Ativo" },
+  { codigo: "0004", item: "Servidor Principal", tipo: "Equipamentos", valorUnit: "R$ 75.000,00", status: "Ativo" },
+  { codigo: "0005", item: "Mobiliário Escritório", tipo: "Mobiliário", valorUnit: "R$ 45.000,00", status: "Ativo" },
+  { codigo: "0006", item: "Sistema ERP", tipo: "Software", valorUnit: "R$ 28.000,00", status: "Ativo" },
 ]
 
 const formatCurrency = (value: number) => {
@@ -1398,67 +1434,256 @@ const DashboardEstoque = () => {
 }
 
 // Dashboard Patrimônio
-const DashboardPatrimonio = () => (
-  <div className="space-y-6">
-    {/* Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      <MetricCard title="Total de Itens" value="156" icon={Building2} />
-      <MetricCard title="Valor Total" value="R$ 900.000,00" icon={DollarSign} />
-      <MetricCard title="Novos Bens no Período" value="8" icon={ArrowUpRight} trend="up" trendValue="+4 mês" color="success" />
-      <MetricCard title="Valor Adquirido" value="R$ 45.000,00" icon={TrendingUp} />
-      <MetricCard title="Tipos Ativos" value="4" icon={BarChart3} />
-    </div>
+const DashboardPatrimonio = () => {
+  const [dataAquisicao, setDataAquisicao] = useState<string>("")
+  const [codigoItem, setCodigoItem] = useState<string>("todos")
+  const [tipoItem, setTipoItem] = useState<string>("todos")
+  const [faixaValor, setFaixaValor] = useState<string>("todos")
 
-    {/* Gráficos */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  const tiposPatrimonio = ["todos", "Automóveis", "Equipamentos", "Mobiliário", "Software"]
+  const faixasValor = [
+    { value: "todos", label: "Todas as faixas" },
+    { value: "0-10000", label: "Até R$ 10.000" },
+    { value: "10000-50000", label: "R$ 10.000 - R$ 50.000" },
+    { value: "50000-100000", label: "R$ 50.000 - R$ 100.000" },
+    { value: "100000+", label: "Acima de R$ 100.000" },
+  ]
+
+  return (
+    <div className="space-y-6">
+      {/* Filtros */}
       <Card className="border border-border rounded-lg p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Valor do Patrimônio por Tipo</CardTitle>
-        </CardHeader>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={patrimonioTipoData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                labelLine={false}
-              >
-                {patrimonioTipoData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
+          </div>
+          
+          {/* Data de Aquisição */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Data de Aquisição:</span>
+            <input 
+              type="date" 
+              value={dataAquisicao}
+              onChange={(e) => setDataAquisicao(e.target.value)}
+              className="filter-input h-8 px-3 rounded-md border border-input bg-background text-sm"
+            />
+          </div>
+
+          {/* Código do Item */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Código:</span>
+            <Select value={codigoItem} onValueChange={setCodigoItem}>
+              <SelectTrigger className="w-[130px] h-8">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos</SelectItem>
+                {visaoGeralPatrimonioData.map((p) => (
+                  <SelectItem key={p.codigo} value={p.codigo}>{p.codigo}</SelectItem>
                 ))}
-              </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
-            </PieChart>
-          </ResponsiveContainer>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tipo de Item */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Tipo:</span>
+            <Select value={tipoItem} onValueChange={setTipoItem}>
+              <SelectTrigger className="w-[140px] h-8">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                {tiposPatrimonio.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t === "todos" ? "Todos os tipos" : t}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Faixa de Valor */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Faixa de Valor:</span>
+            <Select value={faixaValor} onValueChange={setFaixaValor}>
+              <SelectTrigger className="w-[180px] h-8">
+                <SelectValue placeholder="Todas as faixas" />
+              </SelectTrigger>
+              <SelectContent>
+                {faixasValor.map((f) => (
+                  <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </Card>
 
-      <Card className="border border-border rounded-lg p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Top 5 Itens por Valor</CardTitle>
-        </CardHeader>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={topPatrimonioData.map(i => ({ ...i, valorNum: parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) * 1000 }))} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <YAxis type="category" dataKey="item" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={120} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="valorNum" name="Valor" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
-    </div>
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <GradientCard 
+          title="Total de Itens Patrimoniais" 
+          value="156" 
+          icon={Building2}
+          variant="info"
+        />
+        <GradientCard 
+          title="Valor Total do Patrimônio" 
+          value="R$ 900.000,00" 
+          icon={DollarSign}
+          variant="success"
+          trend={{ value: "+5.2%", positive: true }}
+        />
+        <GradientCard 
+          title="Novos Bens no Período" 
+          value="8" 
+          icon={Package}
+          variant="info"
+          trend={{ value: "+4", positive: true }}
+        />
+        <GradientCard 
+          title="Valor Adquirido no Período" 
+          value="R$ 45.000,00" 
+          icon={TrendingUp}
+          variant="success"
+        />
+        <GradientCard 
+          title="Tipos de Patrimônio Ativos" 
+          value="4" 
+          icon={BarChart3}
+          variant="neutral"
+        />
+      </div>
 
-    {/* Tabelas */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Gráficos - Primeira linha */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Evolução do Valor Patrimonial */}
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Evolução do Valor Patrimonial</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={patrimonioEvolutionData}>
+                <defs>
+                  <linearGradient id="patrimonioGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        {/* Valor do Patrimônio por Tipo */}
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Valor do Patrimônio por Tipo</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={patrimonioTipoData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={2}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
+                >
+                  {patrimonioTipoData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
+
+      {/* Gráficos - Segunda linha */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Quantidade por Tipo */}
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Quantidade por Tipo</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={patrimonioQuantidadeData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                  label={({ name, value }) => `${name}: ${value}`}
+                  labelLine={false}
+                >
+                  {patrimonioQuantidadeData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        {/* Top 5 Itens por Valor Total */}
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Top 5 Itens por Valor Total</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={topPatrimonioData.map(i => ({ ...i, valorNum: parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) * 1000 }))} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis type="category" dataKey="item" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} width={100} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="valorNum" name="Valor" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        {/* Aquisições por Período */}
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Aquisições por Período</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={aquisicoesPorPeriodoData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis yAxisId="left" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
+
+      {/* Tabelas */}
       <Card className="border border-border rounded-lg">
         <CardHeader>
           <CardTitle className="text-base">Visão Geral do Patrimônio</CardTitle>
@@ -1469,15 +1694,23 @@ const DashboardPatrimonio = () => (
               <TableRow>
                 <TableHead>Código</TableHead>
                 <TableHead>Item</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead className="text-right">Valor Unitário</TableHead>
+                <TableHead className="text-center">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {topPatrimonioData.map((item) => (
+              {visaoGeralPatrimonioData.map((item) => (
                 <TableRow key={item.codigo}>
                   <TableCell className="font-medium">{item.codigo}</TableCell>
                   <TableCell>{item.item}</TableCell>
-                  <TableCell className="text-right font-semibold">{item.valor}</TableCell>
+                  <TableCell>{item.tipo}</TableCell>
+                  <TableCell className="text-right font-semibold">{item.valorUnit}</TableCell>
+                  <TableCell className="text-center">
+                    <span className="px-2 py-1 rounded text-xs font-medium bg-success/20 text-success">
+                      {item.status}
+                    </span>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -1496,6 +1729,7 @@ const DashboardPatrimonio = () => (
                 <TableHead>Data</TableHead>
                 <TableHead>Código</TableHead>
                 <TableHead>Item</TableHead>
+                <TableHead>Tipo</TableHead>
                 <TableHead className="text-right">Valor</TableHead>
               </TableRow>
             </TableHeader>
@@ -1505,6 +1739,7 @@ const DashboardPatrimonio = () => (
                   <TableCell>{item.data}</TableCell>
                   <TableCell className="font-medium">{item.codigo}</TableCell>
                   <TableCell>{item.item}</TableCell>
+                  <TableCell>{item.tipo}</TableCell>
                   <TableCell className="text-right font-semibold">{item.valor}</TableCell>
                 </TableRow>
               ))}
@@ -1513,8 +1748,8 @@ const DashboardPatrimonio = () => (
         </CardContent>
       </Card>
     </div>
-  </div>
-)
+  )
+}
 
 // Main Dashboard Component
 const Dashboard = () => {
