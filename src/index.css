@@ -57,10 +57,10 @@
     --status-pending: 45 93% 47%;
 
     /* Table colors */
-    --table-header: 220 40% 13%;
+    --table-header: 220 30% 96%;
     --table-row: 0 0% 100%;
     --table-row-alt: 220 30% 97%;
-    --table-row-hover: 220 30% 95%;
+    --table-row-hover: 220 30% 98%;
     --table-border: 220 20% 92%;
 
     /* Chart colors */
@@ -122,7 +122,7 @@
     --table-header: 222 40% 15%;
     --table-row: 222 40% 14%;
     --table-row-alt: 222 40% 16%;
-    --table-row-hover: 222 40% 20%;
+    --table-row-hover: 222 40% 13%;
     --table-border: 222 40% 22%;
 
     /* Chart colors - dark mode - brighter for readability */
