@@ -20,7 +20,7 @@ export default function NovaOrdemServico() {
           <div className="flex items-center gap-8">
             <label className="text-foreground font-medium w-40">Tipo de Ordem</label>
             <Select value={formData.tipoOrdem} onValueChange={(value) => setFormData({ ...formData, tipoOrdem: value })}>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded w-52 border border-[#22265B]">
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent className="bg-popover">
@@ -38,14 +38,14 @@ export default function NovaOrdemServico() {
                 value={formData.descricao} 
                 onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
                 placeholder="Digite a descrição da ordem de serviço" 
-                className="bg-[#efefef] !text-[#22265B] px-3 rounded-lg border border-[#22265B] w-80 min-h-[150px]" 
+                className="bg-[#efefef] !text-[#22265B] px-3 rounded border border-[#22265B] w-80 min-h-[150px]" 
               />
             </div>
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button onClick={handleSalvar} className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
-            <Button onClick={handleCancelar} variant="destructive" className="rounded-md px-6">Cancelar</Button>
+            <Button onClick={handleSalvar} className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
+            <Button onClick={handleCancelar} variant="destructive" className="rounded px-6">Cancelar</Button>
           </div>
         </div>
       </div>

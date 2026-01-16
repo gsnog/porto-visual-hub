@@ -40,10 +40,10 @@ const SummaryCard = ({ title, value, icon: Icon, trend, variant }: SummaryCardPr
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
+      className={`relative overflow-hidden rounded bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
     >
       <div className="flex items-start justify-between">
-        <div className="rounded-lg bg-white/20 p-2.5 backdrop-blur-sm">
+        <div className="rounded bg-white/20 p-2.5 backdrop-blur-sm">
           <Icon className="h-5 w-5" />
         </div>
         {trend && (

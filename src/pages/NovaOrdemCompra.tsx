@@ -44,7 +44,7 @@ export default function NovaOrdemCompra() {
               value={formData.unidade} 
               onChange={(e) => setFormData({ ...formData, unidade: e.target.value })} 
               placeholder="Digite a unidade" 
-              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] flex-1" 
+              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] flex-1" 
             />
           </div>
 
@@ -54,7 +54,7 @@ export default function NovaOrdemCompra() {
               value={formData.setor} 
               onChange={(e) => setFormData({ ...formData, setor: e.target.value })} 
               placeholder="Digite o setor" 
-              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] flex-1" 
+              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] flex-1" 
             />
           </div>
 
@@ -65,7 +65,7 @@ export default function NovaOrdemCompra() {
                 value={formData.descricao} 
                 onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
                 placeholder="Digite a descrição" 
-                className="bg-[#efefef] !text-[#22265B] px-3 rounded-lg border border-[#22265B] w-80 min-h-[100px]" 
+                className="bg-[#efefef] !text-[#22265B] px-3 rounded border border-[#22265B] w-80 min-h-[100px]" 
               />
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function NovaOrdemCompra() {
                 value={formData.item} 
                 onChange={(e) => setFormData({ ...formData, item: e.target.value })} 
                 placeholder="Nome do item" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-52" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-52" 
               />
             </div>
 
@@ -87,7 +87,7 @@ export default function NovaOrdemCompra() {
                 value={formData.marca} 
                 onChange={(e) => setFormData({ ...formData, marca: e.target.value })} 
                 placeholder="Marca" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-52" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-52" 
               />
             </div>
 
@@ -98,7 +98,7 @@ export default function NovaOrdemCompra() {
                 value={formData.quantidade} 
                 onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })} 
                 placeholder="Qtd" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40" 
               />
             </div>
 
@@ -108,19 +108,19 @@ export default function NovaOrdemCompra() {
                 value={formData.especificacoes} 
                 onChange={(e) => setFormData({ ...formData, especificacoes: e.target.value })} 
                 placeholder="Specs" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] flex-1" 
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] flex-1" 
               />
             </div>
 
             <div className="flex gap-8">
               <div className="w-40"></div>
-              <Button type="button" onClick={handleAddItem} className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Button type="button" onClick={handleAddItem} className="rounded bg-primary hover:bg-primary/90 text-primary-foreground">
                 Adicionar Item
               </Button>
             </div>
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
+          <div className="rounded overflow-hidden border border-[#E3E3E3]">
             <Table>
               <TableHeader>
                 <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
@@ -152,8 +152,8 @@ export default function NovaOrdemCompra() {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button onClick={handleSalvar} className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
-            <Button onClick={handleCancelar} variant="destructive" className="rounded-md px-6">Cancelar</Button>
+            <Button onClick={handleSalvar} className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
+            <Button onClick={handleCancelar} variant="destructive" className="rounded px-6">Cancelar</Button>
           </div>
         </div>
       </div>

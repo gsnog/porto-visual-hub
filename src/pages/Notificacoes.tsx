@@ -203,7 +203,7 @@ export default function Notificacoes() {
                   <div className="flex items-start gap-4">
                     {/* Ícone */}
                     <div className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded",
                       tipoCores[notificacao.tipo]
                     )}>
                       <Icone className="h-5 w-5" />
