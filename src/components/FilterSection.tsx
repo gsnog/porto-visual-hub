@@ -1,4 +1,4 @@
-import { Filter } from "lucide-react"
+import { Filter, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,6 +17,7 @@ interface FilterField {
 interface FilterSectionProps {
   fields: FilterField[]
   onFilter?: () => void
+  onClear?: () => void
   resultsCount?: number
   children?: ReactNode
 }
@@ -24,9 +25,15 @@ interface FilterSectionProps {
 export function FilterSection({
   fields,
   onFilter,
+  onClear,
   resultsCount,
   children
 }: FilterSectionProps) {
+  const handleClear = () => {
+    fields.forEach(field => field.onChange(""))
+    onClear?.()
+  }
+
   return (
     <div className="space-y-4">
       <div className="filter-card">
@@ -73,10 +80,16 @@ export function FilterSection({
           
           {children}
 
-          <Button onClick={onFilter} className="gap-2 h-10">
-            <Filter className="h-4 w-4" />
-            Filtrar
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={onFilter} className="gap-2 h-10">
+              <Filter className="h-4 w-4" />
+              Filtrar
+            </Button>
+            <Button variant="outline" onClick={handleClear} className="gap-2 h-10">
+              <X className="h-4 w-4" />
+              Limpar Filtros
+            </Button>
+          </div>
         </div>
       </div>
 
