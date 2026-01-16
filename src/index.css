@@ -63,7 +63,6 @@
     --table-row-alt: 220 30% 97%;
     --table-row-hover: 220 30% 98%;
     --table-border: 220 20% 92%;
-    --table-cell-bg: 0 0% 100%;
 
     /* Chart colors */
     --chart-1: 24 95% 53%;
@@ -127,7 +126,6 @@
     --table-row-alt: 222 40% 16%;
     --table-row-hover: 222 40% 13%;
     --table-border: 222 40% 22%;
-    --table-cell-bg: 222 40% 12%;
 
     /* Chart colors - dark mode - brighter for readability */
     --chart-1: 24 95% 55%;
