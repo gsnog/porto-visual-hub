@@ -242,7 +242,7 @@ const GradientCard = ({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
+      className={`relative overflow-hidden rounded-lg bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
     >
       <div className="flex items-start justify-between">
         <div className="rounded-lg bg-white/20 p-2.5 backdrop-blur-sm">
@@ -314,7 +314,7 @@ const AlertCard = ({ title, count, type }: { title: string; count: number; type:
   const textClass = type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
   
   return (
-    <div className={`flex items-center gap-4 p-4 rounded-xl ${bgClass} transition-all duration-200 hover:scale-[1.02]`}>
+    <div className={`flex items-center gap-4 p-4 rounded-lg ${bgClass} transition-all duration-200 hover:scale-[1.02]`}>
       <div className={`p-2 rounded-lg ${type === "danger" ? "bg-destructive/20" : type === "warning" ? "bg-warning/20" : "bg-primary/20"}`}>
         <AlertTriangle className={`h-5 w-5 ${iconClass}`} />
       </div>
