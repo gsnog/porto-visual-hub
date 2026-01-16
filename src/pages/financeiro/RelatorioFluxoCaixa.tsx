@@ -17,7 +17,7 @@ export default function RelatorioFluxoCaixa() {
             <div className="flex flex-col gap-1">
               <label className="text-sm text-foreground">Tipo:</label>
               <Select defaultValue="fluxo-caixa">
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg border border-[#22265B]">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded border border-[#22265B]">
                   <SelectValue placeholder="Fluxo de Caixa" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -30,7 +30,7 @@ export default function RelatorioFluxoCaixa() {
             <div className="flex flex-col gap-1">
               <label className="text-sm text-foreground">Data:</label>
               <Select defaultValue="vencimento">
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg border border-[#22265B]">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded border border-[#22265B]">
                   <SelectValue placeholder="Data de Vencimento" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -43,7 +43,7 @@ export default function RelatorioFluxoCaixa() {
             <div className="flex flex-col gap-1">
               <label className="text-sm text-foreground">Filtrar por:</label>
               <Select defaultValue="anual">
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded-lg border border-[#22265B]">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-48 rounded border border-[#22265B]">
                   <SelectValue placeholder="Anual" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -55,7 +55,7 @@ export default function RelatorioFluxoCaixa() {
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm text-foreground">Ano:</label>
-              <Input className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-32 rounded-lg border border-[#22265B]" />
+              <Input className="bg-[#efefef] !text-[#22265B] h-10 px-3 w-32 rounded border border-[#22265B]" />
             </div>
           </div>
 
@@ -69,7 +69,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Cliente:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -81,7 +81,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Conta Bancária:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -93,7 +93,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Categoria:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -106,7 +106,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Sub Categoria:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -118,7 +118,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Contábil:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -130,7 +130,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Plano de Contas:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -143,7 +143,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Diretoria:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -155,7 +155,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Gerência:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -167,7 +167,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Departamento:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -180,7 +180,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Centro de Receita:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -192,7 +192,7 @@ export default function RelatorioFluxoCaixa() {
               <div className="flex flex-col gap-1">
                 <label className="text-sm text-foreground">Status:</label>
                 <Select>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="---" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -206,13 +206,13 @@ export default function RelatorioFluxoCaixa() {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground px-6">
+            <Button className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6">
               Gerar
             </Button>
             <Button 
               onClick={() => navigate("/financeiro/fluxo-caixa")}
               variant="destructive"
-              className="rounded-md px-6"
+              className="rounded px-6"
             >
               Voltar
             </Button>

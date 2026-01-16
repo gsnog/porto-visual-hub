@@ -63,7 +63,7 @@ export function PortfolioChart() {
   const percentChange = ((totalValue - previousValue) / previousValue) * 100;
 
   return (
-    <Card className="bg-card rounded-xl p-6 shadow-sm border-0">
+    <Card className="bg-card rounded p-6 shadow-sm border-0">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -79,7 +79,7 @@ export function PortfolioChart() {
         </div>
 
         {/* Period Selector */}
-        <div className="flex bg-secondary rounded-lg p-1">
+        <div className="flex bg-secondary rounded p-1">
           {periods.map((period) => (
             <Button
               key={period}

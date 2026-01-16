@@ -53,7 +53,7 @@ export function Topbar({
         {/* Notifications */}
         <button 
           onClick={handleBellClick}
-          className="relative p-2 rounded-lg hover:bg-muted transition-colors"
+          className="relative p-2 rounded hover:bg-muted transition-colors"
         >
           <Bell className="h-5 w-5 text-muted-foreground" />
           {notificationCount > 0 && (
@@ -70,7 +70,7 @@ export function Topbar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-bold text-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded bg-primary text-primary-foreground font-bold text-sm">
                 PP
               </div>
               <div className="hidden sm:flex flex-col">

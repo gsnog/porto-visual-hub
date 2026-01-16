@@ -92,7 +92,7 @@ export default function OrdemCompra() {
           resultsCount={filteredOrdens.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
+        <div className="rounded overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
