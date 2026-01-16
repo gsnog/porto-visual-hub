@@ -108,10 +108,54 @@ const ultimasMovimentacoes = [
 ]
 
 const inventarioData = [
-  { item: "Parafuso M8", quantidade: 2500, unidade: "Almoxarifado SP", valor: "R$ 1.250,00" },
-  { item: "Cabo HDMI", quantidade: 85, unidade: "TI Central", valor: "R$ 2.125,00" },
-  { item: "Óleo Lubrificante", quantidade: 120, unidade: "Manutenção", valor: "R$ 5.400,00" },
-  { item: "Papel A4", quantidade: 500, unidade: "Administrativo", valor: "R$ 1.500,00" },
+  { item: "Parafuso M8", quantidade: 2500, unidade: "Almoxarifado SP", valor: "R$ 1.250,00", status: "Normal" },
+  { item: "Cabo HDMI", quantidade: 85, unidade: "TI Central", valor: "R$ 2.125,00", status: "Normal" },
+  { item: "Óleo Lubrificante", quantidade: 120, unidade: "Manutenção", valor: "R$ 5.400,00", status: "Crítico" },
+  { item: "Papel A4", quantidade: 500, unidade: "Administrativo", valor: "R$ 1.500,00", status: "Normal" },
+  { item: "Tinta Impressora", quantidade: 8, unidade: "TI Central", valor: "R$ 640,00", status: "Crítico" },
+]
+
+const estoqueEvolutionData = [
+  { month: "Jan", quantidade: 3200, valor: 280000 },
+  { month: "Fev", quantidade: 3350, valor: 295000 },
+  { month: "Mar", quantidade: 3180, valor: 285000 },
+  { month: "Abr", quantidade: 3420, valor: 310000 },
+  { month: "Mai", quantidade: 3380, valor: 315000 },
+  { month: "Jun", quantidade: 3485, valor: 320000 },
+]
+
+const topItensEstoqueData = [
+  { codigo: "EST001", item: "Parafuso M8", quantidade: 2500, valor: "R$ 1.250,00" },
+  { codigo: "EST002", item: "Porca Sextavada", quantidade: 1800, valor: "R$ 900,00" },
+  { codigo: "EST003", item: "Arruela Lisa", quantidade: 1500, valor: "R$ 450,00" },
+  { codigo: "EST004", item: "Cabo Elétrico 2.5mm", quantidade: 1200, valor: "R$ 3.600,00" },
+  { codigo: "EST005", item: "Papel A4", quantidade: 500, valor: "R$ 1.500,00" },
+  { codigo: "EST006", item: "Lubrificante WD-40", quantidade: 450, valor: "R$ 2.250,00" },
+  { codigo: "EST007", item: "Fita Isolante", quantidade: 380, valor: "R$ 570,00" },
+  { codigo: "EST008", item: "Conector RJ45", quantidade: 350, valor: "R$ 175,00" },
+  { codigo: "EST009", item: "Óleo Hidráulico", quantidade: 120, valor: "R$ 5.400,00" },
+  { codigo: "EST010", item: "Cabo HDMI", quantidade: 85, valor: "R$ 2.125,00" },
+]
+
+const topItensConsumidosData = [
+  { codigo: "EST001", item: "Parafuso M8", consumo: 850, setor: "Produção" },
+  { codigo: "EST003", item: "Arruela Lisa", consumo: 620, setor: "Produção" },
+  { codigo: "EST004", item: "Cabo Elétrico 2.5mm", consumo: 480, setor: "Manutenção" },
+  { codigo: "EST006", item: "Lubrificante WD-40", consumo: 320, setor: "Manutenção" },
+  { codigo: "EST002", item: "Porca Sextavada", consumo: 280, setor: "Produção" },
+  { codigo: "EST005", item: "Papel A4", consumo: 250, setor: "Administrativo" },
+  { codigo: "EST009", item: "Óleo Hidráulico", consumo: 45, setor: "Manutenção" },
+  { codigo: "EST007", item: "Fita Isolante", consumo: 120, setor: "TI" },
+  { codigo: "EST008", item: "Conector RJ45", consumo: 95, setor: "TI" },
+  { codigo: "EST010", item: "Cabo HDMI", consumo: 28, setor: "TI" },
+]
+
+const historicoMovimentacoesEstoque = [
+  { data: "16/01/2026", tipo: "Entrada", item: "Parafuso M8", quantidade: 500, requisitante: "João Silva", setor: "Produção" },
+  { data: "15/01/2026", tipo: "Saída", item: "Cabo Elétrico 2.5mm", quantidade: 50, requisitante: "Maria Santos", setor: "Manutenção" },
+  { data: "15/01/2026", tipo: "Saída", item: "Óleo Hidráulico", quantidade: 10, requisitante: "Carlos Lima", setor: "Manutenção" },
+  { data: "14/01/2026", tipo: "Entrada", item: "Papel A4", quantidade: 100, requisitante: "Ana Costa", setor: "Administrativo" },
+  { data: "14/01/2026", tipo: "Saída", item: "Conector RJ45", quantidade: 25, requisitante: "Pedro Alves", setor: "TI" },
 ]
 
 const historicoPatrimonio = [
@@ -978,87 +1022,380 @@ const DashboardFinanceiro = () => {
 }
 
 // Dashboard Estoque
-const DashboardEstoque = () => (
-  <div className="space-y-6">
-    {/* Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <MetricCard title="Itens em Estoque" value="3.485" icon={Package} />
-      <MetricCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} />
-      <MetricCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend="up" trendValue="+15%" color="success" />
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <MetricCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend="down" trendValue="-8%" color="warning" />
-      <MetricCard title="Requisições Pendentes" value="12" icon={Receipt} color="warning" />
-      <MetricCard title="Itens Críticos" value="5" icon={AlertTriangle} color="destructive" />
-    </div>
+const DashboardEstoque = () => {
+  const [periodo, setPeriodo] = useState<PeriodoType>("30d")
+  const [item, setItem] = useState<string>("todos")
+  const [unidade, setUnidade] = useState<string>("todos")
+  const [setor, setSetor] = useState<string>("todos")
+  const [requisitante, setRequisitante] = useState<string>("todos")
+  const [tipoMovimentacao, setTipoMovimentacao] = useState<string>("todos")
+  const [status, setStatus] = useState<string>("todos")
 
-    {/* Gráficos */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  const itens = ["todos", "Parafuso M8", "Cabo HDMI", "Óleo Lubrificante", "Papel A4"]
+  const unidades = ["todos", "Almoxarifado SP", "Almoxarifado RJ", "TI Central", "Manutenção"]
+  const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo", "Operacional"]
+  const requisitantes = ["todos", "João Silva", "Maria Santos", "Carlos Lima", "Ana Costa", "Pedro Alves"]
+  const statusList = ["todos", "Normal", "Crítico", "Pendente"]
+
+  const periodoLabel = {
+    "1h": "Última hora",
+    "24h": "Últimas 24h",
+    "7d": "Últimos 7 dias",
+    "30d": "Últimos 30 dias",
+    "90d": "Últimos 90 dias",
+    "1y": "Último ano"
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Filtros */}
       <Card className="border border-border rounded-lg p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Consumo por Setor</CardTitle>
-        </CardHeader>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={consumoSetorData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <YAxis type="category" dataKey="setor" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} width={100} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
+          </div>
+          
+          {/* Período */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Período:</span>
+            <div className="flex gap-1">
+              {(["1h", "24h", "7d", "30d", "90d", "1y"] as PeriodoType[]).map((p) => (
+                <Button
+                  key={p}
+                  variant={periodo === p ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPeriodo(p)}
+                  className="h-8 px-3"
+                >
+                  {p}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Item */}
+          <Select value={item} onValueChange={setItem}>
+            <SelectTrigger className="w-[140px] h-8">
+              <SelectValue placeholder="Item" />
+            </SelectTrigger>
+            <SelectContent>
+              {itens.map((i) => (
+                <SelectItem key={i} value={i}>
+                  {i === "todos" ? "Todos Itens" : i}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Unidade */}
+          <Select value={unidade} onValueChange={setUnidade}>
+            <SelectTrigger className="w-[150px] h-8">
+              <SelectValue placeholder="Unidade" />
+            </SelectTrigger>
+            <SelectContent>
+              {unidades.map((u) => (
+                <SelectItem key={u} value={u}>
+                  {u === "todos" ? "Todas Unidades" : u}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Setor */}
+          <Select value={setor} onValueChange={setSetor}>
+            <SelectTrigger className="w-[130px] h-8">
+              <SelectValue placeholder="Setor" />
+            </SelectTrigger>
+            <SelectContent>
+              {setores.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s === "todos" ? "Todos Setores" : s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Requisitante */}
+          <Select value={requisitante} onValueChange={setRequisitante}>
+            <SelectTrigger className="w-[140px] h-8">
+              <SelectValue placeholder="Requisitante" />
+            </SelectTrigger>
+            <SelectContent>
+              {requisitantes.map((r) => (
+                <SelectItem key={r} value={r}>
+                  {r === "todos" ? "Todos" : r}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Tipo Movimentação */}
+          <Select value={tipoMovimentacao} onValueChange={setTipoMovimentacao}>
+            <SelectTrigger className="w-[130px] h-8">
+              <SelectValue placeholder="Tipo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos Tipos</SelectItem>
+              <SelectItem value="entrada">Entrada</SelectItem>
+              <SelectItem value="saida">Saída</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Status */}
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="w-[120px] h-8">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusList.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s === "todos" ? "Todos Status" : s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Indicador de período ativo */}
+          <div className="ml-auto">
+            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+              Exibindo: {periodoLabel[periodo]}
+            </span>
+          </div>
         </div>
       </Card>
 
-      <Card className="border border-border rounded-lg p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Estoque por Unidade</CardTitle>
-        </CardHeader>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={estoqueUnidadeData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="unidade" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="valor" name="Valor" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
-    </div>
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <GradientCard title="Itens em Estoque" value="3.485" icon={Package} variant="info" />
+        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} variant="success" />
+        <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-8%", positive: false }} variant="warning" />
+        <GradientCard title="Requisições Pendentes" value="12" icon={Receipt} variant="warning" />
+        <GradientCard title="Itens Críticos" value="5" icon={AlertTriangle} variant="danger" />
+      </div>
 
-    {/* Tabela Inventário */}
-    <Card className="border border-border rounded-lg">
-      <CardHeader>
-        <CardTitle className="text-base">Visão Geral do Inventário</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Item</TableHead>
-              <TableHead className="text-center">Quantidade</TableHead>
-              <TableHead>Unidade</TableHead>
-              <TableHead className="text-right">Valor</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {inventarioData.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{item.item}</TableCell>
-                <TableCell className="text-center">{item.quantidade}</TableCell>
-                <TableCell>{item.unidade}</TableCell>
-                <TableCell className="text-right font-semibold">{item.valor}</TableCell>
+      {/* Gráficos - Linha 1: Evolução */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Evolução de Estoque no Tempo</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={estoqueEvolutionData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis tickFormatter={(v) => `${v}`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Line type="monotone" dataKey="quantidade" name="Quantidade" stroke="hsl(var(--primary))" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Valor Financeiro do Estoque no Tempo</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={estoqueEvolutionData}>
+                <defs>
+                  <linearGradient id="colorValorEstoque" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(var(--success))" fill="url(#colorValorEstoque)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
+
+      {/* Gráficos - Linha 2: Consumo e Unidade */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Consumo por Setor</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={consumoSetorData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <YAxis type="category" dataKey="setor" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} width={100} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card className="border border-border rounded-lg p-4">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-base">Estoque por Unidade / Almoxarifado</CardTitle>
+          </CardHeader>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={estoqueUnidadeData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="unidade" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
+                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="valor" name="Valor" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
+
+      {/* Tabelas - Top 10 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border border-border rounded-lg">
+          <CardHeader>
+            <CardTitle className="text-base">Top 10 Itens em Estoque</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Item</TableHead>
+                  <TableHead className="text-center">Qtd</TableHead>
+                  <TableHead className="text-right">Valor</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topItensEstoqueData.map((item) => (
+                  <TableRow key={item.codigo}>
+                    <TableCell className="font-medium">{item.codigo}</TableCell>
+                    <TableCell>{item.item}</TableCell>
+                    <TableCell className="text-center">{item.quantidade}</TableCell>
+                    <TableCell className="text-right font-semibold">{item.valor}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-border rounded-lg">
+          <CardHeader>
+            <CardTitle className="text-base">Top 10 Itens Mais Consumidos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Item</TableHead>
+                  <TableHead className="text-center">Consumo</TableHead>
+                  <TableHead>Setor</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topItensConsumidosData.map((item) => (
+                  <TableRow key={item.codigo}>
+                    <TableCell className="font-medium">{item.codigo}</TableCell>
+                    <TableCell>{item.item}</TableCell>
+                    <TableCell className="text-center">{item.consumo}</TableCell>
+                    <TableCell>{item.setor}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabela Inventário */}
+      <Card className="border border-border rounded-lg">
+        <CardHeader>
+          <CardTitle className="text-base">Visão Geral do Inventário</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Item</TableHead>
+                <TableHead className="text-center">Quantidade</TableHead>
+                <TableHead>Unidade</TableHead>
+                <TableHead className="text-right">Valor</TableHead>
+                <TableHead>Status</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  </div>
-)
+            </TableHeader>
+            <TableBody>
+              {inventarioData.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{item.item}</TableCell>
+                  <TableCell className="text-center">{item.quantidade}</TableCell>
+                  <TableCell>{item.unidade}</TableCell>
+                  <TableCell className="text-right font-semibold">{item.valor}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      item.status === "Normal" ? "bg-success/20 text-success" :
+                      "bg-destructive/20 text-destructive"
+                    }`}>
+                      {item.status}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Histórico de Movimentações */}
+      <Card className="border border-border rounded-lg">
+        <CardHeader>
+          <CardTitle className="text-base">Histórico Consolidado de Movimentações</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Data</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Item</TableHead>
+                <TableHead className="text-center">Quantidade</TableHead>
+                <TableHead>Requisitante</TableHead>
+                <TableHead>Setor</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {historicoMovimentacoesEstoque.map((mov, index) => (
+                <TableRow key={index}>
+                  <TableCell>{mov.data}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      mov.tipo === "Entrada" ? "bg-success/20 text-success" : "bg-warning/20 text-warning"
+                    }`}>
+                      {mov.tipo}
+                    </span>
+                  </TableCell>
+                  <TableCell className="font-medium">{mov.item}</TableCell>
+                  <TableCell className="text-center">{mov.quantidade}</TableCell>
+                  <TableCell>{mov.requisitante}</TableCell>
+                  <TableCell>{mov.setor}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
 
 // Dashboard Patrimônio
 const DashboardPatrimonio = () => (
