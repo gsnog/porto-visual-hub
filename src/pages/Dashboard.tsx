@@ -171,9 +171,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 // Dashboard Geral
 const DashboardGeral = () => (
   <div className="space-y-6">
-    {/* Gráfico Principal - Balanço do Portfólio */}
-    <PortfolioChart />
-
     {/* Cards - Financeiro */}
     <div>
       <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
@@ -203,6 +200,9 @@ const DashboardGeral = () => (
         <MetricCard title="Itens Patrimoniais" value="156" icon={Building2} />
       </div>
     </div>
+
+    {/* Gráfico Principal - Balanço do Portfólio */}
+    <PortfolioChart />
 
     {/* Gráficos */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
