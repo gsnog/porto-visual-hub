@@ -15,7 +15,7 @@ const Setores = () => {
       placeholder: "Buscar setor...",
       value: searchSetor,
       onChange: setSearchSetor,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     }
   ];
 

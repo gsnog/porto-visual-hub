@@ -16,14 +16,14 @@ const Itens = () => {
       placeholder: "Buscar por nome...",
       value: searchNome,
       onChange: setSearchNome,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     },
     {
       type: "date" as const,
       label: "Data de Cadastro",
       value: searchData,
       onChange: setSearchData,
-      width: "min-w-[180px]"
+      width: "min-w-[160px]"
     }
   ];
 

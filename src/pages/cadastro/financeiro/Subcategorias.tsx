@@ -15,7 +15,7 @@ const Subcategorias = () => {
       placeholder: "Buscar subcategoria...",
       value: searchSubcategoria,
       onChange: setSearchSubcategoria,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     }
   ];
 
