@@ -200,7 +200,7 @@
 
   /* Sidebar styles */
   .sidebar-item {
-    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 cursor-pointer;
+    @apply flex items-center gap-3 px-4 py-2.5 rounded transition-all duration-200 cursor-pointer;
   }
   
   .sidebar-item:hover { 
@@ -253,7 +253,7 @@
 
   /* Filter styles */
   .filter-input {
-    @apply h-10 px-4 rounded-lg border border-border bg-card text-sm transition-all duration-200;
+    @apply h-10 px-4 rounded border border-border bg-card text-sm transition-all duration-200;
   }
 
   .filter-input:focus {
@@ -261,7 +261,7 @@
   }
 
   .filter-input-with-icon {
-    @apply h-10 pl-11 pr-4 rounded-lg border border-border bg-card text-sm transition-all duration-200;
+    @apply h-10 pl-11 pr-4 rounded border border-border bg-card text-sm transition-all duration-200;
   }
 
   .filter-input-with-icon:focus {
@@ -273,7 +273,7 @@
   }
 
   .filter-card {
-    @apply bg-card rounded-xl shadow-sm border border-border p-5;
+    @apply bg-card rounded shadow-sm border border-border p-5;
   }
 
   .filter-label {
@@ -282,7 +282,7 @@
 
   /* ===== FORM STYLES PADRONIZADOS ===== */
   .form-input {
-    @apply h-10 px-3 rounded-lg border border-[#22265B] bg-[#efefef] text-[#22265B] text-sm transition-all duration-200;
+    @apply h-10 px-3 rounded border border-[#22265B] bg-[#efefef] text-[#22265B] text-sm transition-all duration-200;
   }
 
   .form-input:focus {
@@ -307,7 +307,7 @@
 
   /* ===== CARD SUMMARY ===== */
   .summary-card {
-    @apply p-6 rounded-xl shadow-md text-white transition-all duration-200 hover:shadow-lg hover:scale-[1.02];
+    @apply p-6 rounded shadow-md text-white transition-all duration-200 hover:shadow-lg hover:scale-[1.02];
   }
 
   .summary-card-title {
