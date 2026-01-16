@@ -166,26 +166,20 @@
 }
 
 @layer components {
-  /* Sidebar scrollbar styles */
+  /* Sidebar scrollbar styles - completely hidden */
+  [data-sidebar="sidebar"],
+  [data-sidebar="content"],
+  .sidebar-scroll {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
   [data-sidebar="sidebar"]::-webkit-scrollbar,
+  [data-sidebar="content"]::-webkit-scrollbar,
   .sidebar-scroll::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  [data-sidebar="sidebar"]::-webkit-scrollbar-track,
-  .sidebar-scroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  [data-sidebar="sidebar"]::-webkit-scrollbar-thumb,
-  .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-  }
-
-  [data-sidebar="sidebar"]::-webkit-scrollbar-thumb:hover,
-  .sidebar-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
   }
 
   /* Sidebar styles */
