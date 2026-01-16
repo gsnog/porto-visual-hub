@@ -155,7 +155,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       </button>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
         <ul className="space-y-1">
           {menuItems.map((item) => (
             <li key={item.title}>
@@ -265,29 +265,29 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Footer - Compact */}
-      <div className="border-t border-white/10 p-2 space-y-1">
+      {/* Footer */}
+      <div className="border-t border-white/10 p-3 space-y-1">
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
-          className="sidebar-item w-full py-2"
+          className="sidebar-item w-full"
         >
           {theme === "dark" ? (
-            <Moon className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
+            <Sun className="h-5 w-5 shrink-0 text-[hsl(var(--sidebar-foreground))]" />
           ) : (
-            <Sun className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
+            <Moon className="h-5 w-5 shrink-0 text-[hsl(var(--sidebar-foreground))]" />
           )}
           {!collapsed && (
-            <span className="text-xs text-[hsl(var(--sidebar-foreground))]">
-              {theme === "dark" ? "Modo Noturno" : "Modo Diurno"}
+            <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
+              {theme === "dark" ? "Modo Diurno" : "Modo Noturno"}
             </span>
           )}
         </button>
 
         {/* Logout */}
-        <button className="sidebar-item w-full py-2 text-red-500 hover:bg-red-500/20">
-          <LogOut className="h-4 w-4" />
-          {!collapsed && <span className="text-xs">Sair</span>}
+        <button className="sidebar-item w-full text-red-500 hover:bg-red-500/20">
+          <LogOut className="h-5 w-5 shrink-0" />
+          {!collapsed && <span className="text-sm">Sair</span>}
         </button>
       </div>
     </aside>
