@@ -49,7 +49,7 @@ const Unidades = () => {
               <TableRow>
                 <TableCell className="text-center">jdcnsdlkcsl</TableCell>
                 <TableCell className="text-center">
-                  <Button size="sm" className="rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs">
+                  <Button size="sm" className="rounded-md bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs">
                     Excluir
                   </Button>
                 </TableCell>

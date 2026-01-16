@@ -44,8 +44,8 @@ export default function NovaOrdemServico() {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button onClick={handleSalvar} className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
-            <Button onClick={handleCancelar} variant="destructive" className="rounded-lg px-6">Cancelar</Button>
+            <Button onClick={handleSalvar} className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
+            <Button onClick={handleCancelar} variant="destructive" className="rounded-md px-6">Cancelar</Button>
           </div>
         </div>
       </div>

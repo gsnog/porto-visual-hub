@@ -205,13 +205,13 @@ export default function RelatorioContasReceber() {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6">
+            <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground px-6">
               Gerar
             </Button>
             <Button 
               onClick={() => navigate("/financeiro/contas-receber")}
               variant="destructive"
-              className="rounded-lg px-6"
+              className="rounded-md px-6"
             >
               Voltar
             </Button>
