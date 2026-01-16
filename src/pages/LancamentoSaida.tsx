@@ -100,7 +100,7 @@ const LancamentoSaida = () => {
               <Label className="text-sm font-medium text-foreground mb-2 block">Documento PDF</Label>
             </div>
             <div>
-              <Button className="w-full rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Escolher Ficheiro</Button>
+              <Button className="w-full rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Escolher Ficheiro</Button>
             </div>
           </div>
 
@@ -110,8 +110,8 @@ const LancamentoSaida = () => {
           </div>
 
           <div className="flex gap-4 pt-4">
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
-            <Button variant="outline" className="rounded-lg border-primary text-primary hover:bg-primary/10">Cancelar</Button>
+            <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Salvar</Button>
+            <Button variant="outline" className="rounded-md border-primary text-primary hover:bg-primary/10">Cancelar</Button>
           </div>
         </div>
       </div>

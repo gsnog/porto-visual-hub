@@ -8,7 +8,7 @@ const ConciliacaoBancaria = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex justify-end">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">
             Conciliações Pendentes (0)
           </Button>
         </div>
@@ -19,7 +19,7 @@ const ConciliacaoBancaria = () => {
 
         <Button 
           onClick={() => navigate("/cadastro/financeiro/conta-bancaria")}
-          className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+          className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground px-6"
         >
           Voltar
         </Button>

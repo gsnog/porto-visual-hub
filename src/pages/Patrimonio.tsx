@@ -295,12 +295,12 @@ const Patrimonio = () => {
                 </div>
 
                 <div className="flex gap-4 justify-start pt-8">
-                  <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">
                     Editar
                   </Button>
                   <Button 
                     onClick={handleDelete}
-                    className="rounded-lg bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                    className="rounded-md bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Excluir

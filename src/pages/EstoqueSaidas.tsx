@@ -85,7 +85,7 @@ export default function EstoqueSaidas() {
                 <label className="filter-label">Unidade:</label>
                 <Input className="filter-input w-36" />
               </div>
-              <Button className="rounded-lg bg-green-600 hover:bg-green-700 text-white h-10">
+              <Button className="rounded-md bg-green-600 hover:bg-green-700 text-white h-10">
                 Gerar Relatório
               </Button>
             </div>

@@ -151,7 +151,7 @@ const Relatorio = () => {
           </div>
 
           <div className="pt-4">
-            <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">
               Gerar
             </Button>
           </div>

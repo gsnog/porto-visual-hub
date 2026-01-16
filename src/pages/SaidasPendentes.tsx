@@ -25,8 +25,8 @@ const SaidasPendentes = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
-          <Button className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
+          <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
+          <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
         </div>
 
         <FilterSection
@@ -86,7 +86,7 @@ const SaidasPendentes = () => {
                     <TableCell className="text-center">{saida.valorTitulo}</TableCell>
                     <TableCell className="text-center">{saida.valorTotal}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <Button size="sm" className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
                     </TableCell>
                   </TableRow>
                 ))
