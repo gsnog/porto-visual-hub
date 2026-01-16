@@ -15,7 +15,7 @@ const CentroReceita = () => {
       placeholder: "Buscar centro de receita...",
       value: searchCentro,
       onChange: setSearchCentro,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     }
   ];
 

@@ -16,7 +16,7 @@ const PlanoContas = () => {
       placeholder: "Buscar categoria...",
       value: searchCategoria,
       onChange: setSearchCategoria,
-      width: "min-w-[200px]"
+      width: "flex-1 min-w-[200px]"
     },
     {
       type: "text" as const,
@@ -24,7 +24,7 @@ const PlanoContas = () => {
       placeholder: "Buscar subcategoria...",
       value: searchSubcategoria,
       onChange: setSearchSubcategoria,
-      width: "min-w-[200px]"
+      width: "min-w-[180px]"
     }
   ];
 

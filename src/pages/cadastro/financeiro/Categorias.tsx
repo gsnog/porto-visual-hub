@@ -15,7 +15,7 @@ const Categorias = () => {
       placeholder: "Buscar categoria...",
       value: searchCategoria,
       onChange: setSearchCategoria,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     }
   ];
 

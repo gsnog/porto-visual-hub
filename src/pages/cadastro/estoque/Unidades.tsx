@@ -15,7 +15,7 @@ const Unidades = () => {
       placeholder: "Buscar unidade...",
       value: searchUnidade,
       onChange: setSearchUnidade,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     }
   ];
 

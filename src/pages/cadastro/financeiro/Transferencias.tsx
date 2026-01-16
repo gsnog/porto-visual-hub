@@ -11,19 +11,19 @@ const Transferencias = () => {
 
   const filterFields = [
     {
-      type: "date" as const,
-      label: "Data",
-      value: searchData,
-      onChange: setSearchData,
-      width: "min-w-[180px]"
-    },
-    {
       type: "text" as const,
       label: "Conta Origem",
       placeholder: "Buscar conta origem...",
       value: searchContaOrigem,
       onChange: setSearchContaOrigem,
-      width: "min-w-[200px]"
+      width: "flex-1 min-w-[200px]"
+    },
+    {
+      type: "date" as const,
+      label: "Data",
+      value: searchData,
+      onChange: setSearchData,
+      width: "min-w-[160px]"
     }
   ];
 

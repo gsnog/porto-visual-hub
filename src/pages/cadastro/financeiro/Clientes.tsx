@@ -16,7 +16,7 @@ const Clientes = () => {
       placeholder: "Buscar cliente...",
       value: searchNome,
       onChange: setSearchNome,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     },
     {
       type: "text" as const,
@@ -24,7 +24,7 @@ const Clientes = () => {
       placeholder: "Buscar por CNPJ...",
       value: searchCnpj,
       onChange: setSearchCnpj,
-      width: "min-w-[200px]"
+      width: "min-w-[180px]"
     }
   ];
 

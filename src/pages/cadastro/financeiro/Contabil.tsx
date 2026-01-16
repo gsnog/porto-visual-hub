@@ -15,7 +15,7 @@ const Contabil = () => {
       placeholder: "Buscar contábil...",
       value: searchContabil,
       onChange: setSearchContabil,
-      width: "min-w-[250px]"
+      width: "flex-1 min-w-[200px]"
     }
   ];
 
