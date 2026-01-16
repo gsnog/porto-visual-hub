@@ -37,26 +37,24 @@ const Setores = () => {
           resultsCount={1}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Setor</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="text-center">QualquerCoisa</TableCell>
-                <TableCell className="text-center">
-                  <Button size="sm" className="rounded-md bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs">
-                    Excluir
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Setor</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="text-center">QualquerCoisa</TableCell>
+              <TableCell className="text-center">
+                <Button size="sm" className="rounded-md bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs">
+                  Excluir
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

@@ -114,60 +114,58 @@ const FluxoCaixa = () => {
           resultsCount={filteredTransacoes.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Vencimento</TableHead>
+              <TableHead className="text-center">Pagamento</TableHead>
+              <TableHead className="text-center">Tipo</TableHead>
+              <TableHead className="text-center">Beneficiário</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Valor</TableHead>
+              <TableHead className="text-center">Saldo</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredTransacoes.length === 0 ? (
               <TableRow>
-                <TableHead className="text-center">Vencimento</TableHead>
-                <TableHead className="text-center">Pagamento</TableHead>
-                <TableHead className="text-center">Tipo</TableHead>
-                <TableHead className="text-center">Beneficiário</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Valor</TableHead>
-                <TableHead className="text-center">Saldo</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
+                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                  Nenhuma transação encontrada.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTransacoes.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                    Nenhuma transação encontrada.
+            ) : (
+              filteredTransacoes.map((transacao) => (
+                <TableRow key={transacao.id}>
+                  <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
+                  <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
+                  <TableCell className="text-center">
+                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>
+                      {transacao.tipo}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-center">{transacao.beneficiario}</TableCell>
+                  <TableCell className="text-center">
+                    <span className={getStatusColor(transacao.status)}>{transacao.status}</span>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
+                      {transacao.valorTotal}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-center font-semibold">{transacao.saldo}</TableCell>
+                  <TableCell className="text-center">
+                    <TableActions 
+                      onView={() => console.log('View', transacao.id)}
+                      onEdit={() => console.log('Edit', transacao.id)}
+                      onDelete={() => console.log('Delete', transacao.id)}
+                    />
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredTransacoes.map((transacao) => (
-                  <TableRow key={transacao.id}>
-                    <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
-                    <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
-                    <TableCell className="text-center">
-                      <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>
-                        {transacao.tipo}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-center">{transacao.beneficiario}</TableCell>
-                    <TableCell className="text-center">
-                      <span className={getStatusColor(transacao.status)}>{transacao.status}</span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
-                        {transacao.valorTotal}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-center font-semibold">{transacao.saldo}</TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', transacao.id)}
-                        onEdit={() => console.log('Edit', transacao.id)}
-                        onDelete={() => console.log('Delete', transacao.id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

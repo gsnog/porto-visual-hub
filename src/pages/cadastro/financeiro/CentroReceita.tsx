@@ -37,22 +37,20 @@ const CentroReceita = () => {
           resultsCount={0}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Centro de Receita</TableHead>
-                <TableHead className="text-center">Diretoria</TableHead>
-                <TableHead className="text-center">Gerência</TableHead>
-                <TableHead className="text-center">Departamento</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* Empty state - data will be added later */}
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Centro de Receita</TableHead>
+              <TableHead className="text-center">Diretoria</TableHead>
+              <TableHead className="text-center">Gerência</TableHead>
+              <TableHead className="text-center">Departamento</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* Empty state - data will be added later */}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

@@ -56,43 +56,41 @@ export default function EstoqueInventario() {
           resultsCount={filteredInventario.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Item</TableHead>
-                <TableHead className="text-center">Quantidade</TableHead>
-                <TableHead className="text-center">Unidade</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Item</TableHead>
+              <TableHead className="text-center">Quantidade</TableHead>
+              <TableHead className="text-center">Unidade</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
 
-            <TableBody>
-              {filteredInventario.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                    Nenhum item encontrado.
+          <TableBody>
+            {filteredInventario.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  Nenhum item encontrado.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredInventario.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="text-center">{item.item}</TableCell>
+                  <TableCell className="text-center">{item.quantidade}</TableCell>
+                  <TableCell className="text-center">{item.unidade}</TableCell>
+                  <TableCell className="text-center">
+                    <TableActions 
+                      onView={() => console.log('View', item.id)}
+                      onEdit={() => console.log('Edit', item.id)}
+                      onDelete={() => console.log('Delete', item.id)}
+                    />
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredInventario.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="text-center">{item.item}</TableCell>
-                    <TableCell className="text-center">{item.quantidade}</TableCell>
-                    <TableCell className="text-center">{item.unidade}</TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', item.id)}
-                        onEdit={() => console.log('Edit', item.id)}
-                        onDelete={() => console.log('Delete', item.id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

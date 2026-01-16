@@ -75,21 +75,19 @@ export default function NovaRequisicao() {
 
         <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>
 
-        <div className="table-professional">
-          <Table>
-            <TableHeader>
-              <TableRow className="table-header">
-                <TableHead className="table-head">Item</TableHead>
-                <TableHead className="table-head">Quantidade</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow className="table-row">
-                <TableCell className="table-cell" colSpan={2}>Nenhum item adicionado</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Item</TableHead>
+              <TableHead className="text-center">Quantidade</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="text-center" colSpan={2}>Nenhum item adicionado</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
 
         <div className="flex gap-3 pt-4">
           <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>

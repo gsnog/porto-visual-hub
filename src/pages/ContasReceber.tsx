@@ -109,54 +109,52 @@ const ContasReceber = () => {
           resultsCount={filteredContas.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Lançamento</TableHead>
+              <TableHead className="text-center">Faturamento</TableHead>
+              <TableHead className="text-center">Cliente</TableHead>
+              <TableHead className="text-center">Documento</TableHead>
+              <TableHead className="text-center">Título</TableHead>
+              <TableHead className="text-center">Recebido</TableHead>
+              <TableHead className="text-center">Vencimento</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredContas.length === 0 ? (
               <TableRow>
-                <TableHead className="text-center">Lançamento</TableHead>
-                <TableHead className="text-center">Faturamento</TableHead>
-                <TableHead className="text-center">Cliente</TableHead>
-                <TableHead className="text-center">Documento</TableHead>
-                <TableHead className="text-center">Título</TableHead>
-                <TableHead className="text-center">Recebido</TableHead>
-                <TableHead className="text-center">Vencimento</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
+                <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                  Nenhuma conta encontrada.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredContas.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                    Nenhuma conta encontrada.
+            ) : (
+              filteredContas.map((conta) => (
+                <TableRow key={conta.id}>
+                  <TableCell className="text-center">{conta.dataLancamento}</TableCell>
+                  <TableCell className="text-center">{conta.dataFaturamento}</TableCell>
+                  <TableCell className="text-center">{conta.cliente}</TableCell>
+                  <TableCell className="text-center">{conta.documento}</TableCell>
+                  <TableCell className="text-center">{conta.valorTitulo}</TableCell>
+                  <TableCell className="text-center">{conta.valorTotalRecebido}</TableCell>
+                  <TableCell className="text-center">{conta.proximoVencimento}</TableCell>
+                  <TableCell className="text-center">
+                    <span className={getStatusColor(conta.status)}>{conta.status}</span>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <TableActions 
+                      onView={() => console.log('View', conta.id)}
+                      onEdit={() => console.log('Edit', conta.id)}
+                      onDelete={() => console.log('Delete', conta.id)}
+                    />
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredContas.map((conta) => (
-                  <TableRow key={conta.id}>
-                    <TableCell className="text-center">{conta.dataLancamento}</TableCell>
-                    <TableCell className="text-center">{conta.dataFaturamento}</TableCell>
-                    <TableCell className="text-center">{conta.cliente}</TableCell>
-                    <TableCell className="text-center">{conta.documento}</TableCell>
-                    <TableCell className="text-center">{conta.valorTitulo}</TableCell>
-                    <TableCell className="text-center">{conta.valorTotalRecebido}</TableCell>
-                    <TableCell className="text-center">{conta.proximoVencimento}</TableCell>
-                    <TableCell className="text-center">
-                      <span className={getStatusColor(conta.status)}>{conta.status}</span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', conta.id)}
-                        onEdit={() => console.log('Edit', conta.id)}
-                        onDelete={() => console.log('Delete', conta.id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

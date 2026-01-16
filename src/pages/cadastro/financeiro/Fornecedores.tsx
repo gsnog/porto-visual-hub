@@ -46,24 +46,22 @@ const FornecedoresFinanceiro = () => {
           resultsCount={0}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Fornecedor</TableHead>
-                <TableHead className="text-center">CNPJ/CPF</TableHead>
-                <TableHead className="text-center">Razão Social</TableHead>
-                <TableHead className="text-center">Vendedor</TableHead>
-                <TableHead className="text-center">Email</TableHead>
-                <TableHead className="text-center">Telefone</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* Empty state - data will be added later */}
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Fornecedor</TableHead>
+              <TableHead className="text-center">CNPJ/CPF</TableHead>
+              <TableHead className="text-center">Razão Social</TableHead>
+              <TableHead className="text-center">Vendedor</TableHead>
+              <TableHead className="text-center">Email</TableHead>
+              <TableHead className="text-center">Telefone</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* Empty state - data will be added later */}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

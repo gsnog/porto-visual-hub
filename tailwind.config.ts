@@ -85,9 +85,11 @@ export default {
 				},
 				'input-bg': 'hsl(var(--input-background))',
 				'input-placeholder': 'hsl(var(--input-placeholder))',
-				'table-bg': 'hsl(var(--table-background))',
 				'table-header': 'hsl(var(--table-header))',
-				'table-hover': 'hsl(var(--table-hover))'
+				'table-row': 'hsl(var(--table-row))',
+				'table-row-alt': 'hsl(var(--table-row-alt))',
+				'table-hover': 'hsl(var(--table-row-hover))',
+				'table-border': 'hsl(var(--table-border))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
