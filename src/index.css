@@ -12,7 +12,7 @@
     --system-lighter: 233 25% 35%;
     --system-dark: 233 50% 10%;
     
-    --background: 230 20% 97%;
+    --background: 210 20% 98%;
     --foreground: 233 45% 14%;
     --card: 0 0% 100%;
     --card-foreground: 233 45% 14%;
@@ -56,9 +56,10 @@
     --status-done: 142 71% 45%;
     --status-pending: 45 93% 47%;
 
-    /* Table colors - based on system color */
-    --table-header: 233 45% 14%;
-    --table-row-alt: 230 20% 98%;
+    /* Table colors */
+    --table-header: 220 30% 96%;
+    --table-row-hover: 220 30% 98%;
+    --table-border: 220 20% 92%;
 
     /* Chart colors */
     --chart-1: 24 95% 53%;
@@ -79,7 +80,7 @@
     --system-lighter: 233 25% 30%;
     --system-dark: 233 50% 8%;
     
-    --background: 233 50% 8%;
+    --background: 222 47% 8%;
     --foreground: 230 20% 95%;
     --card: 233 45% 12%;
     --card-foreground: 230 20% 95%;
@@ -116,8 +117,9 @@
     --sidebar-muted: 230 20% 60%;
 
     /* Table colors - dark mode */
-    --table-header: 233 45% 16%;
-    --table-row-alt: 233 45% 12%;
+    --table-header: 222 40% 15%;
+    --table-row-hover: 222 40% 13%;
+    --table-border: 222 40% 18%;
 
     /* Chart colors - dark mode - brighter for readability */
     --chart-1: 24 95% 55%;
