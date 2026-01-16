@@ -10,7 +10,7 @@ const Relatorio = () => {
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">Tipo</label>
             <Select>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                 <SelectValue placeholder="Contas a Receber" />
               </SelectTrigger>
               <SelectContent className="bg-popover">
@@ -23,7 +23,7 @@ const Relatorio = () => {
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">Data</label>
             <Select>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                 <SelectValue placeholder="Data de Vencimento" />
               </SelectTrigger>
               <SelectContent className="bg-popover">
@@ -36,7 +36,7 @@ const Relatorio = () => {
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">Filtrar por</label>
             <Select>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                 <SelectValue placeholder="Personalizado" />
               </SelectTrigger>
               <SelectContent className="bg-popover">
@@ -51,7 +51,7 @@ const Relatorio = () => {
             <label className="text-sm font-medium text-foreground mb-2 block">Ano</label>
             <Input 
               placeholder="Ano" 
-              className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded-lg" 
+              className="bg-[#efefef] !text-[#22265B] placeholder:!text-[#22265B] placeholder:opacity-100 h-10 px-3 rounded" 
             />
           </div>
         </div>
@@ -63,7 +63,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Cliente</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -75,7 +75,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Conta Bancária</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -87,7 +87,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Sub Categoria</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -101,7 +101,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Contábil</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -113,7 +113,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Plano de Contas</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -125,7 +125,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Centro de Receita</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -139,7 +139,7 @@ const Relatorio = () => {
             <div>
               <label className="text-sm font-medium text-foreground mb-2 block">Status</label>
               <Select>
-                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg">
+                <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded">
                   <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
@@ -151,7 +151,7 @@ const Relatorio = () => {
           </div>
 
           <div className="pt-4">
-            <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button className="rounded bg-primary hover:bg-primary/90 text-primary-foreground">
               Gerar
             </Button>
           </div>

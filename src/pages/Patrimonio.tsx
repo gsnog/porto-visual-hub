@@ -119,7 +119,7 @@ const Patrimonio = () => {
             resultsCount={filteredAssets.length}
           />
 
-          <div className="rounded-lg overflow-hidden">
+          <div className="rounded overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -173,7 +173,7 @@ const Patrimonio = () => {
               <label className="text-foreground font-medium w-40">Item</label>
               <div className="flex-1">
                 <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-52 border border-[#22265B]">
+                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded w-52 border border-[#22265B]">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -195,7 +195,7 @@ const Patrimonio = () => {
                   type="date"
                   value={formData.dataAquisicao}
                   onChange={handleInputChange}
-                  className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40"
+                  className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40"
                 />
                 <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
               </div>
@@ -210,7 +210,7 @@ const Patrimonio = () => {
                   placeholder="Ex: 1500.00"
                   value={formData.valor}
                   onChange={handleInputChange}
-                  className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40"
+                  className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40"
                 />
                 <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
               </div>
@@ -223,21 +223,21 @@ const Patrimonio = () => {
                 type="number"
                 value={formData.quantidade}
                 onChange={handleInputChange}
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-40"
+                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40"
               />
             </div>
 
             <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleSubmitAdd}
-                className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+                className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6"
               >
                 Salvar
               </Button>
               <Button 
                 onClick={handleCancelAdd}
                 variant="destructive"
-                className="rounded-lg px-6"
+                className="rounded px-6"
               >
                 Cancelar
               </Button>
@@ -256,7 +256,7 @@ const Patrimonio = () => {
             <Button 
               onClick={handleBackToList}
               variant="ghost"
-              className="text-primary hover:bg-primary/10 px-3 py-2 rounded-lg font-semibold"
+              className="text-primary hover:bg-primary/10 px-3 py-2 rounded font-semibold"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
               Voltar à Lista
@@ -266,7 +266,7 @@ const Patrimonio = () => {
             </h1>
           </div>
 
-          <Card className="w-full max-w-2xl bg-white rounded-lg shadow-lg border border-[#E3E3E3]">
+          <Card className="w-full max-w-2xl bg-white rounded shadow-lg border border-[#E3E3E3]">
             <CardContent className="p-8">
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 border-b border-gray-100 py-2">

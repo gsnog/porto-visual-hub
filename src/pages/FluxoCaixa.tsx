@@ -7,7 +7,7 @@ import { Plus, FileText } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 
 const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
-  <div className={`p-6 rounded-lg shadow-md text-white ${colorClass}`}>
+  <div className={`p-6 rounded shadow-md text-white ${colorClass}`}>
     <h3 className="text-lg font-semibold mb-3">{title}</h3>
     <div className="border-t border-white/30 mb-3"></div>
     <p className="text-2xl font-bold">{value}</p>

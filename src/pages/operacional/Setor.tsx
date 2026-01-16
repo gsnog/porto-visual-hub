@@ -51,7 +51,7 @@ const Setor = () => {
           resultsCount={filteredSetores.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
+        <div className="rounded overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>

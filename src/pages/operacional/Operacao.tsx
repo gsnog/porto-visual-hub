@@ -59,7 +59,7 @@ const Operacao = () => {
           resultsCount={filteredOperacoes.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
+        <div className="rounded overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
