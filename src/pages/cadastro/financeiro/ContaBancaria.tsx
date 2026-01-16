@@ -75,24 +75,22 @@ const ContaBancaria = () => {
           resultsCount={0}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Código do Banco</TableHead>
-                <TableHead className="text-center">Banco</TableHead>
-                <TableHead className="text-center">Agência</TableHead>
-                <TableHead className="text-center">Numero da Conta</TableHead>
-                <TableHead className="text-center">Tipo</TableHead>
-                <TableHead className="text-center">Saldo</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* Empty state - data will be added later */}
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Código do Banco</TableHead>
+              <TableHead className="text-center">Banco</TableHead>
+              <TableHead className="text-center">Agência</TableHead>
+              <TableHead className="text-center">Numero da Conta</TableHead>
+              <TableHead className="text-center">Tipo</TableHead>
+              <TableHead className="text-center">Saldo</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* Empty state - data will be added later */}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

@@ -97,42 +97,40 @@ const NFe = () => {
           resultsCount={filteredNfes.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Data Emissão</TableHead>
-                <TableHead className="text-center">Número</TableHead>
-                <TableHead className="text-center">NF</TableHead>
-                <TableHead className="text-center">Valor Total</TableHead>
-                <TableHead className="text-center">Chave de Acesso</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Data Emissão</TableHead>
+              <TableHead className="text-center">Número</TableHead>
+              <TableHead className="text-center">NF</TableHead>
+              <TableHead className="text-center">Valor Total</TableHead>
+              <TableHead className="text-center">Chave de Acesso</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredNfes.map((nfe, index) => (
+              <TableRow key={index}>
+                <TableCell className="text-center">{nfe.dataEmissao}</TableCell>
+                <TableCell className="text-center">{nfe.numero}</TableCell>
+                <TableCell className="text-center">{nfe.nf}</TableCell>
+                <TableCell className="text-center font-semibold">{nfe.valorTotal}</TableCell>
+                <TableCell className="text-center text-xs">{nfe.chaveAcesso}</TableCell>
+                <TableCell className="text-center">
+                  <span className={getStatusColor(nfe.status)}>{nfe.status}</span>
+                </TableCell>
+                <TableCell className="text-center">
+                  <TableActions 
+                    onView={() => console.log('View', nfe.numero)}
+                    onEdit={() => console.log('Download XML', nfe.numero)}
+                    onDelete={() => console.log('Delete', nfe.numero)}
+                  />
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredNfes.map((nfe, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-center">{nfe.dataEmissao}</TableCell>
-                  <TableCell className="text-center">{nfe.numero}</TableCell>
-                  <TableCell className="text-center">{nfe.nf}</TableCell>
-                  <TableCell className="text-center font-semibold">{nfe.valorTotal}</TableCell>
-                  <TableCell className="text-center text-xs">{nfe.chaveAcesso}</TableCell>
-                  <TableCell className="text-center">
-                    <span className={getStatusColor(nfe.status)}>{nfe.status}</span>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <TableActions 
-                      onView={() => console.log('View', nfe.numero)}
-                      onEdit={() => console.log('Download XML', nfe.numero)}
-                      onDelete={() => console.log('Delete', nfe.numero)}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

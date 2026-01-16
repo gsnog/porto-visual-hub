@@ -5,7 +5,7 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto rounded-lg border" style={{ borderColor: 'hsl(var(--table-border))' }}>
+  <div className="relative w-full overflow-auto rounded-md border border-table-border">
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
@@ -21,8 +21,7 @@ const TableHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <thead
     ref={ref}
-    className={cn("[&_tr]:border-b", className)}
-    style={{ backgroundColor: 'hsl(var(--table-header))' }}
+    className={cn("[&_tr]:border-b bg-table-header", className)}
     {...props}
   />
 ));
@@ -62,12 +61,9 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b transition-colors data-[state=selected]:bg-muted",
+      "border-b border-table-border transition-colors hover:bg-table-hover data-[state=selected]:bg-muted",
       className
     )}
-    style={{ borderColor: 'hsl(var(--table-border))' }}
-    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(var(--table-row-hover))'}
-    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}
     {...props}
   />
 ));
@@ -80,7 +76,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-12 px-4 text-left align-middle text-xs font-semibold uppercase tracking-wide text-muted-foreground [&:has([role=checkbox])]:pr-0",
+      "h-12 px-4 text-left align-middle text-xs font-semibold uppercase tracking-wide text-white [&:has([role=checkbox])]:pr-0",
       className
     )}
     {...props}

@@ -212,50 +212,26 @@
     border-left: 3px solid hsl(var(--sidebar-accent)); 
   }
 
-  /* ===== TABELA PROFISSIONAL ===== */
-  .table-professional {
-    @apply w-full border-collapse;
-  }
-
-  .table-professional thead {
+  /* Table header/row/cell classes (legacy support) */
+  .table-header {
     background: hsl(var(--table-header));
   }
 
-  .table-professional th {
-    @apply px-4 py-3 text-left text-sm font-semibold text-white uppercase tracking-wide;
+  .table-head {
+    @apply px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wide;
   }
 
-  .table-professional tbody {
-    background: hsl(var(--table-row));
-  }
-
-  .table-professional tbody tr:nth-child(even) {
-    background: hsl(var(--table-row-alt));
-  }
-
-  .table-professional tbody tr:nth-child(odd) {
-    background: hsl(var(--table-row));
-  }
-
-  .table-professional tbody tr {
+  .table-row {
     @apply border-b transition-colors duration-150;
     border-color: hsl(var(--table-border));
   }
 
-  .table-professional tbody tr:hover {
-    background: hsl(var(--table-row-hover)) !important;
+  .table-row:hover {
+    background: hsl(var(--table-row-hover));
   }
 
-  .table-professional td {
-    @apply px-4 py-4 text-sm;
-  }
-
-  .table-professional tbody tr:hover {
-    @apply bg-muted/50;
-  }
-
-  .table-professional td {
-    @apply px-4 py-4 text-sm;
+  .table-cell {
+    @apply px-4 py-4 text-sm text-center;
   }
 
   /* ===== BADGES DE STATUS ===== */

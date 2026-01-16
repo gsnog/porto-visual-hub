@@ -76,50 +76,48 @@ export default function EstoqueLocacoes() {
           resultsCount={filteredLocacoes.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Unidade</TableHead>
+              <TableHead className="text-center">Início</TableHead>
+              <TableHead className="text-center">Fim (Previsto)</TableHead>
+              <TableHead className="text-center">Locador</TableHead>
+              <TableHead className="text-center">Contrato</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredLocacoes.length === 0 ? (
               <TableRow>
-                <TableHead className="text-center">Unidade</TableHead>
-                <TableHead className="text-center">Início</TableHead>
-                <TableHead className="text-center">Fim (Previsto)</TableHead>
-                <TableHead className="text-center">Locador</TableHead>
-                <TableHead className="text-center">Contrato</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  Nenhuma locação encontrada.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredLocacoes.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    Nenhuma locação encontrada.
+            ) : (
+              filteredLocacoes.map((loc) => (
+                <TableRow key={loc.id}>
+                  <TableCell className="text-center">{loc.unidade}</TableCell>
+                  <TableCell className="text-center">{loc.inicio}</TableCell>
+                  <TableCell className="text-center">{loc.fimPrevisto}</TableCell>
+                  <TableCell className="text-center">{loc.locador}</TableCell>
+                  <TableCell className="text-center">{loc.contrato}</TableCell>
+                  <TableCell className="text-center">
+                    <span className={getStatusColor(loc.status)}>{loc.status}</span>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <TableActions 
+                      onView={() => console.log('View', loc.id)}
+                      onEdit={() => console.log('Edit', loc.id)}
+                      onDelete={() => console.log('Delete', loc.id)}
+                    />
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredLocacoes.map((loc) => (
-                  <TableRow key={loc.id}>
-                    <TableCell className="text-center">{loc.unidade}</TableCell>
-                    <TableCell className="text-center">{loc.inicio}</TableCell>
-                    <TableCell className="text-center">{loc.fimPrevisto}</TableCell>
-                    <TableCell className="text-center">{loc.locador}</TableCell>
-                    <TableCell className="text-center">{loc.contrato}</TableCell>
-                    <TableCell className="text-center">
-                      <span className={getStatusColor(loc.status)}>{loc.status}</span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', loc.id)}
-                        onEdit={() => console.log('Edit', loc.id)}
-                        onDelete={() => console.log('Delete', loc.id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

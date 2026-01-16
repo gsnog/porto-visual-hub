@@ -37,19 +37,17 @@ const FormasApresentacao = () => {
           resultsCount={0}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Apresentação</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {/* Empty state - data will be added later */}
-            </TableBody>
-          </Table>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Apresentação</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* Empty state - data will be added later */}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

@@ -107,25 +107,23 @@ const NovaOperacao = () => {
 
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">Serviços e Setores</h2>
-          <div className="table-professional">
-            <Table>
-              <TableHeader>
-                <TableRow className="table-header">
-                  <TableHead className="table-head">Serviço</TableHead>
-                  <TableHead className="table-head">Setor</TableHead>
-                  <TableHead className="table-head">Data de Início</TableHead>
-                  <TableHead className="table-head">Desconto</TableHead>
-                  <TableHead className="table-head">Valor Adicional</TableHead>
-                  <TableHead className="table-head">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow className="table-row">
-                  <TableCell colSpan={6} className="table-cell">Nenhum serviço adicionado.</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">Serviço</TableHead>
+                <TableHead className="text-center">Setor</TableHead>
+                <TableHead className="text-center">Data de Início</TableHead>
+                <TableHead className="text-center">Desconto</TableHead>
+                <TableHead className="text-center">Valor Adicional</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={6} className="text-center">Nenhum serviço adicionado.</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
 
         <div className="flex gap-3 pt-4">

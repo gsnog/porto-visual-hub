@@ -97,50 +97,48 @@ export default function OrdemServico() {
           resultsCount={filteredOrdens.length}
         />
 
-        <div className="rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">ID</TableHead>
+              <TableHead className="text-center">Tipo</TableHead>
+              <TableHead className="text-center">Data</TableHead>
+              <TableHead className="text-center">Descrição</TableHead>
+              <TableHead className="text-center">Responsável</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredOrdens.length === 0 ? (
               <TableRow>
-                <TableHead className="text-center">ID</TableHead>
-                <TableHead className="text-center">Tipo</TableHead>
-                <TableHead className="text-center">Data</TableHead>
-                <TableHead className="text-center">Descrição</TableHead>
-                <TableHead className="text-center">Responsável</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  Nenhuma ordem encontrada.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredOrdens.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    Nenhuma ordem encontrada.
+            ) : (
+              filteredOrdens.map((ordem) => (
+                <TableRow key={ordem.id}>
+                  <TableCell className="text-center">{ordem.id}</TableCell>
+                  <TableCell className="text-center">{ordem.tipo}</TableCell>
+                  <TableCell className="text-center">{ordem.data}</TableCell>
+                  <TableCell className="text-center">{ordem.descricao}</TableCell>
+                  <TableCell className="text-center">{ordem.responsavel}</TableCell>
+                  <TableCell className="text-center">
+                    <span className={getStatusColor(ordem.status)}>{ordem.status}</span>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <TableActions 
+                      onView={() => console.log('View', ordem.id)}
+                      onEdit={() => console.log('Edit', ordem.id)}
+                      onDelete={() => console.log('Delete', ordem.id)}
+                    />
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredOrdens.map((ordem) => (
-                  <TableRow key={ordem.id}>
-                    <TableCell className="text-center">{ordem.id}</TableCell>
-                    <TableCell className="text-center">{ordem.tipo}</TableCell>
-                    <TableCell className="text-center">{ordem.data}</TableCell>
-                    <TableCell className="text-center">{ordem.descricao}</TableCell>
-                    <TableCell className="text-center">{ordem.responsavel}</TableCell>
-                    <TableCell className="text-center">
-                      <span className={getStatusColor(ordem.status)}>{ordem.status}</span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', ordem.id)}
-                        onEdit={() => console.log('Edit', ordem.id)}
-                        onDelete={() => console.log('Delete', ordem.id)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

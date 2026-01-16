@@ -58,42 +58,40 @@ const SaidasPendentes = () => {
           resultsCount={filteredSaidas.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
-            <TableHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Data Lançamento</TableHead>
+              <TableHead className="text-center">Beneficiário</TableHead>
+              <TableHead className="text-center">Documento</TableHead>
+              <TableHead className="text-center">Valor Título</TableHead>
+              <TableHead className="text-center">Valor Total</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredSaidas.length === 0 ? (
               <TableRow>
-                <TableHead className="text-center">Data Lançamento</TableHead>
-                <TableHead className="text-center">Beneficiário</TableHead>
-                <TableHead className="text-center">Documento</TableHead>
-                <TableHead className="text-center">Valor Título</TableHead>
-                <TableHead className="text-center">Valor Total</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
+                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  Nenhuma saída encontrada.
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredSaidas.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Nenhuma saída encontrada.
+            ) : (
+              filteredSaidas.map((saida, index) => (
+                <TableRow key={index}>
+                  <TableCell className="text-center">{saida.dataLancamento}</TableCell>
+                  <TableCell className="text-center">{saida.beneficiario}</TableCell>
+                  <TableCell className="text-center">{saida.documento}</TableCell>
+                  <TableCell className="text-center">{saida.valorTitulo}</TableCell>
+                  <TableCell className="text-center">{saida.valorTotal}</TableCell>
+                  <TableCell className="text-center">
+                    <Button size="sm" className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredSaidas.map((saida, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="text-center">{saida.dataLancamento}</TableCell>
-                    <TableCell className="text-center">{saida.beneficiario}</TableCell>
-                    <TableCell className="text-center">{saida.documento}</TableCell>
-                    <TableCell className="text-center">{saida.valorTitulo}</TableCell>
-                    <TableCell className="text-center">{saida.valorTotal}</TableCell>
-                    <TableCell className="text-center">
-                      <Button size="sm" className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )
