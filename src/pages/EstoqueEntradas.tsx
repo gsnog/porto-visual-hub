@@ -6,6 +6,7 @@ import { FileText, Plus, Upload, ChevronDown } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { TableActions } from "@/components/TableActions"
 
 const mockEntradas = [
   { id: 1, data: "02/06/2025", item: "Parafuso M8", validade: "05/06/2025", notaFiscal: "123456", estoqueDestinado: "Almoxarifado SP", custoUnitario: "R$ 0,50", quantidade: 100, custoTotal: "R$ 50,00" },
@@ -138,8 +139,8 @@ export default function EstoqueEntradas() {
           resultsCount={filteredEntradas.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Data</TableHead>
@@ -172,7 +173,11 @@ export default function EstoqueEntradas() {
                     <TableCell className="text-center">{entrada.quantidade}</TableCell>
                     <TableCell className="text-center">{entrada.custoTotal}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="btn-action text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', entrada.id)}
+                        onEdit={() => console.log('Edit', entrada.id)}
+                        onDelete={() => console.log('Delete', entrada.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

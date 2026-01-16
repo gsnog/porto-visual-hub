@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { TableActions } from "@/components/TableActions"
 
 const mockInventario = [
   { id: 1, item: "Parafuso M8", quantidade: 250, unidade: "Almoxarifado SP" },
@@ -56,8 +56,8 @@ export default function EstoqueInventario() {
           resultsCount={filteredInventario.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Item</TableHead>
@@ -81,9 +81,11 @@ export default function EstoqueInventario() {
                     <TableCell className="text-center">{item.quantidade}</TableCell>
                     <TableCell className="text-center">{item.unidade}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                        Ações
-                      </Button>
+                      <TableActions 
+                        onView={() => console.log('View', item.id)}
+                        onEdit={() => console.log('Edit', item.id)}
+                        onDelete={() => console.log('Delete', item.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

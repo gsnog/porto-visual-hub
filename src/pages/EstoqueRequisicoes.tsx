@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { Plus, FileText } from "lucide-react"
+import { TableActions } from "@/components/TableActions"
 
 const mockRequisicoes = [
   { id: 1, data: "12/05/2025", item: "Cabo HDMI", quantidade: 1, requisitante: "Ana F.", setor: "TI", status: "Aprovada" },
@@ -90,8 +91,8 @@ export default function EstoqueRequisicoes() {
           resultsCount={filteredRequisicoes.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Data</TableHead>
@@ -122,7 +123,11 @@ export default function EstoqueRequisicoes() {
                       <span className={getStatusColor(req.status)}>{req.status}</span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', req.id)}
+                        onEdit={() => console.log('Edit', req.id)}
+                        onDelete={() => console.log('Delete', req.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

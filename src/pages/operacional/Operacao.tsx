@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
 import { Plus } from "lucide-react";
+import { TableActions } from "@/components/TableActions";
 
 const mockOperacoes = [
   { id: 1, dataEntrada: "02/06/2025", barco: "Marlin Azul", custoAproximado: "R$ 15.000,00", valorPago: "R$ 15.000,00", previsaoEntrega: "15/06/2025", dataEntrega: "15/06/2025" },
@@ -58,8 +59,8 @@ const Operacao = () => {
           resultsCount={filteredOperacoes.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Data de Entrada</TableHead>
@@ -88,7 +89,11 @@ const Operacao = () => {
                     <TableCell className="text-center">{op.previsaoEntrega}</TableCell>
                     <TableCell className="text-center">{op.dataEntrega}</TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">Ações</Button>
+                      <TableActions 
+                        onView={() => console.log('View', op.id)}
+                        onEdit={() => console.log('Edit', op.id)}
+                        onDelete={() => console.log('Delete', op.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

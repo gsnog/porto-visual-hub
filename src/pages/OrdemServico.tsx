@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
 import { Plus } from "lucide-react";
+import { TableActions } from "@/components/TableActions";
 
 const mockOrdens = [
   { id: 1, tipo: "Serviços Gerais", data: "19/12/2024", descricao: "Limpeza geral", responsavel: "João Silva", status: "Concluído" },
@@ -88,8 +89,8 @@ export default function OrdemServico() {
           resultsCount={filteredOrdens.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">ID</TableHead>
@@ -120,9 +121,11 @@ export default function OrdemServico() {
                       <span className={getStatusColor(ordem.status)}>{ordem.status}</span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                        Ações
-                      </Button>
+                      <TableActions 
+                        onView={() => console.log('View', ordem.id)}
+                        onEdit={() => console.log('Edit', ordem.id)}
+                        onDelete={() => console.log('Delete', ordem.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

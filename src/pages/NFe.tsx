@@ -4,6 +4,7 @@ import { Download, Eye, FileText, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { TableActions } from "@/components/TableActions"
 
 const NFe = () => {
   const navigate = useNavigate()
@@ -96,8 +97,8 @@ const NFe = () => {
           resultsCount={filteredNfes.length}
         />
 
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <Table className="table-professional">
+        <div className="rounded-lg overflow-hidden">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Data Emissão</TableHead>
@@ -121,16 +122,11 @@ const NFe = () => {
                     <span className={getStatusColor(nfe.status)}>{nfe.status}</span>
                   </TableCell>
                   <TableCell className="text-center">
-                    <div className="flex gap-1 justify-center">
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                        <Eye className="h-3 w-3 mr-1" />
-                        Ver
-                      </Button>
-                      <Button size="sm" className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs">
-                        <Download className="h-3 w-3 mr-1" />
-                        XML
-                      </Button>
-                    </div>
+                    <TableActions 
+                      onView={() => console.log('View', nfe.numero)}
+                      onEdit={() => console.log('Download XML', nfe.numero)}
+                      onDelete={() => console.log('Delete', nfe.numero)}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
