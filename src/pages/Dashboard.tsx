@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { PortfolioChart } from "@/components/PortfolioChart"
+import { SummaryCards } from "@/components/financeiro/SummaryCards"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
   ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3
@@ -396,21 +397,8 @@ const DashboardGeral = () => (
 // Dashboard Financeiro
 const DashboardFinanceiro = () => (
   <div className="space-y-6">
-    {/* Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      <MetricCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend="up" trendValue="+12.5%" />
-      <MetricCard title="Total de Entradas" value="R$ 328.000,00" icon={ArrowUpRight} color="success" />
-      <MetricCard title="Total de Saídas" value="R$ 240.000,00" icon={ArrowDownRight} color="destructive" />
-      <MetricCard title="Resultado do Período" value="R$ 88.000,00" icon={TrendingUp} trend="up" trendValue="+8.3%" color="success" />
-      <MetricCard title="Total Recebido" value="R$ 285.000,00" icon={DollarSign} color="success" />
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-      <MetricCard title="Total a Receber" value="R$ 57.000,00" icon={Receipt} />
-      <MetricCard title="Total Pago" value="R$ 210.000,00" icon={CreditCard} color="destructive" />
-      <MetricCard title="Total a Pagar" value="R$ 36.000,00" icon={CreditCard} color="warning" />
-      <MetricCard title="Títulos a Receber" value="R$ 43.000,00" icon={Receipt} />
-      <MetricCard title="Títulos a Pagar" value="R$ 28.000,00" icon={Receipt} color="warning" />
-    </div>
+    {/* Cards com gradiente */}
+    <SummaryCards />
 
     {/* Gráficos */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
