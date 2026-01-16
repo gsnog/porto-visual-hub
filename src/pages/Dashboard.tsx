@@ -96,6 +96,70 @@ const formatCurrency = (value: number) => {
 }
 
 // Components
+const GradientCard = ({ 
+  title, value, icon: Icon, trend, variant = "info" 
+}: { 
+  title: string
+  value: string
+  icon: any
+  trend?: { value: string; positive: boolean }
+  variant?: "success" | "danger" | "info" | "warning" | "neutral"
+}) => {
+  const variantStyles = {
+    success: {
+      bg: "from-emerald-500 to-emerald-600",
+      shadow: "shadow-emerald-500/25",
+    },
+    danger: {
+      bg: "from-rose-500 to-rose-600",
+      shadow: "shadow-rose-500/25",
+    },
+    info: {
+      bg: "from-primary to-orange-500",
+      shadow: "shadow-primary/25",
+    },
+    warning: {
+      bg: "from-amber-500 to-amber-600",
+      shadow: "shadow-amber-500/25",
+    },
+    neutral: {
+      bg: "from-slate-500 to-slate-600",
+      shadow: "shadow-slate-500/25",
+    },
+  }
+
+  const styles = variantStyles[variant]
+
+  return (
+    <div
+      className={`relative overflow-hidden rounded-xl bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
+    >
+      <div className="flex items-start justify-between">
+        <div className="rounded-lg bg-white/20 p-2.5 backdrop-blur-sm">
+          <Icon className="h-5 w-5" />
+        </div>
+        {trend && (
+          <div className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold">
+            {trend.positive ? (
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            ) : (
+              <ArrowDownRight className="h-3.5 w-3.5" />
+            )}
+            {trend.value}
+          </div>
+        )}
+      </div>
+      <div className="mt-4">
+        <p className="text-sm font-medium text-white/80">{title}</p>
+        <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
+      </div>
+      {/* Decorative element */}
+      <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
+      <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-white/10" />
+    </div>
+  )
+}
+
 const MetricCard = ({ 
   title, value, icon: Icon, trend, trendValue, color = "primary" 
 }: { 
@@ -175,10 +239,10 @@ const DashboardGeral = () => (
     <div>
       <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend="up" trendValue="+12.5% mês" />
-        <MetricCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend="up" trendValue="+8.3% mês" color="success" />
-        <MetricCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} color="success" />
-        <MetricCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} color="destructive" />
+        <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" />
+        <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" />
+        <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
+        <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
       </div>
     </div>
 
@@ -186,9 +250,9 @@ const DashboardGeral = () => (
     <div>
       <h3 className="text-sm font-medium text-muted-foreground mb-3">Estoque</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <MetricCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} />
-        <MetricCard title="Quantidade de Itens" value="3.485" icon={Package} />
-        <MetricCard title="Saídas no Período" value="R$ 45.000,00" icon={TrendingDown} trend="down" trendValue="-5.2% mês" color="warning" />
+        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" />
+        <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" />
+        <GradientCard title="Saídas no Período" value="R$ 45.000,00" icon={TrendingDown} trend={{ value: "-5,2%", positive: false }} variant="warning" />
       </div>
     </div>
 
@@ -196,8 +260,8 @@ const DashboardGeral = () => (
     <div>
       <h3 className="text-sm font-medium text-muted-foreground mb-3">Patrimônio</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <MetricCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend="up" trendValue="+3.2% mês" />
-        <MetricCard title="Itens Patrimoniais" value="156" icon={Building2} />
+        <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
+        <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" />
       </div>
     </div>
 
