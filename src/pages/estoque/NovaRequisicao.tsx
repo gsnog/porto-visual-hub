@@ -17,100 +17,83 @@ export default function NovaRequisicao() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Adicionar Requisição</h1>
+    <div className="space-y-6">
+      <div className="space-y-4 max-w-2xl">
+        <div className="form-row">
+          <label className="form-label">Setor</label>
+          <Select>
+            <SelectTrigger className="form-input w-40">
+              <SelectValue placeholder="---------" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover">
+              <SelectItem value="setor1">Setor 1</SelectItem>
+              <SelectItem value="setor2">Setor 2</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <div className="space-y-4 max-w-2xl">
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Setor</label>
-            <Select>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-40 border border-[#22265B]">
-                <SelectValue placeholder="---------" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                <SelectItem value="setor1">Setor 1</SelectItem>
-                <SelectItem value="setor2">Setor 2</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="form-row">
+          <label className="form-label">Projeto</label>
+          <Select>
+            <SelectTrigger className="form-input w-40">
+              <SelectValue placeholder="---------" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover">
+              <SelectItem value="projeto1">Projeto 1</SelectItem>
+              <SelectItem value="projeto2">Projeto 2</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Projeto</label>
-            <Select>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg w-40 border border-[#22265B]">
-                <SelectValue placeholder="---------" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                <SelectItem value="projeto1">Projeto 1</SelectItem>
-                <SelectItem value="projeto2">Projeto 2</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex items-start gap-4">
+          <label className="form-label pt-2">Observações</label>
+          <Textarea className="form-input w-80 min-h-[180px]" />
+        </div>
 
-          <div className="flex items-start gap-8">
-            <label className="text-foreground font-medium w-40 pt-2">Observações</label>
-            <Textarea className="bg-[#efefef] !text-[#22265B] px-3 rounded-lg border border-[#22265B] w-80 min-h-[180px]" />
-          </div>
+        <div className="form-row">
+          <label className="form-label">Item</label>
+          <Select>
+            <SelectTrigger className="form-input flex-1">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover">
+              <SelectItem value="item1">Item 1</SelectItem>
+              <SelectItem value="item2">Item 2</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Item</label>
-            <Select>
-              <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg flex-1 border border-[#22265B]">
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                <SelectItem value="item1">Item 1</SelectItem>
-                <SelectItem value="item2">Item 2</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="form-row">
+          <label className="form-label">Quantidade</label>
+          <Input type="number" className="form-input flex-1" />
+        </div>
 
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Quantidade</label>
-            <Input type="number" className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] flex-1" />
-          </div>
+        <div className="form-row">
+          <label className="w-40"></label>
+          <Button variant="outline" className="btn-outline">Adicionar Item</Button>
+        </div>
 
-          <div className="flex items-center gap-8">
-            <label className="w-40"></label>
-            <Button variant="outline" className="rounded-lg border-[#22265B] text-foreground">
-              Adicionar Item
-            </Button>
-          </div>
+        <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>
 
-          <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>
+        <div className="table-professional">
+          <Table>
+            <TableHeader>
+              <TableRow className="table-header">
+                <TableHead className="table-head">Item</TableHead>
+                <TableHead className="table-head">Quantidade</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="table-row">
+                <TableCell className="table-cell" colSpan={2}>Nenhum item adicionado</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
 
-          <div className="rounded-lg overflow-hidden border border-[#E3E3E3]">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                  <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow className="bg-white text-black">
-                  <TableCell className="text-center text-muted-foreground" colSpan={2}>Nenhum item adicionado</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <Button 
-              onClick={handleSalvar}
-              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
-            >
-              Salvar
-            </Button>
-            <Button 
-              onClick={handleCancelar}
-              variant="destructive"
-              className="rounded-lg px-6"
-            >
-              Cancelar
-            </Button>
-          </div>
+        <div className="flex gap-3 pt-4">
+          <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+          <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
         </div>
       </div>
     </div>
