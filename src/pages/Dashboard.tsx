@@ -2,11 +2,12 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { PortfolioChart } from "@/components/PortfolioChart"
 import { SummaryCards } from "@/components/financeiro/SummaryCards"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
-  ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3
+  ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter
 } from "lucide-react"
 import { 
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -14,6 +15,8 @@ import {
 } from "recharts"
 
 type DashboardType = "geral" | "financeiro" | "estoque" | "patrimonio"
+type PeriodoType = "1h" | "24h" | "7d" | "30d" | "90d" | "1y"
+type TipoType = "todos" | "financeiro" | "estoque" | "patrimonio"
 
 // Mock Data
 const evolutionData = [
@@ -233,40 +236,131 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 // Dashboard Geral
-const DashboardGeral = () => (
-  <div className="space-y-6">
-    {/* Cards - Financeiro */}
-    <div>
-      <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" />
-        <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" />
-        <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
-        <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
-      </div>
-    </div>
+const DashboardGeral = () => {
+  const [periodo, setPeriodo] = useState<PeriodoType>("30d")
+  const [setor, setSetor] = useState<string>("todos")
+  const [tipo, setTipo] = useState<TipoType>("todos")
 
-    {/* Cards - Estoque */}
-    <div>
-      <h3 className="text-sm font-medium text-muted-foreground mb-3">Estoque</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" />
-        <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" />
-        <GradientCard title="Saídas no Período" value="R$ 45.000,00" icon={TrendingDown} trend={{ value: "-5,2%", positive: false }} variant="warning" />
-      </div>
-    </div>
+  const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo", "Operacional"]
 
-    {/* Cards - Patrimônio */}
-    <div>
-      <h3 className="text-sm font-medium text-muted-foreground mb-3">Patrimônio</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
-        <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" />
-      </div>
-    </div>
+  // Simulated filtered data based on filters (in real app, this would filter actual data)
+  const periodoLabel = {
+    "1h": "Última hora",
+    "24h": "Últimas 24h",
+    "7d": "Últimos 7 dias",
+    "30d": "Últimos 30 dias",
+    "90d": "Últimos 90 dias",
+    "1y": "Último ano"
+  }
 
-    {/* Gráfico Principal - Balanço do Portfólio */}
-    <PortfolioChart />
+  return (
+    <div className="space-y-6">
+      {/* Filtros */}
+      <Card className="border border-border rounded-lg p-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
+          </div>
+          
+          {/* Período */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Período:</span>
+            <div className="flex gap-1">
+              {(["1h", "24h", "7d", "30d", "90d", "1y"] as PeriodoType[]).map((p) => (
+                <Button
+                  key={p}
+                  variant={periodo === p ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPeriodo(p)}
+                  className="h-8 px-3"
+                >
+                  {p}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Setor */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Setor:</span>
+            <Select value={setor} onValueChange={setSetor}>
+              <SelectTrigger className="w-[160px] h-8">
+                <SelectValue placeholder="Todos os setores" />
+              </SelectTrigger>
+              <SelectContent>
+                {setores.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s === "todos" ? "Todos os setores" : s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tipo */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Tipo:</span>
+            <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
+              <SelectTrigger className="w-[140px] h-8">
+                <SelectValue placeholder="Todos" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="financeiro">Financeiro</SelectItem>
+                <SelectItem value="estoque">Estoque</SelectItem>
+                <SelectItem value="patrimonio">Patrimônio</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Indicador de período ativo */}
+          <div className="ml-auto">
+            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+              Exibindo: {periodoLabel[periodo]}
+            </span>
+          </div>
+        </div>
+      </Card>
+
+      {/* Cards - Financeiro */}
+      {(tipo === "todos" || tipo === "financeiro") && (
+        <div>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" />
+            <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" />
+            <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
+            <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
+          </div>
+        </div>
+      )}
+
+      {/* Cards - Estoque */}
+      {(tipo === "todos" || tipo === "estoque") && (
+        <div>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Estoque</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" />
+            <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" />
+            <GradientCard title="Saídas no Período" value="R$ 45.000,00" icon={TrendingDown} trend={{ value: "-5,2%", positive: false }} variant="warning" />
+          </div>
+        </div>
+      )}
+
+      {/* Cards - Patrimônio */}
+      {(tipo === "todos" || tipo === "patrimonio") && (
+        <div>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Patrimônio</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
+            <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" />
+          </div>
+        </div>
+      )}
+
+      {/* Gráfico Principal - Balanço do Portfólio */}
+      {(tipo === "todos" || tipo === "financeiro") && <PortfolioChart />}
 
     {/* Gráficos */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -456,7 +550,8 @@ const DashboardGeral = () => (
       </CardContent>
     </Card>
   </div>
-)
+  )
+}
 
 // Dashboard Financeiro
 const DashboardFinanceiro = () => (
