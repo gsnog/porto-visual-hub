@@ -435,10 +435,10 @@ const DashboardGeral = () => {
         <div>
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" />
-            <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" />
             <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
             <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
+            <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" />
+            <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" />
           </div>
         </div>
       )}
@@ -448,9 +448,10 @@ const DashboardGeral = () => {
         <div>
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Estoque</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
+            <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" />
             <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" />
             <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" />
-            <GradientCard title="Saídas no Período" value="R$ 45.000,00" icon={TrendingDown} trend={{ value: "-5,2%", positive: false }} variant="warning" />
           </div>
         </div>
       )}
@@ -459,7 +460,8 @@ const DashboardGeral = () => {
       {(tipo === "todos" || tipo === "patrimonio") && (
         <div>
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Patrimônio</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" />
             <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
             <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" />
           </div>
@@ -1203,12 +1205,12 @@ const DashboardEstoque = () => {
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <GradientCard title="Itens em Estoque" value="3.485" icon={Package} variant="info" />
-        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} variant="success" />
         <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
+        <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-8%", positive: false }} variant="warning" />
+        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} variant="success" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-8%", positive: false }} variant="warning" />
+        <GradientCard title="Itens em Estoque" value="3.485" icon={Package} variant="info" />
         <GradientCard title="Requisições Pendentes" value="12" icon={Receipt} variant="warning" />
         <GradientCard title="Itens Críticos" value="5" icon={AlertTriangle} variant="danger" />
       </div>
@@ -1523,10 +1525,18 @@ const DashboardPatrimonio = () => {
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <GradientCard 
-          title="Total de Itens Patrimoniais" 
-          value="156" 
-          icon={Building2}
-          variant="info"
+          title="Valor Adquirido no Período" 
+          value="R$ 45.000,00" 
+          icon={ArrowUpRight}
+          variant="success"
+          trend={{ value: "+12%", positive: true }}
+        />
+        <GradientCard 
+          title="Baixas no Período" 
+          value="R$ 8.000,00" 
+          icon={ArrowDownRight}
+          variant="warning"
+          trend={{ value: "-2%", positive: false }}
         />
         <GradientCard 
           title="Valor Total do Patrimônio" 
@@ -1536,17 +1546,10 @@ const DashboardPatrimonio = () => {
           trend={{ value: "+5.2%", positive: true }}
         />
         <GradientCard 
-          title="Novos Bens no Período" 
-          value="8" 
-          icon={Package}
+          title="Total de Itens Patrimoniais" 
+          value="156" 
+          icon={Building2}
           variant="info"
-          trend={{ value: "+4", positive: true }}
-        />
-        <GradientCard 
-          title="Valor Adquirido no Período" 
-          value="R$ 45.000,00" 
-          icon={TrendingUp}
-          variant="success"
         />
         <GradientCard 
           title="Tipos de Patrimônio Ativos" 
