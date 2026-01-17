@@ -75,14 +75,8 @@ const SummaryCard = ({ title, value, icon: Icon, trend, variant }: SummaryCardPr
 };
 
 export const SummaryCards = () => {
+  // Primeira linha: Entrada → Saída → Saldo Acumulado → Saldo Total → Quantidade
   const summaryData: SummaryCardProps[] = [
-    {
-      title: "Saldo Atual em Caixa",
-      value: "R$ 87.939,88",
-      icon: Wallet,
-      trend: { value: "+12,5%", positive: true },
-      variant: "info",
-    },
     {
       title: "Total de Entradas",
       value: "R$ 328.000,00",
@@ -105,6 +99,13 @@ export const SummaryCards = () => {
       variant: "success",
     },
     {
+      title: "Saldo Atual em Caixa",
+      value: "R$ 87.939,88",
+      icon: Wallet,
+      trend: { value: "+12,5%", positive: true },
+      variant: "info",
+    },
+    {
       title: "Total Recebido",
       value: "R$ 285.000,00",
       icon: DollarSign,
@@ -112,6 +113,7 @@ export const SummaryCards = () => {
     },
   ];
 
+  // Segunda linha: Entrada → Saída → Saldo Acumulado → Saldo Total → Quantidade
   const secondaryData: SummaryCardProps[] = [
     {
       title: "Total a Receber",
@@ -120,16 +122,16 @@ export const SummaryCards = () => {
       variant: "info",
     },
     {
-      title: "Total Pago",
-      value: "R$ 210.000,00",
-      icon: CreditCard,
-      variant: "danger",
-    },
-    {
       title: "Total a Pagar",
       value: "R$ 36.000,00",
       icon: CreditCard,
       variant: "warning",
+    },
+    {
+      title: "Total Pago",
+      value: "R$ 210.000,00",
+      icon: CreditCard,
+      variant: "danger",
     },
     {
       title: "Títulos a Receber",
