@@ -3,16 +3,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
-import { Plus, FileText } from "lucide-react"
+import { Plus, FileText, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
-
-const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
-  <div className={`p-6 rounded shadow-md text-white ${colorClass}`}>
-    <h3 className="text-lg font-semibold mb-3">{title}</h3>
-    <div className="border-t border-white/30 mb-3"></div>
-    <p className="text-2xl font-bold">{value}</p>
-  </div>
-);
+import { GradientCard } from "@/components/financeiro/GradientCard"
 
 const mockTransacoes = [
   { id: 1, dataVencimento: "02/06/2025", dataPagamento: "02/06/2025", beneficiario: "Fornecedor Alpha", tipo: "Saída", status: "Pendente", valorTotal: "R$ 10.000,00", saldo: "R$ 87.939,88" },
@@ -57,9 +50,9 @@ const FluxoCaixa = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <SummaryCard title="Total de Entradas" value="R$ 94.439,88" colorClass="bg-green-500" />
-          <SummaryCard title="Total de Saídas" value="R$ 12.500,00" colorClass="bg-red-500" />
-          <SummaryCard title="Saldo Atual" value="R$ 81.939,88" colorClass="bg-blue-500" />
+          <GradientCard title="Total de Entradas" value="R$ 94.439,88" icon={ArrowUpRight} variant="success" />
+          <GradientCard title="Total de Saídas" value="R$ 12.500,00" icon={ArrowDownRight} variant="danger" />
+          <GradientCard title="Saldo Atual" value="R$ 81.939,88" icon={Wallet} variant="orange" />
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
