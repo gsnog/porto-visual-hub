@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
+import SimpleFormWizard from "@/components/SimpleFormWizard";
 
 const NovaOperacao = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const NovaOperacao = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <SimpleFormWizard currentStep="Dados" steps={["Dados"]}>
       <div className="space-y-4 max-w-3xl">
         <div className="form-row">
           <label className="form-label">Data de Entrada</label>
@@ -131,7 +132,7 @@ const NovaOperacao = () => {
           <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
         </div>
       </div>
-    </div>
+    </SimpleFormWizard>
   );
 };
 

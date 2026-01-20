@@ -1,12 +1,15 @@
 import { Check, CheckCircle2 } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 interface SimpleFormWizardProps {
-  title: string
+  currentStep?: string
+  steps?: string[]
+  title?: string
   children: React.ReactNode
 }
 
-export function SimpleFormWizard({ title, children }: SimpleFormWizardProps) {
+export function SimpleFormWizard({ currentStep, steps, title, children }: SimpleFormWizardProps) {
+  const displayTitle = currentStep || title || "Dados"
+  
   return (
     <div className="flex flex-col h-full bg-background items-center">
       <div className="max-w-5xl w-full">
@@ -20,7 +23,7 @@ export function SimpleFormWizard({ title, children }: SimpleFormWizardProps) {
                   <Check className="h-5 w-5" />
                 </div>
                 <span className="text-xs font-medium transition-colors text-primary hidden md:block">
-                  {title}
+                  {displayTitle}
                 </span>
               </button>
               <div className="flex-1 h-1 mx-2 rounded-full transition-colors duration-300 bg-muted" />
@@ -46,3 +49,5 @@ export function SimpleFormWizard({ title, children }: SimpleFormWizardProps) {
     </div>
   )
 }
+
+export default SimpleFormWizard

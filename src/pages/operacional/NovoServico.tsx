@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
+import SimpleFormWizard from "@/components/SimpleFormWizard";
 
 const NovoServico = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const NovoServico = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <SimpleFormWizard currentStep="Dados" steps={["Dados"]}>
       <div className="space-y-4 max-w-2xl">
         <div className="form-row">
           <label className="form-label">Nome</label>
@@ -46,7 +47,7 @@ const NovoServico = () => {
           <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
         </div>
       </div>
-    </div>
+    </SimpleFormWizard>
   );
 };
 

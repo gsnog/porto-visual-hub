@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import SimpleFormWizard from "@/components/SimpleFormWizard";
 
 const NovaTransferencia = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const NovaTransferencia = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <SimpleFormWizard currentStep="Dados" steps={["Dados"]}>
       <div className="space-y-4 max-w-xl">
         <div className="form-row">
           <label className="form-label">Conta Origem</label>
@@ -70,7 +71,7 @@ const NovaTransferencia = () => {
           <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
         </div>
       </div>
-    </div>
+    </SimpleFormWizard>
   );
 };
 
