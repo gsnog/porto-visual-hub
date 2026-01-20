@@ -15,9 +15,21 @@ import {
   Heart,
   Check,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  AlertCircle
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toast } from "@/hooks/use-toast"
+import { estadosBrasil, cidadesPorEstado, opcoesSelecao } from "@/data/brasil-localidades"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 const steps = [
   { id: 1, title: "Dados Pessoais", icon: User },
@@ -28,12 +40,181 @@ const steps = [
   { id: 6, title: "Diversidade", icon: Heart },
 ]
 
+// Campos obrigatórios por etapa
+const requiredFieldsByStep: Record<number, string[]> = {
+  1: ["nomeCompleto", "dataNascimento"],
+  2: ["celular", "emailPessoal"],
+  3: ["cep", "endereco", "bairro", "cidade", "estado"],
+  4: ["banco", "tipoConta", "agencia", "conta"],
+  5: ["cpf", "rg"],
+  6: [], // Etapa 6 não tem campos obrigatórios
+}
+
+// Labels amigáveis para os campos
+const fieldLabels: Record<string, string> = {
+  nomeCompleto: "Nome Completo",
+  dataNascimento: "Data de Nascimento",
+  celular: "Celular",
+  emailPessoal: "E-mail Pessoal",
+  cep: "CEP",
+  endereco: "Endereço",
+  bairro: "Bairro",
+  cidade: "Cidade",
+  estado: "Estado",
+  banco: "Banco",
+  tipoConta: "Tipo da Conta",
+  agencia: "Agência",
+  conta: "Conta",
+  cpf: "CPF",
+  rg: "RG",
+}
+
+interface FormData {
+  // Step 1
+  nomeCompleto: string;
+  dataNascimento: string;
+  nomePai: string;
+  nomeMae: string;
+  sexo: string;
+  estadoCivil: string;
+  nacionalidade: string;
+  racaCor: string;
+  grauInstrucao: string;
+  // Step 2
+  celular: string;
+  telefoneFixo: string;
+  emailPessoal: string;
+  emailCorporativo: string;
+  contatoEmergenciaNome: string;
+  contatoEmergenciaTelefone: string;
+  // Step 3
+  cep: string;
+  endereco: string;
+  numero: string;
+  complemento: string;
+  bairro: string;
+  cidade: string;
+  estado: string;
+  // Step 4
+  banco: string;
+  tipoConta: string;
+  agencia: string;
+  conta: string;
+  digito: string;
+  chavePix: string;
+  // Step 5
+  cpf: string;
+  rg: string;
+  orgaoExpedidor: string;
+  ufRg: string;
+  dataExpedicaoRg: string;
+  ctps: string;
+  ctpsSerie: string;
+  ctpsUf: string;
+  ctpsDataExpedicao: string;
+  pisPasep: string;
+  cnh: string;
+  cnhCategoria: string;
+  cnhValidade: string;
+  tituloEleitor: string;
+  tituloZona: string;
+  tituloSecao: string;
+  // Step 6
+  lgbtqia: string;
+  neurodivergente: string;
+  pcd: string;
+  filhos: string;
+  aposentado: string;
+}
+
+const initialFormData: FormData = {
+  nomeCompleto: "",
+  dataNascimento: "",
+  nomePai: "",
+  nomeMae: "",
+  sexo: "",
+  estadoCivil: "",
+  nacionalidade: "",
+  racaCor: "",
+  grauInstrucao: "",
+  celular: "",
+  telefoneFixo: "",
+  emailPessoal: "",
+  emailCorporativo: "",
+  contatoEmergenciaNome: "",
+  contatoEmergenciaTelefone: "",
+  cep: "",
+  endereco: "",
+  numero: "",
+  complemento: "",
+  bairro: "",
+  cidade: "",
+  estado: "",
+  banco: "",
+  tipoConta: "",
+  agencia: "",
+  conta: "",
+  digito: "",
+  chavePix: "",
+  cpf: "",
+  rg: "",
+  orgaoExpedidor: "",
+  ufRg: "",
+  dataExpedicaoRg: "",
+  ctps: "",
+  ctpsSerie: "",
+  ctpsUf: "",
+  ctpsDataExpedicao: "",
+  pisPasep: "",
+  cnh: "",
+  cnhCategoria: "",
+  cnhValidade: "",
+  tituloEleitor: "",
+  tituloZona: "",
+  tituloSecao: "",
+  lgbtqia: "nao",
+  neurodivergente: "nao",
+  pcd: "nao",
+  filhos: "nao",
+  aposentado: "nao",
+}
+
 export default function Cadastro() {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
+  const [formData, setFormData] = useState<FormData>(initialFormData)
+  const [showValidationDialog, setShowValidationDialog] = useState(false)
+  const [missingFields, setMissingFields] = useState<string[]>([])
+
+  const updateField = (field: keyof FormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  // Filtra cidades baseado no estado selecionado
+  const cidadesDisponiveis = formData.estado 
+    ? cidadesPorEstado[formData.estado] || [] 
+    : []
+
+  const validateStep = (step: number): boolean => {
+    const required = requiredFieldsByStep[step] || []
+    const missing = required.filter(field => !formData[field as keyof FormData])
+    
+    if (missing.length > 0) {
+      setMissingFields(missing.map(f => fieldLabels[f] || f))
+      setShowValidationDialog(true)
+      return false
+    }
+    return true
+  }
 
   const handleSalvar = () => {
-    navigate("/")
+    if (validateStep(currentStep)) {
+      toast({
+        title: "Cadastro salvo com sucesso!",
+        description: "O usuário foi cadastrado no sistema.",
+      })
+      navigate("/")
+    }
   }
 
   const handleCancelar = () => {
@@ -41,8 +222,10 @@ export default function Cadastro() {
   }
 
   const nextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1)
+    if (validateStep(currentStep)) {
+      if (currentStep < steps.length) {
+        setCurrentStep(currentStep + 1)
+      }
     }
   }
 
@@ -53,7 +236,15 @@ export default function Cadastro() {
   }
 
   const goToStep = (step: number) => {
-    setCurrentStep(step)
+    // Só permite ir para etapas anteriores ou a atual sem validação
+    if (step <= currentStep) {
+      setCurrentStep(step)
+    } else {
+      // Para ir para frente, precisa validar a etapa atual
+      if (validateStep(currentStep)) {
+        setCurrentStep(step)
+      }
+    }
   }
 
   return (
@@ -132,61 +323,82 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nome Completo <span className="text-destructive">*</span></Label>
-                    <Input placeholder="Nome igual ao RG" className="form-input" />
+                    <Input 
+                      placeholder="Nome igual ao RG" 
+                      className="form-input" 
+                      value={formData.nomeCompleto}
+                      onChange={(e) => updateField("nomeCompleto", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Nascimento <span className="text-destructive">*</span></Label>
-                    <Input type="date" className="form-input" />
+                    <Input 
+                      type="date" 
+                      className="form-input" 
+                      value={formData.dataNascimento}
+                      onChange={(e) => updateField("dataNascimento", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nome do Pai</Label>
-                    <Input placeholder="Nome completo" className="form-input" />
+                    <Input 
+                      placeholder="Nome completo" 
+                      className="form-input"
+                      value={formData.nomePai}
+                      onChange={(e) => updateField("nomePai", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nome da Mãe</Label>
-                    <Input placeholder="Nome completo" className="form-input" />
+                    <Input 
+                      placeholder="Nome completo" 
+                      className="form-input"
+                      value={formData.nomeMae}
+                      onChange={(e) => updateField("nomeMae", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Sexo</Label>
-                    <Select>
+                    <Select value={formData.sexo} onValueChange={(v) => updateField("sexo", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover">
-                        <SelectItem value="masculino">Masculino</SelectItem>
-                        <SelectItem value="feminino">Feminino</SelectItem>
+                        {opcoesSelecao.sexo.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Estado Civil</Label>
-                    <Select>
+                    <Select value={formData.estadoCivil} onValueChange={(v) => updateField("estadoCivil", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover">
-                        <SelectItem value="solteiro">Solteiro(a)</SelectItem>
-                        <SelectItem value="casado">Casado(a)</SelectItem>
-                        <SelectItem value="divorciado">Divorciado(a)</SelectItem>
-                        <SelectItem value="viuvo">Viúvo(a)</SelectItem>
+                        {opcoesSelecao.estadoCivil.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nacionalidade</Label>
-                    <Select>
+                    <Select value={formData.nacionalidade} onValueChange={(v) => updateField("nacionalidade", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover">
-                        <SelectItem value="brasileira">Brasileira</SelectItem>
-                        <SelectItem value="estrangeira">Estrangeira</SelectItem>
+                        {opcoesSelecao.nacionalidade.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -195,30 +407,27 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Raça/Cor</Label>
-                    <Select>
+                    <Select value={formData.racaCor} onValueChange={(v) => updateField("racaCor", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover">
-                        <SelectItem value="branca">Branca</SelectItem>
-                        <SelectItem value="preta">Preta</SelectItem>
-                        <SelectItem value="parda">Parda</SelectItem>
-                        <SelectItem value="amarela">Amarela</SelectItem>
-                        <SelectItem value="indigena">Indígena</SelectItem>
+                        {opcoesSelecao.racaCor.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Grau de Instrução</Label>
-                    <Select>
+                    <Select value={formData.grauInstrucao} onValueChange={(v) => updateField("grauInstrucao", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar" />
                       </SelectTrigger>
                       <SelectContent className="bg-popover">
-                        <SelectItem value="fundamental">Ensino Fundamental</SelectItem>
-                        <SelectItem value="medio">Ensino Médio</SelectItem>
-                        <SelectItem value="superior">Ensino Superior</SelectItem>
-                        <SelectItem value="pos">Pós-graduação</SelectItem>
+                        {opcoesSelecao.grauInstrucao.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -242,31 +451,63 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Celular <span className="text-destructive">*</span></Label>
-                    <Input placeholder="(00) 00000-0000" className="form-input" />
+                    <Input 
+                      placeholder="(00) 00000-0000" 
+                      className="form-input"
+                      value={formData.celular}
+                      onChange={(e) => updateField("celular", e.target.value)}
+                    />
                     <p className="text-xs text-muted-foreground">Número principal para contato</p>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Telefone Fixo</Label>
-                    <Input placeholder="(00) 0000-0000" className="form-input" />
+                    <Input 
+                      placeholder="(00) 0000-0000" 
+                      className="form-input"
+                      value={formData.telefoneFixo}
+                      onChange={(e) => updateField("telefoneFixo", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">E-mail Pessoal <span className="text-destructive">*</span></Label>
-                    <Input type="email" placeholder="email@exemplo.com" className="form-input" />
+                    <Input 
+                      type="email" 
+                      placeholder="email@exemplo.com" 
+                      className="form-input"
+                      value={formData.emailPessoal}
+                      onChange={(e) => updateField("emailPessoal", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">E-mail Corporativo</Label>
-                    <Input type="email" placeholder="email@empresa.com" className="form-input" />
+                    <Input 
+                      type="email" 
+                      placeholder="email@empresa.com" 
+                      className="form-input"
+                      value={formData.emailCorporativo}
+                      onChange={(e) => updateField("emailCorporativo", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Contato de Emergência</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input placeholder="Nome do contato" className="form-input" />
-                    <Input placeholder="(00) 00000-0000" className="form-input" />
+                    <Input 
+                      placeholder="Nome do contato" 
+                      className="form-input"
+                      value={formData.contatoEmergenciaNome}
+                      onChange={(e) => updateField("contatoEmergenciaNome", e.target.value)}
+                    />
+                    <Input 
+                      placeholder="(00) 00000-0000" 
+                      className="form-input"
+                      value={formData.contatoEmergenciaTelefone}
+                      onChange={(e) => updateField("contatoEmergenciaTelefone", e.target.value)}
+                    />
                   </div>
                   <p className="text-xs text-muted-foreground">Pessoa para contato em caso de emergência</p>
                 </div>
@@ -289,53 +530,90 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">CEP <span className="text-destructive">*</span></Label>
-                    <Input placeholder="00000-000" className="form-input" />
+                    <Input 
+                      placeholder="00000-000" 
+                      className="form-input"
+                      value={formData.cep}
+                      onChange={(e) => updateField("cep", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label className="text-sm font-medium">Endereço <span className="text-destructive">*</span></Label>
-                    <Input placeholder="Rua, Avenida..." className="form-input" />
+                    <Input 
+                      placeholder="Rua, Avenida..." 
+                      className="form-input"
+                      value={formData.endereco}
+                      onChange={(e) => updateField("endereco", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Número</Label>
-                    <Input placeholder="Nº" className="form-input" />
+                    <Input 
+                      placeholder="Nº" 
+                      className="form-input"
+                      value={formData.numero}
+                      onChange={(e) => updateField("numero", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2 md:col-span-3">
                     <Label className="text-sm font-medium">Complemento</Label>
-                    <Input placeholder="Apto, Bloco, Sala..." className="form-input" />
+                    <Input 
+                      placeholder="Apto, Bloco, Sala..." 
+                      className="form-input"
+                      value={formData.complemento}
+                      onChange={(e) => updateField("complemento", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Bairro <span className="text-destructive">*</span></Label>
-                    <Input placeholder="Bairro" className="form-input" />
+                    <Input 
+                      placeholder="Bairro" 
+                      className="form-input"
+                      value={formData.bairro}
+                      onChange={(e) => updateField("bairro", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Cidade <span className="text-destructive">*</span></Label>
-                    <Select>
+                    <Label className="text-sm font-medium">Estado <span className="text-destructive">*</span></Label>
+                    <Select 
+                      value={formData.estado} 
+                      onValueChange={(v) => {
+                        updateField("estado", v)
+                        updateField("cidade", "") // Limpa cidade ao trocar estado
+                      }}
+                    >
                       <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
+                        <SelectValue placeholder="Selecionar UF" />
                       </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="sao-paulo">São Paulo</SelectItem>
-                        <SelectItem value="rio-janeiro">Rio de Janeiro</SelectItem>
-                        <SelectItem value="belo-horizonte">Belo Horizonte</SelectItem>
+                      <SelectContent className="bg-popover max-h-60">
+                        {estadosBrasil.map(uf => (
+                          <SelectItem key={uf.sigla} value={uf.sigla}>
+                            {uf.sigla} - {uf.nome}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Estado <span className="text-destructive">*</span></Label>
-                    <Select>
+                    <Label className="text-sm font-medium">Cidade <span className="text-destructive">*</span></Label>
+                    <Select 
+                      value={formData.cidade} 
+                      onValueChange={(v) => updateField("cidade", v)}
+                      disabled={!formData.estado}
+                    >
                       <SelectTrigger className="form-input">
-                        <SelectValue placeholder="UF" />
+                        <SelectValue placeholder={formData.estado ? "Selecionar cidade" : "Selecione o estado primeiro"} />
                       </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="sp">São Paulo</SelectItem>
-                        <SelectItem value="rj">Rio de Janeiro</SelectItem>
-                        <SelectItem value="mg">Minas Gerais</SelectItem>
+                      <SelectContent className="bg-popover max-h-60">
+                        {cidadesDisponiveis.map(cidade => (
+                          <SelectItem key={cidade} value={cidade}>{cidade}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -359,7 +637,7 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Banco <span className="text-destructive">*</span></Label>
-                    <Select>
+                    <Select value={formData.banco} onValueChange={(v) => updateField("banco", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar banco" />
                       </SelectTrigger>
@@ -370,12 +648,16 @@ export default function Cadastro() {
                         <SelectItem value="341">341 - Itaú</SelectItem>
                         <SelectItem value="033">033 - Santander</SelectItem>
                         <SelectItem value="260">260 - Nubank</SelectItem>
+                        <SelectItem value="077">077 - Inter</SelectItem>
+                        <SelectItem value="212">212 - Banco Original</SelectItem>
+                        <SelectItem value="336">336 - C6 Bank</SelectItem>
+                        <SelectItem value="380">380 - PicPay</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Tipo da Conta <span className="text-destructive">*</span></Label>
-                    <Select>
+                    <Select value={formData.tipoConta} onValueChange={(v) => updateField("tipoConta", v)}>
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar" />
                       </SelectTrigger>
@@ -391,21 +673,41 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Agência <span className="text-destructive">*</span></Label>
-                    <Input placeholder="0000" className="form-input" />
+                    <Input 
+                      placeholder="0000" 
+                      className="form-input"
+                      value={formData.agencia}
+                      onChange={(e) => updateField("agencia", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Conta <span className="text-destructive">*</span></Label>
-                    <Input placeholder="00000-0" className="form-input" />
+                    <Input 
+                      placeholder="00000-0" 
+                      className="form-input"
+                      value={formData.conta}
+                      onChange={(e) => updateField("conta", e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Dígito</Label>
-                    <Input placeholder="0" className="form-input" />
+                    <Input 
+                      placeholder="0" 
+                      className="form-input"
+                      value={formData.digito}
+                      onChange={(e) => updateField("digito", e.target.value)}
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Chave PIX</Label>
-                  <Input placeholder="CPF, E-mail, Telefone ou Chave aleatória" className="form-input" />
+                  <Input 
+                    placeholder="CPF, E-mail, Telefone ou Chave aleatória" 
+                    className="form-input"
+                    value={formData.chavePix}
+                    onChange={(e) => updateField("chavePix", e.target.value)}
+                  />
                   <p className="text-xs text-muted-foreground">Opcional - para pagamentos via PIX</p>
                 </div>
 
@@ -436,34 +738,54 @@ export default function Cadastro() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">CPF <span className="text-destructive">*</span></Label>
-                      <Input placeholder="000.000.000-00" className="form-input" />
+                      <Input 
+                        placeholder="000.000.000-00" 
+                        className="form-input"
+                        value={formData.cpf}
+                        onChange={(e) => updateField("cpf", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">RG <span className="text-destructive">*</span></Label>
-                      <Input placeholder="00.000.000-0" className="form-input" />
+                      <Input 
+                        placeholder="00.000.000-0" 
+                        className="form-input"
+                        value={formData.rg}
+                        onChange={(e) => updateField("rg", e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Órgão Expedidor</Label>
-                      <Input placeholder="SSP" className="form-input" />
+                      <Input 
+                        placeholder="SSP" 
+                        className="form-input"
+                        value={formData.orgaoExpedidor}
+                        onChange={(e) => updateField("orgaoExpedidor", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">UF</Label>
-                      <Select>
+                      <Select value={formData.ufRg} onValueChange={(v) => updateField("ufRg", v)}>
                         <SelectTrigger className="form-input">
                           <SelectValue placeholder="UF" />
                         </SelectTrigger>
-                        <SelectContent className="bg-popover">
-                          <SelectItem value="sp">SP</SelectItem>
-                          <SelectItem value="rj">RJ</SelectItem>
-                          <SelectItem value="mg">MG</SelectItem>
+                        <SelectContent className="bg-popover max-h-60">
+                          {estadosBrasil.map(uf => (
+                            <SelectItem key={uf.sigla} value={uf.sigla}>{uf.sigla}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Data Expedição</Label>
-                      <Input type="date" className="form-input" />
+                      <Input 
+                        type="date" 
+                        className="form-input"
+                        value={formData.dataExpedicaoRg}
+                        onChange={(e) => updateField("dataExpedicaoRg", e.target.value)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -474,33 +796,53 @@ export default function Cadastro() {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">CTPS</Label>
-                      <Input placeholder="Número" className="form-input" />
+                      <Input 
+                        placeholder="Número" 
+                        className="form-input"
+                        value={formData.ctps}
+                        onChange={(e) => updateField("ctps", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Série</Label>
-                      <Input placeholder="Série" className="form-input" />
+                      <Input 
+                        placeholder="Série" 
+                        className="form-input"
+                        value={formData.ctpsSerie}
+                        onChange={(e) => updateField("ctpsSerie", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">UF</Label>
-                      <Select>
+                      <Select value={formData.ctpsUf} onValueChange={(v) => updateField("ctpsUf", v)}>
                         <SelectTrigger className="form-input">
                           <SelectValue placeholder="UF" />
                         </SelectTrigger>
-                        <SelectContent className="bg-popover">
-                          <SelectItem value="sp">SP</SelectItem>
-                          <SelectItem value="rj">RJ</SelectItem>
-                          <SelectItem value="mg">MG</SelectItem>
+                        <SelectContent className="bg-popover max-h-60">
+                          {estadosBrasil.map(uf => (
+                            <SelectItem key={uf.sigla} value={uf.sigla}>{uf.sigla}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Data Expedição</Label>
-                      <Input type="date" className="form-input" />
+                      <Input 
+                        type="date" 
+                        className="form-input"
+                        value={formData.ctpsDataExpedicao}
+                        onChange={(e) => updateField("ctpsDataExpedicao", e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">PIS/PASEP</Label>
-                    <Input placeholder="000.00000.00-0" className="form-input max-w-xs" />
+                    <Input 
+                      placeholder="000.00000.00-0" 
+                      className="form-input max-w-xs"
+                      value={formData.pisPasep}
+                      onChange={(e) => updateField("pisPasep", e.target.value)}
+                    />
                   </div>
                 </div>
 
@@ -510,11 +852,16 @@ export default function Cadastro() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">CNH</Label>
-                      <Input placeholder="Número" className="form-input" />
+                      <Input 
+                        placeholder="Número" 
+                        className="form-input"
+                        value={formData.cnh}
+                        onChange={(e) => updateField("cnh", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Categoria</Label>
-                      <Select>
+                      <Select value={formData.cnhCategoria} onValueChange={(v) => updateField("cnhCategoria", v)}>
                         <SelectTrigger className="form-input">
                           <SelectValue placeholder="Cat." />
                         </SelectTrigger>
@@ -530,21 +877,41 @@ export default function Cadastro() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Validade</Label>
-                      <Input type="date" className="form-input" />
+                      <Input 
+                        type="date" 
+                        className="form-input"
+                        value={formData.cnhValidade}
+                        onChange={(e) => updateField("cnhValidade", e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Título de Eleitor</Label>
-                      <Input placeholder="Número" className="form-input" />
+                      <Input 
+                        placeholder="Número" 
+                        className="form-input"
+                        value={formData.tituloEleitor}
+                        onChange={(e) => updateField("tituloEleitor", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Zona</Label>
-                      <Input placeholder="Zona" className="form-input" />
+                      <Input 
+                        placeholder="Zona" 
+                        className="form-input"
+                        value={formData.tituloZona}
+                        onChange={(e) => updateField("tituloZona", e.target.value)}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Seção</Label>
-                      <Input placeholder="Seção" className="form-input" />
+                      <Input 
+                        placeholder="Seção" 
+                        className="form-input"
+                        value={formData.tituloSecao}
+                        onChange={(e) => updateField("tituloSecao", e.target.value)}
+                      />
                     </div>
                   </div>
                 </div>
@@ -576,7 +943,11 @@ export default function Cadastro() {
                       <Label className="text-sm font-medium">Você pertence à comunidade LGBTQIA+?</Label>
                       <p className="text-xs text-muted-foreground mt-1">Informação opcional</p>
                     </div>
-                    <RadioGroup defaultValue="nao" className="flex gap-4">
+                    <RadioGroup 
+                      value={formData.lgbtqia} 
+                      onValueChange={(v) => updateField("lgbtqia", v)} 
+                      className="flex gap-4"
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="sim" id="lgbtqia-sim" />
                         <Label htmlFor="lgbtqia-sim" className="text-sm">Sim</Label>
@@ -597,7 +968,11 @@ export default function Cadastro() {
                       <Label className="text-sm font-medium">Você é uma pessoa neurodivergente?</Label>
                       <p className="text-xs text-muted-foreground mt-1">TEA, TDAH, Dislexia, etc.</p>
                     </div>
-                    <RadioGroup defaultValue="nao" className="flex gap-4">
+                    <RadioGroup 
+                      value={formData.neurodivergente} 
+                      onValueChange={(v) => updateField("neurodivergente", v)} 
+                      className="flex gap-4"
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="sim" id="neuro-sim" />
                         <Label htmlFor="neuro-sim" className="text-sm">Sim</Label>
@@ -618,7 +993,11 @@ export default function Cadastro() {
                       <Label className="text-sm font-medium">Você é uma pessoa com deficiência?</Label>
                       <p className="text-xs text-muted-foreground mt-1">PCD - Pessoa com Deficiência</p>
                     </div>
-                    <RadioGroup defaultValue="nao" className="flex gap-4">
+                    <RadioGroup 
+                      value={formData.pcd} 
+                      onValueChange={(v) => updateField("pcd", v)} 
+                      className="flex gap-4"
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="sim" id="pcd-sim" />
                         <Label htmlFor="pcd-sim" className="text-sm">Sim</Label>
@@ -638,7 +1017,11 @@ export default function Cadastro() {
                     <div>
                       <Label className="text-sm font-medium">Você tem filho(s)?</Label>
                     </div>
-                    <RadioGroup defaultValue="nao" className="flex gap-4">
+                    <RadioGroup 
+                      value={formData.filhos} 
+                      onValueChange={(v) => updateField("filhos", v)} 
+                      className="flex gap-4"
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="sim" id="filhos-sim" />
                         <Label htmlFor="filhos-sim" className="text-sm">Sim</Label>
@@ -650,11 +1033,15 @@ export default function Cadastro() {
                     </RadioGroup>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border">
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded border border-border">
                     <div>
                       <Label className="text-sm font-medium">Você é aposentado(a)?</Label>
                     </div>
-                    <RadioGroup defaultValue="nao" className="flex gap-4">
+                    <RadioGroup 
+                      value={formData.aposentado} 
+                      onValueChange={(v) => updateField("aposentado", v)} 
+                      className="flex gap-4"
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="sim" id="aposentado-sim" />
                         <Label htmlFor="aposentado-sim" className="text-sm">Sim</Label>
@@ -720,6 +1107,33 @@ export default function Cadastro() {
           Etapa {currentStep} de {steps.length}
         </div>
       </div>
+
+      {/* Validation Dialog */}
+      <AlertDialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+        <AlertDialogContent className="bg-background">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-5 w-5" />
+              Campos obrigatórios
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-3">
+                <p>Por favor, preencha os seguintes campos para continuar:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  {missingFields.map((field, idx) => (
+                    <li key={idx} className="text-destructive font-medium">{field}</li>
+                  ))}
+                </ul>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction className="btn-action">
+              Entendi
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
