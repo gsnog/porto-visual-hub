@@ -3,16 +3,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
-import { Plus, FileText } from "lucide-react"
+import { Plus, FileText, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
-
-const SummaryCard = ({ title, value, colorClass }: { title: string; value: string; colorClass: string }) => (
-  <div className={`p-6 rounded shadow-md text-white ${colorClass}`}>
-    <h3 className="text-lg font-semibold mb-3">{title}</h3>
-    <div className="border-t border-white/30 mb-3"></div>
-    <p className="text-2xl font-bold">{value}</p>
-  </div>
-);
+import { GradientCard } from "@/components/financeiro/GradientCard"
 
 const mockContas = [
   { id: 1, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Efetuado" },
@@ -57,9 +50,9 @@ const ContasReceber = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <SummaryCard title="Total Recebido" value="R$ 87.939,88" colorClass="bg-green-500" />
-          <SummaryCard title="Total a Receber" value="R$ 12.345,00" colorClass="bg-red-500" />
-          <SummaryCard title="Valor Total em Títulos" value="R$ 100.284,88" colorClass="bg-primary" />
+          <GradientCard title="Total Recebido" value="R$ 87.939,88" icon={ArrowUpRight} variant="success" />
+          <GradientCard title="Total a Receber" value="R$ 12.345,00" icon={ArrowDownRight} variant="danger" />
+          <GradientCard title="Valor Total em Títulos" value="R$ 100.284,88" icon={Wallet} variant="info" />
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
