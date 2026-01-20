@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import SimpleFormWizard from "@/components/SimpleFormWizard";
 
 const NovoSetor = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const NovoSetor = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <SimpleFormWizard currentStep="Dados" steps={["Dados"]}>
       <div className="space-y-4 max-w-2xl">
         <div className="form-row">
           <label className="form-label">Nome</label>
@@ -29,7 +30,7 @@ const NovoSetor = () => {
           <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
         </div>
       </div>
-    </div>
+    </SimpleFormWizard>
   );
 };
 

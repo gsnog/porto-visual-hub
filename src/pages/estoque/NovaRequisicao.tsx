@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useNavigate } from "react-router-dom"
+import SimpleFormWizard from "@/components/SimpleFormWizard"
 
 export default function NovaRequisicao() {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ export default function NovaRequisicao() {
   }
 
   return (
-    <div className="space-y-6">
+    <SimpleFormWizard currentStep="Dados" steps={["Dados"]}>
       <div className="space-y-4 max-w-2xl">
         <div className="form-row">
           <label className="form-label">Setor</label>
@@ -94,6 +95,6 @@ export default function NovaRequisicao() {
           <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
         </div>
       </div>
-    </div>
+    </SimpleFormWizard>
   )
 }
