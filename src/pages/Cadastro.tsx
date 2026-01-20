@@ -21,7 +21,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
-import { estadosBrasil, cidadesPorEstado, opcoesSelecao } from "@/data/brasil-localidades"
+import { estadosBrasil, opcoesSelecao } from "@/data/brasil-localidades"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -250,10 +250,6 @@ export default function Cadastro() {
     }
   }, [])
 
-  // Filtra cidades baseado no estado selecionado
-  const cidadesDisponiveis = formData.estado 
-    ? cidadesPorEstado[formData.estado] || [] 
-    : []
 
   const validateStep = (step: number): boolean => {
     const required = requiredFieldsByStep[step] || []
@@ -660,41 +656,21 @@ export default function Cadastro() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Estado <span className="text-destructive">*</span></Label>
-                    <Select 
-                      value={formData.estado} 
-                      onValueChange={(v) => {
-                        updateField("estado", v)
-                        updateField("cidade", "") // Limpa cidade ao trocar estado
-                      }}
-                    >
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar UF" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover max-h-60">
-                        {estadosBrasil.map(uf => (
-                          <SelectItem key={uf.sigla} value={uf.sigla}>
-                            {uf.sigla} - {uf.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input 
+                      placeholder="UF" 
+                      className="form-input"
+                      value={formData.estado}
+                      onChange={(e) => updateField("estado", e.target.value.toUpperCase().slice(0, 2))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Cidade <span className="text-destructive">*</span></Label>
-                    <Select 
-                      value={formData.cidade} 
-                      onValueChange={(v) => updateField("cidade", v)}
-                      disabled={!formData.estado}
-                    >
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder={formData.estado ? "Selecionar cidade" : "Selecione o estado primeiro"} />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover max-h-60">
-                        {cidadesDisponiveis.map(cidade => (
-                          <SelectItem key={cidade} value={cidade}>{cidade}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input 
+                      placeholder="Cidade" 
+                      className="form-input"
+                      value={formData.cidade}
+                      onChange={(e) => updateField("cidade", e.target.value)}
+                    />
                   </div>
                 </div>
               </div>
