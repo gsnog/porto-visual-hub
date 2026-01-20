@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,7 +16,8 @@ import {
   Check,
   ChevronRight,
   ChevronLeft,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
@@ -30,6 +31,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+
+interface ViaCepResponse {
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
+}
 
 const steps = [
   { id: 1, title: "Dados Pessoais", icon: User },
@@ -185,10 +196,59 @@ export default function Cadastro() {
   const [formData, setFormData] = useState<FormData>(initialFormData)
   const [showValidationDialog, setShowValidationDialog] = useState(false)
   const [missingFields, setMissingFields] = useState<string[]>([])
+  const [isLoadingCep, setIsLoadingCep] = useState(false)
 
   const updateField = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
+
+  // Função para buscar endereço pelo CEP
+  const fetchAddressByCep = useCallback(async (cep: string) => {
+    // Remove caracteres não numéricos
+    const cleanCep = cep.replace(/\D/g, '')
+    
+    if (cleanCep.length !== 8) return
+    
+    setIsLoadingCep(true)
+    
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
+      const data: ViaCepResponse = await response.json()
+      
+      if (data.erro) {
+        toast({
+          title: "CEP não encontrado",
+          description: "Verifique o CEP digitado e tente novamente.",
+          variant: "destructive",
+        })
+        return
+      }
+      
+      // Atualiza os campos com os dados retornados
+      setFormData(prev => ({
+        ...prev,
+        endereco: data.logradouro || prev.endereco,
+        bairro: data.bairro || prev.bairro,
+        cidade: data.localidade || prev.cidade,
+        estado: data.uf || prev.estado,
+        complemento: data.complemento || prev.complemento,
+      }))
+      
+      toast({
+        title: "Endereço encontrado!",
+        description: `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`,
+      })
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error)
+      toast({
+        title: "Erro ao buscar CEP",
+        description: "Não foi possível consultar o CEP. Tente novamente.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoadingCep(false)
+    }
+  }, [])
 
   // Filtra cidades baseado no estado selecionado
   const cidadesDisponiveis = formData.estado 
@@ -530,12 +590,31 @@ export default function Cadastro() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">CEP <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="00000-000" 
-                      className="form-input"
-                      value={formData.cep}
-                      onChange={(e) => updateField("cep", e.target.value)}
-                    />
+                    <div className="relative">
+                      <Input 
+                        placeholder="00000-000" 
+                        className="form-input pr-10"
+                        value={formData.cep}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          updateField("cep", value)
+                          // Busca automática quando o CEP tem 8 dígitos
+                          if (value.replace(/\D/g, '').length === 8) {
+                            fetchAddressByCep(value)
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value
+                          if (value.replace(/\D/g, '').length === 8) {
+                            fetchAddressByCep(value)
+                          }
+                        }}
+                      />
+                      {isLoadingCep && (
+                        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Digite o CEP para buscar o endereço automaticamente</p>
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label className="text-sm font-medium">Endereço <span className="text-destructive">*</span></Label>
