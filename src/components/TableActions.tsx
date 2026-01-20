@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { Eye, Edit, Trash2, ChevronDown } from "lucide-react";
 
 interface TableActionsProps {
   onView?: () => void;
@@ -19,7 +19,7 @@ export function TableActions({ onView, onEdit, onDelete }: TableActionsProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1 border-border">
           Ações
-          <MoreHorizontal className="h-4 w-4" />
+          <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-popover border border-border z-50">

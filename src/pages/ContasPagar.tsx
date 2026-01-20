@@ -6,12 +6,13 @@ import { FilterSection } from "@/components/FilterSection"
 import { Plus, FileText, CreditCard, Receipt, Wallet } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 import { GradientCard } from "@/components/financeiro/GradientCard"
+import { StatusBadge } from "@/components/StatusBadge"
 
 const mockContas = [
   { id: 1, dataLancamento: "02/06/2025", dataFaturamento: "05/06/2025", proximoVencimento: "-", beneficiario: "Pedro Piaes", documento: "NI", valorTitulo: "R$ 1.500,00", valorTotal: "R$ 1.500,00", status: "Em Aberto" },
   { id: 2, dataLancamento: "02/06/2025", dataFaturamento: "05/06/2025", proximoVencimento: "20/12/2025", beneficiario: "Transportadora X", documento: "NF 987", valorTitulo: "R$ 250,00", valorTotal: "R$ 300,00", status: "Pago Parcial" },
-  { id: 3, dataLancamento: "01/05/2025", dataFaturamento: "01/05/2025", proximoVencimento: "20/11/2025", beneficiario: "Fornecedor Y", documento: "BOL 101", valorTitulo: "R$ 5.000,00", valorTotal: "R$ 5.050,00", status: "Efetuado" },
-  { id: 4, dataLancamento: "15/04/2025", dataFaturamento: "15/04/2025", proximoVencimento: "15/10/2025", beneficiario: "Aluguel Sede", documento: "REC 001", valorTitulo: "R$ 3.000,00", valorTotal: "R$ 3.000,00", status: "Vencido" },
+  { id: 3, dataLancamento: "01/05/2025", dataFaturamento: "01/05/2025", proximoVencimento: "20/11/2025", beneficiario: "Fornecedor Y", documento: "BOL 101", valorTitulo: "R$ 5.000,00", valorTotal: "R$ 5.050,00", status: "Recebida" },
+  { id: 4, dataLancamento: "15/04/2025", dataFaturamento: "15/04/2025", proximoVencimento: "15/10/2025", beneficiario: "Aluguel Sede", documento: "REC 001", valorTitulo: "R$ 3.000,00", valorTotal: "R$ 3.000,00", status: "Vencida" },
 ]
 
 const ContasPagar = () => {
@@ -30,21 +31,6 @@ const ContasPagar = () => {
       return matchBeneficiario && matchDocumento && matchDataInicio && matchDataFim
     })
   }, [filterBeneficiario, filterDocumento, filterDataInicio, filterDataFim])
-  
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Efetuado':
-        return 'text-success font-semibold';
-      case 'Em Aberto':
-        return 'text-warning font-semibold';
-      case 'Vencido':
-        return 'text-destructive font-semibold';
-      case 'Pago Parcial':
-        return 'text-primary font-semibold';
-      default:
-        return 'text-muted-foreground';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -134,7 +120,7 @@ const ContasPagar = () => {
                   <TableCell className="text-center">{conta.valorTotal}</TableCell>
                   <TableCell className="text-center">{conta.proximoVencimento}</TableCell>
                   <TableCell className="text-center">
-                    <span className={getStatusColor(conta.status)}>{conta.status}</span>
+                    <StatusBadge status={conta.status} />
                   </TableCell>
                   <TableCell className="text-center">
                     <TableActions 

@@ -1,29 +1,67 @@
 import { cn } from "@/lib/utils"
 
-type StatusType = "em-andamento" | "finalizado" | "pendente" | string
+type StatusType = "em-aberto" | "vencida" | "recebida" | "em-andamento" | "finalizado" | "pendente" | string
 
 interface StatusBadgeProps {
   status: StatusType
   className?: string
 }
 
-const statusStyles: Record<string, string> = {
-  "em-andamento": "bg-primary/20 text-primary",
-  "em andamento": "bg-primary/20 text-primary",
-  "finalizado": "bg-success/20 text-success",
-  "concluido": "bg-success/20 text-success",
-  "concluído": "bg-success/20 text-success",
-  "pendente": "bg-yellow-500/20 text-yellow-600 dark:text-yellow-500",
-  "aguardando": "bg-yellow-500/20 text-yellow-600 dark:text-yellow-500",
-  "cancelado": "bg-destructive/20 text-destructive",
+const statusStyles: Record<string, { bg: string; text: string }> = {
+  // Status padrão financeiro
+  "em aberto": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "em-aberto": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "aberto": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "pendente": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "aguardando": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  
+  "vencida": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "vencido": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "cancelado": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "rejeitada": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  
+  "recebida": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "recebido": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "paga": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "pago": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "efetuado": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "finalizado": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "concluido": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "concluído": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "aprovada": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "aprovado": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "processada": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  
+  // Status intermediários
+  "em-andamento": { bg: "bg-primary/20", text: "text-primary" },
+  "em andamento": { bg: "bg-primary/20", text: "text-primary" },
+  "pago parcial": { bg: "bg-blue-500/20", text: "text-blue-600 dark:text-blue-500" },
+  
+  // Estoque
+  "normal": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "crítico": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "critico": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  
+  // Patrimônio
+  "ativo": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "inativo": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
 }
+
+const defaultStyle = { bg: "bg-muted", text: "text-muted-foreground" }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const normalizedStatus = status.toLowerCase()
-  const styleClass = statusStyles[normalizedStatus] || "bg-muted text-muted-foreground"
+  const style = statusStyles[normalizedStatus] || defaultStyle
 
   return (
-    <span className={cn("badge-status", styleClass, className)}>
+    <span 
+      className={cn(
+        "inline-flex items-center justify-center px-3 py-1 rounded text-xs font-semibold min-w-[100px]",
+        style.bg,
+        style.text,
+        className
+      )}
+    >
       {status}
     </span>
   )
