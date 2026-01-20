@@ -6,11 +6,12 @@ import { FilterSection } from "@/components/FilterSection"
 import { Plus, FileText, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 import { GradientCard } from "@/components/financeiro/GradientCard"
+import { StatusBadge } from "@/components/StatusBadge"
 
 const mockContas = [
-  { id: 1, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Efetuado" },
+  { id: 1, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Recebida" },
   { id: 2, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Em Aberto" },
-  { id: 3, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ALPHA TECNOLOGIA", documento: "NF 1234", valorTitulo: "R$ 12.345,00", valorTotalRecebido: "R$ 0,00", proximoVencimento: "15/12/2025", status: "Vencido" },
+  { id: 3, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ALPHA TECNOLOGIA", documento: "NF 1234", valorTitulo: "R$ 12.345,00", valorTotalRecebido: "R$ 0,00", proximoVencimento: "15/12/2025", status: "Vencida" },
   { id: 4, dataLancamento: "10/05/2025", dataFaturamento: "28/04/2025", cliente: "BETA CORP", documento: "NF 5678", valorTitulo: "R$ 8.500,00", valorTotalRecebido: "R$ 4.250,00", proximoVencimento: "10/01/2026", status: "Pago Parcial" },
 ]
 
@@ -30,21 +31,6 @@ const ContasReceber = () => {
       return matchCliente && matchDocumento && matchDataInicio && matchDataFim
     })
   }, [filterCliente, filterDocumento, filterDataInicio, filterDataFim])
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Efetuado':
-        return 'text-green-600 font-medium';
-      case 'Em Aberto':
-        return 'text-yellow-600 font-medium';
-      case 'Vencido':
-        return 'text-red-600 font-medium';
-      case 'Pago Parcial':
-        return 'text-blue-600 font-medium';
-      default:
-        return 'text-gray-600';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -134,7 +120,7 @@ const ContasReceber = () => {
                   <TableCell className="text-center">{conta.valorTotalRecebido}</TableCell>
                   <TableCell className="text-center">{conta.proximoVencimento}</TableCell>
                   <TableCell className="text-center">
-                    <span className={getStatusColor(conta.status)}>{conta.status}</span>
+                    <StatusBadge status={conta.status} />
                   </TableCell>
                   <TableCell className="text-center">
                     <TableActions 
