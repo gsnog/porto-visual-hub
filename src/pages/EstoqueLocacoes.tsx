@@ -5,6 +5,7 @@ import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { Plus } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
+import { StatusBadge } from "@/components/StatusBadge"
 
 const mockLocacoes = [
   { id: 1, unidade: "Unidade A", inicio: "02/06/2025", fimPrevisto: "02/07/2025", locador: "João Silva", contrato: "CONTR-001", status: "Em Andamento" },
@@ -27,16 +28,6 @@ export default function EstoqueLocacoes() {
     })
   }, [filterLocador, filterDataInicio, filterDataFim])
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Em Andamento':
-        return 'text-blue-600 font-medium';
-      case 'Finalizado':
-        return 'text-green-600 font-medium';
-      default:
-        return 'text-gray-600';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -104,7 +95,7 @@ export default function EstoqueLocacoes() {
                   <TableCell className="text-center">{loc.locador}</TableCell>
                   <TableCell className="text-center">{loc.contrato}</TableCell>
                   <TableCell className="text-center">
-                    <span className={getStatusColor(loc.status)}>{loc.status}</span>
+                    <StatusBadge status={loc.status} />
                   </TableCell>
                   <TableCell className="text-center">
                     <TableActions 

@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Download, Eye, FileText, Plus } from "lucide-react"
+import { FileText, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
+import { StatusBadge } from "@/components/StatusBadge"
 
 const NFe = () => {
   const navigate = useNavigate()
@@ -46,18 +47,6 @@ const NFe = () => {
     })
   }, [filterNumero, filterData])
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Autorizada':
-        return 'text-green-600 font-medium';
-      case 'Cancelada':
-        return 'text-red-600 font-medium';
-      case 'Em Processamento':
-        return 'text-yellow-600 font-medium';
-      default:
-        return 'text-gray-600';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -118,7 +107,7 @@ const NFe = () => {
                 <TableCell className="text-center font-semibold">{nfe.valorTotal}</TableCell>
                 <TableCell className="text-center text-xs">{nfe.chaveAcesso}</TableCell>
                 <TableCell className="text-center">
-                  <span className={getStatusColor(nfe.status)}>{nfe.status}</span>
+                  <StatusBadge status={nfe.status} />
                 </TableCell>
                 <TableCell className="text-center">
                   <TableActions 

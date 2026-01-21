@@ -5,6 +5,7 @@ import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { Plus, FileText } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
+import { StatusBadge } from "@/components/StatusBadge"
 
 const mockRequisicoes = [
   { id: 1, data: "12/05/2025", item: "Cabo HDMI", quantidade: 1, requisitante: "Ana F.", setor: "TI", status: "Aprovada" },
@@ -30,18 +31,6 @@ export default function EstoqueRequisicoes() {
     })
   }, [filterSetor, filterDataInicio, filterDataFim])
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Aprovada':
-        return 'text-green-600 font-medium';
-      case 'Pendente':
-        return 'text-yellow-600 font-medium';
-      case 'Rejeitada':
-        return 'text-red-600 font-medium';
-      default:
-        return 'text-gray-600';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -128,7 +117,7 @@ export default function EstoqueRequisicoes() {
                     <TableCell className="text-center">{req.requisitante}</TableCell>
                     <TableCell className="text-center">{req.setor}</TableCell>
                     <TableCell className="text-center">
-                      <span className={getStatusColor(req.status)}>{req.status}</span>
+                      <StatusBadge status={req.status} />
                     </TableCell>
                     <TableCell className="text-center">
                       <TableActions 
