@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { PortfolioChart } from "@/components/PortfolioChart"
 import { SummaryCards } from "@/components/financeiro/SummaryCards"
+import { StatusBadge } from "@/components/StatusBadge"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
   ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter
@@ -928,13 +929,7 @@ const DashboardFinanceiro = () => {
                     <TableCell>{item.vencimento}</TableCell>
                     <TableCell className="text-right font-semibold">{item.valor}</TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        item.status === "Recebida" ? "bg-success/20 text-success" :
-                        item.status === "Vencida" ? "bg-destructive/20 text-destructive" :
-                        "bg-warning/20 text-warning"
-                      }`}>
-                        {item.status}
-                      </span>
+                      <StatusBadge status={item.status} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -966,13 +961,7 @@ const DashboardFinanceiro = () => {
                     <TableCell>{item.vencimento}</TableCell>
                     <TableCell className="text-right font-semibold">{item.valor}</TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        item.status === "Paga" ? "bg-success/20 text-success" :
-                        item.status === "Vencida" ? "bg-destructive/20 text-destructive" :
-                        "bg-warning/20 text-warning"
-                      }`}>
-                        {item.status}
-                      </span>
+                      <StatusBadge status={item.status} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -1031,23 +1020,12 @@ const DashboardFinanceiro = () => {
                 <TableRow key={doc.numero}>
                   <TableCell className="font-medium">{doc.numero}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      doc.tipo === "NF-e" ? "bg-primary/20 text-primary" :
-                      doc.tipo === "XML" ? "bg-success/20 text-success" :
-                      "bg-muted text-muted-foreground"
-                    }`}>
-                      {doc.tipo}
-                    </span>
+                    <StatusBadge status={doc.tipo} />
                   </TableCell>
                   <TableCell>{doc.emissao}</TableCell>
                   <TableCell className="text-right font-semibold">{doc.valor}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      doc.status === "Processada" ? "bg-success/20 text-success" :
-                      "bg-warning/20 text-warning"
-                    }`}>
-                      {doc.status}
-                    </span>
+                    <StatusBadge status={doc.status} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -1379,12 +1357,7 @@ const DashboardEstoque = () => {
                   <TableCell>{item.unidade}</TableCell>
                   <TableCell className="text-right font-semibold">{item.valor}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      item.status === "Normal" ? "bg-success/20 text-success" :
-                      "bg-destructive/20 text-destructive"
-                    }`}>
-                      {item.status}
-                    </span>
+                    <StatusBadge status={item.status} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -1415,11 +1388,7 @@ const DashboardEstoque = () => {
                 <TableRow key={index}>
                   <TableCell>{mov.data}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      mov.tipo === "Entrada" ? "bg-success/20 text-success" : "bg-warning/20 text-warning"
-                    }`}>
-                      {mov.tipo}
-                    </span>
+                    <StatusBadge status={mov.tipo} />
                   </TableCell>
                   <TableCell className="font-medium">{mov.item}</TableCell>
                   <TableCell className="text-center">{mov.quantidade}</TableCell>
@@ -1710,9 +1679,7 @@ const DashboardPatrimonio = () => {
                   <TableCell>{item.tipo}</TableCell>
                   <TableCell className="text-right font-semibold">{item.valorUnit}</TableCell>
                   <TableCell className="text-center">
-                    <span className="px-2 py-1 rounded text-xs font-medium bg-success/20 text-success">
-                      {item.status}
-                    </span>
+                    <StatusBadge status={item.status} />
                   </TableCell>
                 </TableRow>
               ))}
