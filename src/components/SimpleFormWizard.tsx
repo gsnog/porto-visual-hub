@@ -15,9 +15,9 @@ export function SimpleFormWizard({ currentStep, steps, title, children }: Simple
       <div className="max-w-5xl w-full">
         {/* Progress Steps - Simple version with just current and Finalizado */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-4">
             {/* Current Step */}
-            <div className="flex items-center flex-1">
+            <div className="flex items-center">
               <button className="flex flex-col items-center gap-2 transition-all duration-200 group cursor-pointer">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-md bg-primary text-primary-foreground scale-110">
                   <Check className="h-5 w-5" />
@@ -26,7 +26,7 @@ export function SimpleFormWizard({ currentStep, steps, title, children }: Simple
                   {displayTitle}
                 </span>
               </button>
-              <div className="flex-1 h-1 mx-2 rounded-full transition-colors duration-300 bg-muted" />
+              <div className="w-12 h-1 mx-2 rounded-full transition-colors duration-300 bg-muted" />
             </div>
 
             {/* Finalizado Step */}
