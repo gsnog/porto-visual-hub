@@ -6,13 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { ClipboardCheck } from "lucide-react";
+import { ClipboardCheck, Loader2 } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 export default function NovaOrdemServico() {
   const navigate = useNavigate();
+  const { isSaving, handleSave } = useSaveWithDelay();
   const [formData, setFormData] = useState({ tipoOrdem: "", descricao: "" });
 
-  const handleSalvar = () => navigate("/estoque/ordem-servico");
+  const handleSalvar = () => handleSave("/estoque/ordem-servico", "Ordem de serviço salva com sucesso!");
   const handleCancelar = () => navigate("/estoque/ordem-servico");
 
   return (
@@ -59,8 +61,10 @@ export default function NovaOrdemServico() {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <Button onClick={handleSalvar} className="btn-action px-6" disabled={isSaving}>
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+              </Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6" disabled={isSaving}>Cancelar</Button>
             </div>
           </div>
         </CardContent>

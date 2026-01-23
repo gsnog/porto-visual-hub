@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { estadosBrasil, opcoesSelecao, bancosBrasil } from "@/data/brasil-localidades"
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -192,6 +193,7 @@ const initialFormData: FormData = {
 
 export default function Cadastro() {
   const navigate = useNavigate()
+  const { isSaving, handleSave } = useSaveWithDelay()
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<FormData>(initialFormData)
   const [showValidationDialog, setShowValidationDialog] = useState(false)
@@ -265,11 +267,7 @@ export default function Cadastro() {
 
   const handleSalvar = () => {
     if (validateStep(currentStep)) {
-      toast({
-        title: "Cadastro salvo com sucesso!",
-        description: "O usuário foi cadastrado no sistema.",
-      })
-      navigate("/")
+      handleSave("/", "Cadastro salvo com sucesso! O usuário foi cadastrado no sistema.")
     }
   }
 
@@ -1142,9 +1140,16 @@ export default function Cadastro() {
                   <Button
                     onClick={handleSalvar}
                     className="btn-action gap-2 px-8"
+                    disabled={isSaving}
                   >
-                    <Check className="h-4 w-4" />
-                    Salvar Cadastro
+                    {isSaving ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Salvar Cadastro
+                      </>
+                    )}
                   </Button>
                 )}
               </div>

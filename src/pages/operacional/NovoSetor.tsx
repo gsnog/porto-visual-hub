@@ -4,13 +4,15 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { Layers } from "lucide-react";
+import { Layers, Loader2 } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovoSetor = () => {
   const navigate = useNavigate();
+  const { isSaving, handleSave } = useSaveWithDelay();
 
   const handleSalvar = () => {
-    navigate("/operacional/setor");
+    handleSave("/operacional/setor", "Setor salvo com sucesso!");
   };
 
   const handleCancelar = () => {
@@ -40,8 +42,10 @@ const NovoSetor = () => {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <Button onClick={handleSalvar} className="btn-action px-6" disabled={isSaving}>
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+              </Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6" disabled={isSaving}>Cancelar</Button>
             </div>
           </div>
         </CardContent>
