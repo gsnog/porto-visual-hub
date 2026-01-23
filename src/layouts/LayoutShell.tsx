@@ -71,6 +71,7 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/financeiro/contas-receber": { title: "Contas a Receber", description: "Gerenciamento de contas a receber" },
   "/financeiro/contas-pagar": { title: "Contas a Pagar", description: "Gerenciamento de contas a pagar" },
   "/financeiro/fluxo-caixa": { title: "Fluxo de Caixa", description: "Controle de fluxo de caixa" },
+  "/financeiro/xml": { title: "XML", description: "Gerenciamento de arquivos XML" },
   
   // Financeiro - Subpáginas
   "/financeiro/contas-receber/nova": { title: "Contas a Receber", description: "Nova Conta a Receber" },

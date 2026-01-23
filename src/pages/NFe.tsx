@@ -35,7 +35,7 @@ const NFe = () => {
       numero: "10002",
       chaveAcesso: "7777.7777.7777.7777.7777.7777.7777.7777.7777.7777",
       nf: "NFe 54321",
-      status: "Em Processamento"
+      status: "Processando"
     },
   ]
 
