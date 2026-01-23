@@ -67,9 +67,6 @@ export const GradientCard = ({ title, value, icon: Icon, trend, variant }: Gradi
         <p className="text-sm font-medium text-white/80">{title}</p>
         <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
       </div>
-      {/* Decorative element */}
-      <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
-      <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-white/10" />
     </div>
   );
 };
