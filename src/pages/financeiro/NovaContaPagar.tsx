@@ -6,14 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
 import { SimpleFormWizard } from "@/components/SimpleFormWizard"
-import { CreditCard } from "lucide-react"
+import { CreditCard, Loader2 } from "lucide-react"
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
 
 export default function NovaContaPagar() {
   const navigate = useNavigate()
-
-  const handleSalvar = () => {
-    navigate("/financeiro/contas-pagar")
-  }
+  const { handleSalvar, isSaving } = useSaveWithDelay({
+    redirectTo: "/financeiro/contas-pagar",
+    successMessage: "Conta a pagar salva!",
+    successDescription: "O registro foi salvo com sucesso.",
+  })
 
   const handleCancelar = () => {
     navigate("/financeiro/contas-pagar")
@@ -67,34 +69,6 @@ export default function NovaContaPagar() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Plano de Contas</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="plano1">Plano 1</SelectItem>
-                    <SelectItem value="plano2">Plano 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Projeto</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="projeto1">Projeto 1</SelectItem>
-                    <SelectItem value="projeto2">Projeto 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
                 <Label className="text-sm font-medium">Documento <span className="text-destructive">*</span></Label>
                 <Input type="text" className="form-input" />
               </div>
@@ -117,52 +91,6 @@ export default function NovaContaPagar() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Multa</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Encargos</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Juros</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Frete</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Desconto</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Valor Total</Label>
-                <Input type="text" className="form-input" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Documento PDF</Label>
-                <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Número de Parcelas</Label>
-                <Input type="number" defaultValue="1" className="form-input" />
-              </div>
-            </div>
-
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Descrição</Label>
@@ -171,8 +99,10 @@ export default function NovaContaPagar() {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <Button onClick={handleSalvar} disabled={isSaving} className="btn-action px-6">
+                {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</> : "Salvar"}
+              </Button>
+              <Button onClick={handleCancelar} disabled={isSaving} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

@@ -4,14 +4,16 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { Building2 } from "lucide-react";
+import { Building2, Loader2 } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovaUnidade = () => {
   const navigate = useNavigate();
-
-  const handleSalvar = () => {
-    navigate("/cadastro/estoque/unidades");
-  };
+  const { handleSalvar, isSaving } = useSaveWithDelay({
+    redirectTo: "/cadastro/estoque/unidades",
+    successMessage: "Unidade salva!",
+    successDescription: "O registro foi salvo com sucesso.",
+  });
 
   const handleCancelar = () => {
     navigate("/cadastro/estoque/unidades");
@@ -40,8 +42,10 @@ const NovaUnidade = () => {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <Button onClick={handleSalvar} disabled={isSaving} className="btn-action px-6">
+                {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</> : "Salvar"}
+              </Button>
+              <Button onClick={handleCancelar} disabled={isSaving} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

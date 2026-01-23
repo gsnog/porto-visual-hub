@@ -6,14 +6,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { Package } from "lucide-react";
+import { Package, Loader2 } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovoItem = () => {
   const navigate = useNavigate();
-
-  const handleSalvar = () => {
-    navigate("/cadastro/estoque/itens");
-  };
+  const { handleSalvar, isSaving } = useSaveWithDelay({
+    redirectTo: "/cadastro/estoque/itens",
+    successMessage: "Item salvo!",
+    successDescription: "O registro foi salvo com sucesso.",
+  });
 
   const handleCancelar = () => {
     navigate("/cadastro/estoque/itens");
@@ -147,8 +149,10 @@ const NovoItem = () => {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <Button onClick={handleSalvar} disabled={isSaving} className="btn-action px-6">
+                {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</> : "Salvar"}
+              </Button>
+              <Button onClick={handleCancelar} disabled={isSaving} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>
