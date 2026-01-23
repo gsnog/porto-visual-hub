@@ -38,7 +38,7 @@ const ContasReceber = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <GradientCard title="Total Recebido" value="R$ 87.939,88" icon={ArrowUpRight} variant="success" />
           <GradientCard title="Total a Receber" value="R$ 12.345,00" icon={ArrowUpRight} variant="info" />
-          <GradientCard title="Valor Total em Títulos" value="R$ 100.284,88" icon={Wallet} variant="neutral" />
+          <GradientCard title="Valor Total em Títulos" value="R$ 100.284,88" icon={Wallet} variant="orange" />
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
