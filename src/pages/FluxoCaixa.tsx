@@ -6,6 +6,7 @@ import { FilterSection } from "@/components/FilterSection"
 import { Plus, FileText, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 import { GradientCard } from "@/components/financeiro/GradientCard"
+import { StatusBadge } from "@/components/StatusBadge"
 
 const mockTransacoes = [
   { id: 1, dataVencimento: "02/06/2025", dataPagamento: "02/06/2025", beneficiario: "Fornecedor Alpha", tipo: "Saída", status: "Pendente", valorTotal: "R$ 10.000,00", saldo: "R$ 87.939,88" },
@@ -32,19 +33,6 @@ const FluxoCaixa = () => {
       return matchTipo && matchBeneficiario && matchDataInicio && matchDataFim
     })
   }, [filterTipo, filterBeneficiario, filterDataInicio, filterDataFim])
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Efetuado':
-        return 'text-green-600 font-medium';
-      case 'Pendente':
-        return 'text-yellow-600 font-medium';
-      case 'Vencido':
-        return 'text-red-600 font-medium';
-      default:
-        return 'text-gray-600';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -133,13 +121,11 @@ const FluxoCaixa = () => {
                   <TableCell className="text-center">{transacao.dataVencimento}</TableCell>
                   <TableCell className="text-center">{transacao.dataPagamento}</TableCell>
                   <TableCell className="text-center">
-                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>
-                      {transacao.tipo}
-                    </span>
+                    <StatusBadge status={transacao.tipo} />
                   </TableCell>
                   <TableCell className="text-center">{transacao.beneficiario}</TableCell>
                   <TableCell className="text-center">
-                    <span className={getStatusColor(transacao.status)}>{transacao.status}</span>
+                    <StatusBadge status={transacao.status} />
                   </TableCell>
                   <TableCell className="text-center">
                     <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>

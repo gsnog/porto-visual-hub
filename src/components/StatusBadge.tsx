@@ -15,6 +15,7 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "pendente": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   "aguardando": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   "em processamento": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "processando": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   
   "vencida": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "vencido": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
