@@ -226,8 +226,8 @@ const GradientCard = ({
       shadow: "shadow-rose-500/25",
     },
     info: {
-      bg: "from-primary to-orange-500",
-      shadow: "shadow-primary/25",
+      bg: "from-blue-500 to-blue-600",
+      shadow: "shadow-blue-500/25",
     },
     warning: {
       bg: "from-amber-500 to-amber-600",
@@ -264,9 +264,6 @@ const GradientCard = ({
         <p className="text-sm font-medium text-white/80">{title}</p>
         <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
       </div>
-      {/* Decorative element */}
-      <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-white/10" />
-      <div className="absolute -bottom-2 -right-2 h-16 w-16 rounded-full bg-white/10" />
     </div>
   )
 }
