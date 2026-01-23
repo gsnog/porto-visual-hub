@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 const mockData = [
   { month: "Jul", value: 85000 },
@@ -12,9 +10,6 @@ const mockData = [
   { month: "Dez", value: 125000 },
   { month: "Jan", value: 142000 },
 ];
-
-const periods = ["1h", "24h", "1w", "1m", "1y", "All"] as const;
-type Period = typeof periods[number];
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", {
@@ -56,8 +51,6 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 };
 
 export function PortfolioChart() {
-  const [activePeriod, setActivePeriod] = useState<Period>("1m");
-
   const totalValue = mockData[mockData.length - 1].value;
   const previousValue = mockData[mockData.length - 2].value;
   const percentChange = ((totalValue - previousValue) / previousValue) * 100;
@@ -65,7 +58,7 @@ export function PortfolioChart() {
   return (
     <Card className="bg-card rounded p-6 shadow-sm border-0">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6">
         <div>
           <p className="text-sm text-muted-foreground mb-1">Balanço do Portfólio</p>
           <div className="flex items-center gap-3">
@@ -76,25 +69,6 @@ export function PortfolioChart() {
               +{percentChange.toFixed(1)}%
             </span>
           </div>
-        </div>
-
-        {/* Period Selector */}
-        <div className="flex bg-secondary rounded p-1">
-          {periods.map((period) => (
-            <Button
-              key={period}
-              variant="ghost"
-              size="sm"
-              onClick={() => setActivePeriod(period)}
-              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                activePeriod === period
-                  ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-transparent"
-              }`}
-            >
-              {period}
-            </Button>
-          ))}
         </div>
       </div>
 
