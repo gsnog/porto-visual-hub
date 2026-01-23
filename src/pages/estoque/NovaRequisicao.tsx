@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
@@ -34,12 +35,12 @@ export default function NovaRequisicao() {
               </div>
             </div>
 
-            <div className="space-y-4 max-w-2xl">
-              <div className="form-row">
-                <label className="form-label">Setor</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Setor</Label>
                 <Select>
-                  <SelectTrigger className="form-input w-40">
-                    <SelectValue placeholder="---------" />
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
                     <SelectItem value="setor1">Setor 1</SelectItem>
@@ -48,11 +49,11 @@ export default function NovaRequisicao() {
                 </Select>
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Projeto</label>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Projeto</Label>
                 <Select>
-                  <SelectTrigger className="form-input w-40">
-                    <SelectValue placeholder="---------" />
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
                     <SelectItem value="projeto1">Projeto 1</SelectItem>
@@ -60,16 +61,20 @@ export default function NovaRequisicao() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="flex items-start gap-4">
-                <label className="form-label pt-2">Observações</label>
-                <Textarea className="form-input w-80 min-h-[180px]" />
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Observações</Label>
+                <Textarea className="form-input min-h-[150px]" />
               </div>
+            </div>
 
-              <div className="form-row">
-                <label className="form-label">Item</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Item</Label>
                 <Select>
-                  <SelectTrigger className="form-input flex-1">
+                  <SelectTrigger className="form-input">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -79,36 +84,35 @@ export default function NovaRequisicao() {
                 </Select>
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Quantidade</label>
-                <Input type="number" className="form-input flex-1" />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Quantidade</Label>
+                <Input type="number" className="form-input" />
               </div>
+            </div>
 
-              <div className="form-row">
-                <label className="w-40"></label>
-                <Button variant="outline" className="btn-outline">Adicionar Item</Button>
-              </div>
+            <div className="flex gap-3">
+              <Button variant="outline" className="btn-outline">Adicionar Item</Button>
+            </div>
 
-              <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>
+            <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>
 
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-center">Item</TableHead>
-                    <TableHead className="text-center">Quantidade</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="text-center" colSpan={2}>Nenhum item adicionado</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">Item</TableHead>
+                  <TableHead className="text-center">Quantidade</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="text-center" colSpan={2}>Nenhum item adicionado</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
 
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-              </div>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

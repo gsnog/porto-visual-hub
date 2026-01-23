@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
@@ -32,55 +33,51 @@ export default function NovaSaida() {
               </div>
             </div>
 
-            <div className="space-y-4 max-w-2xl">
-              <div className="form-row">
-                <label className="form-label">Data</label>
-                <Input type="date" className="form-input w-40" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Data</Label>
+                <Input type="date" className="form-input" />
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Estoque de Origem</label>
-                <div className="flex-1">
-                  <div className="flex gap-3">
-                    <Select>
-                      <SelectTrigger className="form-input w-40">
-                        <SelectValue placeholder="---------" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="origem1">Estoque 1</SelectItem>
-                        <SelectItem value="origem2">Estoque 2</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button className="btn-action px-6">Adicionar</Button>
-                  </div>
-                  <span className="form-hint">Obrigatório</span>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Estoque de Origem <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3">
+                  <Select>
+                    <SelectTrigger className="form-input">
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="origem1">Estoque 1</SelectItem>
+                      <SelectItem value="origem2">Estoque 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button className="btn-action px-6">Adicionar</Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Setor <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3">
+                  <Select>
+                    <SelectTrigger className="form-input">
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="setor1">Setor 1</SelectItem>
+                      <SelectItem value="setor2">Setor 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Setor</label>
-                <div className="flex-1">
-                  <div className="flex gap-3">
-                    <Select>
-                      <SelectTrigger className="form-input w-40">
-                        <SelectValue placeholder="---------" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="setor1">Setor 1</SelectItem>
-                        <SelectItem value="setor2">Setor 2</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button className="btn-action px-6">Adicionar</Button>
-                  </div>
-                  <span className="form-hint">Obrigatório</span>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label className="form-label">Operação</label>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Operação</Label>
                 <Select>
-                  <SelectTrigger className="form-input w-28">
-                    <SelectValue placeholder="---------" />
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
                     <SelectItem value="consumo">Consumo</SelectItem>
@@ -88,51 +85,46 @@ export default function NovaSaida() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="form-row">
-                <label className="form-label">Item</label>
-                <div className="flex-1">
-                  <Select>
-                    <SelectTrigger className="form-input w-28">
-                      <SelectValue placeholder="---------" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="item1">Item 1</SelectItem>
-                      <SelectItem value="item2">Item 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Item <span className="text-destructive">*</span></Label>
+                <Select>
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="item1">Item 1</SelectItem>
+                    <SelectItem value="item2">Item 2</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Quantidade</label>
-                <div className="flex-1">
-                  <Input type="number" className="form-input w-40" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Quantidade <span className="text-destructive">*</span></Label>
+                <Input type="number" className="form-input" />
               </div>
+            </div>
 
-              <div className="form-row">
-                <label className="form-label">Estoque de Destino</label>
-                <div className="flex-1">
-                  <Select>
-                    <SelectTrigger className="form-input w-40">
-                      <SelectValue placeholder="---------" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="destino1">Estoque 1</SelectItem>
-                      <SelectItem value="destino2">Estoque 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Estoque de Destino <span className="text-destructive">*</span></Label>
+                <Select>
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="destino1">Estoque 1</SelectItem>
+                    <SelectItem value="destino2">Estoque 2</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-              </div>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>
