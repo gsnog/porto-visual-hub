@@ -167,13 +167,15 @@ const Patrimonio = () => {
   if (currentView === 'add') {
     return (
       <div className="flex flex-col h-full bg-background">
-        <div className="space-y-6">
-          <div className="space-y-4 max-w-2xl">
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Item</label>
-              <div className="flex-1">
+        <Card className="w-full max-w-2xl shadow-lg">
+          <CardContent className="p-6 md:p-8">
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  Item <span className="text-destructive">*</span>
+                </label>
                 <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
-                  <SelectTrigger className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded w-52 border border-[#22265B]">
+                  <SelectTrigger className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -183,67 +185,64 @@ const Patrimonio = () => {
                     <SelectItem value="software">Software</SelectItem>
                   </SelectContent>
                 </Select>
-                <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
               </div>
-            </div>
 
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Data de Aquisição</label>
-              <div className="flex-1">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  Data de Aquisição <span className="text-destructive">*</span>
+                </label>
                 <Input 
                   id="dataAquisicao"
                   type="date"
                   value={formData.dataAquisicao}
                   onChange={handleInputChange}
-                  className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40"
+                  className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]"
                 />
-                <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
               </div>
-            </div>
 
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Valor Unitário</label>
-              <div className="flex-1">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  Valor Unitário <span className="text-destructive">*</span>
+                </label>
                 <Input 
                   id="valor"
                   type="text"
                   placeholder="Ex: 1500.00"
                   value={formData.valor}
                   onChange={handleInputChange}
-                  className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40"
+                  className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]"
                 />
-                <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Quantidade</label>
+                <Input 
+                  id="quantidade"
+                  type="number"
+                  value={formData.quantidade}
+                  onChange={handleInputChange}
+                  className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  onClick={handleSubmitAdd}
+                  className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6"
+                >
+                  Salvar
+                </Button>
+                <Button 
+                  onClick={handleCancelAdd}
+                  variant="destructive"
+                  className="rounded px-6"
+                >
+                  Cancelar
+                </Button>
               </div>
             </div>
-
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Quantidade</label>
-              <Input 
-                id="quantidade"
-                type="number"
-                value={formData.quantidade}
-                onChange={handleInputChange}
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40"
-              />
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <Button 
-                onClick={handleSubmitAdd}
-                className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6"
-              >
-                Salvar
-              </Button>
-              <Button 
-                onClick={handleCancelAdd}
-                variant="destructive"
-                className="rounded px-6"
-              >
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     )
   }
