@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
@@ -49,122 +50,125 @@ export default function NovaOrdemCompra() {
               </div>
             </div>
 
-            <div className="space-y-4 max-w-2xl">
-              <div className="form-row">
-                <label className="form-label">Unidade</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Unidade</Label>
                 <Input 
                   value={formData.unidade} 
                   onChange={(e) => setFormData({ ...formData, unidade: e.target.value })} 
                   placeholder="Digite a unidade" 
-                  className="form-input flex-1" 
+                  className="form-input" 
                 />
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Setor</label>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Setor</Label>
                 <Input 
                   value={formData.setor} 
                   onChange={(e) => setFormData({ ...formData, setor: e.target.value })} 
                   placeholder="Digite o setor" 
-                  className="form-input flex-1" 
+                  className="form-input" 
                 />
               </div>
+            </div>
 
-              <div className="flex items-start gap-4">
-                <label className="form-label pt-2">Descrição</label>
-                <div className="flex-1">
-                  <Textarea 
-                    value={formData.descricao} 
-                    onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
-                    placeholder="Digite a descrição" 
-                    className="form-input w-80 min-h-[100px]" 
-                  />
-                </div>
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Descrição</Label>
+                <Textarea 
+                  value={formData.descricao} 
+                  onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
+                  placeholder="Digite a descrição" 
+                  className="form-input min-h-[100px]" 
+                />
               </div>
+            </div>
 
-              <div className="border-t pt-6 space-y-4">
-                <div className="form-row">
-                  <label className="form-label">Item</label>
+            <div className="border-t pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Item</Label>
                   <Input 
                     value={formData.item} 
                     onChange={(e) => setFormData({ ...formData, item: e.target.value })} 
                     placeholder="Nome do item" 
-                    className="form-input w-52" 
+                    className="form-input" 
                   />
                 </div>
 
-                <div className="form-row">
-                  <label className="form-label">Marca</label>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Marca</Label>
                   <Input 
                     value={formData.marca} 
                     onChange={(e) => setFormData({ ...formData, marca: e.target.value })} 
                     placeholder="Marca" 
-                    className="form-input w-52" 
+                    className="form-input" 
                   />
                 </div>
+              </div>
 
-                <div className="form-row">
-                  <label className="form-label">Quantidade</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Quantidade</Label>
                   <Input 
                     type="number" 
                     value={formData.quantidade} 
                     onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })} 
                     placeholder="Qtd" 
-                    className="form-input w-40" 
+                    className="form-input" 
                   />
                 </div>
 
-                <div className="form-row">
-                  <label className="form-label">Especificações</label>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Especificações</Label>
                   <Input 
                     value={formData.especificacoes} 
                     onChange={(e) => setFormData({ ...formData, especificacoes: e.target.value })} 
                     placeholder="Specs" 
-                    className="form-input flex-1" 
+                    className="form-input" 
                   />
                 </div>
-
-                <div className="form-row">
-                  <label className="w-40"></label>
-                  <Button type="button" onClick={handleAddItem} className="btn-action">
-                    Adicionar Item
-                  </Button>
-                </div>
               </div>
 
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-center">Item</TableHead>
-                    <TableHead className="text-center">Marca</TableHead>
-                    <TableHead className="text-center">Quantidade</TableHead>
-                    <TableHead className="text-center">Especificações</TableHead>
-                    <TableHead className="text-center">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {itens.length === 0 ? (
-                    <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
-                  ) : (
-                    itens.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="text-center">{item.item}</TableCell>
-                        <TableCell className="text-center">{item.marca}</TableCell>
-                        <TableCell className="text-center">{item.quantidade}</TableCell>
-                        <TableCell className="text-center">{item.especificacoes}</TableCell>
-                        <TableCell className="text-center">
-                          <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <div className="flex gap-3 mt-4">
+                <Button type="button" onClick={handleAddItem} className="btn-action">
+                  Adicionar Item
+                </Button>
               </div>
+            </div>
+
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">Item</TableHead>
+                  <TableHead className="text-center">Marca</TableHead>
+                  <TableHead className="text-center">Quantidade</TableHead>
+                  <TableHead className="text-center">Especificações</TableHead>
+                  <TableHead className="text-center">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {itens.length === 0 ? (
+                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
+                ) : (
+                  itens.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="text-center">{item.item}</TableCell>
+                      <TableCell className="text-center">{item.marca}</TableCell>
+                      <TableCell className="text-center">{item.quantidade}</TableCell>
+                      <TableCell className="text-center">{item.especificacoes}</TableCell>
+                      <TableCell className="text-center">
+                        <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

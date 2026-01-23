@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -32,59 +33,49 @@ const NovaTransferencia = () => {
               </div>
             </div>
 
-            <div className="space-y-4 max-w-xl">
-              <div className="form-row">
-                <label className="form-label">Conta Origem</label>
-                <div className="flex-1">
-                  <Select>
-                    <SelectTrigger className="form-input w-64">
-                      <SelectValue placeholder="Selecionar conta" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="conta1">Conta 1</SelectItem>
-                      <SelectItem value="conta2">Conta 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Conta Origem <span className="text-destructive">*</span></Label>
+                <Select>
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar conta" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="conta1">Conta 1</SelectItem>
+                    <SelectItem value="conta2">Conta 2</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Conta Destino</label>
-                <div className="flex-1">
-                  <Select>
-                    <SelectTrigger className="form-input w-64">
-                      <SelectValue placeholder="Selecionar conta" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="conta1">Conta 1</SelectItem>
-                      <SelectItem value="conta2">Conta 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Conta Destino <span className="text-destructive">*</span></Label>
+                <Select>
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar conta" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="conta1">Conta 1</SelectItem>
+                    <SelectItem value="conta2">Conta 2</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Valor <span className="text-destructive">*</span></Label>
+                <Input placeholder="0,00" className="form-input" />
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Valor</label>
-                <div className="flex-1">
-                  <Input placeholder="0,00" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
+                <Input type="date" className="form-input" />
               </div>
+            </div>
 
-              <div className="form-row">
-                <label className="form-label">Data</label>
-                <div className="flex-1">
-                  <Input type="date" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-              </div>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

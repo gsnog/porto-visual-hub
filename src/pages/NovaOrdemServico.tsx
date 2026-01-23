@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
@@ -29,11 +30,11 @@ export default function NovaOrdemServico() {
               </div>
             </div>
 
-            <div className="space-y-4 max-w-2xl">
-              <div className="form-row">
-                <label className="form-label">Tipo de Ordem</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Tipo de Ordem <span className="text-destructive">*</span></Label>
                 <Select value={formData.tipoOrdem} onValueChange={(value) => setFormData({ ...formData, tipoOrdem: value })}>
-                  <SelectTrigger className="form-input w-52">
+                  <SelectTrigger className="form-input">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
@@ -43,23 +44,23 @@ export default function NovaOrdemServico() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div className="flex items-start gap-4">
-                <label className="form-label pt-2">Descrição</label>
-                <div className="flex-1">
-                  <Textarea 
-                    value={formData.descricao} 
-                    onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
-                    placeholder="Digite a descrição da ordem de serviço" 
-                    className="form-input w-80 min-h-[150px]" 
-                  />
-                </div>
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Descrição</Label>
+                <Textarea 
+                  value={formData.descricao} 
+                  onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
+                  placeholder="Digite a descrição da ordem de serviço" 
+                  className="form-input min-h-[120px]" 
+                />
               </div>
+            </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-              </div>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -32,12 +33,12 @@ const NovaContaBancaria = () => {
               </div>
             </div>
 
-            <div className="space-y-4 max-w-xl">
-              <div className="form-row">
-                <label className="form-label">Tipo</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Tipo <span className="text-destructive">*</span></Label>
                 <Select>
-                  <SelectTrigger className="form-input w-40">
-                    <SelectValue placeholder="---------" />
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecionar" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
                     <SelectItem value="corrente">Corrente</SelectItem>
@@ -47,50 +48,39 @@ const NovaContaBancaria = () => {
                 </Select>
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Código do Banco</label>
-                <div className="flex-1">
-                  <Input placeholder="" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Código do Banco <span className="text-destructive">*</span></Label>
+                <Input placeholder="" className="form-input" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Banco <span className="text-destructive">*</span></Label>
+                <Input placeholder="" className="form-input" />
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Banco</label>
-                <div className="flex-1">
-                  <Input placeholder="" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Agência <span className="text-destructive">*</span></Label>
+                <Input placeholder="" className="form-input" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Número da Conta <span className="text-destructive">*</span></Label>
+                <Input placeholder="" className="form-input" />
               </div>
 
-              <div className="form-row">
-                <label className="form-label">Agência</label>
-                <div className="flex-1">
-                  <Input placeholder="" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Saldo <span className="text-destructive">*</span></Label>
+                <Input placeholder="0,00" className="form-input" />
               </div>
+            </div>
 
-              <div className="form-row">
-                <label className="form-label">Número da Conta</label>
-                <div className="flex-1">
-                  <Input placeholder="" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label className="form-label">Saldo</label>
-                <div className="flex-1">
-                  <Input placeholder="0,00" className="form-input w-64" />
-                  <span className="form-hint">Obrigatório</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-              </div>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
         </CardContent>

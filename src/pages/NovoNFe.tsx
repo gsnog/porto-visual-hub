@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { SimpleFormWizard } from "@/components/SimpleFormWizard";
+import { FileText } from "lucide-react";
 
 const NovoNFe = () => {
   const navigate = useNavigate();
@@ -14,86 +18,67 @@ const NovoNFe = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Adicionar NF-e</h1>
+    <SimpleFormWizard title="Adicionar NF-e">
+      <Card className="border-border shadow-lg">
+        <CardContent className="p-6 md:p-8">
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+                <FileText className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">Dados da NF-e</h2>
+                <p className="text-sm text-muted-foreground">Preencha as informações abaixo</p>
+              </div>
+            </div>
 
-        <div className="space-y-4 max-w-2xl">
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Numero</label>
-            <div className="flex-1">
-              <Input 
-                placeholder="" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
-              />
-              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Número <span className="text-destructive">*</span></Label>
+                <Input placeholder="" className="form-input" />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Valor Total <span className="text-destructive">*</span></Label>
+                <Input placeholder="" className="form-input" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">PDF</Label>
+                <Input 
+                  type="file" 
+                  accept=".pdf" 
+                  className="form-input file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">XML</Label>
+                <Input 
+                  type="file" 
+                  accept=".xml" 
+                  className="form-input file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Data de Faturamento <span className="text-destructive">*</span></Label>
+                <Input type="date" className="form-input" />
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
             </div>
           </div>
-
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">PDF</label>
-            <div className="flex-1">
-              <Input 
-                type="file" 
-                accept=".pdf" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
-              />
-              <span className="text-muted-foreground text-sm mt-1 block">Opcional</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">XML</label>
-            <div className="flex-1">
-              <Input 
-                type="file" 
-                accept=".xml" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
-              />
-              <span className="text-muted-foreground text-sm mt-1 block">Opcional</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Valor Total</label>
-            <div className="flex-1">
-              <Input 
-                placeholder="" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-64" 
-              />
-              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Data de Faturamento</label>
-            <div className="flex-1">
-              <Input 
-                type="date" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded-lg border border-[#22265B] w-48" 
-              />
-              <span className="text-muted-foreground text-sm mt-1 block">Obrigatório</span>
-            </div>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <Button 
-              onClick={handleSalvar}
-              className="rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-6"
-            >
-              Salvar
-            </Button>
-            <Button 
-              onClick={handleCancelar}
-              variant="destructive"
-              className="rounded-lg px-6"
-            >
-              Cancelar
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+        </CardContent>
+      </Card>
+    </SimpleFormWizard>
   );
 };
 
