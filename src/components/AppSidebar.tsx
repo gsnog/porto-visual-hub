@@ -140,9 +140,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       {/* Logo */}
       <div className="flex h-20 items-center justify-center border-b border-white/10 px-4">
         {collapsed ? (
-          <img src={logoIcone} alt="S" className="h-10 object-contain" />
+          <img src={logoIcone} alt="S" className="h-12 object-contain" />
         ) : (
-          <img src={logoSerp} alt="SERP" className="h-20 object-contain" />
+          <img src={logoSerp} alt="SERP" className="h-28 object-contain" />
         )}
       </div>
 
