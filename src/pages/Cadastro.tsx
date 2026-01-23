@@ -21,7 +21,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
-import { estadosBrasil, opcoesSelecao } from "@/data/brasil-localidades"
+import { estadosBrasil, opcoesSelecao, bancosBrasil } from "@/data/brasil-localidades"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -696,17 +696,12 @@ export default function Cadastro() {
                       <SelectTrigger className="form-input">
                         <SelectValue placeholder="Selecionar banco" />
                       </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="001">001 - Banco do Brasil</SelectItem>
-                        <SelectItem value="104">104 - Caixa Econômica</SelectItem>
-                        <SelectItem value="237">237 - Bradesco</SelectItem>
-                        <SelectItem value="341">341 - Itaú</SelectItem>
-                        <SelectItem value="033">033 - Santander</SelectItem>
-                        <SelectItem value="260">260 - Nubank</SelectItem>
-                        <SelectItem value="077">077 - Inter</SelectItem>
-                        <SelectItem value="212">212 - Banco Original</SelectItem>
-                        <SelectItem value="336">336 - C6 Bank</SelectItem>
-                        <SelectItem value="380">380 - PicPay</SelectItem>
+                      <SelectContent className="bg-popover max-h-60">
+                        {bancosBrasil.map(banco => (
+                          <SelectItem key={banco.codigo} value={banco.codigo}>
+                            {banco.codigo} - {banco.nome}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
