@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, Loader2 } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 interface ItemOrdem {
   id: number;
@@ -19,6 +20,7 @@ interface ItemOrdem {
 
 export default function NovaOrdemCompra() {
   const navigate = useNavigate();
+  const { isSaving, handleSave } = useSaveWithDelay();
   const [itens, setItens] = useState<ItemOrdem[]>([]);
   const [formData, setFormData] = useState({
     unidade: "", setor: "", descricao: "", justificativa: "", item: "", marca: "", quantidade: "", especificacoes: "",
@@ -32,7 +34,7 @@ export default function NovaOrdemCompra() {
   };
 
   const handleRemoveItem = (id: number) => setItens(itens.filter((item) => item.id !== id));
-  const handleSalvar = () => navigate("/estoque/ordem-compra");
+  const handleSalvar = () => handleSave("/estoque/ordem-compra", "Ordem de compra salva com sucesso!");
   const handleCancelar = () => navigate("/estoque/ordem-compra");
 
   return (
@@ -167,8 +169,10 @@ export default function NovaOrdemCompra() {
             </Table>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              <Button onClick={handleSalvar} className="btn-action px-6" disabled={isSaving}>
+                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
+              </Button>
+              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6" disabled={isSaving}>Cancelar</Button>
             </div>
           </div>
         </CardContent>
