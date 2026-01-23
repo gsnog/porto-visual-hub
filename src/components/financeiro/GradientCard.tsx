@@ -22,8 +22,8 @@ const variantStyles = {
     shadow: "shadow-rose-500/25",
   },
   info: {
-    bg: "from-primary to-orange-500",
-    shadow: "shadow-primary/25",
+    bg: "from-blue-500 to-blue-600",
+    shadow: "shadow-blue-500/25",
   },
   warning: {
     bg: "from-amber-500 to-amber-600",
