@@ -3,10 +3,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Trash2, Plus } from "lucide-react"
+import { ArrowLeft, Trash2, Plus, Landmark } from "lucide-react"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
+import { SimpleFormWizard } from "@/components/SimpleFormWizard"
 
 type Asset = {
   id: string
@@ -166,84 +168,81 @@ const Patrimonio = () => {
 
   if (currentView === 'add') {
     return (
-      <div className="flex flex-col h-full bg-background">
-        <Card className="w-full max-w-2xl shadow-lg">
+      <SimpleFormWizard title="Novo Patrimônio">
+        <Card className="border-border shadow-lg">
           <CardContent className="p-6 md:p-8">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
-                  Item <span className="text-destructive">*</span>
-                </label>
-                <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
-                  <SelectTrigger className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]">
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="automovel">Automóvel</SelectItem>
-                    <SelectItem value="equipamento">Equipamento</SelectItem>
-                    <SelectItem value="mobiliario">Mobiliário</SelectItem>
-                    <SelectItem value="software">Software</SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+                  <Landmark className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-foreground">Dados do Patrimônio</h2>
+                  <p className="text-sm text-muted-foreground">Preencha as informações abaixo</p>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
-                  Data de Aquisição <span className="text-destructive">*</span>
-                </label>
-                <Input 
-                  id="dataAquisicao"
-                  type="date"
-                  value={formData.dataAquisicao}
-                  onChange={handleInputChange}
-                  className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Item <span className="text-destructive">*</span></Label>
+                  <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
+                    <SelectTrigger className="form-input">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="automovel">Automóvel</SelectItem>
+                      <SelectItem value="equipamento">Equipamento</SelectItem>
+                      <SelectItem value="mobiliario">Mobiliário</SelectItem>
+                      <SelectItem value="software">Software</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Data de Aquisição <span className="text-destructive">*</span></Label>
+                  <Input 
+                    id="dataAquisicao"
+                    type="date"
+                    value={formData.dataAquisicao}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
-                  Valor Unitário <span className="text-destructive">*</span>
-                </label>
-                <Input 
-                  id="valor"
-                  type="text"
-                  placeholder="Ex: 1500.00"
-                  value={formData.valor}
-                  onChange={handleInputChange}
-                  className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]"
-                />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Valor Unitário <span className="text-destructive">*</span></Label>
+                  <Input 
+                    id="valor"
+                    type="text"
+                    placeholder="Ex: 1500.00"
+                    value={formData.valor}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Quantidade</label>
-                <Input 
-                  id="quantidade"
-                  type="number"
-                  value={formData.quantidade}
-                  onChange={handleInputChange}
-                  className="w-full bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B]"
-                />
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Quantidade</Label>
+                  <Input 
+                    id="quantidade"
+                    type="number"
+                    value={formData.quantidade}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-3 pt-4">
-                <Button 
-                  onClick={handleSubmitAdd}
-                  className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6"
-                >
-                  Salvar
-                </Button>
-                <Button 
-                  onClick={handleCancelAdd}
-                  variant="destructive"
-                  className="rounded px-6"
-                >
-                  Cancelar
-                </Button>
+                <Button onClick={handleSubmitAdd} className="btn-action px-6">Salvar</Button>
+                <Button onClick={handleCancelAdd} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div>
+      </SimpleFormWizard>
     )
   }
 
