@@ -39,7 +39,7 @@ export function Topbar({
   return (
     <header 
       className={cn(
-        "sticky top-0 z-40 flex h-16 items-center justify-between bg-card px-6 shadow-sm transition-all duration-300"
+        "sticky top-0 z-40 flex h-20 items-center justify-between bg-card px-6 border-b border-border transition-all duration-300"
       )}
     >
       {/* Left side - Title and description */}
