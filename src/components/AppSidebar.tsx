@@ -104,10 +104,23 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
   const [activeItem, setActiveItem] = useState<string>("Dashboard")
   const { theme, toggleTheme } = useTheme()
 
-  const toggleMenu = (label: string) => {
-    setOpenMenus((prev) =>
-      prev.includes(label) ? prev.filter((item) => item !== label) : [...prev, label]
-    )
+  const toggleMenu = (label: string, isSubMenu = false) => {
+    setOpenMenus((prev) => {
+      // Se está fechando o menu, apenas remove
+      if (prev.includes(label)) {
+        return prev.filter((item) => item !== label)
+      }
+      
+      // Se é um submenu (ex: Cadastro-Estoque), permite múltiplos
+      if (isSubMenu) {
+        return [...prev, label]
+      }
+      
+      // Se é um menu principal, fecha os outros menus principais e abre apenas este
+      const mainMenuTitles = menuItems.filter(item => item.subItems).map(item => item.title)
+      const filteredMenus = prev.filter(item => !mainMenuTitles.includes(item))
+      return [...filteredMenus, label]
+    })
   }
 
   useEffect(() => {
@@ -189,7 +202,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                         'subItems' in subItem && subItem.subItems ? (
                           <li key={subItem.title}>
                             <button
-                              onClick={() => toggleMenu(`${item.title}-${subItem.title}`)}
+                              onClick={() => toggleMenu(`${item.title}-${subItem.title}`, true)}
                               className="sidebar-item w-full text-sm"
                             >
                               <span className="flex-1 text-left text-[hsl(var(--sidebar-muted))]">
