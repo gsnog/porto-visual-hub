@@ -218,24 +218,24 @@ const GradientCard = ({
 }) => {
   const variantStyles = {
     success: {
-      bg: "from-emerald-500 to-emerald-600",
-      shadow: "shadow-emerald-500/25",
+      bg: "from-emerald-400/80 to-emerald-500/80",
+      shadow: "shadow-emerald-400/20",
     },
     danger: {
-      bg: "from-rose-500 to-rose-600",
-      shadow: "shadow-rose-500/25",
+      bg: "from-rose-400/80 to-rose-500/80",
+      shadow: "shadow-rose-400/20",
     },
     info: {
-      bg: "from-blue-500 to-blue-600",
-      shadow: "shadow-blue-500/25",
+      bg: "from-blue-400/80 to-blue-500/80",
+      shadow: "shadow-blue-400/20",
     },
     warning: {
-      bg: "from-amber-500 to-amber-600",
-      shadow: "shadow-amber-500/25",
+      bg: "from-amber-400/80 to-amber-500/80",
+      shadow: "shadow-amber-400/20",
     },
     neutral: {
-      bg: "from-slate-500 to-slate-600",
-      shadow: "shadow-slate-500/25",
+      bg: "from-slate-400/80 to-slate-500/80",
+      shadow: "shadow-slate-400/20",
     },
   }
 
