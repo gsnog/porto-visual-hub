@@ -151,12 +151,20 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       style={{ background: "hsl(var(--sidebar-bg))" }}
     >
       {/* Logo */}
-      <div className="flex h-20 items-center justify-center border-b border-white/10 px-4">
+      <div className="relative flex h-20 items-center justify-center border-b border-white/10 px-4">
         {collapsed ? (
           <img src={logoIcone} alt="S" className="h-12 object-contain" />
         ) : (
           <img src={logoSerp} alt="SERP" className="h-28 object-contain" />
         )}
+        
+        {/* Toggle button - aligned with logo divider */}
+        <button
+          onClick={onToggle}
+          className="absolute -right-4 bottom-0 translate-y-1/2 grid place-items-center h-8 w-8 rounded-full bg-primary text-white shadow-lg hover:scale-110 transition-transform z-10"
+        >
+          <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -270,15 +278,8 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Footer with toggle button */}
-      <div className="relative border-t border-white/10 p-3 space-y-1">
-        {/* Toggle button - aligned with divider */}
-        <button
-          onClick={onToggle}
-          className="absolute -right-5 -top-5 grid place-items-center h-10 w-10 rounded-full bg-primary text-white shadow-lg hover:scale-110 transition-transform z-10"
-        >
-          <ChevronLeft className={cn("h-5 w-5 transition-transform", collapsed && "rotate-180")} />
-        </button>
+      {/* Footer */}
+      <div className="border-t border-white/10 p-3 space-y-1">
 
         {/* Theme toggle */}
         <button
