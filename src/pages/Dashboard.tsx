@@ -445,7 +445,7 @@ const DashboardGeral = () => {
       {(tipo === "todos" || tipo === "estoque") && (
         <div>
           <h3 className="text-sm font-medium text-muted-foreground mb-3">Estoque</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
             <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" />
             <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" />
