@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { SimpleFormWizard } from "@/components/SimpleFormWizard";
+import { Trash2, ShoppingCart } from "lucide-react";
 
 interface ItemOrdem {
   id: number;
@@ -33,130 +35,140 @@ export default function NovaOrdemCompra() {
   const handleCancelar = () => navigate("/estoque/ordem-compra");
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-foreground">Nova Ordem de Compra</h1>
-
-        <div className="space-y-4 max-w-2xl">
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Unidade</label>
-            <Input 
-              value={formData.unidade} 
-              onChange={(e) => setFormData({ ...formData, unidade: e.target.value })} 
-              placeholder="Digite a unidade" 
-              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] flex-1" 
-            />
-          </div>
-
-          <div className="flex items-center gap-8">
-            <label className="text-foreground font-medium w-40">Setor</label>
-            <Input 
-              value={formData.setor} 
-              onChange={(e) => setFormData({ ...formData, setor: e.target.value })} 
-              placeholder="Digite o setor" 
-              className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] flex-1" 
-            />
-          </div>
-
-          <div className="flex items-start gap-8">
-            <label className="text-foreground font-medium w-40 pt-2">Descrição</label>
-            <div className="flex-1">
-              <Textarea 
-                value={formData.descricao} 
-                onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
-                placeholder="Digite a descrição" 
-                className="bg-[#efefef] !text-[#22265B] px-3 rounded border border-[#22265B] w-80 min-h-[100px]" 
-              />
-            </div>
-          </div>
-
-          <div className="border-t pt-6 space-y-4">
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Item</label>
-              <Input 
-                value={formData.item} 
-                onChange={(e) => setFormData({ ...formData, item: e.target.value })} 
-                placeholder="Nome do item" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-52" 
-              />
+    <SimpleFormWizard title="Nova Ordem de Compra">
+      <Card className="border-border shadow-lg">
+        <CardContent className="p-6 md:p-8">
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+                <ShoppingCart className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">Dados da Ordem de Compra</h2>
+                <p className="text-sm text-muted-foreground">Preencha as informações abaixo</p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Marca</label>
-              <Input 
-                value={formData.marca} 
-                onChange={(e) => setFormData({ ...formData, marca: e.target.value })} 
-                placeholder="Marca" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-52" 
-              />
-            </div>
+            <div className="space-y-4 max-w-2xl">
+              <div className="form-row">
+                <label className="form-label">Unidade</label>
+                <Input 
+                  value={formData.unidade} 
+                  onChange={(e) => setFormData({ ...formData, unidade: e.target.value })} 
+                  placeholder="Digite a unidade" 
+                  className="form-input flex-1" 
+                />
+              </div>
 
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Quantidade</label>
-              <Input 
-                type="number" 
-                value={formData.quantidade} 
-                onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })} 
-                placeholder="Qtd" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] w-40" 
-              />
-            </div>
+              <div className="form-row">
+                <label className="form-label">Setor</label>
+                <Input 
+                  value={formData.setor} 
+                  onChange={(e) => setFormData({ ...formData, setor: e.target.value })} 
+                  placeholder="Digite o setor" 
+                  className="form-input flex-1" 
+                />
+              </div>
 
-            <div className="flex items-center gap-8">
-              <label className="text-foreground font-medium w-40">Especificações</label>
-              <Input 
-                value={formData.especificacoes} 
-                onChange={(e) => setFormData({ ...formData, especificacoes: e.target.value })} 
-                placeholder="Specs" 
-                className="bg-[#efefef] !text-[#22265B] h-10 px-3 rounded border border-[#22265B] flex-1" 
-              />
-            </div>
+              <div className="flex items-start gap-4">
+                <label className="form-label pt-2">Descrição</label>
+                <div className="flex-1">
+                  <Textarea 
+                    value={formData.descricao} 
+                    onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
+                    placeholder="Digite a descrição" 
+                    className="form-input w-80 min-h-[100px]" 
+                  />
+                </div>
+              </div>
 
-            <div className="flex gap-8">
-              <div className="w-40"></div>
-              <Button type="button" onClick={handleAddItem} className="rounded bg-primary hover:bg-primary/90 text-primary-foreground">
-                Adicionar Item
-              </Button>
+              <div className="border-t pt-6 space-y-4">
+                <div className="form-row">
+                  <label className="form-label">Item</label>
+                  <Input 
+                    value={formData.item} 
+                    onChange={(e) => setFormData({ ...formData, item: e.target.value })} 
+                    placeholder="Nome do item" 
+                    className="form-input w-52" 
+                  />
+                </div>
+
+                <div className="form-row">
+                  <label className="form-label">Marca</label>
+                  <Input 
+                    value={formData.marca} 
+                    onChange={(e) => setFormData({ ...formData, marca: e.target.value })} 
+                    placeholder="Marca" 
+                    className="form-input w-52" 
+                  />
+                </div>
+
+                <div className="form-row">
+                  <label className="form-label">Quantidade</label>
+                  <Input 
+                    type="number" 
+                    value={formData.quantidade} 
+                    onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })} 
+                    placeholder="Qtd" 
+                    className="form-input w-40" 
+                  />
+                </div>
+
+                <div className="form-row">
+                  <label className="form-label">Especificações</label>
+                  <Input 
+                    value={formData.especificacoes} 
+                    onChange={(e) => setFormData({ ...formData, especificacoes: e.target.value })} 
+                    placeholder="Specs" 
+                    className="form-input flex-1" 
+                  />
+                </div>
+
+                <div className="form-row">
+                  <label className="w-40"></label>
+                  <Button type="button" onClick={handleAddItem} className="btn-action">
+                    Adicionar Item
+                  </Button>
+                </div>
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-center">Item</TableHead>
+                    <TableHead className="text-center">Marca</TableHead>
+                    <TableHead className="text-center">Quantidade</TableHead>
+                    <TableHead className="text-center">Especificações</TableHead>
+                    <TableHead className="text-center">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {itens.length === 0 ? (
+                    <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
+                  ) : (
+                    itens.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-center">{item.item}</TableCell>
+                        <TableCell className="text-center">{item.marca}</TableCell>
+                        <TableCell className="text-center">{item.quantidade}</TableCell>
+                        <TableCell className="text-center">{item.especificacoes}</TableCell>
+                        <TableCell className="text-center">
+                          <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+
+              <div className="flex gap-3 pt-4">
+                <Button onClick={handleSalvar} className="btn-action px-6">Salvar</Button>
+                <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
+              </div>
             </div>
           </div>
-
-          <div className="rounded overflow-hidden border border-[#E3E3E3]">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-[#3a3f5c] hover:bg-[#3a3f5c] cursor-default select-none">
-                  <TableHead className="!text-white font-medium text-center">Item</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Marca</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Quantidade</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Especificações</TableHead>
-                  <TableHead className="!text-white font-medium text-center">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {itens.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
-                ) : (
-                  itens.map((item) => (
-                    <TableRow key={item.id} className="bg-white text-black transition-colors hover:bg-[#22265B] hover:text-white">
-                      <TableCell className="text-center">{item.item}</TableCell>
-                      <TableCell className="text-center">{item.marca}</TableCell>
-                      <TableCell className="text-center">{item.quantidade}</TableCell>
-                      <TableCell className="text-center">{item.especificacoes}</TableCell>
-                      <TableCell className="text-center">
-                        <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <Button onClick={handleSalvar} className="rounded bg-primary hover:bg-primary/90 text-primary-foreground px-6">Salvar</Button>
-            <Button onClick={handleCancelar} variant="destructive" className="rounded px-6">Cancelar</Button>
-          </div>
-        </div>
-      </div>
-    </div>
+        </CardContent>
+      </Card>
+    </SimpleFormWizard>
   );
 }
