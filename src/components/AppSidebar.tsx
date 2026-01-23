@@ -159,14 +159,6 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         )}
       </div>
 
-      {/* Toggle button */}
-      <button
-        onClick={onToggle}
-        className="absolute -right-4 top-16 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:scale-110 transition-transform"
-      >
-        <ChevronLeft className={cn("h-5 w-5 transition-transform", collapsed && "rotate-180")} />
-      </button>
-
       {/* Navigation */}
       <nav className="flex-1 sidebar-nav-scroll px-3 py-4">
         <ul className="space-y-1">
@@ -278,8 +270,16 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Footer */}
-      <div className="border-t border-white/10 p-3 space-y-1">
+      {/* Footer with toggle button */}
+      <div className="relative border-t border-white/10 p-3 space-y-1">
+        {/* Toggle button - aligned with divider */}
+        <button
+          onClick={onToggle}
+          className="absolute -right-5 -top-5 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:scale-110 transition-transform z-10"
+        >
+          <ChevronLeft className={cn("h-5 w-5 transition-transform", collapsed && "rotate-180")} />
+        </button>
+
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
