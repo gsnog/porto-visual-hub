@@ -308,9 +308,9 @@ export default function Cadastro() {
       <div className="max-w-5xl w-full">
         {/* Progress Steps */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-4">
             {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center flex-1">
+              <div key={step.id} className="flex items-center">
                 <button
                   onClick={() => goToStep(step.id)}
                   className={cn(
@@ -350,7 +350,7 @@ export default function Cadastro() {
                 {index < steps.length - 1 && (
                   <div
                     className={cn(
-                      "flex-1 h-1 mx-2 rounded-full transition-colors duration-300",
+                      "w-12 h-1 mx-2 rounded-full transition-colors duration-300",
                       currentStep > step.id ? "bg-green-500" : "bg-muted"
                     )}
                   />

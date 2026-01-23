@@ -78,7 +78,6 @@ export const opcoesSelecao = {
   nacionalidade: [
     { value: "brasileira", label: "Brasileira" },
     { value: "estrangeira", label: "Estrangeira" },
-    { value: "outros", label: "Outros" },
   ],
   racaCor: [
     { value: "branca", label: "Branca" },
