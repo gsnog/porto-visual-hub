@@ -1,19 +1,34 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { Package, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+
+const validationFields = [
+  { name: "forma", label: "Forma", required: true, minLength: 2, maxLength: 100 },
+];
 
 const NovaFormaApresentacao = () => {
   const navigate = useNavigate();
-  const { handleSalvar, isSaving } = useSaveWithDelay({
-    redirectTo: "/cadastro/estoque/formas-apresentacao",
-    successMessage: "Forma de apresentação salva!",
-    successDescription: "O registro foi salvo com sucesso.",
-  });
+  const { handleSave, isSaving } = useSaveWithDelay();
+
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation({ forma: "" }, validationFields);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/cadastro/estoque/formas-apresentacao", "Forma de apresentação salva com sucesso!");
+    }
+  };
 
   const handleCancelar = () => {
     navigate("/cadastro/estoque/formas-apresentacao");
@@ -35,10 +50,15 @@ const NovaFormaApresentacao = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Forma <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Forma"
+                required
+                value={formData.forma}
+                onChange={(e) => setFieldValue("forma", e.target.value)}
+                onBlur={() => setFieldTouched("forma")}
+                error={getFieldError("forma")}
+                touched={touched.forma}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">

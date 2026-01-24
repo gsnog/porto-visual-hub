@@ -1,20 +1,37 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { CircleDollarSign, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedSelect } from "@/components/ui/validated-select";
+
+const validationFields = [
+  { name: "diretoria", label: "Diretoria", required: true },
+  { name: "gerencia", label: "Gerência", required: false },
+  { name: "departamento", label: "Departamento", required: false },
+];
 
 const NovoCentroCusto = () => {
   const navigate = useNavigate();
-  const { handleSalvar, isSaving } = useSaveWithDelay({
-    redirectTo: "/cadastro/financeiro/centro-custo",
-    successMessage: "Centro de custo salvo!",
-    successDescription: "O registro foi salvo com sucesso.",
-  });
+  const { handleSave, isSaving } = useSaveWithDelay();
+
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation({ diretoria: "", gerencia: "", departamento: "" }, validationFields);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/cadastro/financeiro/centro-custo", "Centro de custo salvo com sucesso!");
+    }
+  };
 
   const handleCancelar = () => {
     navigate("/cadastro/financeiro/centro-custo");
@@ -37,32 +54,42 @@ const NovoCentroCusto = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Diretoria <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="dir1">Diretoria 1</SelectItem>
-                      <SelectItem value="dir2">Diretoria 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
+                <ValidatedSelect
+                  label="Diretoria"
+                  required
+                  placeholder="Selecionar"
+                  options={[
+                    { value: "dir1", label: "Diretoria 1" },
+                    { value: "dir2", label: "Diretoria 2" },
+                  ]}
+                  value={formData.diretoria}
+                  onValueChange={(value) => setFieldValue("diretoria", value)}
+                  onBlur={() => setFieldTouched("diretoria")}
+                  error={getFieldError("diretoria")}
+                  touched={touched.diretoria}
+                />
+                <Button className="btn-action px-6">Adicionar</Button>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Gerência</Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Gerência"
+                value={formData.gerencia}
+                onChange={(e) => setFieldValue("gerencia", e.target.value)}
+                onBlur={() => setFieldTouched("gerencia")}
+                error={getFieldError("gerencia")}
+                touched={touched.gerencia}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Departamento</Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Departamento"
+                value={formData.departamento}
+                onChange={(e) => setFieldValue("departamento", e.target.value)}
+                onBlur={() => setFieldTouched("departamento")}
+                error={getFieldError("departamento")}
+                touched={touched.departamento}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">

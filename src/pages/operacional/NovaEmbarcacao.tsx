@@ -1,19 +1,42 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { Ship, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedSelect } from "@/components/ui/validated-select";
+
+const validationFields = [
+  { name: "nome", label: "Nome", required: true, minLength: 2, maxLength: 100 },
+  { name: "setores", label: "Setores", required: true },
+  { name: "cliente", label: "Cliente", required: true },
+  { name: "dimensoes", label: "Dimensões", required: true },
+];
 
 const NovaEmbarcacao = () => {
   const navigate = useNavigate();
-  const { isSaving, handleSave } = useSaveWithDelay();
+  const { handleSave, isSaving } = useSaveWithDelay();
 
-  const handleSalvar = () => {
-    handleSave("/operacional/embarcacoes", "Embarcação salva com sucesso!");
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation(
+    { nome: "", setores: "", cliente: "", dimensoes: "" },
+    validationFields
+  );
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/operacional/embarcacoes", "Embarcação salva com sucesso!");
+    }
   };
 
   const handleCancelar = () => {
@@ -36,49 +59,63 @@ const NovaEmbarcacao = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Nome <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Nome"
+                required
+                value={formData.nome}
+                onChange={(e) => setFieldValue("nome", e.target.value)}
+                onBlur={() => setFieldTouched("nome")}
+                error={getFieldError("nome")}
+                touched={touched.nome}
+              />
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Setores <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar Setores" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="setor1">Setor 1</SelectItem>
-                      <SelectItem value="setor2">Setor 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>Adicionar</Button>
-                </div>
+                <ValidatedSelect
+                  label="Setores"
+                  required
+                  placeholder="Selecionar Setores"
+                  options={[
+                    { value: "setor1", label: "Setor 1" },
+                    { value: "setor2", label: "Setor 2" },
+                  ]}
+                  value={formData.setores}
+                  onValueChange={(value) => setFieldValue("setores", value)}
+                  onBlur={() => setFieldTouched("setores")}
+                  error={getFieldError("setores")}
+                  touched={touched.setores}
+                />
+                <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>Adicionar</Button>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Cliente <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="cliente1">Cliente 1</SelectItem>
-                      <SelectItem value="cliente2">Cliente 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}>Adicionar</Button>
-                </div>
+                <ValidatedSelect
+                  label="Cliente"
+                  required
+                  placeholder="Selecionar"
+                  options={[
+                    { value: "cliente1", label: "Cliente 1" },
+                    { value: "cliente2", label: "Cliente 2" },
+                  ]}
+                  value={formData.cliente}
+                  onValueChange={(value) => setFieldValue("cliente", value)}
+                  onBlur={() => setFieldTouched("cliente")}
+                  error={getFieldError("cliente")}
+                  touched={touched.cliente}
+                />
+                <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}>Adicionar</Button>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Dimensões <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Dimensões"
+                required
+                value={formData.dimensoes}
+                onChange={(e) => setFieldValue("dimensoes", e.target.value)}
+                onBlur={() => setFieldTouched("dimensoes")}
+                error={getFieldError("dimensoes")}
+                touched={touched.dimensoes}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">

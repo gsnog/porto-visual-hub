@@ -1,20 +1,38 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FileText, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedSelect } from "@/components/ui/validated-select";
+
+const validationFields = [
+  { name: "categoria", label: "Categoria", required: false },
+  { name: "subcategoria", label: "Subcategoria", required: true },
+  { name: "contabil", label: "Contábil", required: true },
+  { name: "id", label: "ID", required: true },
+];
 
 const NovoPlanoContas = () => {
   const navigate = useNavigate();
-  const { handleSalvar, isSaving } = useSaveWithDelay({
-    redirectTo: "/cadastro/financeiro/plano-contas",
-    successMessage: "Plano de contas salvo!",
-    successDescription: "O registro foi salvo com sucesso.",
-  });
+  const { handleSave, isSaving } = useSaveWithDelay();
+
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation({ categoria: "", subcategoria: "", contabil: "", id: "" }, validationFields);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/cadastro/financeiro/plano-contas", "Plano de contas salvo com sucesso!");
+    }
+  };
 
   const handleCancelar = () => {
     navigate("/cadastro/financeiro/plano-contas");
@@ -37,59 +55,69 @@ const NovoPlanoContas = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Categoria</Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="cat1">Categoria 1</SelectItem>
-                      <SelectItem value="cat2">Categoria 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-4">Adicionar</Button>
-                </div>
+                <ValidatedSelect
+                  label="Categoria"
+                  placeholder="Selecionar"
+                  options={[
+                    { value: "cat1", label: "Categoria 1" },
+                    { value: "cat2", label: "Categoria 2" },
+                  ]}
+                  value={formData.categoria}
+                  onValueChange={(value) => setFieldValue("categoria", value)}
+                  onBlur={() => setFieldTouched("categoria")}
+                  error={getFieldError("categoria")}
+                  touched={touched.categoria}
+                />
+                <Button className="btn-action px-4">Adicionar</Button>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Subcategoria <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="sub1">Subcategoria 1</SelectItem>
-                      <SelectItem value="sub2">Subcategoria 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-4">Adicionar</Button>
-                </div>
+                <ValidatedSelect
+                  label="Subcategoria"
+                  required
+                  placeholder="Selecionar"
+                  options={[
+                    { value: "sub1", label: "Subcategoria 1" },
+                    { value: "sub2", label: "Subcategoria 2" },
+                  ]}
+                  value={formData.subcategoria}
+                  onValueChange={(value) => setFieldValue("subcategoria", value)}
+                  onBlur={() => setFieldTouched("subcategoria")}
+                  error={getFieldError("subcategoria")}
+                  touched={touched.subcategoria}
+                />
+                <Button className="btn-action px-4">Adicionar</Button>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Contábil <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="cont1">Contábil 1</SelectItem>
-                      <SelectItem value="cont2">Contábil 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-4">Adicionar</Button>
-                </div>
+                <ValidatedSelect
+                  label="Contábil"
+                  required
+                  placeholder="Selecionar"
+                  options={[
+                    { value: "cont1", label: "Contábil 1" },
+                    { value: "cont2", label: "Contábil 2" },
+                  ]}
+                  value={formData.contabil}
+                  onValueChange={(value) => setFieldValue("contabil", value)}
+                  onBlur={() => setFieldTouched("contabil")}
+                  error={getFieldError("contabil")}
+                  touched={touched.contabil}
+                />
+                <Button className="btn-action px-4">Adicionar</Button>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">ID <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="ID"
+                required
+                value={formData.id}
+                onChange={(e) => setFieldValue("id", e.target.value)}
+                onBlur={() => setFieldTouched("id")}
+                error={getFieldError("id")}
+                touched={touched.id}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">
