@@ -1,20 +1,51 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { Truck, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+
+const validationFields = [
+  { name: "cnpj", label: "CNPJ", required: false },
+  { name: "cpf", label: "CPF", required: false },
+  { name: "nome", label: "Nome", required: true, minLength: 2, maxLength: 100 },
+  { name: "razaoSocial", label: "Razão Social", required: false },
+  { name: "endereco", label: "Endereço", required: false },
+  { name: "vendedor", label: "Vendedor", required: false },
+  { 
+    name: "email", 
+    label: "Email", 
+    required: false, 
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    patternMessage: "Email inválido"
+  },
+  { name: "telefone", label: "Telefone", required: false },
+];
 
 const NovoFornecedor = () => {
   const navigate = useNavigate();
-  const { handleSalvar, isSaving } = useSaveWithDelay({
-    redirectTo: "/cadastro/estoque/fornecedores",
-    successMessage: "Fornecedor salvo!",
-    successDescription: "O registro foi salvo com sucesso.",
-  });
+  const { handleSave, isSaving } = useSaveWithDelay();
+
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation(
+    { cnpj: "", cpf: "", nome: "", razaoSocial: "", endereco: "", vendedor: "", email: "", telefone: "" },
+    validationFields
+  );
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/cadastro/estoque/fornecedores", "Fornecedor salvo com sucesso!");
+    }
+  };
 
   const handleCancelar = () => {
     navigate("/cadastro/estoque/fornecedores");
@@ -37,53 +68,89 @@ const NovoFornecedor = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">CNPJ</Label>
-                <div className="flex gap-3">
-                  <Input placeholder="" className="form-input" />
-                  <Button className="btn-action px-6">Consultar</Button>
-                </div>
+                <ValidatedInput
+                  label="CNPJ"
+                  value={formData.cnpj}
+                  onChange={(e) => setFieldValue("cnpj", e.target.value)}
+                  onBlur={() => setFieldTouched("cnpj")}
+                  error={getFieldError("cnpj")}
+                  touched={touched.cnpj}
+                />
+                <Button className="btn-action px-6 mt-2">Consultar</Button>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">CPF</Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="CPF"
+                value={formData.cpf}
+                onChange={(e) => setFieldValue("cpf", e.target.value)}
+                onBlur={() => setFieldTouched("cpf")}
+                error={getFieldError("cpf")}
+                touched={touched.cpf}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Nome <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Nome"
+                required
+                value={formData.nome}
+                onChange={(e) => setFieldValue("nome", e.target.value)}
+                onBlur={() => setFieldTouched("nome")}
+                error={getFieldError("nome")}
+                touched={touched.nome}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Razão Social</Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Razão Social"
+                value={formData.razaoSocial}
+                onChange={(e) => setFieldValue("razaoSocial", e.target.value)}
+                onBlur={() => setFieldTouched("razaoSocial")}
+                error={getFieldError("razaoSocial")}
+                touched={touched.razaoSocial}
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Endereço</Label>
-                <Textarea placeholder="" className="form-input min-h-[100px]" />
-              </div>
+              <ValidatedTextarea
+                label="Endereço"
+                value={formData.endereco}
+                onChange={(e) => setFieldValue("endereco", e.target.value)}
+                onBlur={() => setFieldTouched("endereco")}
+                error={getFieldError("endereco")}
+                touched={touched.endereco}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Vendedor</Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Vendedor"
+                value={formData.vendedor}
+                onChange={(e) => setFieldValue("vendedor", e.target.value)}
+                onBlur={() => setFieldTouched("vendedor")}
+                error={getFieldError("vendedor")}
+                touched={touched.vendedor}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Email</Label>
-                <Input type="email" placeholder="fornecedor@example.com" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Email"
+                type="email"
+                placeholder="fornecedor@example.com"
+                value={formData.email}
+                onChange={(e) => setFieldValue("email", e.target.value)}
+                onBlur={() => setFieldTouched("email")}
+                error={getFieldError("email")}
+                touched={touched.email}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Telefone</Label>
-                <Input placeholder="(99) 9999-9999" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Telefone"
+                placeholder="(99) 9999-9999"
+                value={formData.telefone}
+                onChange={(e) => setFieldValue("telefone", e.target.value)}
+                onBlur={() => setFieldTouched("telefone")}
+                error={getFieldError("telefone")}
+                touched={touched.telefone}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">

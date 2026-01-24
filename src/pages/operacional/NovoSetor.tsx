@@ -1,18 +1,33 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { Layers, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+
+const validationFields = [
+  { name: "nome", label: "Nome", required: true, minLength: 2, maxLength: 100 },
+];
 
 const NovoSetor = () => {
   const navigate = useNavigate();
-  const { isSaving, handleSave } = useSaveWithDelay();
+  const { handleSave, isSaving } = useSaveWithDelay();
 
-  const handleSalvar = () => {
-    handleSave("/operacional/setor", "Setor salvo com sucesso!");
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation({ nome: "" }, validationFields);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/operacional/setor", "Setor salvo com sucesso!");
+    }
   };
 
   const handleCancelar = () => {
@@ -35,14 +50,19 @@ const NovoSetor = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Nome <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Nome"
+                required
+                value={formData.nome}
+                onChange={(e) => setFieldValue("nome", e.target.value)}
+                onBlur={() => setFieldTouched("nome")}
+                error={getFieldError("nome")}
+                touched={touched.nome}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6" disabled={isSaving}>
+              <Button onClick={handleSalvar} disabled={isSaving} className="btn-action px-6">
                 {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
               </Button>
               <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6" disabled={isSaving}>Cancelar</Button>

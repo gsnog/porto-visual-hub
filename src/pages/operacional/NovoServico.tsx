@@ -1,19 +1,36 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { Wrench, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+
+const validationFields = [
+  { name: "nome", label: "Nome", required: true, minLength: 2, maxLength: 100 },
+  { name: "valor", label: "Valor", required: true },
+  { name: "descricao", label: "Descrição", required: true, minLength: 5 },
+];
 
 const NovoServico = () => {
   const navigate = useNavigate();
-  const { isSaving, handleSave } = useSaveWithDelay();
+  const { handleSave, isSaving } = useSaveWithDelay();
 
-  const handleSalvar = () => {
-    handleSave("/operacional/servicos", "Serviço salvo com sucesso!");
+  const {
+    formData,
+    setFieldValue,
+    setFieldTouched,
+    validateAll,
+    getFieldError,
+    touched,
+  } = useFormValidation({ nome: "", valor: "0", descricao: "" }, validationFields);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/operacional/servicos", "Serviço salvo com sucesso!");
+    }
   };
 
   const handleCancelar = () => {
@@ -36,22 +53,38 @@ const NovoServico = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Nome <span className="text-destructive">*</span></Label>
-                <Input placeholder="" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Nome"
+                required
+                value={formData.nome}
+                onChange={(e) => setFieldValue("nome", e.target.value)}
+                onBlur={() => setFieldTouched("nome")}
+                error={getFieldError("nome")}
+                touched={touched.nome}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Valor <span className="text-destructive">*</span></Label>
-                <Input defaultValue="0" className="form-input" />
-              </div>
+              <ValidatedInput
+                label="Valor"
+                required
+                value={formData.valor}
+                onChange={(e) => setFieldValue("valor", e.target.value)}
+                onBlur={() => setFieldTouched("valor")}
+                error={getFieldError("valor")}
+                touched={touched.valor}
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Descrição <span className="text-destructive">*</span></Label>
-                <Textarea placeholder="" className="form-input min-h-[120px]" />
-              </div>
+              <ValidatedTextarea
+                label="Descrição"
+                required
+                className="min-h-[120px]"
+                value={formData.descricao}
+                onChange={(e) => setFieldValue("descricao", e.target.value)}
+                onBlur={() => setFieldTouched("descricao")}
+                error={getFieldError("descricao")}
+                touched={touched.descricao}
+              />
             </div>
 
             <div className="flex gap-3 pt-4">
