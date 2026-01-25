@@ -9,6 +9,8 @@ import { ArrowLeft, Trash2, Plus, Landmark } from "lucide-react"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
 import { SimpleFormWizard } from "@/components/SimpleFormWizard"
+import { FormActionBar } from "@/components/FormActionBar"
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
 
 type Asset = {
   id: string
@@ -69,9 +71,11 @@ const Patrimonio = () => {
     setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
   }
 
-  const handleSubmitAdd = () => {
+  const { handleSave, isSaving } = useSaveWithDelay()
+
+  const handleSubmitAdd = async () => {
     console.log("Adding asset:", formData)
-    setCurrentView('list')
+    await handleSave("/patrimonio", "Patrimônio salvo com sucesso!", "O registro foi adicionado ao sistema.")
     setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
   }
 
@@ -235,10 +239,11 @@ const Patrimonio = () => {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button onClick={handleSubmitAdd} className="btn-action px-6">Salvar</Button>
-                <Button onClick={handleCancelAdd} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-              </div>
+              <FormActionBar
+                onSave={handleSubmitAdd}
+                onCancel={handleCancelAdd}
+                isSaving={isSaving}
+              />
             </div>
           </CardContent>
         </Card>
