@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { Calculator, Loader2 } from "lucide-react";
+import { FormActionBar } from "@/components/FormActionBar";
+import { Calculator } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovoContabil = () => {
@@ -41,12 +41,11 @@ const NovoContabil = () => {
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} disabled={isSaving} className="btn-action px-6">
-                {isSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</> : "Salvar"}
-              </Button>
-              <Button onClick={handleCancelar} disabled={isSaving} variant="destructive" className="btn-destructive px-6">Cancelar</Button>
-            </div>
+            <FormActionBar
+              onSave={handleSalvar}
+              onCancel={handleCancelar}
+              isSaving={isSaving}
+            />
           </div>
         </CardContent>
       </Card>

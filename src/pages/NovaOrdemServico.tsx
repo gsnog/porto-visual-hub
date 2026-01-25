@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { ClipboardCheck, Loader2 } from "lucide-react";
+import { FormActionBar } from "@/components/FormActionBar";
+import { ClipboardCheck } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 export default function NovaOrdemServico() {
@@ -60,12 +60,11 @@ export default function NovaOrdemServico() {
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6" disabled={isSaving}>
-                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
-              </Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6" disabled={isSaving}>Cancelar</Button>
-            </div>
+            <FormActionBar
+              onSave={handleSalvar}
+              onCancel={handleCancelar}
+              isSaving={isSaving}
+            />
           </div>
         </CardContent>
       </Card>
