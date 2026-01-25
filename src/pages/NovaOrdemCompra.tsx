@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
-import { Trash2, ShoppingCart, Loader2 } from "lucide-react";
+import { FormActionBar } from "@/components/FormActionBar";
+import { Trash2, ShoppingCart } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 interface ItemOrdem {
@@ -168,12 +169,11 @@ export default function NovaOrdemCompra() {
               </TableBody>
             </Table>
 
-            <div className="flex gap-3 pt-4">
-              <Button onClick={handleSalvar} className="btn-action px-6" disabled={isSaving}>
-                {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Salvar"}
-              </Button>
-              <Button onClick={handleCancelar} variant="destructive" className="btn-destructive px-6" disabled={isSaving}>Cancelar</Button>
-            </div>
+            <FormActionBar
+              onSave={handleSalvar}
+              onCancel={handleCancelar}
+              isSaving={isSaving}
+            />
           </div>
         </CardContent>
       </Card>
