@@ -1,11 +1,11 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FileText, Users } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
 import { SimpleFormWizard } from "@/components/SimpleFormWizard"
 import { FormActionBar } from "@/components/FormActionBar"
+import { FileText, Users } from "lucide-react"
 
 export default function RelatorioContasReceber() {
   const navigate = useNavigate()
@@ -14,33 +14,33 @@ export default function RelatorioContasReceber() {
     console.log("Gerando relatório...")
   }
 
-  return (
-    <div className="flex flex-col h-full bg-background">
-      <div className="space-y-6">
-        <SimpleFormWizard currentStep="Relatório Contas a Receber">
-          <></>
-        </SimpleFormWizard>
+  const handleVoltar = () => {
+    navigate("/financeiro/contas-receber")
+  }
 
-        <Card className="shadow-md">
-          <CardContent className="p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="p-3 rounded-lg bg-primary/10">
-                <FileText className="w-6 h-6 text-primary" />
+  return (
+    <SimpleFormWizard title="Relatório Contas a Receber">
+      <Card className="border-border shadow-lg">
+        <CardContent className="p-6 md:p-8">
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-foreground">Relatório Contas a Receber</h2>
+                <h2 className="text-xl font-semibold text-foreground">Filtros do Relatório</h2>
                 <p className="text-sm text-muted-foreground">Configure os filtros para gerar o relatório</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="space-y-2">
-                <Label>Tipo</Label>
+                <Label className="text-sm font-medium">Tipo</Label>
                 <Select defaultValue="contas-receber">
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="form-input">
                     <SelectValue placeholder="Contas a Receber" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover">
                     <SelectItem value="contas-receber">Contas a Receber</SelectItem>
                     <SelectItem value="contas-pagar">Contas a Pagar</SelectItem>
                   </SelectContent>
@@ -48,12 +48,12 @@ export default function RelatorioContasReceber() {
               </div>
 
               <div className="space-y-2">
-                <Label>Data</Label>
+                <Label className="text-sm font-medium">Data</Label>
                 <Select defaultValue="vencimento">
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="form-input">
                     <SelectValue placeholder="Data de Vencimento" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover">
                     <SelectItem value="vencimento">Data de Vencimento</SelectItem>
                     <SelectItem value="faturamento">Data de Faturamento</SelectItem>
                     <SelectItem value="lancamento">Data de Lançamento</SelectItem>
@@ -62,12 +62,12 @@ export default function RelatorioContasReceber() {
               </div>
 
               <div className="space-y-2">
-                <Label>Filtrar por</Label>
+                <Label className="text-sm font-medium">Filtrar por</Label>
                 <Select defaultValue="anual">
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="form-input">
                     <SelectValue placeholder="Anual" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover">
                     <SelectItem value="anual">Anual</SelectItem>
                     <SelectItem value="mensal">Mensal</SelectItem>
                     <SelectItem value="semanal">Semanal</SelectItem>
@@ -76,25 +76,25 @@ export default function RelatorioContasReceber() {
               </div>
 
               <div className="space-y-2">
-                <Label>Ano</Label>
-                <Input placeholder="2025" className="w-full bg-[#efefef]" />
+                <Label className="text-sm font-medium">Ano</Label>
+                <Input placeholder="2025" className="form-input" />
               </div>
             </div>
 
-            <div className="space-y-4 mb-8">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Users className="w-5 h-5 text-yellow-500" />
-                Relacionados
-              </h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">Relacionados</h3>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <Label>Cliente</Label>
+                  <Label className="text-sm font-medium">Cliente</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="cliente1">Cliente 1</SelectItem>
                       <SelectItem value="cliente2">Cliente 2</SelectItem>
                     </SelectContent>
@@ -102,12 +102,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Conta Bancária</Label>
+                  <Label className="text-sm font-medium">Conta Bancária</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="conta1">Conta 1</SelectItem>
                       <SelectItem value="conta2">Conta 2</SelectItem>
                     </SelectContent>
@@ -115,12 +115,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Categoria</Label>
+                  <Label className="text-sm font-medium">Categoria</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="cat1">Categoria 1</SelectItem>
                       <SelectItem value="cat2">Categoria 2</SelectItem>
                     </SelectContent>
@@ -128,12 +128,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Sub Categoria</Label>
+                  <Label className="text-sm font-medium">Sub Categoria</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="subcat1">Sub Categoria 1</SelectItem>
                       <SelectItem value="subcat2">Sub Categoria 2</SelectItem>
                     </SelectContent>
@@ -141,12 +141,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Contábil</Label>
+                  <Label className="text-sm font-medium">Contábil</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="contabil1">Contábil 1</SelectItem>
                       <SelectItem value="contabil2">Contábil 2</SelectItem>
                     </SelectContent>
@@ -154,12 +154,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Plano de Contas</Label>
+                  <Label className="text-sm font-medium">Plano de Contas</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="plano1">Plano 1</SelectItem>
                       <SelectItem value="plano2">Plano 2</SelectItem>
                     </SelectContent>
@@ -167,12 +167,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Diretoria</Label>
+                  <Label className="text-sm font-medium">Diretoria</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="diretoria1">Diretoria 1</SelectItem>
                       <SelectItem value="diretoria2">Diretoria 2</SelectItem>
                     </SelectContent>
@@ -180,12 +180,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Gerência</Label>
+                  <Label className="text-sm font-medium">Gerência</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="gerencia1">Gerência 1</SelectItem>
                       <SelectItem value="gerencia2">Gerência 2</SelectItem>
                     </SelectContent>
@@ -193,12 +193,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Departamento</Label>
+                  <Label className="text-sm font-medium">Departamento</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="depto1">Departamento 1</SelectItem>
                       <SelectItem value="depto2">Departamento 2</SelectItem>
                     </SelectContent>
@@ -206,12 +206,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Centro de Receita</Label>
+                  <Label className="text-sm font-medium">Centro de Receita</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="centro1">Centro 1</SelectItem>
                       <SelectItem value="centro2">Centro 2</SelectItem>
                     </SelectContent>
@@ -219,12 +219,12 @@ export default function RelatorioContasReceber() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Status</Label>
+                  <Label className="text-sm font-medium">Status</Label>
                   <Select>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="form-input">
                       <SelectValue placeholder="---" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover">
                       <SelectItem value="aberto">Em Aberto</SelectItem>
                       <SelectItem value="efetuado">Efetuado</SelectItem>
                       <SelectItem value="vencido">Vencido</SelectItem>
@@ -236,14 +236,14 @@ export default function RelatorioContasReceber() {
 
             <FormActionBar
               onSave={handleGerar}
-              onCancel={() => navigate("/financeiro/contas-receber")}
+              onCancel={handleVoltar}
               isSaving={false}
               saveLabel="Gerar"
               cancelLabel="Voltar"
             />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          </div>
+        </CardContent>
+      </Card>
+    </SimpleFormWizard>
   )
 }
