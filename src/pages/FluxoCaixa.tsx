@@ -44,7 +44,7 @@ const FluxoCaixa = () => {
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
-          <Button className="gap-2">
+          <Button onClick={() => navigate("/financeiro/fluxo-caixa/nova")} className="gap-2">
             <Plus className="w-4 h-4" />
             Adicionar Transação
           </Button>
