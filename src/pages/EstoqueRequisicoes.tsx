@@ -40,7 +40,7 @@ export default function EstoqueRequisicoes() {
             <Plus className="w-4 h-4" />
             Adicionar
           </Button>
-          <Button variant="outline" className="gap-2 border-border">
+          <Button onClick={() => navigate("/estoque/requisicoes/relatorio")} variant="outline" className="gap-2 border-border">
             <FileText className="w-4 h-4" />
             Relatório
           </Button>

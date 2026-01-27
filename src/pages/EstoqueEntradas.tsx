@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { FileText, Plus, Upload, ChevronDown } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
@@ -17,7 +15,6 @@ const mockEntradas = [
 
 export default function EstoqueEntradas() {
   const navigate = useNavigate()
-  const [showRelatorio, setShowRelatorio] = useState(false)
   const [filterNome, setFilterNome] = useState("")
   const [filterNFe, setFilterNFe] = useState("")
   const [filterDataInicio, setFilterDataInicio] = useState("")
@@ -51,7 +48,7 @@ export default function EstoqueEntradas() {
             <ChevronDown className="w-4 h-4" />
           </Button>
           <Button 
-            onClick={() => setShowRelatorio(!showRelatorio)} 
+            onClick={() => navigate("/estoque/entradas/relatorio")} 
             variant="outline"
             className="gap-2 border-border"
           >
@@ -59,49 +56,6 @@ export default function EstoqueEntradas() {
             Relatório
           </Button>
         </div>
-
-        {showRelatorio && (
-          <div className="filter-card">
-            <div className="flex flex-wrap gap-4 items-end">
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Filtrar por:</label>
-                <Select defaultValue="anual">
-                  <SelectTrigger className="filter-input w-28">
-                    <SelectValue placeholder="Anual" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="anual">Anual</SelectItem>
-                    <SelectItem value="mensal">Mensal</SelectItem>
-                    <SelectItem value="semanal">Semanal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Ano:</label>
-                <Input className="filter-input w-32" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Fornecedor:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Item:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Nota Fiscal:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Unidade:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <Button className="rounded bg-success hover:bg-success/90 text-white h-10 transition-all duration-200">
-                Gerar Relatório
-              </Button>
-            </div>
-          </div>
-        )}
 
         <FilterSection
           fields={[

@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
 import { FileText, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
@@ -17,7 +15,6 @@ const mockSaidas = [
 
 export default function EstoqueSaidas() {
   const navigate = useNavigate()
-  const [showRelatorio, setShowRelatorio] = useState(false)
   const [filterNome, setFilterNome] = useState("")
   const [filterDataInicio, setFilterDataInicio] = useState("")
   const [filterDataFim, setFilterDataFim] = useState("")
@@ -40,7 +37,7 @@ export default function EstoqueSaidas() {
             Adicionar Saída
           </Button>
           <Button 
-            onClick={() => setShowRelatorio(!showRelatorio)} 
+            onClick={() => navigate("/estoque/saidas/relatorio")} 
             variant="outline"
             className="gap-2 border-border"
           >
@@ -48,49 +45,6 @@ export default function EstoqueSaidas() {
             Relatório
           </Button>
         </div>
-
-        {showRelatorio && (
-          <div className="filter-card">
-            <div className="flex flex-wrap gap-4 items-end">
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Filtrar por:</label>
-                <Select defaultValue="anual">
-                  <SelectTrigger className="filter-input w-28">
-                    <SelectValue placeholder="Anual" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="anual">Anual</SelectItem>
-                    <SelectItem value="mensal">Mensal</SelectItem>
-                    <SelectItem value="semanal">Semanal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Ano:</label>
-                <Input className="filter-input w-32" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Requisitante:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Item:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Setor:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="filter-label">Unidade:</label>
-                <Input className="filter-input w-36" />
-              </div>
-              <Button className="rounded bg-green-600 hover:bg-green-700 text-white h-10">
-                Gerar Relatório
-              </Button>
-            </div>
-          </div>
-        )}
 
         <FilterSection
           fields={[
