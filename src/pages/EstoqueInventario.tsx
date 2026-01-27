@@ -1,7 +1,10 @@
+import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useState, useMemo } from "react"
+import { useNavigate } from "react-router-dom"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
+import { FileText } from "lucide-react"
 
 const mockInventario = [
   { id: 1, item: "Parafuso M8", quantidade: 250, unidade: "Almoxarifado SP" },
@@ -12,6 +15,7 @@ const mockInventario = [
 ]
 
 export default function EstoqueInventario() {
+  const navigate = useNavigate()
   const [filterNome, setFilterNome] = useState("")
   const [filterCidade, setFilterCidade] = useState("")
 
@@ -28,6 +32,13 @@ export default function EstoqueInventario() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
+        <div className="flex flex-wrap gap-3 items-center">
+          <Button onClick={() => navigate("/estoque/inventario/relatorio")} variant="outline" className="gap-2 border-border">
+            <FileText className="w-4 h-4" />
+            Relatório
+          </Button>
+        </div>
+
         <FilterSection
           fields={[
             {

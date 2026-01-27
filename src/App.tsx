@@ -25,13 +25,18 @@ import SaidasPendentes from "./pages/SaidasPendentes";
 import EstoqueEntradas from "./pages/EstoqueEntradas";
 import NovaEntrada from "./pages/estoque/NovaEntrada";
 import UploadNFe from "./pages/estoque/UploadNFe";
+import RelatorioEntradas from "./pages/estoque/RelatorioEntradas";
 import EstoqueInventario from "./pages/EstoqueInventario";
+import RelatorioInventario from "./pages/estoque/RelatorioInventario";
 import EstoqueLocacoes from "./pages/EstoqueLocacoes";
 import NovaLocacao from "./pages/estoque/NovaLocacao";
+import RelatorioLocacoes from "./pages/estoque/RelatorioLocacoes";
 import EstoqueRequisicoes from "./pages/EstoqueRequisicoes";
 import NovaRequisicao from "./pages/estoque/NovaRequisicao";
+import RelatorioRequisicoes from "./pages/estoque/RelatorioRequisicoes";
 import EstoqueSaidas from "./pages/EstoqueSaidas";
 import NovaSaida from "./pages/estoque/NovaSaida";
+import RelatorioSaidas from "./pages/estoque/RelatorioSaidas";
 import OrdemCompra from "./pages/OrdemCompra";
 import NovaOrdemCompra from "./pages/NovaOrdemCompra";
 import OrdemServico from "./pages/OrdemServico";
@@ -125,13 +130,18 @@ const App = () => (
             <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
             <Route path="/estoque/entradas/nova" element={<NovaEntrada />} />
             <Route path="/estoque/entradas/upload-nfe" element={<UploadNFe />} />
+            <Route path="/estoque/entradas/relatorio" element={<RelatorioEntradas />} />
             <Route path="/estoque/inventario" element={<EstoqueInventario />} />
+            <Route path="/estoque/inventario/relatorio" element={<RelatorioInventario />} />
             <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
             <Route path="/estoque/saidas/nova" element={<NovaSaida />} />
+            <Route path="/estoque/saidas/relatorio" element={<RelatorioSaidas />} />
             <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
             <Route path="/estoque/locacoes/nova" element={<NovaLocacao />} />
+            <Route path="/estoque/locacoes/relatorio" element={<RelatorioLocacoes />} />
             <Route path="/estoque/requisicoes" element={<EstoqueRequisicoes />} />
             <Route path="/estoque/requisicoes/nova" element={<NovaRequisicao />} />
+            <Route path="/estoque/requisicoes/relatorio" element={<RelatorioRequisicoes />} />
             <Route path="/estoque/ordem-compra" element={<OrdemCompra />} />
             <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
             <Route path="/estoque/ordem-servico" element={<OrdemServico />} />

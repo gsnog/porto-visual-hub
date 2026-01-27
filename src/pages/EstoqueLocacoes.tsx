@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
-import { Plus } from "lucide-react"
+import { Plus, FileText } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 import { StatusBadge } from "@/components/StatusBadge"
 
@@ -36,6 +36,10 @@ export default function EstoqueLocacoes() {
           <Button onClick={() => navigate("/estoque/locacoes/nova")} className="gap-2">
             <Plus className="w-4 h-4" />
             Nova Locação
+          </Button>
+          <Button onClick={() => navigate("/estoque/locacoes/relatorio")} variant="outline" className="gap-2 border-border">
+            <FileText className="w-4 h-4" />
+            Relatório
           </Button>
         </div>
 
