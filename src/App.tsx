@@ -7,8 +7,10 @@ import LayoutShell from "@/layouts/LayoutShell";
 
 import Dashboard from "./pages/Dashboard";
 import FluxoCaixa from "./pages/FluxoCaixa";
+import NovaTransacao from "./pages/financeiro/NovaTransacao";
 import RelatorioFluxoCaixa from "./pages/financeiro/RelatorioFluxoCaixa";
 import NFe from "./pages/NFe";
+import RelatorioNFe from "./pages/financeiro/RelatorioNFe";
 import Patrimonio from "./pages/Patrimonio";
 import Relatorio from "./pages/Relatorio";
 import ContasPagar from "./pages/ContasPagar";
@@ -102,6 +104,7 @@ const App = () => (
           <Route element={<LayoutShell />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
+            <Route path="/financeiro/fluxo-caixa/nova" element={<NovaTransacao />} />
             <Route path="/financeiro/fluxo-caixa/relatorio" element={<RelatorioFluxoCaixa />} />
             <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
             <Route path="/financeiro/contas-pagar/nova" element={<NovaContaPagar />} />
@@ -112,6 +115,7 @@ const App = () => (
             <Route path="/financeiro/lancamento-saida" element={<LancamentoSaida />} />
             <Route path="/financeiro/saidas-pendentes" element={<SaidasPendentes />} />
             <Route path="/financeiro/xml" element={<NFe />} />
+            <Route path="/financeiro/xml/relatorio" element={<RelatorioNFe />} />
             <Route path="/nfe" element={<NFe />} />
             <Route path="/nfe/nova" element={<NovoNFe />} />
             <Route path="/novo-nfe" element={<NovoNFe />} />

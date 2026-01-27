@@ -59,7 +59,7 @@ const NFe = () => {
             <Plus className="w-4 h-4" />
             Nova NF-e
           </Button>
-          <Button variant="outline" className="gap-2 border-border">
+          <Button onClick={() => navigate("/financeiro/xml/relatorio")} variant="outline" className="gap-2 border-border">
             <FileText className="w-4 h-4" />
             Relatório
           </Button>
