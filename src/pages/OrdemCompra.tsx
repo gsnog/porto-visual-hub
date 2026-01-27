@@ -51,7 +51,11 @@ export default function OrdemCompra() {
             <Plus className="w-4 h-4" />
             Nova Ordem
           </Button>
-          <Button variant="outline" className="gap-2 border-border">
+          <Button 
+            variant="outline" 
+            className="gap-2 border-border"
+            onClick={() => navigate("/estoque/ordem-compra/relatorio")}
+          >
             <FileText className="w-4 h-4" />
             Relatório
           </Button>

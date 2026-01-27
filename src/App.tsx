@@ -39,6 +39,7 @@ import NovaSaida from "./pages/estoque/NovaSaida";
 import RelatorioSaidas from "./pages/estoque/RelatorioSaidas";
 import OrdemCompra from "./pages/OrdemCompra";
 import NovaOrdemCompra from "./pages/NovaOrdemCompra";
+import RelatorioOrdemCompra from "./pages/estoque/RelatorioOrdemCompra";
 import OrdemServico from "./pages/OrdemServico";
 import NovaOrdemServico from "./pages/NovaOrdemServico";
 import Cadastro from "./pages/Cadastro";
@@ -144,6 +145,7 @@ const App = () => (
             <Route path="/estoque/requisicoes/relatorio" element={<RelatorioRequisicoes />} />
             <Route path="/estoque/ordem-compra" element={<OrdemCompra />} />
             <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
+            <Route path="/estoque/ordem-compra/relatorio" element={<RelatorioOrdemCompra />} />
             <Route path="/estoque/ordem-servico" element={<OrdemServico />} />
             <Route path="/estoque/ordem-servico/nova" element={<NovaOrdemServico />} />
             
