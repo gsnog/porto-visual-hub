@@ -6,7 +6,6 @@ import {
   Send,
   Paperclip,
   Smile,
-  MoreVertical,
   Users,
   Hash,
   User,
@@ -16,13 +15,11 @@ import {
   X,
   ChevronDown,
   MessageSquare,
-  Settings,
   UserPlus,
   Network
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -35,13 +32,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { usePermissions } from '@/contexts/PermissionsContext';
 import {
   conversasMock,
-  mensagensMock,
   equipesMock,
   getConversasUsuario,
   getMensagensConversa,
@@ -49,8 +44,10 @@ import {
   ChatConversa,
   ChatMessage,
 } from '@/data/chat-mock';
-import { pessoasMock, getCadeiaGestores, getSubordinados } from '@/data/pessoas-mock';
+import { pessoasMock } from '@/data/pessoas-mock';
+import { PersonHierarchyPanel } from '@/components/chat/PersonHierarchyPanel';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -65,10 +62,17 @@ export default function Chat() {
   const [novaMensagem, setNovaMensagem] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showInfoPanel, setShowInfoPanel] = useState(false);
+  const [showHierarchyPanel, setShowHierarchyPanel] = useState(false);
   const [showNewChatModal, setShowNewChatModal] = useState(false);
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [selectedPessoa, setSelectedPessoa] = useState<typeof pessoasMock[0] | null>(null);
+  const [onlineStatus] = useState<Record<string, boolean>>(() => {
+    const status: Record<string, boolean> = {};
+    pessoasMock.forEach(p => {
+      status[p.id] = Math.random() > 0.4;
+    });
+    return status;
+  });
   
   const [equipesOpen, setEquipesOpen] = useState<Record<string, boolean>>({});
   
@@ -120,7 +124,70 @@ export default function Chat() {
   
   const handlePessoaClick = (pessoa: typeof pessoasMock[0]) => {
     setSelectedPessoa(pessoa);
-    setShowProfileModal(true);
+    setShowHierarchyPanel(true);
+    setShowInfoPanel(false); // Fecha o painel de info se estiver aberto
+  };
+
+  const handleStartChat = (pessoaId: string) => {
+    // Procurar conversa existente com essa pessoa
+    const existingConversa = conversas.find(
+      c => c.tipo === 'direto' && c.participantes.some(p => p.id === pessoaId)
+    );
+    
+    if (existingConversa) {
+      setSelectedConversa(existingConversa);
+    } else {
+      // Criar nova conversa mock
+      const pessoa = pessoasMock.find(p => p.id === pessoaId);
+      if (pessoa) {
+        const newConversa: ChatConversa = {
+          id: `c-new-${Date.now()}`,
+          tipo: 'direto',
+          nome: pessoa.nome,
+          participantes: [
+            { id: pessoaId, nome: pessoa.nome, iniciais: pessoa.iniciais, online: onlineStatus[pessoaId] ?? false },
+            { id: currentUserId, nome: currentUser.nome, iniciais: currentUser.iniciais, online: true },
+          ],
+          naoLidas: 0,
+        };
+        setSelectedConversa(newConversa);
+        toast({
+          title: "Nova conversa",
+          description: `Conversa iniciada com ${pessoa.nome}`,
+        });
+      }
+    }
+    setShowHierarchyPanel(false);
+  };
+
+  const handleCreateGroupChat = (pessoaIds: string[], groupName: string) => {
+    // Criar grupo mock
+    const participantes = pessoaIds.map(id => {
+      const pessoa = pessoasMock.find(p => p.id === id);
+      return {
+        id,
+        nome: pessoa?.nome ?? 'Desconhecido',
+        iniciais: pessoa?.iniciais ?? '??',
+        online: onlineStatus[id] ?? false,
+      };
+    });
+    
+    const newConversa: ChatConversa = {
+      id: `c-group-${Date.now()}`,
+      tipo: 'grupo',
+      nome: groupName,
+      descricao: `Grupo criado com ${participantes.length} membros`,
+      participantes,
+      naoLidas: 0,
+      criadorId: currentUserId,
+    };
+    
+    setSelectedConversa(newConversa);
+    toast({
+      title: "Grupo criado",
+      description: `Grupo "${groupName}" criado com ${participantes.length} membros`,
+    });
+    setShowHierarchyPanel(false);
   };
   
   const formatMessageTime = (dataHora: string) => {
@@ -623,58 +690,18 @@ export default function Chat() {
         </DialogContent>
       </Dialog>
       
-      {/* Modal Perfil da Pessoa */}
-      <Dialog open={showProfileModal} onOpenChange={setShowProfileModal}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Perfil</DialogTitle>
-          </DialogHeader>
-          {selectedPessoa && (
-            <div className="text-center">
-              <Avatar className="h-20 w-20 mx-auto mb-3">
-                <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
-                  {selectedPessoa.iniciais}
-                </AvatarFallback>
-              </Avatar>
-              <h3 className="text-lg font-semibold">{selectedPessoa.nome}</h3>
-              <p className="text-muted-foreground">{selectedPessoa.cargo}</p>
-              <p className="text-sm text-muted-foreground">{selectedPessoa.setor}</p>
-              
-              {selectedPessoa.gestorNome && (
-                <div className="mt-4 p-3 bg-muted/50 rounded-lg text-left">
-                  <div className="text-xs text-muted-foreground mb-1">Gestor direto</div>
-                  <div className="text-sm font-medium">{selectedPessoa.gestorNome}</div>
-                </div>
-              )}
-              
-              <div className="flex gap-2 mt-4">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => {
-                    setShowProfileModal(false);
-                    navigate('/gestao-pessoas/hierarquia');
-                  }}
-                >
-                  <Network className="h-4 w-4 mr-2" />
-                  Ver Hierarquia
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => {
-                    setShowProfileModal(false);
-                    navigate('/usuario/visualizar');
-                  }}
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Abrir Perfil
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      
+      {/* Painel de Hierarquia */}
+      {showHierarchyPanel && selectedPessoa && (
+        <PersonHierarchyPanel
+          pessoa={selectedPessoa}
+          onClose={() => setShowHierarchyPanel(false)}
+          onStartChat={handleStartChat}
+          onCreateGroupChat={handleCreateGroupChat}
+          currentUserId={currentUserId}
+          onlineStatus={onlineStatus}
+        />
+      )}
     </div>
   );
 }
