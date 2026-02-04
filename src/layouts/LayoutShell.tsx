@@ -123,6 +123,28 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/calendario": { title: "Calendário", description: "Calendário corporativo" },
   "/chat": { title: "Chat", description: "Chat corporativo" },
   "/kanban": { title: "Kanban", description: "Gestão de tarefas e projetos" },
+  
+  // Comercial
+  "/comercial/visao-geral": { title: "Comercial", description: "Visão Geral" },
+  "/comercial/leads": { title: "Comercial", description: "Leads" },
+  "/comercial/contas": { title: "Comercial", description: "Contas (Empresas)" },
+  "/comercial/contatos": { title: "Comercial", description: "Contatos" },
+  "/comercial/oportunidades": { title: "Comercial", description: "Oportunidades (Pipeline)" },
+  "/comercial/propostas": { title: "Comercial", description: "Propostas" },
+  "/comercial/atividades": { title: "Comercial", description: "Atividades" },
+  "/comercial/metas": { title: "Comercial", description: "Metas e Forecast" },
+  "/comercial/comissoes": { title: "Comercial", description: "Comissões" },
+  
+  // Marketing
+  "/marketing/visao-geral": { title: "Marketing", description: "Visão Geral" },
+  "/marketing/campanhas": { title: "Marketing", description: "Campanhas" },
+  "/marketing/canais": { title: "Marketing", description: "Canais" },
+  "/marketing/leads": { title: "Marketing", description: "Leads (MQL/SQL)" },
+  "/marketing/atribuicao": { title: "Marketing", description: "Atribuição e ROI" },
+  
+  // Dashboards
+  "/dashboards/comercial": { title: "Dashboard Comercial", description: "Métricas de vendas" },
+  "/dashboards/marketing": { title: "Dashboard Marketing", description: "Métricas de marketing" },
 }
 
 function LayoutContent() {
