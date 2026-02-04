@@ -334,12 +334,12 @@ export default function Calendario() {
             
             <div>
               <Label className="text-xs text-muted-foreground mb-1 block">Pessoa</Label>
-              <Select value={filterPessoa} onValueChange={setFilterPessoa}>
+              <Select value={filterPessoa || "__all__"} onValueChange={(v) => setFilterPessoa(v === "__all__" ? "" : v)}>
                 <SelectTrigger className="h-9">
                   <SelectValue placeholder="Todas" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas</SelectItem>
+                  <SelectItem value="__all__">Todas</SelectItem>
                   {pessoasMock.filter(p => p.status === 'Ativo').map(p => (
                     <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
                   ))}
@@ -349,12 +349,12 @@ export default function Calendario() {
             
             <div>
               <Label className="text-xs text-muted-foreground mb-1 block">Setor/Área</Label>
-              <Select value={filterSetor} onValueChange={setFilterSetor}>
+              <Select value={filterSetor || "__all__"} onValueChange={(v) => setFilterSetor(v === "__all__" ? "" : v)}>
                 <SelectTrigger className="h-9">
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="__all__">Todos</SelectItem>
                   {setoresMock.filter(s => s.status === 'Ativo').map(s => (
                     <SelectItem key={s.id} value={s.id}>{s.nome}</SelectItem>
                   ))}
@@ -364,12 +364,12 @@ export default function Calendario() {
             
             <div>
               <Label className="text-xs text-muted-foreground mb-1 block">Tipo de Evento</Label>
-              <Select value={filterTipo} onValueChange={setFilterTipo}>
+              <Select value={filterTipo || "__all__"} onValueChange={(v) => setFilterTipo(v === "__all__" ? "" : v)}>
                 <SelectTrigger className="h-9">
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="__all__">Todos</SelectItem>
                   {eventTypes.map(t => (
                     <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
                   ))}
