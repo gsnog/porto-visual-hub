@@ -97,6 +97,20 @@ import ExcluirPerfil from "./pages/usuario/ExcluirPerfil";
 import Login from "./pages/Login";
 import Notificacoes from "./pages/Notificacoes";
 
+// Cadastro - Pessoas
+import Pessoas from "./pages/cadastro/pessoas/Pessoas";
+import NovaPessoa from "./pages/cadastro/pessoas/NovaPessoa";
+import SetoresAreas from "./pages/cadastro/pessoas/SetoresAreas";
+import NovoSetorPessoas from "./pages/cadastro/pessoas/NovoSetor";
+
+// Gestão de Pessoas
+import VisaoGeralRH from "./pages/gestao-pessoas/VisaoGeralRH";
+import PessoasVisao360 from "./pages/gestao-pessoas/PessoasVisao360";
+import Hierarquia from "./pages/gestao-pessoas/Hierarquia";
+import Acessos from "./pages/gestao-pessoas/Acessos";
+import DashboardsGestao from "./pages/gestao-pessoas/Dashboards";
+import Auditoria from "./pages/gestao-pessoas/Auditoria";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -194,8 +208,22 @@ const App = () => (
             <Route path="/operacional/servicos" element={<Servicos />} />
             <Route path="/operacional/servicos/novo" element={<NovoServico />} />
             
-            <Route path="/novo-usuario" element={<Cadastro />} />
+            <Route path="/novo-usuario" element={<NovaPessoa />} />
             <Route path="/planos" element={<Dashboard />} />
+            
+            {/* Cadastro - Pessoas */}
+            <Route path="/cadastro/pessoas/pessoas" element={<Pessoas />} />
+            <Route path="/cadastro/pessoas/pessoas/nova" element={<NovaPessoa />} />
+            <Route path="/cadastro/pessoas/setores" element={<SetoresAreas />} />
+            <Route path="/cadastro/pessoas/setores/novo" element={<NovoSetorPessoas />} />
+            
+            {/* Gestão de Pessoas */}
+            <Route path="/gestao-pessoas/visao-geral" element={<VisaoGeralRH />} />
+            <Route path="/gestao-pessoas/pessoas" element={<PessoasVisao360 />} />
+            <Route path="/gestao-pessoas/hierarquia" element={<Hierarquia />} />
+            <Route path="/gestao-pessoas/acessos" element={<Acessos />} />
+            <Route path="/gestao-pessoas/dashboards" element={<DashboardsGestao />} />
+            <Route path="/gestao-pessoas/auditoria" element={<Auditoria />} />
             
             {/* Usuário e Notificações */}
             <Route path="/usuario/visualizar" element={<VisualizarPerfil />} />

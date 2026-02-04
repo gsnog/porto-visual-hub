@@ -104,6 +104,20 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/usuario/visualizar": { title: "Meu Perfil", description: "Visualizar informações do perfil" },
   "/usuario/editar": { title: "Editar Perfil", description: "Alterar informações do perfil" },
   "/usuario/excluir": { title: "Excluir Conta", description: "Remover conta permanentemente" },
+  
+  // Cadastro - Pessoas
+  "/cadastro/pessoas/pessoas": { title: "Pessoas", description: "Cadastro de colaboradores" },
+  "/cadastro/pessoas/pessoas/nova": { title: "Pessoas", description: "Nova Pessoa" },
+  "/cadastro/pessoas/setores": { title: "Setores/Áreas", description: "Cadastro de setores da empresa" },
+  "/cadastro/pessoas/setores/novo": { title: "Setores/Áreas", description: "Novo Setor" },
+  
+  // Gestão de Pessoas
+  "/gestao-pessoas/visao-geral": { title: "Visão Geral RH", description: "Dashboard de Recursos Humanos" },
+  "/gestao-pessoas/pessoas": { title: "Pessoas (360º)", description: "Visão completa dos colaboradores" },
+  "/gestao-pessoas/hierarquia": { title: "Hierarquia", description: "Organograma da empresa" },
+  "/gestao-pessoas/acessos": { title: "Acessos do Sistema", description: "Gerenciamento de permissões" },
+  "/gestao-pessoas/dashboards": { title: "Dashboards", description: "Controle de visibilidade" },
+  "/gestao-pessoas/auditoria": { title: "Auditoria", description: "Histórico de alterações" },
 }
 
 function LayoutContent() {
