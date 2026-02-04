@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useRef } from "react";
-import { Bell, ChevronDown, Eye, Pencil, Trash2 } from "lucide-react";
+import { Bell, ChevronDown, Eye, Pencil, Trash2, Calendar, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -8,6 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { usePermissions } from "@/contexts/PermissionsContext";
+import { getTotalNaoLidas } from "@/data/chat-mock";
 
 interface TopbarProps {
   sidebarCollapsed: boolean;
@@ -25,7 +26,12 @@ export function Topbar({
 }: TopbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { hasPermission } = usePermissions();
   const notificationCount = 3;
+  const chatNaoLidas = getTotalNaoLidas('9'); // Mock: Pedro Piaes
+  
+  const hasCalendarAccess = hasPermission('calendario', 'all', 'view');
+  const hasChatAccess = hasPermission('chat', 'all', 'view');
 
   const handleBellClick = () => {
     if (location.pathname === "/notificacoes") {
@@ -34,6 +40,14 @@ export function Topbar({
       previousRoute = location.pathname;
       navigate("/notificacoes");
     }
+  };
+  
+  const handleCalendarClick = () => {
+    navigate("/calendario");
+  };
+  
+  const handleChatClick = () => {
+    navigate("/chat");
   };
 
   return (
@@ -48,12 +62,49 @@ export function Topbar({
         <p className="text-sm text-muted-foreground">{pageDescription}</p>
       </div>
 
-      {/* Right side - Notifications, divider, user info */}
-      <div className="flex items-center gap-4">
+      {/* Right side - Calendar, Chat, Notifications, divider, user info */}
+      <div className="flex items-center gap-2">
+        {/* Calendar */}
+        {hasCalendarAccess && (
+          <button 
+            onClick={handleCalendarClick}
+            className={cn(
+              "relative p-2 rounded hover:bg-muted transition-colors",
+              location.pathname === "/calendario" && "bg-muted"
+            )}
+            title="Calendário"
+          >
+            <Calendar className="h-5 w-5 text-muted-foreground" />
+          </button>
+        )}
+        
+        {/* Chat */}
+        {hasChatAccess && (
+          <button 
+            onClick={handleChatClick}
+            className={cn(
+              "relative p-2 rounded hover:bg-muted transition-colors",
+              location.pathname === "/chat" && "bg-muted"
+            )}
+            title="Chat"
+          >
+            <MessageSquare className="h-5 w-5 text-muted-foreground" />
+            {chatNaoLidas > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                {chatNaoLidas > 9 ? '9+' : chatNaoLidas}
+              </span>
+            )}
+          </button>
+        )}
+        
         {/* Notifications */}
         <button 
           onClick={handleBellClick}
-          className="relative p-2 rounded hover:bg-muted transition-colors"
+          className={cn(
+            "relative p-2 rounded hover:bg-muted transition-colors",
+            location.pathname === "/notificacoes" && "bg-muted"
+          )}
+          title="Notificações"
         >
           <Bell className="h-5 w-5 text-muted-foreground" />
           {notificationCount > 0 && (
@@ -64,7 +115,7 @@ export function Topbar({
         </button>
 
         {/* Divider */}
-        <div className="h-8 w-px bg-border" />
+        <div className="h-8 w-px bg-border ml-2" />
 
         {/* User info with dropdown */}
         <DropdownMenu>

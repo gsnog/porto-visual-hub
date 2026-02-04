@@ -111,6 +111,10 @@ import Acessos from "./pages/gestao-pessoas/Acessos";
 import DashboardsGestao from "./pages/gestao-pessoas/Dashboards";
 import Auditoria from "./pages/gestao-pessoas/Auditoria";
 
+// Módulos Globais (Header)
+import Calendario from "./pages/Calendario";
+import Chat from "./pages/Chat";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -230,6 +234,10 @@ const App = () => (
             <Route path="/usuario/editar" element={<EditarPerfil />} />
             <Route path="/usuario/excluir" element={<ExcluirPerfil />} />
             <Route path="/notificacoes" element={<Notificacoes />} />
+            
+            {/* Módulos Globais - Header */}
+            <Route path="/calendario" element={<Calendario />} />
+            <Route path="/chat" element={<Chat />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
