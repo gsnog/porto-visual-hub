@@ -54,7 +54,8 @@ export const systemRoles: Role[] = [
       { module: 'gestao_pessoas', page: 'pessoas', actions: ['view'], scope: 'team' },
       { module: 'gestao_pessoas', page: 'hierarquia', actions: ['view'], scope: 'team' },
       { module: 'calendario', page: 'all', actions: ['view', 'create', 'edit'], scope: 'team' },
-      { module: 'chat', page: 'all', actions: ['view', 'create'], scope: 'all' }
+      { module: 'chat', page: 'all', actions: ['view', 'create'], scope: 'all' },
+      { module: 'kanban', page: 'all', actions: ['view', 'create', 'edit'], scope: 'team' }
     ]
   },
   {
@@ -64,7 +65,8 @@ export const systemRoles: Role[] = [
     permissions: [
       { module: 'gestao_pessoas', page: 'hierarquia', actions: ['view'], scope: 'self' },
       { module: 'calendario', page: 'all', actions: ['view', 'create'], scope: 'self' },
-      { module: 'chat', page: 'all', actions: ['view', 'create'], scope: 'all' }
+      { module: 'chat', page: 'all', actions: ['view', 'create'], scope: 'all' },
+      { module: 'kanban', page: 'all', actions: ['view', 'create'], scope: 'self' }
     ]
   },
   {
@@ -154,6 +156,7 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
       '/gestao-pessoas': { module: 'gestao_pessoas', page: 'all' },
       '/calendario': { module: 'calendario', page: 'all' },
       '/chat': { module: 'chat', page: 'all' },
+      '/kanban': { module: 'kanban', page: 'all' },
     };
 
     const mapping = menuModuleMap[menuPath];

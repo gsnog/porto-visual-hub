@@ -114,6 +114,7 @@ import Auditoria from "./pages/gestao-pessoas/Auditoria";
 // Módulos Globais (Header)
 import Calendario from "./pages/Calendario";
 import Chat from "./pages/Chat";
+import Kanban from "./pages/Kanban";
 
 const queryClient = new QueryClient();
 
@@ -239,6 +240,7 @@ const App = () => (
             {/* Módulos Globais - Header */}
             <Route path="/calendario" element={<Calendario />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/kanban" element={<Kanban />} />
           </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Bell, ChevronDown, Eye, Pencil, Trash2, Calendar, MessageSquare } from "lucide-react";
+import { Bell, ChevronDown, Eye, Pencil, Trash2, Calendar, MessageSquare, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { getTotalNaoLidas } from "@/data/chat-mock";
+import { getKanbanNotifications } from "@/data/kanban-mock";
 
 interface TopbarProps {
   sidebarCollapsed: boolean;
@@ -29,9 +30,11 @@ export function Topbar({
   const { hasPermission } = usePermissions();
   const notificationCount = 3;
   const chatNaoLidas = getTotalNaoLidas('9'); // Mock: Pedro Piaes
+  const kanbanNotifications = getKanbanNotifications('9'); // Mock: Pedro Piaes
   
   const hasCalendarAccess = hasPermission('calendario', 'all', 'view');
   const hasChatAccess = hasPermission('chat', 'all', 'view');
+  const hasKanbanAccess = hasPermission('kanban', 'all', 'view');
 
   const handleBellClick = () => {
     if (location.pathname === "/notificacoes") {
@@ -49,6 +52,10 @@ export function Topbar({
   const handleChatClick = () => {
     navigate("/chat");
   };
+  
+  const handleKanbanClick = () => {
+    navigate("/kanban");
+  };
 
   return (
     <header 
@@ -62,8 +69,27 @@ export function Topbar({
         <p className="text-sm text-muted-foreground">{pageDescription}</p>
       </div>
 
-      {/* Right side - Calendar, Chat, Notifications, divider, user info */}
+      {/* Right side - Kanban, Calendar, Chat, Notifications, divider, user info */}
       <div className="flex items-center gap-2">
+        {/* Kanban */}
+        {hasKanbanAccess && (
+          <button 
+            onClick={handleKanbanClick}
+            className={cn(
+              "relative p-2 rounded hover:bg-muted transition-colors",
+              location.pathname === "/kanban" && "bg-muted"
+            )}
+            title="Kanban"
+          >
+            <LayoutGrid className="h-5 w-5 text-muted-foreground" />
+            {kanbanNotifications > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                {kanbanNotifications > 9 ? '9+' : kanbanNotifications}
+              </span>
+            )}
+          </button>
+        )}
+        
         {/* Calendar */}
         {hasCalendarAccess && (
           <button 

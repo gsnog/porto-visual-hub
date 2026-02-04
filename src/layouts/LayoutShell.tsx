@@ -122,6 +122,7 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   // Módulos Globais - Header
   "/calendario": { title: "Calendário", description: "Calendário corporativo" },
   "/chat": { title: "Chat", description: "Chat corporativo" },
+  "/kanban": { title: "Kanban", description: "Gestão de tarefas e projetos" },
 }
 
 function LayoutContent() {
