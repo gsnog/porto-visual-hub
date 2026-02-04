@@ -116,6 +116,28 @@ import Calendario from "./pages/Calendario";
 import Chat from "./pages/Chat";
 import Kanban from "./pages/Kanban";
 
+// Comercial
+import VisaoGeralComercial from "./pages/comercial/VisaoGeral";
+import LeadsComercial from "./pages/comercial/Leads";
+import ContasComercial from "./pages/comercial/Contas";
+import ContatosComercial from "./pages/comercial/Contatos";
+import OportunidadesComercial from "./pages/comercial/Oportunidades";
+import PropostasComercial from "./pages/comercial/Propostas";
+import AtividadesComercial from "./pages/comercial/Atividades";
+import MetasForecast from "./pages/comercial/MetasForecast";
+import ComissoesComercial from "./pages/comercial/Comissoes";
+
+// Marketing
+import VisaoGeralMarketing from "./pages/marketing/VisaoGeral";
+import CampanhasMarketing from "./pages/marketing/Campanhas";
+import CanaisMarketing from "./pages/marketing/Canais";
+import LeadsMarketing from "./pages/marketing/LeadsMarketing";
+import AtribuicaoROI from "./pages/marketing/AtribuicaoROI";
+
+// Dashboards
+import DashboardComercial from "./pages/dashboards/DashboardComercial";
+import DashboardMarketing from "./pages/dashboards/DashboardMarketing";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -241,6 +263,28 @@ const App = () => (
             <Route path="/calendario" element={<Calendario />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/kanban" element={<Kanban />} />
+            
+            {/* Comercial */}
+            <Route path="/comercial/visao-geral" element={<VisaoGeralComercial />} />
+            <Route path="/comercial/leads" element={<LeadsComercial />} />
+            <Route path="/comercial/contas" element={<ContasComercial />} />
+            <Route path="/comercial/contatos" element={<ContatosComercial />} />
+            <Route path="/comercial/oportunidades" element={<OportunidadesComercial />} />
+            <Route path="/comercial/propostas" element={<PropostasComercial />} />
+            <Route path="/comercial/atividades" element={<AtividadesComercial />} />
+            <Route path="/comercial/metas" element={<MetasForecast />} />
+            <Route path="/comercial/comissoes" element={<ComissoesComercial />} />
+            
+            {/* Marketing */}
+            <Route path="/marketing/visao-geral" element={<VisaoGeralMarketing />} />
+            <Route path="/marketing/campanhas" element={<CampanhasMarketing />} />
+            <Route path="/marketing/canais" element={<CanaisMarketing />} />
+            <Route path="/marketing/leads" element={<LeadsMarketing />} />
+            <Route path="/marketing/atribuicao" element={<AtribuicaoROI />} />
+            
+            {/* Dashboards Globais */}
+            <Route path="/dashboards/comercial" element={<DashboardComercial />} />
+            <Route path="/dashboards/marketing" element={<DashboardMarketing />} />
           </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

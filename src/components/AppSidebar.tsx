@@ -27,37 +27,56 @@ const menuItems = [
     icon: ClipboardList,
     basePath: "/cadastro",
     subItems: [
-      { 
-        title: "Estoque", 
-        subItems: [
-          { title: "Formas de Apresentação", url: "/cadastro/estoque/formas-apresentacao" },
-          { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
-          { title: "Itens", url: "/cadastro/estoque/itens" },
-          { title: "Setores", url: "/cadastro/estoque/setores" },
-          { title: "Unidades", url: "/cadastro/estoque/unidades" },
-        ]
-      },
-      { 
-        title: "Financeiro", 
-        subItems: [
-          { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
-          { title: "Clientes", url: "/cadastro/financeiro/clientes" },
-          { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
-          { title: "Centro de Receita", url: "/cadastro/financeiro/centro-receita" },
-          { title: "Contábil", url: "/cadastro/financeiro/contabil" },
-          { title: "Categorias", url: "/cadastro/financeiro/categorias" },
-          { title: "Fornecedores", url: "/cadastro/financeiro/fornecedores" },
-          { title: "Subcategorias", url: "/cadastro/financeiro/subcategorias" },
-          { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
-        ]
-      },
-      { 
-        title: "Pessoas", 
-        subItems: [
-          { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
-          { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
-        ]
-      },
+      { title: "Estoque", subItems: [
+        { title: "Formas de Apresentação", url: "/cadastro/estoque/formas-apresentacao" },
+        { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
+        { title: "Itens", url: "/cadastro/estoque/itens" },
+        { title: "Setores", url: "/cadastro/estoque/setores" },
+        { title: "Unidades", url: "/cadastro/estoque/unidades" },
+      ]},
+      { title: "Financeiro", subItems: [
+        { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
+        { title: "Clientes", url: "/cadastro/financeiro/clientes" },
+        { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
+        { title: "Centro de Receita", url: "/cadastro/financeiro/centro-receita" },
+        { title: "Contábil", url: "/cadastro/financeiro/contabil" },
+        { title: "Categorias", url: "/cadastro/financeiro/categorias" },
+        { title: "Fornecedores", url: "/cadastro/financeiro/fornecedores" },
+        { title: "Subcategorias", url: "/cadastro/financeiro/subcategorias" },
+        { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
+      ]},
+      { title: "Pessoas", subItems: [
+        { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
+        { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
+      ]},
+    ]
+  },
+  { 
+    title: "Comercial", 
+    icon: TrendingUp,
+    basePath: "/comercial",
+    subItems: [
+      { title: "Visão Geral", url: "/comercial/visao-geral" },
+      { title: "Leads", url: "/comercial/leads" },
+      { title: "Contas", url: "/comercial/contas" },
+      { title: "Contatos", url: "/comercial/contatos" },
+      { title: "Oportunidades", url: "/comercial/oportunidades" },
+      { title: "Propostas", url: "/comercial/propostas" },
+      { title: "Atividades", url: "/comercial/atividades" },
+      { title: "Metas e Forecast", url: "/comercial/metas" },
+      { title: "Comissões", url: "/comercial/comissoes" },
+    ]
+  },
+  { 
+    title: "Marketing", 
+    icon: BarChart3,
+    basePath: "/marketing",
+    subItems: [
+      { title: "Visão Geral", url: "/marketing/visao-geral" },
+      { title: "Campanhas", url: "/marketing/campanhas" },
+      { title: "Canais", url: "/marketing/canais" },
+      { title: "Leads (MQL/SQL)", url: "/marketing/leads" },
+      { title: "Atribuição e ROI", url: "/marketing/atribuicao" },
     ]
   },
   { 
