@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LayoutShell from "@/layouts/LayoutShell";
-
+import { PermissionsProvider } from "@/contexts/PermissionsContext";
 import Dashboard from "./pages/Dashboard";
 import FluxoCaixa from "./pages/FluxoCaixa";
 import NovaTransacao from "./pages/financeiro/NovaTransacao";
@@ -120,11 +120,12 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+      <PermissionsProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
           <Route element={<LayoutShell />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
@@ -239,9 +240,10 @@ const App = () => (
             <Route path="/calendario" element={<Calendario />} />
             <Route path="/chat" element={<Chat />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </PermissionsProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
