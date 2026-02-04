@@ -49,9 +49,11 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "crítico": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "critico": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
-  // Patrimônio
+  // Patrimônio / Pessoas
   "ativo": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
   "inativo": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "afastado": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "desligado": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
   // Tipos de documentos
   "nf-e": { bg: "bg-primary/20", text: "text-primary" },

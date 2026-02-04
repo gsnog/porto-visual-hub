@@ -51,6 +51,13 @@ const menuItems = [
           { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
         ]
       },
+      { 
+        title: "Pessoas", 
+        subItems: [
+          { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
+          { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
+        ]
+      },
     ]
   },
   { 
@@ -90,7 +97,19 @@ const menuItems = [
     ]
   },
   { title: "Patrimônio", url: "/patrimonio", icon: Building2 },
-  { title: "Novo Usuário", url: "/novo-usuario", icon: UserRoundPlus },
+  { 
+    title: "Gestão de Pessoas", 
+    icon: UserRoundPlus,
+    basePath: "/gestao-pessoas",
+    subItems: [
+      { title: "Visão Geral (RH)", url: "/gestao-pessoas/visao-geral" },
+      { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
+      { title: "Hierarquia", url: "/gestao-pessoas/hierarquia" },
+      { title: "Acessos", url: "/gestao-pessoas/acessos" },
+      { title: "Dashboards", url: "/gestao-pessoas/dashboards" },
+      { title: "Auditoria", url: "/gestao-pessoas/auditoria" },
+    ]
+  },
 ]
 
 interface SidebarProps {
