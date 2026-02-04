@@ -1,0 +1,855 @@
+import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Plus, 
+  Filter, 
+  Calendar as CalendarIcon,
+  Clock,
+  MapPin,
+  Users,
+  X,
+  List,
+  Grid3X3,
+  LayoutGrid
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+import { usePermissions } from '@/contexts/PermissionsContext';
+import { 
+  eventosMock, 
+  eventTypes, 
+  getEventosVisiveis, 
+  getEventosPorPeriodo,
+  CalendarEvent,
+  EventType
+} from '@/data/calendar-mock';
+import { pessoasMock, setoresMock, getSubordinados } from '@/data/pessoas-mock';
+import { cn } from '@/lib/utils';
+
+type ViewMode = 'dia' | 'semana' | 'mes' | 'agenda';
+
+const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+export default function Calendario() {
+  const navigate = useNavigate();
+  const { getScope, hasPermission } = usePermissions();
+  const rawScope = getScope('calendario', 'all');
+  // Normalize scope to only valid values for calendar
+  const scope: 'self' | 'team' | 'all' = rawScope === 'area' ? 'team' : rawScope;
+  
+  const [viewMode, setViewMode] = useState<ViewMode>('mes');
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 1, 4)); // 2026-02-04
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // Filtros
+  const [filterPessoa, setFilterPessoa] = useState('');
+  const [filterSetor, setFilterSetor] = useState('');
+  const [filterTipo, setFilterTipo] = useState('');
+  const [filterEquipe, setFilterEquipe] = useState(false);
+  
+  // Novo evento
+  const [novoEvento, setNovoEvento] = useState({
+    titulo: '',
+    descricao: '',
+    tipo: 'reuniao' as EventType,
+    dataInicio: '',
+    horaInicio: '09:00',
+    dataFim: '',
+    horaFim: '10:00',
+    local: '',
+    privado: false,
+    participantes: [] as string[],
+  });
+  
+  const currentUserId = '9'; // Pedro Piaes (mockado)
+  
+  // Obter eventos visíveis baseado no scope
+  const eventosVisiveis = useMemo(() => {
+    let eventos = getEventosVisiveis(currentUserId, scope);
+    
+    if (filterEquipe && scope !== 'self') {
+      const subordinados = getSubordinados(currentUserId);
+      const subordinadosIds = [currentUserId, ...subordinados.map(s => s.id)];
+      eventos = eventos.filter(e => 
+        subordinadosIds.includes(e.criadorId) ||
+        e.participantes.some(p => subordinadosIds.includes(p.id))
+      );
+    }
+    
+    if (filterPessoa) {
+      eventos = eventos.filter(e => 
+        e.criadorId === filterPessoa ||
+        e.participantes.some(p => p.id === filterPessoa)
+      );
+    }
+    
+    if (filterSetor) {
+      eventos = eventos.filter(e => e.setorId === filterSetor);
+    }
+    
+    if (filterTipo) {
+      eventos = eventos.filter(e => e.tipo === filterTipo);
+    }
+    
+    return eventos;
+  }, [scope, filterEquipe, filterPessoa, filterSetor, filterTipo]);
+  
+  const canCreate = hasPermission('calendario', 'all', 'create');
+  const canEdit = hasPermission('calendario', 'all', 'edit');
+  
+  // Navegação
+  const navigatePrev = () => {
+    const newDate = new Date(currentDate);
+    if (viewMode === 'dia') newDate.setDate(newDate.getDate() - 1);
+    else if (viewMode === 'semana') newDate.setDate(newDate.getDate() - 7);
+    else newDate.setMonth(newDate.getMonth() - 1);
+    setCurrentDate(newDate);
+  };
+  
+  const navigateNext = () => {
+    const newDate = new Date(currentDate);
+    if (viewMode === 'dia') newDate.setDate(newDate.getDate() + 1);
+    else if (viewMode === 'semana') newDate.setDate(newDate.getDate() + 7);
+    else newDate.setMonth(newDate.getMonth() + 1);
+    setCurrentDate(newDate);
+  };
+  
+  const goToToday = () => {
+    setCurrentDate(new Date(2026, 1, 4));
+  };
+  
+  // Gerar dias do mês
+  const getDaysInMonth = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const days = [];
+    
+    // Dias do mês anterior
+    for (let i = 0; i < firstDay.getDay(); i++) {
+      const d = new Date(year, month, -firstDay.getDay() + i + 1);
+      days.push({ date: d, isCurrentMonth: false });
+    }
+    
+    // Dias do mês atual
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push({ date: new Date(year, month, i), isCurrentMonth: true });
+    }
+    
+    // Dias do próximo mês
+    const remaining = 42 - days.length;
+    for (let i = 1; i <= remaining; i++) {
+      days.push({ date: new Date(year, month + 1, i), isCurrentMonth: false });
+    }
+    
+    return days;
+  };
+  
+  // Gerar horas do dia
+  const getHoursOfDay = () => {
+    const hours = [];
+    for (let i = 6; i < 22; i++) {
+      hours.push(`${i.toString().padStart(2, '0')}:00`);
+    }
+    return hours;
+  };
+  
+  // Gerar dias da semana
+  const getWeekDays = () => {
+    const days = [];
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(startOfWeek);
+      d.setDate(d.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  };
+  
+  const formatDate = (date: Date) => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+  };
+  
+  const getEventsForDate = (date: Date) => {
+    const dateStr = formatDate(date);
+    return eventosVisiveis.filter(e => e.dataInicio === dateStr);
+  };
+  
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setShowEventModal(true);
+  };
+  
+  const handleCreateEvent = () => {
+    // Mock: adicionar evento
+    console.log('Criar evento:', novoEvento);
+    setShowCreateModal(false);
+    setNovoEvento({
+      titulo: '',
+      descricao: '',
+      tipo: 'reuniao',
+      dataInicio: '',
+      horaInicio: '09:00',
+      dataFim: '',
+      horaFim: '10:00',
+      local: '',
+      privado: false,
+      participantes: [],
+    });
+  };
+  
+  const getEventTypeLabel = (tipo: EventType) => {
+    return eventTypes.find(t => t.value === tipo)?.label || tipo;
+  };
+  
+  const subordinados = scope === 'team' || scope === 'all' ? getSubordinados(currentUserId) : [];
+  
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="sm" onClick={goToToday}>
+            Hoje
+          </Button>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={navigatePrev}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={navigateNext}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          <h2 className="text-lg font-semibold text-foreground">
+            {viewMode === 'dia' && (
+              <>
+                {currentDate.getDate()} de {meses[currentDate.getMonth()]} de {currentDate.getFullYear()}
+              </>
+            )}
+            {viewMode === 'semana' && (
+              <>
+                Semana de {getWeekDays()[0].getDate()} - {getWeekDays()[6].getDate()} de {meses[currentDate.getMonth()]} de {currentDate.getFullYear()}
+              </>
+            )}
+            {(viewMode === 'mes' || viewMode === 'agenda') && (
+              <>
+                {meses[currentDate.getMonth()]} de {currentDate.getFullYear()}
+              </>
+            )}
+          </h2>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {/* Seletor de visualização */}
+          <div className="flex items-center bg-muted rounded p-1">
+            <Button 
+              variant={viewMode === 'dia' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setViewMode('dia')}
+              className="h-7 px-2"
+            >
+              <CalendarIcon className="h-4 w-4 mr-1" />
+              Dia
+            </Button>
+            <Button 
+              variant={viewMode === 'semana' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setViewMode('semana')}
+              className="h-7 px-2"
+            >
+              <Grid3X3 className="h-4 w-4 mr-1" />
+              Semana
+            </Button>
+            <Button 
+              variant={viewMode === 'mes' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setViewMode('mes')}
+              className="h-7 px-2"
+            >
+              <LayoutGrid className="h-4 w-4 mr-1" />
+              Mês
+            </Button>
+            <Button 
+              variant={viewMode === 'agenda' ? 'default' : 'ghost'} 
+              size="sm"
+              onClick={() => setViewMode('agenda')}
+              className="h-7 px-2"
+            >
+              <List className="h-4 w-4 mr-1" />
+              Agenda
+            </Button>
+          </div>
+          
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter className="h-4 w-4 mr-1" />
+            Filtros
+          </Button>
+          
+          {canCreate && (
+            <Button size="sm" onClick={() => setShowCreateModal(true)}>
+              <Plus className="h-4 w-4 mr-1" />
+              Novo Evento
+            </Button>
+          )}
+        </div>
+      </div>
+      
+      {/* Filtros */}
+      {showFilters && (
+        <Card className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {(scope === 'team' || scope === 'all') && (
+              <div className="flex items-center gap-2">
+                <Switch 
+                  id="filter-equipe"
+                  checked={filterEquipe}
+                  onCheckedChange={setFilterEquipe}
+                />
+                <Label htmlFor="filter-equipe" className="text-sm">
+                  Pessoas abaixo de mim
+                </Label>
+              </div>
+            )}
+            
+            <div>
+              <Label className="text-xs text-muted-foreground mb-1 block">Pessoa</Label>
+              <Select value={filterPessoa} onValueChange={setFilterPessoa}>
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Todas</SelectItem>
+                  {pessoasMock.filter(p => p.status === 'Ativo').map(p => (
+                    <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label className="text-xs text-muted-foreground mb-1 block">Setor/Área</Label>
+              <Select value={filterSetor} onValueChange={setFilterSetor}>
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Todos</SelectItem>
+                  {setoresMock.filter(s => s.status === 'Ativo').map(s => (
+                    <SelectItem key={s.id} value={s.id}>{s.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label className="text-xs text-muted-foreground mb-1 block">Tipo de Evento</Label>
+              <Select value={filterTipo} onValueChange={setFilterTipo}>
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Todos</SelectItem>
+                  {eventTypes.map(t => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="flex items-end">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => {
+                  setFilterPessoa('');
+                  setFilterSetor('');
+                  setFilterTipo('');
+                  setFilterEquipe(false);
+                }}
+              >
+                Limpar filtros
+              </Button>
+            </div>
+          </div>
+        </Card>
+      )}
+      
+      {/* Visualização do Calendário */}
+      <Card className="overflow-hidden">
+        {/* Visão Mês */}
+        {viewMode === 'mes' && (
+          <div className="p-4">
+            {/* Cabeçalho dias da semana */}
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {diasSemana.map(dia => (
+                <div key={dia} className="text-center text-xs font-medium text-muted-foreground py-2">
+                  {dia}
+                </div>
+              ))}
+            </div>
+            
+            {/* Grid de dias */}
+            <div className="grid grid-cols-7 gap-1">
+              {getDaysInMonth().map((day, idx) => {
+                const eventos = getEventsForDate(day.date);
+                const isToday = formatDate(day.date) === '2026-02-04';
+                
+                return (
+                  <div
+                    key={idx}
+                    className={cn(
+                      "min-h-[100px] p-1 border rounded cursor-pointer hover:bg-muted/50 transition-colors",
+                      !day.isCurrentMonth && "bg-muted/30 text-muted-foreground",
+                      isToday && "border-primary bg-primary/5"
+                    )}
+                    onClick={() => {
+                      setCurrentDate(day.date);
+                      setViewMode('dia');
+                    }}
+                  >
+                    <div className={cn(
+                      "text-sm font-medium mb-1",
+                      isToday && "text-primary"
+                    )}>
+                      {day.date.getDate()}
+                    </div>
+                    <div className="space-y-1">
+                      {eventos.slice(0, 3).map(evento => (
+                        <div
+                          key={evento.id}
+                          className="text-xs p-1 rounded truncate cursor-pointer hover:opacity-80"
+                          style={{ backgroundColor: evento.cor + '20', color: evento.cor }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEventClick(evento);
+                          }}
+                        >
+                          {evento.privado && scope !== 'all' ? 'Ocupado' : evento.titulo}
+                        </div>
+                      ))}
+                      {eventos.length > 3 && (
+                        <div className="text-xs text-muted-foreground">
+                          +{eventos.length - 3} mais
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        
+        {/* Visão Dia */}
+        {viewMode === 'dia' && (
+          <div className="p-4">
+            <div className="grid grid-cols-[60px_1fr] gap-2">
+              {getHoursOfDay().map(hour => {
+                const eventos = eventosVisiveis.filter(e => 
+                  e.dataInicio === formatDate(currentDate) && 
+                  e.horaInicio.startsWith(hour.split(':')[0])
+                );
+                
+                return (
+                  <div key={hour} className="contents">
+                    <div className="text-xs text-muted-foreground py-3 text-right pr-2">
+                      {hour}
+                    </div>
+                    <div className="border-t min-h-[48px] py-1 space-y-1">
+                      {eventos.map(evento => (
+                        <div
+                          key={evento.id}
+                          className="p-2 rounded text-sm cursor-pointer hover:opacity-80"
+                          style={{ backgroundColor: evento.cor + '20', borderLeft: `3px solid ${evento.cor}` }}
+                          onClick={() => handleEventClick(evento)}
+                        >
+                          <div className="font-medium" style={{ color: evento.cor }}>
+                            {evento.privado && scope !== 'all' ? 'Ocupado' : evento.titulo}
+                          </div>
+                          {!evento.privado && (
+                            <div className="text-xs text-muted-foreground">
+                              {evento.horaInicio} - {evento.horaFim}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        
+        {/* Visão Semana */}
+        {viewMode === 'semana' && (
+          <div className="p-4 overflow-x-auto">
+            <div className="grid grid-cols-[60px_repeat(7,1fr)] gap-1 min-w-[800px]">
+              {/* Header */}
+              <div className="py-2" />
+              {getWeekDays().map((day, idx) => {
+                const isToday = formatDate(day) === '2026-02-04';
+                return (
+                  <div 
+                    key={idx} 
+                    className={cn(
+                      "text-center py-2 text-sm font-medium",
+                      isToday && "text-primary"
+                    )}
+                  >
+                    {diasSemana[idx]}
+                    <div className={cn(
+                      "text-lg",
+                      isToday && "bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center mx-auto"
+                    )}>
+                      {day.getDate()}
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {/* Grid de horas */}
+              {getHoursOfDay().map(hour => (
+                <div key={hour} className="contents">
+                  <div className="text-xs text-muted-foreground py-2 text-right pr-2">
+                    {hour}
+                  </div>
+                  {getWeekDays().map((day, dayIdx) => {
+                    const eventos = eventosVisiveis.filter(e => 
+                      e.dataInicio === formatDate(day) && 
+                      e.horaInicio.startsWith(hour.split(':')[0])
+                    );
+                    
+                    return (
+                      <div 
+                        key={dayIdx} 
+                        className="border-t border-l min-h-[48px] p-0.5"
+                      >
+                        {eventos.map(evento => (
+                          <div
+                            key={evento.id}
+                            className="p-1 rounded text-xs cursor-pointer hover:opacity-80 mb-0.5"
+                            style={{ backgroundColor: evento.cor + '20', borderLeft: `2px solid ${evento.cor}` }}
+                            onClick={() => handleEventClick(evento)}
+                          >
+                            <div className="font-medium truncate" style={{ color: evento.cor }}>
+                              {evento.privado && scope !== 'all' ? 'Ocupado' : evento.titulo}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Visão Agenda */}
+        {viewMode === 'agenda' && (
+          <div className="divide-y">
+            {eventosVisiveis
+              .sort((a, b) => a.dataInicio.localeCompare(b.dataInicio))
+              .map(evento => (
+                <div 
+                  key={evento.id}
+                  className="p-4 hover:bg-muted/50 cursor-pointer transition-colors"
+                  onClick={() => handleEventClick(evento)}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="text-center min-w-[60px]">
+                      <div className="text-2xl font-bold text-foreground">
+                        {new Date(evento.dataInicio).getDate()}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {meses[new Date(evento.dataInicio).getMonth()].slice(0, 3)}
+                      </div>
+                    </div>
+                    <div 
+                      className="w-1 self-stretch rounded"
+                      style={{ backgroundColor: evento.cor }}
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-foreground">
+                          {evento.privado && scope !== 'all' ? 'Ocupado' : evento.titulo}
+                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          {getEventTypeLabel(evento.tipo)}
+                        </Badge>
+                      </div>
+                      {!evento.privado && (
+                        <>
+                          <div className="text-sm text-muted-foreground flex items-center gap-4">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {evento.horaInicio} - {evento.horaFim}
+                            </span>
+                            {evento.local && (
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                {evento.local}
+                              </span>
+                            )}
+                            {evento.participantes.length > 0 && (
+                              <span className="flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                {evento.participantes.length} participantes
+                              </span>
+                            )}
+                          </div>
+                          {evento.descricao && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {evento.descricao}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            {eventosVisiveis.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground">
+                Nenhum evento encontrado
+              </div>
+            )}
+          </div>
+        )}
+      </Card>
+      
+      {/* Modal de detalhes do evento */}
+      <Dialog open={showEventModal} onOpenChange={setShowEventModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: selectedEvent?.cor }}
+              />
+              {selectedEvent?.privado && scope !== 'all' 
+                ? 'Evento Privado' 
+                : selectedEvent?.titulo
+              }
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedEvent && (!selectedEvent.privado || scope === 'all') && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-sm">
+                <Badge variant="secondary">{getEventTypeLabel(selectedEvent.tipo)}</Badge>
+                {selectedEvent.privado && (
+                  <Badge variant="outline">Privado</Badge>
+                )}
+              </div>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <CalendarIcon className="h-4 w-4" />
+                  {new Date(selectedEvent.dataInicio).toLocaleDateString('pt-BR', { 
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                  })}
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  {selectedEvent.horaInicio} - {selectedEvent.horaFim}
+                </div>
+                {selectedEvent.local && (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    {selectedEvent.local}
+                  </div>
+                )}
+              </div>
+              
+              {selectedEvent.descricao && (
+                <div>
+                  <Label className="text-xs text-muted-foreground">Descrição</Label>
+                  <p className="text-sm mt-1">{selectedEvent.descricao}</p>
+                </div>
+              )}
+              
+              <div>
+                <Label className="text-xs text-muted-foreground">Criado por</Label>
+                <p className="text-sm mt-1">{selectedEvent.criadorNome}</p>
+              </div>
+              
+              {selectedEvent.participantes.length > 0 && (
+                <div>
+                  <Label className="text-xs text-muted-foreground">
+                    Participantes ({selectedEvent.participantes.length})
+                  </Label>
+                  <div className="mt-2 space-y-1">
+                    {selectedEvent.participantes.map(p => (
+                      <div key={p.id} className="flex items-center gap-2 text-sm">
+                        <div className="w-6 h-6 rounded bg-muted flex items-center justify-center text-xs font-medium">
+                          {p.nome.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                        <span>{p.nome}</span>
+                        {p.confirmado ? (
+                          <Badge variant="secondary" className="text-xs">Confirmado</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">Pendente</Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {selectedEvent?.privado && scope !== 'all' && (
+            <div className="text-center text-muted-foreground py-4">
+              Este evento é privado. Você não tem permissão para ver os detalhes.
+            </div>
+          )}
+          
+          <DialogFooter>
+            {canEdit && selectedEvent && (selectedEvent.criadorId === currentUserId || scope === 'all') && (
+              <Button variant="outline">Editar</Button>
+            )}
+            <Button onClick={() => setShowEventModal(false)}>Fechar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Modal de criar evento */}
+      <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Novo Evento</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <Label>Título *</Label>
+              <Input 
+                value={novoEvento.titulo}
+                onChange={(e) => setNovoEvento({...novoEvento, titulo: e.target.value})}
+                placeholder="Nome do evento"
+              />
+            </div>
+            
+            <div>
+              <Label>Tipo *</Label>
+              <Select 
+                value={novoEvento.tipo}
+                onValueChange={(v) => setNovoEvento({...novoEvento, tipo: v as EventType})}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {eventTypes.map(t => (
+                    <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Data Início *</Label>
+                <Input 
+                  type="date"
+                  value={novoEvento.dataInicio}
+                  onChange={(e) => setNovoEvento({...novoEvento, dataInicio: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label>Hora Início *</Label>
+                <Input 
+                  type="time"
+                  value={novoEvento.horaInicio}
+                  onChange={(e) => setNovoEvento({...novoEvento, horaInicio: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Data Fim *</Label>
+                <Input 
+                  type="date"
+                  value={novoEvento.dataFim}
+                  onChange={(e) => setNovoEvento({...novoEvento, dataFim: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label>Hora Fim *</Label>
+                <Input 
+                  type="time"
+                  value={novoEvento.horaFim}
+                  onChange={(e) => setNovoEvento({...novoEvento, horaFim: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label>Local</Label>
+              <Input 
+                value={novoEvento.local}
+                onChange={(e) => setNovoEvento({...novoEvento, local: e.target.value})}
+                placeholder="Sala, endereço ou link"
+              />
+            </div>
+            
+            <div>
+              <Label>Descrição</Label>
+              <Textarea 
+                value={novoEvento.descricao}
+                onChange={(e) => setNovoEvento({...novoEvento, descricao: e.target.value})}
+                placeholder="Detalhes do evento"
+                rows={3}
+              />
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Switch 
+                id="privado"
+                checked={novoEvento.privado}
+                onCheckedChange={(v) => setNovoEvento({...novoEvento, privado: v})}
+              />
+              <Label htmlFor="privado">Evento privado</Label>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateModal(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleCreateEvent} disabled={!novoEvento.titulo || !novoEvento.dataInicio}>
+              Criar Evento
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

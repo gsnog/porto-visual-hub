@@ -118,6 +118,10 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/gestao-pessoas/acessos": { title: "Acessos do Sistema", description: "Gerenciamento de permissões" },
   "/gestao-pessoas/dashboards": { title: "Dashboards", description: "Controle de visibilidade" },
   "/gestao-pessoas/auditoria": { title: "Auditoria", description: "Histórico de alterações" },
+  
+  // Módulos Globais - Header
+  "/calendario": { title: "Calendário", description: "Calendário corporativo" },
+  "/chat": { title: "Chat", description: "Chat corporativo" },
 }
 
 function LayoutContent() {
