@@ -12,61 +12,71 @@ export interface GradientCardProps {
   variant: "success" | "danger" | "info" | "warning" | "neutral" | "orange";
 }
 
-const variantStyles = {
+const variantConfig = {
   success: {
-    bg: "from-lime-400/80 to-lime-500/80",
-    shadow: "shadow-lime-400/20",
+    border: "border-l-lime-400 dark:border-l-lime-400",
+    iconBg: "bg-lime-400/10 dark:bg-lime-500/15",
+    iconColor: "text-lime-600 dark:text-lime-400",
+    trendBg: "bg-lime-400/10 text-lime-700 dark:bg-lime-400/15 dark:text-lime-400",
   },
   danger: {
-    bg: "from-rose-400/80 to-rose-500/80",
-    shadow: "shadow-rose-400/20",
+    border: "border-l-rose-400 dark:border-l-rose-400",
+    iconBg: "bg-rose-400/10 dark:bg-rose-500/15",
+    iconColor: "text-rose-600 dark:text-rose-400",
+    trendBg: "bg-rose-400/10 text-rose-700 dark:bg-rose-400/15 dark:text-rose-400",
   },
   info: {
-    bg: "from-blue-400/80 to-blue-500/80",
-    shadow: "shadow-blue-400/20",
+    border: "border-l-blue-400 dark:border-l-blue-400",
+    iconBg: "bg-blue-400/10 dark:bg-blue-500/15",
+    iconColor: "text-blue-600 dark:text-blue-400",
+    trendBg: "bg-blue-400/10 text-blue-700 dark:bg-blue-400/15 dark:text-blue-400",
   },
   warning: {
-    bg: "from-amber-400/80 to-amber-500/80",
-    shadow: "shadow-amber-400/20",
+    border: "border-l-amber-400 dark:border-l-amber-400",
+    iconBg: "bg-amber-400/10 dark:bg-amber-500/15",
+    iconColor: "text-amber-600 dark:text-amber-400",
+    trendBg: "bg-amber-400/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-400",
   },
   neutral: {
-    bg: "from-slate-400/80 to-slate-500/80",
-    shadow: "shadow-slate-400/20",
+    border: "border-l-slate-400 dark:border-l-slate-500",
+    iconBg: "bg-slate-400/10 dark:bg-slate-500/15",
+    iconColor: "text-slate-600 dark:text-slate-400",
+    trendBg: "bg-slate-400/10 text-slate-700 dark:bg-slate-400/15 dark:text-slate-400",
   },
   orange: {
-    bg: "from-lime-400/80 to-lime-500/80",
-    shadow: "shadow-lime-400/20",
+    border: "border-l-orange-400 dark:border-l-orange-400",
+    iconBg: "bg-orange-400/10 dark:bg-orange-500/15",
+    iconColor: "text-orange-600 dark:text-orange-400",
+    trendBg: "bg-orange-400/10 text-orange-700 dark:bg-orange-400/15 dark:text-orange-400",
   },
 };
 
 export const GradientCard = ({ title, value, icon: Icon, trend, variant }: GradientCardProps) => {
-  const styles = variantStyles[variant];
+  const config = variantConfig[variant];
 
   return (
     <div
-      className={`relative overflow-hidden rounded bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
+      className={`relative bg-card border border-border ${config.border} border-l-[3px] rounded p-5 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 group`}
     >
-      <div className="flex items-start justify-between">
-        <div className="rounded bg-white/20 p-2.5 backdrop-blur-sm">
-          <Icon className="h-5 w-5" />
+      <div className="flex items-center justify-between mb-4">
+        <div className={`p-2.5 rounded ${config.iconBg}`}>
+          <Icon className={`h-4 w-4 ${config.iconColor}`} />
         </div>
         {trend && (
           <div
-            className="flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold bg-white/20 text-white"
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${config.trendBg}`}
           >
             {trend.positive ? (
-              <ArrowUpRight className="h-3.5 w-3.5" />
+              <ArrowUpRight className="h-3 w-3" />
             ) : (
-              <ArrowDownRight className="h-3.5 w-3.5" />
+              <ArrowDownRight className="h-3 w-3" />
             )}
             {trend.value}
           </div>
         )}
       </div>
-      <div className="mt-4">
-        <p className="text-sm font-medium text-white/80">{title}</p>
-        <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
-      </div>
+      <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
+      <p className="text-2xl font-bold tracking-tight text-foreground">{value}</p>
     </div>
   );
 };
