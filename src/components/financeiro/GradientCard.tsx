@@ -34,8 +34,8 @@ const variantStyles = {
     shadow: "shadow-slate-400/20",
   },
   orange: {
-    bg: "from-orange-400/80 to-orange-500/80",
-    shadow: "shadow-orange-400/20",
+    bg: "from-green-400/80 to-green-500/80",
+    shadow: "shadow-green-400/20",
   },
 };
 
