@@ -199,7 +199,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         {/* Toggle button - aligned with logo divider */}
         <button
           onClick={onToggle}
-          className="absolute -right-4 bottom-0 translate-y-1/2 grid place-items-center h-8 w-8 rounded-full bg-primary text-white shadow-lg hover:scale-110 transition-transform z-10"
+          className="absolute -right-4 bottom-0 translate-y-1/2 grid place-items-center h-8 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform z-10"
         >
           <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
         </button>
