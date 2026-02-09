@@ -189,7 +189,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       style={{ background: "hsl(var(--sidebar-bg))" }}
     >
       {/* Logo */}
-      <div className="relative flex h-20 items-center justify-center border-b border-white/10 px-4">
+      <div className="relative flex h-20 items-center justify-center border-b border-[hsl(var(--sidebar-border))] px-4">
         {collapsed ? (
           <img src={logoIcone} alt="S" className="h-12 object-contain" />
         ) : (
@@ -317,7 +317,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-white/10 p-3 space-y-1">
+      <div className="border-t border-[hsl(var(--sidebar-border))] p-3 space-y-1">
 
         {/* Theme toggle */}
         <button
