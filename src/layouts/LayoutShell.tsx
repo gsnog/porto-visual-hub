@@ -171,6 +171,9 @@ function LayoutContent() {
           pageDescription={pageInfo.description}
         />
 
+        {/* Separator line between header and content */}
+        <div className="h-px w-full bg-border/60 dark:bg-border/40" />
+
         <main className="flex-1 p-6">
           <Outlet />
         </main>
