@@ -6,26 +6,26 @@
 
 @layer base {
   :root {
-    /* Core system color: #141735 = HSL 233 45% 14% */
-    --system-base: 233 45% 14%;
-    --system-light: 233 35% 25%;
-    --system-lighter: 233 25% 35%;
-    --system-dark: 233 50% 10%;
+    /* Core system color: #0B0D0F = HSL 210 15% 5% (Graphite) */
+    --system-base: 210 15% 5%;
+    --system-light: 210 10% 15%;
+    --system-lighter: 210 8% 25%;
+    --system-dark: 210 15% 3%;
     
-    /* Primary accent: #FD7F01 = HSL 24 98% 50% */
+    /* Primary accent: #22C55E = HSL 142 71% 45% (Green) */
     --background: 210 20% 98%;
-    --foreground: 233 45% 14%;
+    --foreground: 210 15% 5%;
     --card: 0 0% 100%;
-    --card-foreground: 233 45% 14%;
+    --card-foreground: 210 15% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 233 45% 14%;
-    --primary: 24 98% 50%;
+    --popover-foreground: 210 15% 5%;
+    --primary: 142 71% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 230 14% 96%;
-    --secondary-foreground: 233 45% 14%;
-    --muted: 230 14% 96%;
-    --muted-foreground: 233 20% 46%;
-    --accent: 24 98% 50%;
+    --secondary: 210 14% 96%;
+    --secondary-foreground: 210 15% 5%;
+    --muted: 210 14% 96%;
+    --muted-foreground: 210 10% 46%;
+    --accent: 142 71% 45%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -33,27 +33,27 @@
     --success-foreground: 0 0% 100%;
     --warning: 45 93% 47%;
     --warning-foreground: 0 0% 0%;
-    --border: 230 13% 91%;
-    --input: 230 13% 91%;
-    --ring: 24 98% 50%;
+    --border: 210 13% 91%;
+    --input: 210 13% 91%;
+    --ring: 142 71% 45%;
     --radius: 0.75rem;
 
-    /* Sidebar colors - FIXED #141735 for both modes */
-    --sidebar-bg: 233 45% 14%;
-    --sidebar-foreground: 230 20% 85%;
-    --sidebar-accent: 24 98% 50%;
-    --sidebar-hover: 233 40% 20%;
-    --sidebar-active: 233 40% 22%;
-    --sidebar-background: 233 45% 14%;
-    --sidebar-primary: 24 98% 50%;
+    /* Sidebar colors - FIXED #0B0D0F for both modes */
+    --sidebar-bg: 210 15% 5%;
+    --sidebar-foreground: 210 10% 85%;
+    --sidebar-accent: 142 71% 45%;
+    --sidebar-hover: 210 12% 12%;
+    --sidebar-active: 210 12% 14%;
+    --sidebar-background: 210 15% 5%;
+    --sidebar-primary: 142 71% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 233 40% 20%;
-    --sidebar-ring: 24 98% 50%;
-    --sidebar-muted: 230 20% 70%;
+    --sidebar-border: 210 12% 14%;
+    --sidebar-ring: 142 71% 45%;
+    --sidebar-muted: 210 10% 70%;
 
     /* Status colors */
-    --status-progress: 24 98% 50%;
+    --status-progress: 142 71% 45%;
     --status-done: 142 71% 45%;
     --status-pending: 45 93% 47%;
 
@@ -66,10 +66,10 @@
     --table-border: 220 20% 92%;
 
     /* Chart colors */
-    --chart-1: 24 98% 50%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 233 45% 14%;
-    --chart-4: 233 25% 55%;
+    --chart-1: 142 71% 45%;
+    --chart-2: 210 15% 5%;
+    --chart-3: 197 71% 45%;
+    --chart-4: 210 8% 55%;
     --chart-5: 0 84% 60%;
 
     /* Input colors */
@@ -79,24 +79,24 @@
 
   .dark {
     /* Core system color variations for dark mode */
-    --system-base: 233 45% 14%;
-    --system-light: 233 35% 22%;
-    --system-lighter: 233 25% 30%;
-    --system-dark: 233 50% 8%;
+    --system-base: 210 15% 5%;
+    --system-light: 210 10% 12%;
+    --system-lighter: 210 8% 20%;
+    --system-dark: 210 15% 3%;
     
-    --background: 222 47% 8%;
-    --foreground: 230 20% 95%;
-    --card: 233 45% 12%;
-    --card-foreground: 230 20% 95%;
-    --popover: 233 45% 12%;
-    --popover-foreground: 230 20% 95%;
-    --primary: 24 98% 50%;
+    --background: 210 15% 6%;
+    --foreground: 210 10% 95%;
+    --card: 210 15% 9%;
+    --card-foreground: 210 10% 95%;
+    --popover: 210 15% 9%;
+    --popover-foreground: 210 10% 95%;
+    --primary: 142 71% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 233 45% 16%;
-    --secondary-foreground: 230 20% 95%;
-    --muted: 233 35% 18%;
-    --muted-foreground: 230 20% 70%;
-    --accent: 24 98% 50%;
+    --secondary: 210 15% 12%;
+    --secondary-foreground: 210 10% 95%;
+    --muted: 210 12% 14%;
+    --muted-foreground: 210 10% 70%;
+    --accent: 142 71% 45%;
     --accent-foreground: 0 0% 100%;
     /* Improved destructive for better readability in dark mode */
     --destructive: 0 72% 55%;
@@ -107,42 +107,42 @@
     /* Improved warning for better readability in dark mode */
     --warning: 45 90% 55%;
     --warning-foreground: 0 0% 0%;
-    --border: 233 35% 22%;
-    --input: 233 35% 20%;
-    --ring: 24 98% 50%;
+    --border: 210 12% 18%;
+    --input: 210 12% 16%;
+    --ring: 142 71% 45%;
 
-    /* Sidebar colors - FIXED #141735 for both modes (same as light) */
-    --sidebar-bg: 233 45% 14%;
-    --sidebar-foreground: 230 20% 85%;
-    --sidebar-background: 233 45% 14%;
-    --sidebar-hover: 233 40% 20%;
-    --sidebar-active: 233 40% 22%;
-    --sidebar-border: 233 40% 20%;
-    --sidebar-muted: 230 20% 70%;
-    --sidebar-accent: 24 98% 50%;
-    --sidebar-primary: 24 98% 50%;
+    /* Sidebar colors - FIXED #0B0D0F for both modes */
+    --sidebar-bg: 210 15% 5%;
+    --sidebar-foreground: 210 10% 85%;
+    --sidebar-background: 210 15% 5%;
+    --sidebar-hover: 210 12% 12%;
+    --sidebar-active: 210 12% 14%;
+    --sidebar-border: 210 12% 14%;
+    --sidebar-muted: 210 10% 70%;
+    --sidebar-accent: 142 71% 45%;
+    --sidebar-primary: 142 71% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-ring: 24 98% 50%;
+    --sidebar-ring: 142 71% 45%;
 
     /* Table colors - dark mode */
-    --table-header: 222 40% 15%;
-    --table-header-foreground: 220 20% 90%;
-    --table-row: 222 40% 14%;
-    --table-row-alt: 222 40% 16%;
-    --table-row-hover: 222 40% 13%;
-    --table-border: 222 40% 22%;
+    --table-header: 210 15% 12%;
+    --table-header-foreground: 210 10% 90%;
+    --table-row: 210 15% 10%;
+    --table-row-alt: 210 15% 12%;
+    --table-row-hover: 210 15% 9%;
+    --table-border: 210 12% 18%;
 
     /* Chart colors - dark mode - brighter for readability */
-    --chart-1: 24 98% 55%;
-    --chart-2: 142 65% 50%;
-    --chart-3: 233 35% 50%;
-    --chart-4: 233 25% 60%;
+    --chart-1: 142 71% 50%;
+    --chart-2: 210 10% 40%;
+    --chart-3: 197 65% 50%;
+    --chart-4: 210 8% 60%;
     --chart-5: 0 72% 55%;
 
     /* Input colors - dark mode */
-    --input-background: 233 45% 18%;
-    --input-placeholder: 230 20% 95%;
+    --input-background: 210 15% 14%;
+    --input-placeholder: 210 10% 95%;
   }
 
   * {
@@ -160,14 +160,14 @@
   input[type="datetime-local"],
   input[type="time"] {
     background-color: #efefef !important;
-    color: #22265B !important;
+    color: #0B0D0F !important;
   }
 
   .dark input[type="date"],
   .dark input[type="datetime-local"],
   .dark input[type="time"] {
-    background-color: hsl(233 45% 12%) !important;
-    color: hsl(230 20% 95%) !important;
+    background-color: hsl(210 15% 10%) !important;
+    color: hsl(210 10% 95%) !important;
   }
 
   .dark input[type="date"]::-webkit-calendar-picker-indicator,
@@ -290,7 +290,7 @@
 
   /* ===== FORM STYLES PADRONIZADOS ===== */
   .form-input {
-    @apply h-10 px-3 rounded border border-[#22265B] bg-[#efefef] text-[#22265B] text-sm transition-all duration-200;
+    @apply h-10 px-3 rounded border border-foreground/30 bg-[#efefef] text-foreground text-sm transition-all duration-200;
   }
 
   .form-input:focus {
@@ -298,7 +298,7 @@
   }
 
   .dark .form-input {
-    @apply bg-[hsl(233_45%_18%)] text-foreground border-border;
+    @apply bg-[hsl(210_15%_14%)] text-foreground border-border;
   }
 
   .form-label {
