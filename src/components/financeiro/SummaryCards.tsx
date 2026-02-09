@@ -15,8 +15,8 @@ interface SummaryCardProps {
 const SummaryCard = ({ title, value, icon: Icon, trend, variant }: SummaryCardProps) => {
   const variantStyles = {
     success: {
-      bg: "from-emerald-400/80 to-emerald-500/80",
-      shadow: "shadow-emerald-400/20",
+      bg: "from-lime-400/80 to-lime-500/80",
+      shadow: "shadow-lime-400/20",
     },
     danger: {
       bg: "from-rose-400/80 to-rose-500/80",

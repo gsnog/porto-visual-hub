@@ -322,7 +322,7 @@ export default function Cadastro() {
                       currentStep === step.id
                         ? "bg-primary text-primary-foreground scale-110"
                         : currentStep > step.id
-                        ? "bg-green-500 text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground group-hover:bg-muted/80"
                     )}
                   >
@@ -338,7 +338,7 @@ export default function Cadastro() {
                       currentStep === step.id
                         ? "text-primary"
                         : currentStep > step.id
-                        ? "text-green-600 dark:text-green-400"
+                        ? "text-primary"
                         : "text-muted-foreground"
                     )}
                   >
@@ -349,7 +349,7 @@ export default function Cadastro() {
                   <div
                     className={cn(
                       "w-12 h-1 mx-2 rounded-full transition-colors duration-300",
-                      currentStep > step.id ? "bg-green-500" : "bg-muted"
+                      currentStep > step.id ? "bg-primary" : "bg-muted"
                     )}
                   />
                 )}

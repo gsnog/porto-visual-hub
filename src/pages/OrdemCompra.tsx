@@ -30,7 +30,7 @@ export default function OrdemCompra() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Aprovado':
-        return 'text-green-600 font-medium';
+        return 'text-primary font-medium';
       case 'Análise':
         return 'text-yellow-600 font-medium';
       case 'Negado':

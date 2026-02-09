@@ -43,12 +43,12 @@ export default function VisaoGeralRH() {
         <Card className="border-border">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded bg-green-500/10">
-                <UserCheck className="h-6 w-6 text-green-600" />
+              <div className="p-3 rounded bg-primary/10">
+                <UserCheck className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Ativos</p>
-                <p className="text-2xl font-bold text-green-600">{stats.ativos}</p>
+                <p className="text-2xl font-bold text-primary">{stats.ativos}</p>
               </div>
             </div>
           </CardContent>

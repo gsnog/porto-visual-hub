@@ -128,7 +128,7 @@ const FluxoCaixa = () => {
                     <StatusBadge status={transacao.status} />
                   </TableCell>
                   <TableCell className="text-center">
-                    <span className={transacao.tipo === 'Entrada' ? 'text-green-700 font-semibold' : 'text-red-700 font-semibold'}>
+                    <span className={transacao.tipo === 'Entrada' ? 'text-primary font-semibold' : 'text-red-700 font-semibold'}>
                       {transacao.valorTotal}
                     </span>
                   </TableCell>

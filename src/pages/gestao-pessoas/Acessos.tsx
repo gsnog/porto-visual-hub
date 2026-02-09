@@ -210,7 +210,7 @@ export default function Acessos() {
                           </Select>
                         </TableCell>
                         <TableCell>
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-green-500/20 text-green-600">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-primary/20 text-primary">
                             Ativo
                           </span>
                         </TableCell>

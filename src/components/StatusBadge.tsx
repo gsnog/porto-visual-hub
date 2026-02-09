@@ -23,19 +23,19 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "cancelada": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "rejeitada": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
-  "recebida": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "recebido": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "paga": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "pago": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "efetuado": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "finalizado": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "concluido": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "concluído": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "aprovada": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "aprovado": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "processada": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "autorizada": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
-  "entrada": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "recebida": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "recebido": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "paga": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "pago": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "efetuado": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "finalizado": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "concluido": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "concluído": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "aprovada": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "aprovado": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "processada": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "autorizada": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "entrada": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   
   // Status intermediários
   "em-andamento": { bg: "bg-blue-500/20", text: "text-blue-600 dark:text-blue-500" },
@@ -45,19 +45,19 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "saida": { bg: "bg-orange-500/20", text: "text-orange-600 dark:text-orange-500" },
   
   // Estoque
-  "normal": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "normal": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   "crítico": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "critico": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
   // Patrimônio / Pessoas
-  "ativo": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "ativo": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   "inativo": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "afastado": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   "desligado": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
   // Tipos de documentos
   "nf-e": { bg: "bg-primary/20", text: "text-primary" },
-  "xml": { bg: "bg-green-500/20", text: "text-green-600 dark:text-green-500" },
+  "xml": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   "ni": { bg: "bg-muted", text: "text-muted-foreground" },
 }
 

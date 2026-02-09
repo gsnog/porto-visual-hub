@@ -160,7 +160,7 @@ export function PersonHierarchyPanel({
               </Avatar>
               <span className={cn(
                 "absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-card",
-                getOnlineStatus(pessoa.id) ? "bg-green-500" : "bg-muted-foreground"
+                getOnlineStatus(pessoa.id) ? "bg-primary" : "bg-muted-foreground"
               )} />
             </div>
             <h4 className="font-semibold text-foreground mt-2">{pessoa.nome}</h4>
@@ -393,7 +393,7 @@ function PersonRow({ pessoa, isOnline, showChatButton, onChat, level = 0 }: Pers
         </Avatar>
         <span className={cn(
           "absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-card",
-          isOnline ? "bg-green-500" : "bg-muted-foreground"
+          isOnline ? "bg-primary" : "bg-muted-foreground"
         )} />
       </div>
       <div className="flex-1 min-w-0">
