@@ -62,7 +62,7 @@ export function Topbar({
       className={cn(
         "sticky top-0 z-40 flex h-20 items-center justify-between px-6 border-b transition-all duration-300",
         "bg-background text-foreground border-border",
-        "dark:bg-[#0B0D0F] dark:text-white dark:border-white/10"
+        "dark:bg-[hsl(220_10%_6%)] dark:text-white dark:border-[hsl(220_6%_16%)]"
       )}
     >
       {/* Left side - Title and description */}
