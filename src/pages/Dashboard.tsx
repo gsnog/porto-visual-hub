@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { PortfolioChart } from "@/components/PortfolioChart"
 import { SummaryCards } from "@/components/financeiro/SummaryCards"
+import { GradientCard } from "@/components/financeiro/GradientCard"
 import { StatusBadge } from "@/components/StatusBadge"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
@@ -19,7 +20,7 @@ type DashboardType = "geral" | "financeiro" | "estoque" | "patrimonio"
 type PeriodoType = "1h" | "24h" | "7d" | "30d" | "90d" | "1y"
 type TipoType = "todos" | "financeiro" | "estoque" | "patrimonio"
 
-// Mock Data
+// ===== MOCK DATA (unchanged) =====
 const evolutionData = [
   { month: "Jan", entradas: 45000, saidas: 32000, saldo: 13000 },
   { month: "Fev", entradas: 52000, saidas: 38000, saldo: 27000 },
@@ -39,7 +40,7 @@ const consumoSetorData = [
 
 const patrimonioTipoData = [
   { name: "Automóveis", value: 450000, color: "hsl(var(--primary))" },
-  { name: "Equipamentos", value: 280000, color: "hsl(var(--success))" },
+  { name: "Equipamentos", value: 280000, color: "hsl(72 80% 60%)" },
   { name: "Mobiliário", value: 95000, color: "hsl(var(--chart-3))" },
   { name: "Software", value: 75000, color: "hsl(var(--chart-4))" },
 ]
@@ -73,8 +74,8 @@ const documentosFiscaisData = [
 
 const tipoDocumentoData = [
   { name: "NF-e", value: 65, color: "hsl(var(--primary))" },
-  { name: "XML", value: 25, color: "hsl(var(--success))" },
-  { name: "NI", value: 10, color: "hsl(var(--chart-3))" },
+  { name: "XML", value: 25, color: "hsl(var(--chart-3))" },
+  { name: "NI", value: 10, color: "hsl(var(--chart-4))" },
 ]
 
 const estoqueUnidadeData = [
@@ -179,7 +180,7 @@ const patrimonioEvolutionData = [
 
 const patrimonioQuantidadeData = [
   { name: "Automóveis", value: 12, color: "hsl(var(--primary))" },
-  { name: "Equipamentos", value: 68, color: "hsl(var(--success))" },
+  { name: "Equipamentos", value: 68, color: "hsl(72 80% 60%)" },
   { name: "Mobiliário", value: 45, color: "hsl(var(--chart-3))" },
   { name: "Software", value: 31, color: "hsl(var(--chart-4))" },
 ]
@@ -206,132 +207,15 @@ const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)
 }
 
-// Components
-const GradientCard = ({ 
-  title, value, icon: Icon, trend, variant = "info" 
-}: { 
-  title: string
-  value: string
-  icon: any
-  trend?: { value: string; positive: boolean }
-  variant?: "success" | "danger" | "info" | "warning" | "neutral"
-}) => {
-  const variantStyles = {
-    success: {
-      bg: "from-lime-400/80 to-lime-500/80",
-      shadow: "shadow-lime-400/20",
-    },
-    danger: {
-      bg: "from-rose-400/80 to-rose-500/80",
-      shadow: "shadow-rose-400/20",
-    },
-    info: {
-      bg: "from-blue-400/80 to-blue-500/80",
-      shadow: "shadow-blue-400/20",
-    },
-    warning: {
-      bg: "from-amber-400/80 to-amber-500/80",
-      shadow: "shadow-amber-400/20",
-    },
-    neutral: {
-      bg: "from-slate-400/80 to-slate-500/80",
-      shadow: "shadow-slate-400/20",
-    },
-  }
-
-  const styles = variantStyles[variant]
-
-  return (
-    <div
-      className={`relative overflow-hidden rounded bg-gradient-to-br ${styles.bg} p-5 text-white shadow-lg ${styles.shadow} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl`}
-    >
-      <div className="flex items-start justify-between">
-        <div className="rounded bg-white/20 p-2.5 backdrop-blur-sm">
-          <Icon className="h-5 w-5" />
-        </div>
-        {trend && (
-          <div className="flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold">
-            {trend.positive ? (
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            ) : (
-              <ArrowDownRight className="h-3.5 w-3.5" />
-            )}
-            {trend.value}
-          </div>
-        )}
-      </div>
-      <div className="mt-4">
-        <p className="text-sm font-medium text-white/80">{title}</p>
-        <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
-      </div>
-    </div>
-  )
-}
-
-const MetricCard = ({ 
-  title, value, icon: Icon, trend, trendValue, color = "primary" 
-}: { 
-  title: string
-  value: string
-  icon: any
-  trend?: "up" | "down"
-  trendValue?: string
-  color?: "primary" | "success" | "destructive" | "warning"
-}) => {
-  const iconColorClass = {
-    primary: "text-primary",
-    success: "text-success",
-    destructive: "text-destructive",
-    warning: "text-warning"
-  }[color]
-
-  return (
-    <Card className="border border-border rounded hover:shadow-md transition-shadow duration-200">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <div className={`p-2 rounded bg-opacity-10 ${color === "success" ? "bg-success/10" : color === "destructive" ? "bg-destructive/10" : color === "warning" ? "bg-warning/10" : "bg-primary/10"}`}>
-          <Icon className={`h-4 w-4 ${iconColorClass}`} />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold tracking-tight">{value}</div>
-        {trend && trendValue && (
-          <p className={`text-sm flex items-center gap-1.5 mt-1 font-medium ${trend === "up" ? "text-success" : "text-destructive"}`}>
-            {trend === "up" ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
-            {trendValue}
-          </p>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
-const AlertCard = ({ title, count, type }: { title: string; count: number; type: "warning" | "danger" | "info" }) => {
-  const bgClass = type === "danger" ? "bg-destructive/15" : type === "warning" ? "bg-warning/15" : "bg-primary/15"
-  const iconClass = type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
-  const textClass = type === "danger" ? "text-destructive" : type === "warning" ? "text-warning" : "text-primary"
-  
-  return (
-    <div className={`flex items-center gap-4 p-4 rounded ${bgClass} transition-all duration-200 hover:scale-[1.02]`}>
-      <div className={`p-2 rounded ${type === "danger" ? "bg-destructive/20" : type === "warning" ? "bg-warning/20" : "bg-primary/20"}`}>
-        <AlertTriangle className={`h-5 w-5 ${iconClass}`} />
-      </div>
-      <div>
-        <p className="text-sm font-medium text-foreground">{title}</p>
-        <p className={`text-2xl font-bold ${textClass}`}>{count}</p>
-      </div>
-    </div>
-  )
-}
-
-const CustomTooltip = ({ active, payload, label }: any) => {
+// ===== SHARED COMPONENTS =====
+const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card border border-border rounded p-3 shadow-lg">
-        <p className="text-sm text-muted-foreground mb-1">{label}</p>
+      <div className="bg-card border border-border rounded p-3 shadow-xl backdrop-blur-sm">
+        <p className="text-xs text-muted-foreground mb-1.5">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm font-medium" style={{ color: entry.color }}>
-            {entry.name}: {formatCurrency(entry.value)}
+          <p key={index} className="text-sm font-semibold" style={{ color: entry.color }}>
+            {entry.name}: {typeof entry.value === 'number' && entry.value > 100 ? formatCurrency(entry.value) : entry.value}
           </p>
         ))}
       </div>
@@ -340,7 +224,66 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null
 }
 
-// Dashboard Geral
+const ChartCard = ({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) => (
+  <div className={`bg-card border border-border rounded p-5 ${className}`}>
+    <h3 className="text-sm font-semibold text-foreground mb-4">{title}</h3>
+    <div className="h-64">{children}</div>
+  </div>
+)
+
+const AlertCard = ({ title, count, type }: { title: string; count: number; type: "warning" | "danger" | "info" }) => {
+  const config = {
+    danger: { bg: "bg-rose-400/10 dark:bg-rose-500/10", icon: "text-rose-500", text: "text-rose-600 dark:text-rose-400", border: "border-l-rose-400" },
+    warning: { bg: "bg-amber-400/10 dark:bg-amber-500/10", icon: "text-amber-500", text: "text-amber-600 dark:text-amber-400", border: "border-l-amber-400" },
+    info: { bg: "bg-blue-400/10 dark:bg-blue-500/10", icon: "text-blue-500", text: "text-blue-600 dark:text-blue-400", border: "border-l-blue-400" },
+  }[type]
+
+  return (
+    <div className={`flex items-center gap-4 p-4 rounded ${config.bg} border-l-[3px] ${config.border} transition-all duration-200 hover:scale-[1.01]`}>
+      <div className={`p-2 rounded ${config.bg}`}>
+        <AlertTriangle className={`h-5 w-5 ${config.icon}`} />
+      </div>
+      <div>
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <p className={`text-2xl font-bold ${config.text}`}>{count}</p>
+      </div>
+    </div>
+  )
+}
+
+const FilterBar = ({ children }: { children: React.ReactNode }) => (
+  <div className="bg-card border border-border rounded p-4">
+    <div className="flex flex-wrap items-center gap-4">
+      <Filter className="h-4 w-4 text-muted-foreground" />
+      {children}
+    </div>
+  </div>
+)
+
+const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d", "90d", "1y"] }: { periodo: string; setPeriodo: (v: string) => void; options?: string[] }) => (
+  <div className="flex items-center gap-2">
+    <span className="text-xs text-muted-foreground font-medium">Período:</span>
+    <div className="flex gap-1">
+      {options.map((p) => (
+        <Button
+          key={p}
+          variant={periodo === p ? "default" : "outline"}
+          size="sm"
+          onClick={() => setPeriodo(p)}
+          className="h-7 px-2.5 text-xs"
+        >
+          {p}
+        </Button>
+      ))}
+    </div>
+  </div>
+)
+
+// Chart shared config
+const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 }
+const gridStroke = "hsl(var(--border))"
+
+// ===== DASHBOARD GERAL =====
 const DashboardGeral = () => {
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
   const [setor, setSetor] = useState<string>("todos")
@@ -348,90 +291,31 @@ const DashboardGeral = () => {
 
   const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo", "Operacional"]
 
-  // Simulated filtered data based on filters (in real app, this would filter actual data)
-  const periodoLabel = {
-    "1h": "Última hora",
-    "24h": "Últimas 24h",
-    "7d": "Últimos 7 dias",
-    "30d": "Últimos 30 dias",
-    "90d": "Últimos 90 dias",
-    "1y": "Último ano"
-  }
-
   return (
     <div className="space-y-6">
-      {/* Filtros */}
-      <Card className="border border-border rounded p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
-          </div>
-          
-          {/* Período */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Período:</span>
-            <div className="flex gap-1">
-              {(["1h", "24h", "7d", "30d", "90d", "1y"] as PeriodoType[]).map((p) => (
-                <Button
-                  key={p}
-                  variant={periodo === p ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setPeriodo(p)}
-                  className="h-8 px-3"
-                >
-                  {p}
-                </Button>
-              ))}
-            </div>
-          </div>
+      <FilterBar>
+        <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
+        <Select value={setor} onValueChange={setSetor}>
+          <SelectTrigger className="w-[160px] h-7 text-xs"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
+          <SelectContent>
+            {setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos os setores" : s}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
+          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="financeiro">Financeiro</SelectItem>
+            <SelectItem value="estoque">Estoque</SelectItem>
+            <SelectItem value="patrimonio">Patrimônio</SelectItem>
+          </SelectContent>
+        </Select>
+      </FilterBar>
 
-          {/* Setor */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Setor:</span>
-            <Select value={setor} onValueChange={setSetor}>
-              <SelectTrigger className="w-[160px] h-8">
-                <SelectValue placeholder="Todos os setores" />
-              </SelectTrigger>
-              <SelectContent>
-                {setores.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s === "todos" ? "Todos os setores" : s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Tipo */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Tipo:</span>
-            <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
-              <SelectTrigger className="w-[140px] h-8">
-                <SelectValue placeholder="Todos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="financeiro">Financeiro</SelectItem>
-                <SelectItem value="estoque">Estoque</SelectItem>
-                <SelectItem value="patrimonio">Patrimônio</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Indicador de período ativo */}
-          <div className="ml-auto">
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-              Exibindo: {periodoLabel[periodo]}
-            </span>
-          </div>
-        </div>
-      </Card>
-
-      {/* Cards - Financeiro */}
+      {/* Financeiro Cards */}
       {(tipo === "todos" || tipo === "financeiro") && (
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Financeiro</h3>
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Financeiro</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
             <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
@@ -441,10 +325,10 @@ const DashboardGeral = () => {
         </div>
       )}
 
-      {/* Cards - Estoque */}
+      {/* Estoque Cards */}
       {(tipo === "todos" || tipo === "estoque") && (
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Estoque</h3>
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Estoque</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
             <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" />
@@ -454,10 +338,10 @@ const DashboardGeral = () => {
         </div>
       )}
 
-      {/* Cards - Patrimônio */}
+      {/* Patrimônio Cards */}
       {(tipo === "todos" || tipo === "patrimonio") && (
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Patrimônio</h3>
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Patrimônio</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" />
             <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
@@ -466,468 +350,258 @@ const DashboardGeral = () => {
         </div>
       )}
 
-      {/* Gráfico Principal - Balanço do Portfólio */}
+      {/* Portfolio Chart */}
       {(tipo === "todos" || tipo === "financeiro") && <PortfolioChart />}
 
-    {/* Gráficos */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Evolução Financeira */}
-      <Card className="border border-border rounded p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Evolução Financeira no Tempo</CardTitle>
-        </CardHeader>
-        <div className="h-64">
+      {/* Charts Row 1 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartCard title="Evolução Financeira no Tempo">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={evolutionData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Line type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(var(--success))" strokeWidth={2} />
-              <Line type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" strokeWidth={2} />
-              <Line type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" strokeWidth={2} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Line type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--chart-3))" strokeWidth={2} dot={false} />
             </LineChart>
           </ResponsiveContainer>
-        </div>
-      </Card>
+        </ChartCard>
 
-      {/* Entradas vs Saídas */}
-      <Card className="border border-border rounded p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Entradas vs Saídas por Período</CardTitle>
-        </CardHeader>
-        <div className="h-64">
+        <ChartCard title="Entradas vs Saídas por Período">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolutionData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Bar dataKey="entradas" name="Entradas" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="saidas" name="Saídas" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
+            <BarChart data={evolutionData} barGap={4}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar dataKey="entradas" name="Entradas" fill="hsl(72 100% 50%)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="saidas" name="Saídas" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} opacity={0.8} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </Card>
+        </ChartCard>
 
-      {/* Consumo por Setor */}
-      <Card className="border border-border rounded p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Consumo de Estoque por Setor</CardTitle>
-        </CardHeader>
-        <div className="h-64">
+        <ChartCard title="Consumo de Estoque por Setor">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={consumoSetorData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <YAxis type="category" dataKey="setor" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} width={100} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+            <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
+              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </Card>
+        </ChartCard>
 
-      {/* Distribuição Patrimônio */}
-      <Card className="border border-border rounded p-4">
-        <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-base">Distribuição do Patrimônio por Tipo</CardTitle>
-        </CardHeader>
-        <div className="h-64">
+        <ChartCard title="Distribuição do Patrimônio por Tipo">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie
-                data={patrimonioTipoData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                labelLine={false}
-              >
-                {patrimonioTipoData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
+              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={3} dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
               <Tooltip formatter={(value: number) => formatCurrency(value)} />
             </PieChart>
           </ResponsiveContainer>
-        </div>
-      </Card>
-    </div>
-
-    {/* Alertas */}
-    <Card className="border border-border rounded p-4">
-      <CardHeader className="px-0 pt-0">
-        <CardTitle className="text-base">Alertas</CardTitle>
-      </CardHeader>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" />
-        <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" />
-        <AlertCard title="Itens de Estoque Críticos" count={5} type="info" />
+        </ChartCard>
       </div>
-    </Card>
 
-    {/* Tabelas */}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Top 5 Maiores Custos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {topCustosData.map((item) => (
-                <TableRow key={item.codigo}>
-                  <TableCell className="font-medium">{item.codigo}</TableCell>
-                  <TableCell>{item.item}</TableCell>
-                  <TableCell className="text-right font-semibold">{item.valor}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {/* Alerts */}
+      <div className="bg-card border border-border rounded p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Alertas</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" />
+          <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" />
+          <AlertCard title="Itens de Estoque Críticos" count={5} type="info" />
+        </div>
+      </div>
 
-      <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Top 5 Ativos Patrimoniais</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead className="text-right">Valor Total</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {topPatrimonioData.map((item) => (
-                <TableRow key={item.codigo}>
-                  <TableCell className="font-medium">{item.codigo}</TableCell>
-                  <TableCell>{item.item}</TableCell>
-                  <TableCell className="text-right font-semibold">{item.valor}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+      {/* Tables */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border border-border rounded">
+          <CardHeader><CardTitle className="text-sm font-semibold">Top 5 Maiores Custos</CardTitle></CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {topCustosData.map((item) => (
+                  <TableRow key={item.codigo}>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.item}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-    {/* Últimas Movimentações */}
-    <Card className="border border-border rounded">
-      <CardHeader>
-        <CardTitle className="text-base">Últimas Movimentações Relevantes</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+        <Card className="border border-border rounded">
+          <CardHeader><CardTitle className="text-sm font-semibold">Top 5 Ativos Patrimoniais</CardTitle></CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor Total</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {topPatrimonioData.map((item) => (
+                  <TableRow key={item.codigo}>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.item}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-card border border-border rounded p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Últimas Movimentações Relevantes</h3>
+        <div className="space-y-1">
           {ultimasMovimentacoes.map((mov, index) => (
-            <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+            <div key={index} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
               <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${
-                  mov.tipo === "Recebimento" ? "bg-success" : mov.tipo === "Pagamento" ? "bg-destructive" : "bg-warning"
-                }`} />
+                <div className={`w-2 h-2 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : mov.tipo === "Pagamento" ? "bg-rose-400" : "bg-amber-400"}`} />
                 <div>
                   <p className="font-medium text-sm">{mov.tipo}</p>
                   <p className="text-xs text-muted-foreground">{mov.descricao}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className={`font-semibold text-sm ${
-                  mov.tipo === "Recebimento" ? "text-success" : mov.tipo === "Pagamento" ? "text-destructive" : ""
-                }`}>{mov.valor}</p>
+                <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-lime-600 dark:text-lime-400" : mov.tipo === "Pagamento" ? "text-rose-600 dark:text-rose-400" : ""}`}>{mov.valor}</p>
                 <p className="text-xs text-muted-foreground">{mov.data}</p>
               </div>
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
-  </div>
+      </div>
+    </div>
   )
 }
 
-// Dashboard Financeiro
+// ===== DASHBOARD FINANCEIRO =====
 const DashboardFinanceiro = () => {
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
   const [cliente, setCliente] = useState<string>("todos")
   const [beneficiario, setBeneficiario] = useState<string>("todos")
-  const [documento, setDocumento] = useState<string>("todos")
-  const [tipoMovimento, setTipoMovimento] = useState<string>("todos")
   const [status, setStatus] = useState<string>("todos")
 
   const clientes = ["todos", "Cliente ABC", "Cliente XYZ", "Cliente DEF", "Cliente GHI"]
   const beneficiarios = ["todos", "Fornecedor A", "Fornecedor B", "Fornecedor C", "Fornecedor D"]
-  const documentos = ["todos", "NF-e", "XML", "NI"]
   const statusList = ["todos", "Em Aberto", "Vencida", "Paga", "Recebida", "Processada", "Pendente"]
-
-  const periodoLabel = {
-    "1h": "Última hora",
-    "24h": "Últimas 24h",
-    "7d": "Últimos 7 dias",
-    "30d": "Últimos 30 dias",
-    "90d": "Últimos 90 dias",
-    "1y": "Último ano"
-  }
 
   return (
     <div className="space-y-6">
-      {/* Filtros */}
-      <Card className="border border-border rounded p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
-          </div>
-          
-          {/* Período */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Período:</span>
-            <div className="flex gap-1">
-              {(["1h", "24h", "7d", "30d", "90d", "1y"] as PeriodoType[]).map((p) => (
-                <Button
-                  key={p}
-                  variant={periodo === p ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setPeriodo(p)}
-                  className="h-8 px-3"
-                >
-                  {p}
-                </Button>
-              ))}
-            </div>
-          </div>
+      <FilterBar>
+        <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
+        <Select value={cliente} onValueChange={setCliente}>
+          <SelectTrigger className="w-[140px] h-7 text-xs"><SelectValue placeholder="Cliente" /></SelectTrigger>
+          <SelectContent>{clientes.map((c) => <SelectItem key={c} value={c}>{c === "todos" ? "Todos Clientes" : c}</SelectItem>)}</SelectContent>
+        </Select>
+        <Select value={beneficiario} onValueChange={setBeneficiario}>
+          <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Beneficiário" /></SelectTrigger>
+          <SelectContent>{beneficiarios.map((b) => <SelectItem key={b} value={b}>{b === "todos" ? "Todos Beneficiários" : b}</SelectItem>)}</SelectContent>
+        </Select>
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectContent>{statusList.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Status" : s}</SelectItem>)}</SelectContent>
+        </Select>
+      </FilterBar>
 
-          {/* Cliente */}
-          <Select value={cliente} onValueChange={setCliente}>
-            <SelectTrigger className="w-[140px] h-8">
-              <SelectValue placeholder="Cliente" />
-            </SelectTrigger>
-            <SelectContent>
-              {clientes.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c === "todos" ? "Todos Clientes" : c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Beneficiário */}
-          <Select value={beneficiario} onValueChange={setBeneficiario}>
-            <SelectTrigger className="w-[150px] h-8">
-              <SelectValue placeholder="Beneficiário" />
-            </SelectTrigger>
-            <SelectContent>
-              {beneficiarios.map((b) => (
-                <SelectItem key={b} value={b}>
-                  {b === "todos" ? "Todos Beneficiários" : b}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Documento */}
-          <Select value={documento} onValueChange={setDocumento}>
-            <SelectTrigger className="w-[120px] h-8">
-              <SelectValue placeholder="Documento" />
-            </SelectTrigger>
-            <SelectContent>
-              {documentos.map((d) => (
-                <SelectItem key={d} value={d}>
-                  {d === "todos" ? "Todos Docs" : d}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Tipo */}
-          <Select value={tipoMovimento} onValueChange={setTipoMovimento}>
-            <SelectTrigger className="w-[120px] h-8">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="entrada">Entrada</SelectItem>
-              <SelectItem value="saida">Saída</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Status */}
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-[130px] h-8">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusList.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s === "todos" ? "Todos Status" : s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Indicador de período ativo */}
-          <div className="ml-auto">
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-              Exibindo: {periodoLabel[periodo]}
-            </span>
-          </div>
-        </div>
-      </Card>
-
-      {/* Cards com gradiente */}
       <SummaryCards />
 
-      {/* Gráficos - Linha 1 */}
+      {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Evolução do Fluxo de Caixa</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={evolutionData}>
-                <defs>
-                  <linearGradient id="colorSaldoFin" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" fill="url(#colorSaldoFin)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Evolução do Fluxo de Caixa">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={evolutionData}>
+              <defs>
+                <linearGradient id="colorSaldoFin" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" fill="url(#colorSaldoFin)" strokeWidth={2.5} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Entradas vs Saídas</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={evolutionData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar dataKey="entradas" name="Entradas" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="saidas" name="Saídas" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Entradas vs Saídas">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={evolutionData} barGap={4}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar dataKey="entradas" name="Entradas" fill="hsl(72 100% 50%)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="saidas" name="Saídas" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} opacity={0.8} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
-      {/* Gráficos - Linha 2 */}
+      {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Contas a Receber por Status</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={contasStatusData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="status" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="receber" name="A Receber" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Contas a Receber por Status">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={contasStatusData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="receber" name="A Receber" fill="hsl(72 100% 50%)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Contas a Pagar por Status</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={contasStatusData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="status" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="pagar" name="A Pagar" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Contas a Pagar por Status">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={contasStatusData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="pagar" name="A Pagar" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} opacity={0.8} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Distribuição por Tipo de Documento</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={tipoDocumentoData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  labelLine={false}
-                >
-                  {tipoDocumentoData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value: number) => `${value}%`} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Distribuição por Tipo de Documento">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={tipoDocumentoData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                {tipoDocumentoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+              </Pie>
+              <Tooltip formatter={(value: number) => `${value}%`} />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
-      {/* Tabelas - Contas a Receber e Contas a Pagar */}
+      {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border border-border rounded">
-          <CardHeader>
-            <CardTitle className="text-base">Contas a Receber</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-sm font-semibold">Contas a Receber</CardTitle></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Código</TableHead>
-                  <TableHead>Cliente</TableHead>
-                  <TableHead>Vencimento</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Cliente</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
                 {contasReceberData.map((item) => (
                   <TableRow key={item.codigo}>
-                    <TableCell className="font-medium">{item.codigo}</TableCell>
-                    <TableCell>{item.cliente}</TableCell>
-                    <TableCell>{item.vencimento}</TableCell>
-                    <TableCell className="text-right font-semibold">{item.valor}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={item.status} />
-                    </TableCell>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.cliente}</TableCell>
+                    <TableCell className="text-sm">{item.vencimento}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                    <TableCell><StatusBadge status={item.status} /></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -936,30 +610,18 @@ const DashboardFinanceiro = () => {
         </Card>
 
         <Card className="border border-border rounded">
-          <CardHeader>
-            <CardTitle className="text-base">Contas a Pagar</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-sm font-semibold">Contas a Pagar</CardTitle></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Código</TableHead>
-                  <TableHead>Beneficiário</TableHead>
-                  <TableHead>Vencimento</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Beneficiário</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
                 {contasPagarData.map((item) => (
                   <TableRow key={item.codigo}>
-                    <TableCell className="font-medium">{item.codigo}</TableCell>
-                    <TableCell>{item.beneficiario}</TableCell>
-                    <TableCell>{item.vencimento}</TableCell>
-                    <TableCell className="text-right font-semibold">{item.valor}</TableCell>
-                    <TableCell>
-                      <StatusBadge status={item.status} />
-                    </TableCell>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.beneficiario}</TableCell>
+                    <TableCell className="text-sm">{item.vencimento}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                    <TableCell><StatusBadge status={item.status} /></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -968,62 +630,44 @@ const DashboardFinanceiro = () => {
         </Card>
       </div>
 
-      {/* Fluxo de Caixa Detalhado */}
-      <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Fluxo de Caixa Detalhado</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {ultimasMovimentacoes.filter(m => m.tipo !== "Saída Estoque").map((mov, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${mov.tipo === "Recebimento" ? "bg-success" : "bg-destructive"}`} />
-                  <div>
-                    <p className="font-medium text-sm">{mov.tipo}</p>
-                    <p className="text-xs text-muted-foreground">{mov.descricao}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-success" : "text-destructive"}`}>
-                    {mov.tipo === "Recebimento" ? "+" : "-"}{mov.valor}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{mov.data}</p>
+      {/* Cash Flow Detail */}
+      <div className="bg-card border border-border rounded p-5">
+        <h3 className="text-sm font-semibold text-foreground mb-4">Fluxo de Caixa Detalhado</h3>
+        <div className="space-y-1">
+          {ultimasMovimentacoes.filter(m => m.tipo !== "Saída Estoque").map((mov, index) => (
+            <div key={index} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
+              <div className="flex items-center gap-3">
+                <div className={`w-2 h-2 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : "bg-rose-400"}`} />
+                <div>
+                  <p className="font-medium text-sm">{mov.tipo}</p>
+                  <p className="text-xs text-muted-foreground">{mov.descricao}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              <div className="text-right">
+                <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-lime-600 dark:text-lime-400" : "text-rose-600 dark:text-rose-400"}`}>
+                  {mov.tipo === "Recebimento" ? "+" : "-"}{mov.valor}
+                </p>
+                <p className="text-xs text-muted-foreground">{mov.data}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-      {/* Documentos Fiscais */}
+      {/* Fiscal Documents */}
       <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Documentos Fiscais (XML / NF-e)</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-sm font-semibold">Documentos Fiscais (XML / NF-e)</CardTitle></CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Número</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Emissão</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
+            <TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Tipo</TableHead><TableHead>Emissão</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
             <TableBody>
               {documentosFiscaisData.map((doc) => (
                 <TableRow key={doc.numero}>
-                  <TableCell className="font-medium">{doc.numero}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={doc.tipo} />
-                  </TableCell>
-                  <TableCell>{doc.emissao}</TableCell>
-                  <TableCell className="text-right font-semibold">{doc.valor}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={doc.status} />
-                  </TableCell>
+                  <TableCell className="font-medium text-xs">{doc.numero}</TableCell>
+                  <TableCell><StatusBadge status={doc.tipo} /></TableCell>
+                  <TableCell className="text-sm">{doc.emissao}</TableCell>
+                  <TableCell className="text-right font-semibold text-sm">{doc.valor}</TableCell>
+                  <TableCell><StatusBadge status={doc.status} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -1034,149 +678,34 @@ const DashboardFinanceiro = () => {
   )
 }
 
-// Dashboard Estoque
+// ===== DASHBOARD ESTOQUE =====
 const DashboardEstoque = () => {
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
-  const [item, setItem] = useState<string>("todos")
   const [unidade, setUnidade] = useState<string>("todos")
   const [setor, setSetor] = useState<string>("todos")
-  const [requisitante, setRequisitante] = useState<string>("todos")
-  const [tipoMovimentacao, setTipoMovimentacao] = useState<string>("todos")
   const [status, setStatus] = useState<string>("todos")
 
-  const itens = ["todos", "Parafuso M8", "Cabo HDMI", "Óleo Lubrificante", "Papel A4"]
   const unidades = ["todos", "Almoxarifado SP", "Almoxarifado RJ", "TI Central", "Manutenção"]
   const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo", "Operacional"]
-  const requisitantes = ["todos", "João Silva", "Maria Santos", "Carlos Lima", "Ana Costa", "Pedro Alves"]
   const statusList = ["todos", "Normal", "Crítico", "Pendente"]
-
-  const periodoLabel = {
-    "1h": "Última hora",
-    "24h": "Últimas 24h",
-    "7d": "Últimos 7 dias",
-    "30d": "Últimos 30 dias",
-    "90d": "Últimos 90 dias",
-    "1y": "Último ano"
-  }
 
   return (
     <div className="space-y-6">
-      {/* Filtros */}
-      <Card className="border border-border rounded p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
-          </div>
-          
-          {/* Período */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Período:</span>
-            <div className="flex gap-1">
-              {(["1h", "24h", "7d", "30d", "90d", "1y"] as PeriodoType[]).map((p) => (
-                <Button
-                  key={p}
-                  variant={periodo === p ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setPeriodo(p)}
-                  className="h-8 px-3"
-                >
-                  {p}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Item */}
-          <Select value={item} onValueChange={setItem}>
-            <SelectTrigger className="w-[140px] h-8">
-              <SelectValue placeholder="Item" />
-            </SelectTrigger>
-            <SelectContent>
-              {itens.map((i) => (
-                <SelectItem key={i} value={i}>
-                  {i === "todos" ? "Todos Itens" : i}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Unidade */}
-          <Select value={unidade} onValueChange={setUnidade}>
-            <SelectTrigger className="w-[150px] h-8">
-              <SelectValue placeholder="Unidade" />
-            </SelectTrigger>
-            <SelectContent>
-              {unidades.map((u) => (
-                <SelectItem key={u} value={u}>
-                  {u === "todos" ? "Todas Unidades" : u}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Setor */}
-          <Select value={setor} onValueChange={setSetor}>
-            <SelectTrigger className="w-[130px] h-8">
-              <SelectValue placeholder="Setor" />
-            </SelectTrigger>
-            <SelectContent>
-              {setores.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s === "todos" ? "Todos Setores" : s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Requisitante */}
-          <Select value={requisitante} onValueChange={setRequisitante}>
-            <SelectTrigger className="w-[140px] h-8">
-              <SelectValue placeholder="Requisitante" />
-            </SelectTrigger>
-            <SelectContent>
-              {requisitantes.map((r) => (
-                <SelectItem key={r} value={r}>
-                  {r === "todos" ? "Todos" : r}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Tipo Movimentação */}
-          <Select value={tipoMovimentacao} onValueChange={setTipoMovimentacao}>
-            <SelectTrigger className="w-[130px] h-8">
-              <SelectValue placeholder="Tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos Tipos</SelectItem>
-              <SelectItem value="entrada">Entrada</SelectItem>
-              <SelectItem value="saida">Saída</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Status */}
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger className="w-[120px] h-8">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusList.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s === "todos" ? "Todos Status" : s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Indicador de período ativo */}
-          <div className="ml-auto">
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-              Exibindo: {periodoLabel[periodo]}
-            </span>
-          </div>
-        </div>
-      </Card>
+      <FilterBar>
+        <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
+        <Select value={unidade} onValueChange={setUnidade}>
+          <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Unidade" /></SelectTrigger>
+          <SelectContent>{unidades.map((u) => <SelectItem key={u} value={u}>{u === "todos" ? "Todas Unidades" : u}</SelectItem>)}</SelectContent>
+        </Select>
+        <Select value={setor} onValueChange={setSetor}>
+          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Setor" /></SelectTrigger>
+          <SelectContent>{setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Setores" : s}</SelectItem>)}</SelectContent>
+        </Select>
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-[120px] h-7 text-xs"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectContent>{statusList.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Status" : s}</SelectItem>)}</SelectContent>
+        </Select>
+      </FilterBar>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1190,110 +719,76 @@ const DashboardEstoque = () => {
         <GradientCard title="Itens Críticos" value="5" icon={AlertTriangle} variant="danger" />
       </div>
 
-      {/* Gráficos - Linha 1: Evolução */}
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Evolução de Estoque no Tempo</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={estoqueEvolutionData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => `${v}`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Line type="monotone" dataKey="quantidade" name="Quantidade" stroke="hsl(var(--primary))" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Evolução de Estoque no Tempo">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={estoqueEvolutionData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Line type="monotone" dataKey="quantidade" name="Quantidade" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Valor Financeiro do Estoque no Tempo</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={estoqueEvolutionData}>
-                <defs>
-                  <linearGradient id="colorValorEstoque" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(var(--success))" fill="url(#colorValorEstoque)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Valor Financeiro do Estoque no Tempo">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={estoqueEvolutionData}>
+              <defs>
+                <linearGradient id="colorValorEstoque" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(72 100% 50%)" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="hsl(72 100% 50%)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(72 100% 50%)" fill="url(#colorValorEstoque)" strokeWidth={2.5} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard title="Consumo por Setor">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
+              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard title="Estoque por Unidade / Almoxarifado">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={estoqueUnidadeData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="unidade" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="valor" name="Valor" fill="hsl(72 100% 50%)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
-      {/* Gráficos - Linha 2: Consumo e Unidade */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Consumo por Setor</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={consumoSetorData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis type="category" dataKey="setor" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} width={100} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Estoque por Unidade / Almoxarifado</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={estoqueUnidadeData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="unidade" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="valor" name="Valor" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-      </div>
-
-      {/* Tabelas - Top 10 */}
+      {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border border-border rounded">
-          <CardHeader>
-            <CardTitle className="text-base">Top 10 Itens em Estoque</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-sm font-semibold">Top 10 Itens em Estoque</CardTitle></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Código</TableHead>
-                  <TableHead>Item</TableHead>
-                  <TableHead className="text-center">Qtd</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
               <TableBody>
                 {topItensEstoqueData.map((item) => (
                   <TableRow key={item.codigo}>
-                    <TableCell className="font-medium">{item.codigo}</TableCell>
-                    <TableCell>{item.item}</TableCell>
-                    <TableCell className="text-center">{item.quantidade}</TableCell>
-                    <TableCell className="text-right font-semibold">{item.valor}</TableCell>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.item}</TableCell>
+                    <TableCell className="text-center text-sm">{item.quantidade}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -1302,26 +797,17 @@ const DashboardEstoque = () => {
         </Card>
 
         <Card className="border border-border rounded">
-          <CardHeader>
-            <CardTitle className="text-base">Top 10 Itens Mais Consumidos</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="text-sm font-semibold">Top 10 Itens Mais Consumidos</CardTitle></CardHeader>
           <CardContent>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Código</TableHead>
-                  <TableHead>Item</TableHead>
-                  <TableHead className="text-center">Consumo</TableHead>
-                  <TableHead>Setor</TableHead>
-                </TableRow>
-              </TableHeader>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Consumo</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
               <TableBody>
                 {topItensConsumidosData.map((item) => (
                   <TableRow key={item.codigo}>
-                    <TableCell className="font-medium">{item.codigo}</TableCell>
-                    <TableCell>{item.item}</TableCell>
-                    <TableCell className="text-center">{item.consumo}</TableCell>
-                    <TableCell>{item.setor}</TableCell>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.item}</TableCell>
+                    <TableCell className="text-center text-sm">{item.consumo}</TableCell>
+                    <TableCell className="text-sm">{item.setor}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -1330,32 +816,19 @@ const DashboardEstoque = () => {
         </Card>
       </div>
 
-      {/* Tabela Inventário */}
       <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Visão Geral do Inventário</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-sm font-semibold">Visão Geral do Inventário</CardTitle></CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Item</TableHead>
-                <TableHead className="text-center">Quantidade</TableHead>
-                <TableHead>Unidade</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
+            <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Unidade</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
             <TableBody>
               {inventarioData.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{item.item}</TableCell>
-                  <TableCell className="text-center">{item.quantidade}</TableCell>
-                  <TableCell>{item.unidade}</TableCell>
-                  <TableCell className="text-right font-semibold">{item.valor}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={item.status} />
-                  </TableCell>
+                  <TableCell className="font-medium text-sm">{item.item}</TableCell>
+                  <TableCell className="text-center text-sm">{item.quantidade}</TableCell>
+                  <TableCell className="text-sm">{item.unidade}</TableCell>
+                  <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                  <TableCell><StatusBadge status={item.status} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -1363,34 +836,20 @@ const DashboardEstoque = () => {
         </CardContent>
       </Card>
 
-      {/* Histórico de Movimentações */}
       <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Histórico Consolidado de Movimentações</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-sm font-semibold">Histórico Consolidado de Movimentações</CardTitle></CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead className="text-center">Quantidade</TableHead>
-                <TableHead>Requisitante</TableHead>
-                <TableHead>Setor</TableHead>
-              </TableRow>
-            </TableHeader>
+            <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Tipo</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Requisitante</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
             <TableBody>
               {historicoMovimentacoesEstoque.map((mov, index) => (
                 <TableRow key={index}>
-                  <TableCell>{mov.data}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={mov.tipo} />
-                  </TableCell>
-                  <TableCell className="font-medium">{mov.item}</TableCell>
-                  <TableCell className="text-center">{mov.quantidade}</TableCell>
-                  <TableCell>{mov.requisitante}</TableCell>
-                  <TableCell>{mov.setor}</TableCell>
+                  <TableCell className="text-sm">{mov.data}</TableCell>
+                  <TableCell><StatusBadge status={mov.tipo} /></TableCell>
+                  <TableCell className="font-medium text-sm">{mov.item}</TableCell>
+                  <TableCell className="text-center text-sm">{mov.quantidade}</TableCell>
+                  <TableCell className="text-sm">{mov.requisitante}</TableCell>
+                  <TableCell className="text-sm">{mov.setor}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -1401,7 +860,7 @@ const DashboardEstoque = () => {
   )
 }
 
-// Dashboard Patrimônio
+// ===== DASHBOARD PATRIMÔNIO =====
 const DashboardPatrimonio = () => {
   const [dataAquisicao, setDataAquisicao] = useState<string>("")
   const [codigoItem, setCodigoItem] = useState<string>("todos")
@@ -1419,265 +878,126 @@ const DashboardPatrimonio = () => {
 
   return (
     <div className="space-y-6">
-      {/* Filtros */}
-      <Card className="border border-border rounded p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">Filtros:</span>
-          </div>
-          
-          {/* Data de Aquisição */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Data de Aquisição:</span>
-            <input 
-              type="date" 
-              value={dataAquisicao}
-              onChange={(e) => setDataAquisicao(e.target.value)}
-              className="filter-input h-8 px-3 rounded border border-input bg-background text-sm"
-            />
-          </div>
-
-          {/* Código do Item */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Código:</span>
-            <Select value={codigoItem} onValueChange={setCodigoItem}>
-              <SelectTrigger className="w-[130px] h-8">
-                <SelectValue placeholder="Todos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos</SelectItem>
-                {visaoGeralPatrimonioData.map((p) => (
-                  <SelectItem key={p.codigo} value={p.codigo}>{p.codigo}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Tipo de Item */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Tipo:</span>
-            <Select value={tipoItem} onValueChange={setTipoItem}>
-              <SelectTrigger className="w-[140px] h-8">
-                <SelectValue placeholder="Todos" />
-              </SelectTrigger>
-              <SelectContent>
-                {tiposPatrimonio.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t === "todos" ? "Todos os tipos" : t}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Faixa de Valor */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Faixa de Valor:</span>
-            <Select value={faixaValor} onValueChange={setFaixaValor}>
-              <SelectTrigger className="w-[180px] h-8">
-                <SelectValue placeholder="Todas as faixas" />
-              </SelectTrigger>
-              <SelectContent>
-                {faixasValor.map((f) => (
-                  <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+      <FilterBar>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground font-medium">Aquisição:</span>
+          <input type="date" value={dataAquisicao} onChange={(e) => setDataAquisicao(e.target.value)}
+            className="filter-input h-7 px-3 rounded border border-input bg-background text-xs" />
         </div>
-      </Card>
+        <Select value={codigoItem} onValueChange={setCodigoItem}>
+          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Código" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            {visaoGeralPatrimonioData.map((p) => <SelectItem key={p.codigo} value={p.codigo}>{p.codigo}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={tipoItem} onValueChange={setTipoItem}>
+          <SelectTrigger className="w-[140px] h-7 text-xs"><SelectValue placeholder="Tipo" /></SelectTrigger>
+          <SelectContent>{tiposPatrimonio.map((t) => <SelectItem key={t} value={t}>{t === "todos" ? "Todos os tipos" : t}</SelectItem>)}</SelectContent>
+        </Select>
+        <Select value={faixaValor} onValueChange={setFaixaValor}>
+          <SelectTrigger className="w-[160px] h-7 text-xs"><SelectValue placeholder="Faixa de Valor" /></SelectTrigger>
+          <SelectContent>{faixasValor.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}</SelectContent>
+        </Select>
+      </FilterBar>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <GradientCard 
-          title="Valor Adquirido no Período" 
-          value="R$ 45.000,00" 
-          icon={ArrowUpRight}
-          variant="success"
-          trend={{ value: "+12%", positive: true }}
-        />
-        <GradientCard 
-          title="Baixas no Período" 
-          value="R$ 8.000,00" 
-          icon={ArrowDownRight}
-          variant="warning"
-          trend={{ value: "-2%", positive: false }}
-        />
-        <GradientCard 
-          title="Valor Total do Patrimônio" 
-          value="R$ 900.000,00" 
-          icon={DollarSign}
-          variant="success"
-          trend={{ value: "+5.2%", positive: true }}
-        />
-        <GradientCard 
-          title="Total de Itens Patrimoniais" 
-          value="156" 
-          icon={Building2}
-          variant="info"
-        />
-        <GradientCard 
-          title="Tipos de Patrimônio Ativos" 
-          value="4" 
-          icon={BarChart3}
-          variant="neutral"
-        />
+        <GradientCard title="Valor Adquirido no Período" value="R$ 45.000,00" icon={ArrowUpRight} variant="success" trend={{ value: "+12%", positive: true }} />
+        <GradientCard title="Baixas no Período" value="R$ 8.000,00" icon={ArrowDownRight} variant="warning" trend={{ value: "-2%", positive: false }} />
+        <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={DollarSign} variant="success" trend={{ value: "+5.2%", positive: true }} />
+        <GradientCard title="Total de Itens Patrimoniais" value="156" icon={Building2} variant="info" />
+        <GradientCard title="Tipos de Patrimônio Ativos" value="4" icon={BarChart3} variant="neutral" />
       </div>
 
-      {/* Gráficos - Primeira linha */}
+      {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Evolução do Valor Patrimonial */}
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Evolução do Valor Patrimonial</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={patrimonioEvolutionData}>
-                <defs>
-                  <linearGradient id="patrimonioGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Evolução do Valor Patrimonial">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={patrimonioEvolutionData}>
+              <defs>
+                <linearGradient id="patrimonioGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={2.5} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        {/* Valor do Patrimônio por Tipo */}
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Valor do Patrimônio por Tipo</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={patrimonioTipoData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={2}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  labelLine={false}
-                >
-                  {patrimonioTipoData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Valor do Patrimônio por Tipo">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={3} dataKey="value"
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+              </Pie>
+              <Tooltip formatter={(value: number) => formatCurrency(value)} />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
-      {/* Gráficos - Segunda linha */}
+      {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quantidade por Tipo */}
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Quantidade por Tipo</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={patrimonioQuantidadeData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="value"
-                  label={({ name, value }) => `${name}: ${value}`}
-                  labelLine={false}
-                >
-                  {patrimonioQuantidadeData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Quantidade por Tipo">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={patrimonioQuantidadeData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value"
+                label={({ name, value }) => `${name}: ${value}`} labelLine={false}>
+                {patrimonioQuantidadeData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        {/* Top 5 Itens por Valor Total */}
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Top 5 Itens por Valor Total</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topPatrimonioData.map(i => ({ ...i, valorNum: parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) * 1000 }))} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis type="category" dataKey="item" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} width={100} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="valorNum" name="Valor" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Top 5 Itens por Valor Total">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={topPatrimonioData.map(i => ({ ...i, valorNum: parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) * 1000 }))} layout="vertical" barSize={16}>
+              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="item" tick={{ ...axisStyle, fontSize: 9 }} width={100} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Bar dataKey="valorNum" name="Valor" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        {/* Aquisições por Período */}
-        <Card className="border border-border rounded p-4">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-base">Aquisições por Período</CardTitle>
-          </CardHeader>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={aquisicoesPorPeriodoData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis yAxisId="left" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <ChartCard title="Aquisições por Período">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={aquisicoesPorPeriodoData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} strokeOpacity={0.5} />
+              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis yAxisId="left" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="hsl(72 80% 60%)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
       </div>
 
-      {/* Tabelas */}
+      {/* Tables */}
       <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Visão Geral do Patrimônio</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-sm font-semibold">Visão Geral do Patrimônio</CardTitle></CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Código</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead className="text-right">Valor Unitário</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-              </TableRow>
-            </TableHeader>
+            <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor Unitário</TableHead><TableHead className="text-center">Status</TableHead></TableRow></TableHeader>
             <TableBody>
               {visaoGeralPatrimonioData.map((item) => (
                 <TableRow key={item.codigo}>
-                  <TableCell className="font-medium">{item.codigo}</TableCell>
-                  <TableCell>{item.item}</TableCell>
-                  <TableCell>{item.tipo}</TableCell>
-                  <TableCell className="text-right font-semibold">{item.valorUnit}</TableCell>
-                  <TableCell className="text-center">
-                    <StatusBadge status={item.status} />
-                  </TableCell>
+                  <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                  <TableCell className="text-sm">{item.item}</TableCell>
+                  <TableCell className="text-sm">{item.tipo}</TableCell>
+                  <TableCell className="text-right font-semibold text-sm">{item.valorUnit}</TableCell>
+                  <TableCell className="text-center"><StatusBadge status={item.status} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -1686,28 +1006,18 @@ const DashboardPatrimonio = () => {
       </Card>
 
       <Card className="border border-border rounded">
-        <CardHeader>
-          <CardTitle className="text-base">Histórico de Aquisições</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="text-sm font-semibold">Histórico de Aquisições</CardTitle></CardHeader>
         <CardContent>
           <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Código</TableHead>
-                <TableHead>Item</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead className="text-right">Valor</TableHead>
-              </TableRow>
-            </TableHeader>
+            <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
             <TableBody>
               {historicoPatrimonio.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>{item.data}</TableCell>
-                  <TableCell className="font-medium">{item.codigo}</TableCell>
-                  <TableCell>{item.item}</TableCell>
-                  <TableCell>{item.tipo}</TableCell>
-                  <TableCell className="text-right font-semibold">{item.valor}</TableCell>
+                  <TableCell className="text-sm">{item.data}</TableCell>
+                  <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                  <TableCell className="text-sm">{item.item}</TableCell>
+                  <TableCell className="text-sm">{item.tipo}</TableCell>
+                  <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -1718,33 +1028,37 @@ const DashboardPatrimonio = () => {
   )
 }
 
-// Main Dashboard Component
+// ===== MAIN DASHBOARD =====
 const Dashboard = () => {
   const [activeDashboard, setActiveDashboard] = useState<DashboardType>("geral")
 
+  const tabs: { key: DashboardType; label: string }[] = [
+    { key: "geral", label: "Geral" },
+    { key: "financeiro", label: "Financeiro" },
+    { key: "estoque", label: "Estoque" },
+    { key: "patrimonio", label: "Patrimônio" },
+  ]
+
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full">
       <div className="space-y-6">
-        {/* Seletor de Dashboard */}
-        <div className="flex bg-secondary rounded p-1 w-fit">
-          {(["geral", "financeiro", "estoque", "patrimonio"] as DashboardType[]).map((type) => (
-            <Button
-              key={type}
-              variant="ghost"
-              size="sm"
-              onClick={() => setActiveDashboard(type)}
-              className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
-                activeDashboard === type
-                  ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-transparent"
+        {/* Tab Selector - Pill style */}
+        <div className="flex bg-card border border-border rounded p-1 w-fit gap-1">
+          {tabs.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setActiveDashboard(key)}
+              className={`px-5 py-2 text-sm font-medium rounded transition-all duration-200 ${
+                activeDashboard === key
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
-              {type === "patrimonio" ? "Patrimônio" : type.charAt(0).toUpperCase() + type.slice(1)}
-            </Button>
+              {label}
+            </button>
           ))}
         </div>
 
-        {/* Dashboard Content */}
         {activeDashboard === "geral" && <DashboardGeral />}
         {activeDashboard === "financeiro" && <DashboardFinanceiro />}
         {activeDashboard === "estoque" && <DashboardEstoque />}
