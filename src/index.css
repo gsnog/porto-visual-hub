@@ -125,13 +125,13 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-ring: 142 71% 45%;
 
-    /* Table colors - dark mode */
-    --table-header: 210 15% 12%;
-    --table-header-foreground: 210 10% 90%;
-    --table-row: 210 15% 10%;
-    --table-row-alt: 210 15% 12%;
-    --table-row-hover: 210 15% 9%;
-    --table-border: 210 12% 18%;
+    /* Table colors - dark mode (neutral gray) */
+    --table-header: 0 0% 12%;
+    --table-header-foreground: 0 0% 90%;
+    --table-row: 0 0% 10%;
+    --table-row-alt: 0 0% 12%;
+    --table-row-hover: 0 0% 14%;
+    --table-border: 0 0% 18%;
 
     /* Chart colors - dark mode - brighter for readability */
     --chart-1: 142 71% 50%;
