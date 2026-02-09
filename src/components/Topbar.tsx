@@ -60,13 +60,14 @@ export function Topbar({
   return (
     <header 
       className={cn(
-        "sticky top-0 z-40 flex h-20 items-center justify-between bg-card px-6 border-b border-border transition-all duration-300"
+        "sticky top-0 z-40 flex h-20 items-center justify-between px-6 border-b border-white/10 transition-all duration-300",
+        "bg-[#0B0D0F] text-white"
       )}
     >
       {/* Left side - Title and description */}
       <div className="flex flex-col">
-        <h1 className="text-lg font-bold text-foreground">{pageTitle}</h1>
-        <p className="text-sm text-muted-foreground">{pageDescription}</p>
+        <h1 className="text-lg font-bold text-white">{pageTitle}</h1>
+        <p className="text-sm text-white/60">{pageDescription}</p>
       </div>
 
       {/* Right side - Kanban, Calendar, Chat, Notifications, divider, user info */}
@@ -76,12 +77,12 @@ export function Topbar({
           <button 
             onClick={handleKanbanClick}
             className={cn(
-              "relative p-2 rounded hover:bg-muted transition-colors",
-              location.pathname === "/kanban" && "bg-muted"
+              "relative p-2 rounded hover:bg-white/10 transition-colors",
+              location.pathname === "/kanban" && "bg-white/10"
             )}
             title="Kanban"
           >
-            <LayoutGrid className="h-5 w-5 text-muted-foreground" />
+            <LayoutGrid className="h-5 w-5 text-white/70" />
             {kanbanNotifications > 0 && (
               <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                 {kanbanNotifications > 9 ? '9+' : kanbanNotifications}
@@ -95,12 +96,12 @@ export function Topbar({
           <button 
             onClick={handleCalendarClick}
             className={cn(
-              "relative p-2 rounded hover:bg-muted transition-colors",
-              location.pathname === "/calendario" && "bg-muted"
+              "relative p-2 rounded hover:bg-white/10 transition-colors",
+              location.pathname === "/calendario" && "bg-white/10"
             )}
             title="Calendário"
           >
-            <Calendar className="h-5 w-5 text-muted-foreground" />
+            <Calendar className="h-5 w-5 text-white/70" />
           </button>
         )}
         
@@ -109,12 +110,12 @@ export function Topbar({
           <button 
             onClick={handleChatClick}
             className={cn(
-              "relative p-2 rounded hover:bg-muted transition-colors",
-              location.pathname === "/chat" && "bg-muted"
+              "relative p-2 rounded hover:bg-white/10 transition-colors",
+              location.pathname === "/chat" && "bg-white/10"
             )}
             title="Chat"
           >
-            <MessageSquare className="h-5 w-5 text-muted-foreground" />
+            <MessageSquare className="h-5 w-5 text-white/70" />
             {chatNaoLidas > 0 && (
               <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                 {chatNaoLidas > 9 ? '9+' : chatNaoLidas}
@@ -127,12 +128,12 @@ export function Topbar({
         <button 
           onClick={handleBellClick}
           className={cn(
-            "relative p-2 rounded hover:bg-muted transition-colors",
-            location.pathname === "/notificacoes" && "bg-muted"
+              "relative p-2 rounded hover:bg-white/10 transition-colors",
+              location.pathname === "/notificacoes" && "bg-white/10"
           )}
           title="Notificações"
         >
-          <Bell className="h-5 w-5 text-muted-foreground" />
+          <Bell className="h-5 w-5 text-white/70" />
           {notificationCount > 0 && (
             <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
               {notificationCount}
@@ -141,7 +142,7 @@ export function Topbar({
         </button>
 
         {/* Divider */}
-        <div className="h-8 w-px bg-border ml-2" />
+        <div className="h-8 w-px bg-white/20 ml-2" />
 
         {/* User info with dropdown */}
         <DropdownMenu>
@@ -151,10 +152,10 @@ export function Topbar({
                 PP
               </div>
               <div className="hidden sm:flex flex-col">
-                <span className="text-sm font-semibold text-foreground">Pedro Piaes</span>
-                <span className="text-xs text-muted-foreground">Desenvolvedor</span>
+                <span className="text-sm font-semibold text-white">Pedro Piaes</span>
+                <span className="text-xs text-white/60">Desenvolvedor</span>
               </div>
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              <ChevronDown className="h-4 w-4 text-white/60" />
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 bg-card border border-border">
