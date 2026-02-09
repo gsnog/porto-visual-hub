@@ -115,7 +115,7 @@ export interface KanbanWorkspace {
 export const kanbanLabelsMock: KanbanLabel[] = [
   { id: 'l1', name: 'Urgente', color: '#EF4444' },
   { id: 'l2', name: 'Bug', color: '#F97316' },
-  { id: 'l3', name: 'Feature', color: '#22C55E' },
+  { id: 'l3', name: 'Feature', color: '#C6F000' },
   { id: 'l4', name: 'Melhoria', color: '#3B82F6' },
   { id: 'l5', name: 'Em Análise', color: '#A855F7' },
   { id: 'l6', name: 'Bloqueado', color: '#EC4899' },
@@ -149,7 +149,7 @@ export const kanbanWorkspacesMock: KanbanWorkspace[] = [
     description: 'Acompanhamento de leads e oportunidades',
     type: 'sales',
     icon: '💰',
-    color: '#22C55E',
+    color: '#C6F000',
     members: [
       { userId: '8', role: 'owner' },
       { userId: '1', role: 'admin' },

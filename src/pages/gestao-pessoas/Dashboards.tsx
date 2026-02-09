@@ -151,7 +151,7 @@ export default function Dashboards() {
                               size="sm"
                               className="gap-1"
                             >
-                              <Eye className="h-4 w-4 text-green-600" />
+                              <Eye className="h-4 w-4 text-primary" />
                             </Button>
                           </TableCell>
                         ))}

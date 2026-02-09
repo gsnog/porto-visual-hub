@@ -86,7 +86,7 @@ const tipoIcone = {
 const tipoCores = {
   alerta: "bg-amber-500/10 text-amber-500",
   estoque: "bg-blue-500/10 text-blue-500",
-  financeiro: "bg-emerald-500/10 text-emerald-500",
+  financeiro: "bg-primary/10 text-primary",
   documento: "bg-violet-500/10 text-violet-500",
 };
 

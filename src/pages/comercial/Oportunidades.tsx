@@ -73,7 +73,7 @@ export default function Oportunidades() {
       'diagnostico': 'bg-indigo-50 dark:bg-indigo-900/30',
       'proposta': 'bg-purple-50 dark:bg-purple-900/30',
       'negociacao': 'bg-amber-50 dark:bg-amber-900/30',
-      'aprovacao': 'bg-emerald-50 dark:bg-emerald-900/30',
+      'aprovacao': 'bg-lime-50 dark:bg-lime-900/30',
     };
     return colors[etapaId] || 'bg-muted';
   };
@@ -198,7 +198,7 @@ export default function Oportunidades() {
           
           {/* Colunas de fechamento */}
           <div className="flex-shrink-0 w-[300px]">
-            <div className="rounded p-3 bg-emerald-50 dark:bg-emerald-900/30">
+            <div className="rounded p-3 bg-lime-50 dark:bg-lime-900/30">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h3 className="font-semibold text-sm text-success">Fechado Ganho</h3>

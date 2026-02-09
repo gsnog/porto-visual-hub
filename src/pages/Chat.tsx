@@ -409,7 +409,7 @@ export default function Chat() {
                     <span className={cn(
                       "w-2 h-2 rounded-full",
                       selectedConversa.participantes.find(p => p.id !== currentUserId)?.online 
-                        ? "bg-green-500" 
+                        ? "bg-primary" 
                         : "bg-muted-foreground"
                     )} />
                     {selectedConversa.participantes.find(p => p.id !== currentUserId)?.online 
@@ -604,7 +604,7 @@ export default function Chat() {
                         </Avatar>
                         <span className={cn(
                           "absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-card",
-                          p.online ? "bg-green-500" : "bg-muted-foreground"
+                          p.online ? "bg-primary" : "bg-muted-foreground"
                         )} />
                       </div>
                       <span className="text-sm">{p.nome}</span>
@@ -748,7 +748,7 @@ function ConversaItem({ conversa, isActive, onClick, formatLastMessageDate }: Co
         {otherParticipant && (
           <span className={cn(
             "absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-card",
-            otherParticipant.online ? "bg-green-500" : "bg-muted-foreground"
+            otherParticipant.online ? "bg-primary" : "bg-muted-foreground"
           )} />
         )}
       </div>

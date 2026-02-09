@@ -32,7 +32,7 @@ export default function OrdemServico() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Concluído':
-        return 'text-green-600 font-medium';
+        return 'text-primary font-medium';
       case 'Em Andamento':
         return 'text-blue-600 font-medium';
       case 'Pendente':

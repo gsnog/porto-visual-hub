@@ -104,7 +104,7 @@ const tipoIcons: Record<string, typeof Clock> = {
 
 const tipoColors: Record<string, string> = {
   acesso: "bg-blue-500/10 text-blue-600",
-  salario: "bg-green-500/10 text-green-600",
+  salario: "bg-primary/10 text-primary",
   gestor: "bg-purple-500/10 text-purple-600",
   dashboard: "bg-orange-500/10 text-orange-600",
   documento: "bg-yellow-500/10 text-yellow-600",
