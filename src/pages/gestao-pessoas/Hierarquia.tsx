@@ -12,12 +12,12 @@ interface HierarchyNode {
   isExpanded: boolean;
 }
 
-function buildHierarchy(pessoaId: string | null, pessoas: typeof pessoasMock): HierarchyNode[] {
+function buildHierarchy(pessoaId: string | null, pessoas: typeof pessoasMock, expandedNodes: Set<string>): HierarchyNode[] {
   const subordinados = pessoas.filter(p => p.gestorId === pessoaId);
   return subordinados.map(p => ({
     pessoa: p,
-    subordinados: buildHierarchy(p.id, pessoas),
-    isExpanded: true
+    subordinados: buildHierarchy(p.id, pessoas, expandedNodes),
+    isExpanded: expandedNodes.has(p.id)
   }));
 }
 
@@ -102,23 +102,44 @@ export default function Hierarquia() {
     const topLevel = pessoasMock.filter(p => !p.gestorId);
     return topLevel.map(p => ({
       pessoa: p,
-      subordinados: buildHierarchy(p.id, pessoasMock),
+      subordinados: buildHierarchy(p.id, pessoasMock, expandedNodes),
       isExpanded: expandedNodes.has(p.id)
     }));
   }, [expandedNodes]);
 
-  // Hierarquia por área
+  // Hierarquia por área — mostra árvore de gestores dentro de cada área
   const hierarchyByArea = useMemo(() => {
     const areasRaiz = setoresMock.filter(s => !s.areaPaiId);
-    return areasRaiz.map(area => ({
-      area,
-      pessoas: pessoasMock.filter(p => p.setorId === area.id),
-      subAreas: setoresMock.filter(s => s.areaPaiId === area.id).map(subArea => ({
-        area: subArea,
-        pessoas: pessoasMock.filter(p => p.setorId === subArea.id)
-      }))
-    }));
-  }, []);
+    return areasRaiz.map(area => {
+      const allSubAreaIds = [area.id, ...setoresMock.filter(s => s.areaPaiId === area.id).map(s => s.id)];
+      const pessoasArea = pessoasMock.filter(p => allSubAreaIds.includes(p.setorId || ''));
+      // Find top-level people in this area (no manager, or manager is outside this area)
+      const pessoaIdsArea = new Set(pessoasArea.map(p => p.id));
+      const topLevel = pessoasArea.filter(p => !p.gestorId || !pessoaIdsArea.has(p.gestorId));
+      
+      function buildAreaHierarchy(parentId: string): HierarchyNode[] {
+        const subs = pessoasArea.filter(p => p.gestorId === parentId);
+        return subs.map(p => ({
+          pessoa: p,
+          subordinados: buildAreaHierarchy(p.id),
+          isExpanded: expandedNodes.has(p.id)
+        }));
+      }
+
+      const nodes: HierarchyNode[] = topLevel.map(p => ({
+        pessoa: p,
+        subordinados: buildAreaHierarchy(p.id),
+        isExpanded: expandedNodes.has(p.id)
+      }));
+
+      return {
+        area,
+        totalPessoas: pessoasArea.length,
+        nodes,
+        subAreas: setoresMock.filter(s => s.areaPaiId === area.id).map(s => s.nome)
+      };
+    });
+  }, [expandedNodes]);
 
   const toggleExpand = (id: string) => {
     setExpandedNodes(prev => {
@@ -176,10 +197,7 @@ export default function Hierarquia() {
                 {hierarchyByGestor.map(node => (
                   <HierarchyTreeNode 
                     key={node.pessoa.id} 
-                    node={{
-                      ...node,
-                      isExpanded: expandedNodes.has(node.pessoa.id)
-                    }}
+                    node={node}
                     toggleExpand={toggleExpand}
                   />
                 ))}
@@ -197,35 +215,28 @@ export default function Hierarquia() {
                     <Building2 className="h-5 w-5 text-primary" />
                     {areaGroup.area.nome}
                     <span className="text-sm font-normal text-muted-foreground">
-                      ({areaGroup.pessoas.length} pessoas)
+                      ({areaGroup.totalPessoas} pessoas)
                     </span>
                   </CardTitle>
+                  {areaGroup.subAreas.length > 0 && (
+                    <p className="text-xs text-muted-foreground">
+                      Inclui: {areaGroup.subAreas.join(', ')}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
-                    {areaGroup.pessoas.map(pessoa => (
-                      <PersonCard key={pessoa.id} pessoa={pessoa} />
+                  <div className="space-y-4">
+                    {areaGroup.nodes.map(node => (
+                      <HierarchyTreeNode 
+                        key={node.pessoa.id} 
+                        node={node}
+                        toggleExpand={toggleExpand}
+                      />
                     ))}
+                    {areaGroup.nodes.length === 0 && (
+                      <p className="text-sm text-muted-foreground">Nenhuma pessoa cadastrada nesta área.</p>
+                    )}
                   </div>
-                  
-                  {areaGroup.subAreas.length > 0 && (
-                    <div className="border-t border-border pt-4 mt-4 space-y-4">
-                      {areaGroup.subAreas.map(subArea => (
-                        <div key={subArea.area.id}>
-                          <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
-                            <ChevronRight className="h-4 w-4" />
-                            {subArea.area.nome}
-                            <span className="text-xs">({subArea.pessoas.length} pessoas)</span>
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ml-6">
-                            {subArea.pessoas.map(pessoa => (
-                              <PersonCard key={pessoa.id} pessoa={pessoa} />
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             ))}
