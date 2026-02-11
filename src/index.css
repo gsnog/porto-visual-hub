@@ -140,13 +140,13 @@
     --status-done: 72 100% 50%;
     --status-pending: 45 90% 55%;
 
-    /* Table colors - neutral dark */
-    --table-header: 220 8% 12%;
+    /* Table colors - neutral dark (cells slightly lighter than header) */
+    --table-header: 0 0% 12%;
     --table-header-foreground: 0 0% 88%;
-    --table-row: 220 8% 9%;
-    --table-row-alt: 220 8% 11%;
-    --table-row-hover: 220 6% 16%;
-    --table-border: 220 6% 18%;
+    --table-row: 0 0% 15%;
+    --table-row-alt: 0 0% 16%;
+    --table-row-hover: 0 0% 18%;
+    --table-border: 0 0% 20%;
 
     /* Chart colors - brighter for dark bg readability */
     --chart-1: 72 100% 52%;
@@ -232,6 +232,21 @@
   .sidebar-item.active { 
     background: hsl(var(--sidebar-active)); 
     border-left: 3px solid hsl(var(--sidebar-accent)); 
+  }
+
+  /* Active sidebar nav link in light mode: black bold text */
+  .sidebar-nav-active {
+    font-weight: 700;
+    color: hsl(var(--primary));
+  }
+
+  :root .sidebar-nav-active {
+    color: hsl(var(--foreground));
+  }
+
+  .dark .sidebar-nav-active {
+    color: hsl(var(--primary));
+    font-weight: 600;
   }
 
   /* Table header/row/cell classes */

@@ -1,5 +1,6 @@
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Bell, ChevronDown, Eye, Pencil, Trash2, Calendar, MessageSquare, LayoutGrid } from "lucide-react";
+import { Bell, ChevronDown, Eye, Trash2, Calendar, MessageSquare, LayoutGrid, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -20,6 +21,26 @@ interface TopbarProps {
 // Store previous route outside component to persist across renders
 let previousRoute: string = "/";
 
+type AppId = "kanban" | "calendario" | "chat";
+
+interface AppItem {
+  id: AppId;
+  icon: typeof LayoutGrid;
+  title: string;
+  path: string;
+  badge?: number;
+}
+
+const APPS_ORDER_KEY = "topbar-apps-order";
+
+function getStoredOrder(): AppId[] {
+  try {
+    const stored = localStorage.getItem(APPS_ORDER_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return ["kanban", "calendario", "chat"];
+}
+
 export function Topbar({ 
   sidebarCollapsed, 
   pageTitle = "Dashboard",
@@ -29,12 +50,16 @@ export function Topbar({
   const location = useLocation();
   const { hasPermission } = usePermissions();
   const notificationCount = 3;
-  const chatNaoLidas = getTotalNaoLidas('9'); // Mock: Pedro Piaes
-  const kanbanNotifications = getKanbanNotifications('9'); // Mock: Pedro Piaes
+  const chatNaoLidas = getTotalNaoLidas('9');
+  const kanbanNotifications = getKanbanNotifications('9');
   
   const hasCalendarAccess = hasPermission('calendario', 'all', 'view');
   const hasChatAccess = hasPermission('chat', 'all', 'view');
   const hasKanbanAccess = hasPermission('kanban', 'all', 'view');
+
+  const [appsOrder, setAppsOrder] = useState<AppId[]>(getStoredOrder);
+  const [draggedApp, setDraggedApp] = useState<AppId | null>(null);
+  const [dragOverApp, setDragOverApp] = useState<AppId | null>(null);
 
   const handleBellClick = () => {
     if (location.pathname === "/notificacoes") {
@@ -44,25 +69,60 @@ export function Topbar({
       navigate("/notificacoes");
     }
   };
-  
-  const handleCalendarClick = () => {
-    navigate("/calendario");
+
+  const appItems: AppItem[] = [
+    { id: "kanban", icon: LayoutGrid, title: "Kanban", path: "/kanban", badge: kanbanNotifications },
+    { id: "calendario", icon: Calendar, title: "Calendário", path: "/calendario" },
+    { id: "chat", icon: MessageSquare, title: "Chat", path: "/chat", badge: chatNaoLidas },
+  ];
+
+  const accessMap: Record<AppId, boolean> = {
+    kanban: hasKanbanAccess,
+    calendario: hasCalendarAccess,
+    chat: hasChatAccess,
   };
-  
-  const handleChatClick = () => {
-    navigate("/chat");
+
+  const orderedApps = appsOrder
+    .map(id => appItems.find(a => a.id === id)!)
+    .filter(a => a && accessMap[a.id]);
+
+  const handleDragStart = (appId: AppId) => {
+    setDraggedApp(appId);
   };
-  
-  const handleKanbanClick = () => {
-    navigate("/kanban");
+
+  const handleDragOver = (e: React.DragEvent, appId: AppId) => {
+    e.preventDefault();
+    setDragOverApp(appId);
+  };
+
+  const handleDrop = (targetId: AppId) => {
+    if (!draggedApp || draggedApp === targetId) {
+      setDraggedApp(null);
+      setDragOverApp(null);
+      return;
+    }
+    const newOrder = [...appsOrder];
+    const fromIdx = newOrder.indexOf(draggedApp);
+    const toIdx = newOrder.indexOf(targetId);
+    newOrder.splice(fromIdx, 1);
+    newOrder.splice(toIdx, 0, draggedApp);
+    setAppsOrder(newOrder);
+    localStorage.setItem(APPS_ORDER_KEY, JSON.stringify(newOrder));
+    setDraggedApp(null);
+    setDragOverApp(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedApp(null);
+    setDragOverApp(null);
   };
 
   return (
     <header 
       className={cn(
-        "sticky top-0 z-40 flex h-20 items-center justify-between px-6 border-b transition-all duration-300",
+        "sticky top-0 z-40 flex h-20 items-center justify-between px-6 border-b transition-all duration-300 shrink-0",
         "bg-background text-foreground border-border",
-        "dark:bg-[hsl(220_10%_6%)] dark:text-white dark:border-[hsl(220_6%_16%)]"
+        "dark:bg-[hsl(var(--sidebar-bg))] dark:text-white dark:border-[hsl(220_6%_16%)]"
       )}
     >
       {/* Left side - Title and description */}
@@ -71,59 +131,33 @@ export function Topbar({
         <p className="text-sm text-muted-foreground dark:text-white/60">{pageDescription}</p>
       </div>
 
-      {/* Right side - Kanban, Calendar, Chat, Notifications, divider, user info */}
+      {/* Right side - Apps (draggable), Notifications, divider, user info */}
       <div className="flex items-center gap-2">
-        {/* Kanban */}
-        {hasKanbanAccess && (
-          <button 
-            onClick={handleKanbanClick}
+        {/* Draggable Apps */}
+        {orderedApps.map((app) => (
+          <button
+            key={app.id}
+            draggable
+            onDragStart={() => handleDragStart(app.id)}
+            onDragOver={(e) => handleDragOver(e, app.id)}
+            onDrop={() => handleDrop(app.id)}
+            onDragEnd={handleDragEnd}
+            onClick={() => navigate(app.path)}
             className={cn(
-              "relative p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors",
-              location.pathname === "/kanban" && "bg-muted dark:bg-white/10"
+              "relative p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors cursor-grab active:cursor-grabbing",
+              location.pathname === app.path && "bg-muted dark:bg-white/10",
+              dragOverApp === app.id && draggedApp !== app.id && "ring-2 ring-primary/50"
             )}
-            title="Kanban"
+            title={app.title}
           >
-            <LayoutGrid className="h-5 w-5 text-foreground dark:text-white/70" />
-            {kanbanNotifications > 0 && (
+            <app.icon className="h-5 w-5 text-foreground dark:text-white/70" />
+            {app.badge && app.badge > 0 && (
               <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                {kanbanNotifications > 9 ? '9+' : kanbanNotifications}
+                {app.badge > 9 ? '9+' : app.badge}
               </span>
             )}
           </button>
-        )}
-        
-        {/* Calendar */}
-        {hasCalendarAccess && (
-          <button 
-            onClick={handleCalendarClick}
-            className={cn(
-              "relative p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors",
-              location.pathname === "/calendario" && "bg-muted dark:bg-white/10"
-            )}
-            title="Calendário"
-          >
-            <Calendar className="h-5 w-5 text-foreground dark:text-white/70" />
-          </button>
-        )}
-        
-        {/* Chat */}
-        {hasChatAccess && (
-          <button 
-            onClick={handleChatClick}
-            className={cn(
-              "relative p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors",
-              location.pathname === "/chat" && "bg-muted dark:bg-white/10"
-            )}
-            title="Chat"
-          >
-            <MessageSquare className="h-5 w-5 text-foreground dark:text-white/70" />
-            {chatNaoLidas > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                {chatNaoLidas > 9 ? '9+' : chatNaoLidas}
-              </span>
-            )}
-          </button>
-        )}
+        ))}
         
         {/* Notifications */}
         <button 
@@ -166,13 +200,6 @@ export function Topbar({
             >
               <Eye className="h-4 w-4" />
               Visualizar
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className="cursor-pointer gap-2"
-              onClick={() => navigate("/usuario/editar")}
-            >
-              <Pencil className="h-4 w-4" />
-              Editar
             </DropdownMenuItem>
             <DropdownMenuItem 
               className="cursor-pointer gap-2 text-destructive hover:!text-white hover:!bg-destructive focus:!text-white focus:!bg-destructive"
