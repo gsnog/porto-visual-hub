@@ -753,7 +753,7 @@ export default function Calendario() {
       
       {/* Modal de criar evento */}
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-        <DialogContent className="max-w-lg max-h-[85vh] flex flex-col">
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Novo Evento</DialogTitle>
           </DialogHeader>
