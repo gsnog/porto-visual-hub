@@ -107,6 +107,16 @@ export default function Calendario() {
     
     return eventos;
   }, [scope, filterEquipe, filterPessoa, filterSetor, filterTipo]);
+
+  // Pessoas que possuem eventos no período visível
+  const pessoasComEventos = useMemo(() => {
+    const pessoaIds = new Set<string>();
+    eventosVisiveis.forEach(e => {
+      pessoaIds.add(e.criadorId);
+      e.participantes.forEach(p => pessoaIds.add(p.id));
+    });
+    return pessoasMock.filter(p => p.status === 'Ativo' && pessoaIds.has(p.id));
+  }, [eventosVisiveis]);
   
   const canCreate = hasPermission('calendario', 'all', 'create');
   const canEdit = hasPermission('calendario', 'all', 'edit');
@@ -340,7 +350,7 @@ export default function Calendario() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="__all__">Todas</SelectItem>
-                  {pessoasMock.filter(p => p.status === 'Ativo').map(p => (
+                  {pessoasComEventos.map(p => (
                     <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
                   ))}
                 </SelectContent>
@@ -830,6 +840,34 @@ export default function Calendario() {
               />
             </div>
             
+            <div>
+              <Label>Participantes</Label>
+              <div className="mt-2 max-h-40 overflow-y-auto border rounded p-2 space-y-1">
+                {pessoasMock.filter(p => p.status === 'Ativo' && p.id !== currentUserId).map(p => (
+                  <label key={p.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
+                    <Checkbox
+                      checked={novoEvento.participantes.includes(p.id)}
+                      onCheckedChange={(checked) => {
+                        setNovoEvento(prev => ({
+                          ...prev,
+                          participantes: checked
+                            ? [...prev.participantes, p.id]
+                            : prev.participantes.filter(id => id !== p.id)
+                        }));
+                      }}
+                    />
+                    <span>{p.nome}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">{p.cargo}</span>
+                  </label>
+                ))}
+              </div>
+              {novoEvento.participantes.length > 0 && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  {novoEvento.participantes.length} pessoa(s) selecionada(s)
+                </p>
+              )}
+            </div>
+
             <div className="flex items-center gap-2">
               <Switch 
                 id="privado"
