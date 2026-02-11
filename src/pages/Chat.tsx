@@ -224,7 +224,7 @@ export default function Chat() {
   const chatsEquipes = filteredConversas.filter(c => c.tipo === 'equipe');
   
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-0 -mx-6 -my-6">
+    <div className="flex h-[calc(100vh-4rem)] gap-0 -mx-6 -my-6">
       {/* Sidebar de conversas */}
       <div className="w-80 border-r bg-card flex flex-col">
         {/* Header */}
@@ -264,123 +264,47 @@ export default function Chat() {
         </div>
         
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'chats' | 'equipes')} className="flex-1 flex flex-col">
-          <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
-            <TabsTrigger 
-              value="chats" 
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              Chats
-              {totalNaoLidas > 0 && (
-                <Badge className="ml-2 h-5 min-w-[20px] px-1.5">{totalNaoLidas}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="equipes"
-              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              Equipes
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="chats" className="flex-1 m-0 overflow-hidden">
-            <ScrollArea className="h-full">
-              <div className="p-2">
-                {/* Chats recentes */}
-                {chatsDiretos.length > 0 && (
-                  <div className="mb-4">
-                    <div className="text-xs font-medium text-muted-foreground px-2 mb-1">
-                      Recentes
-                    </div>
-                    {chatsDiretos.map(conversa => (
-                      <ConversaItem 
-                        key={conversa.id}
-                        conversa={conversa}
-                        isActive={selectedConversa?.id === conversa.id}
-                        onClick={() => setSelectedConversa(conversa)}
-                        formatLastMessageDate={formatLastMessageDate}
-                      />
-                    ))}
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <ScrollArea className="flex-1">
+            <div className="p-2">
+              {/* Chats recentes */}
+              {chatsDiretos.length > 0 && (
+                <div className="mb-4">
+                  <div className="text-xs font-medium text-muted-foreground px-2 mb-1">
+                    Recentes
                   </div>
-                )}
-                
-                {/* Grupos */}
-                {chatsGrupos.length > 0 && (
-                  <div className="mb-4">
-                    <div className="text-xs font-medium text-muted-foreground px-2 mb-1">
-                      Grupos
-                    </div>
-                    {chatsGrupos.map(conversa => (
-                      <ConversaItem 
-                        key={conversa.id}
-                        conversa={conversa}
-                        isActive={selectedConversa?.id === conversa.id}
-                        onClick={() => setSelectedConversa(conversa)}
-                        formatLastMessageDate={formatLastMessageDate}
-                      />
-                    ))}
-                  </div>
-                )}
-                
-                {/* Canais de equipe */}
-                {chatsEquipes.length > 0 && (
-                  <div>
-                    <div className="text-xs font-medium text-muted-foreground px-2 mb-1">
-                      Canais
-                    </div>
-                    {chatsEquipes.map(conversa => (
-                      <ConversaItem 
-                        key={conversa.id}
-                        conversa={conversa}
-                        isActive={selectedConversa?.id === conversa.id}
-                        onClick={() => setSelectedConversa(conversa)}
-                        formatLastMessageDate={formatLastMessageDate}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </TabsContent>
-          
-          <TabsContent value="equipes" className="flex-1 m-0 overflow-hidden">
-            <ScrollArea className="h-full">
-              <div className="p-2">
-                {equipesMock
-                  .filter(e => e.membros.includes(currentUserId))
-                  .map(equipe => (
-                    <Collapsible 
-                      key={equipe.id}
-                      open={equipesOpen[equipe.id]}
-                      onOpenChange={(open) => setEquipesOpen({...equipesOpen, [equipe.id]: open})}
-                    >
-                      <CollapsibleTrigger className="flex items-center gap-2 w-full p-2 rounded hover:bg-muted/50 transition-colors">
-                        <ChevronDown className={cn(
-                          "h-4 w-4 transition-transform",
-                          !equipesOpen[equipe.id] && "-rotate-90"
-                        )} />
-                        <Hash className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium text-sm">{equipe.nome}</span>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <div className="ml-6 space-y-0.5">
-                          {equipe.canais.map(canal => (
-                            <button
-                              key={canal.id}
-                              className="flex items-center gap-2 w-full p-2 pl-4 rounded hover:bg-muted/50 transition-colors text-sm text-muted-foreground hover:text-foreground"
-                            >
-                              <Hash className="h-3 w-3" />
-                              {canal.nome}
-                            </button>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
+                  {chatsDiretos.map(conversa => (
+                    <ConversaItem 
+                      key={conversa.id}
+                      conversa={conversa}
+                      isActive={selectedConversa?.id === conversa.id}
+                      onClick={() => setSelectedConversa(conversa)}
+                      formatLastMessageDate={formatLastMessageDate}
+                    />
                   ))}
-              </div>
-            </ScrollArea>
-          </TabsContent>
-        </Tabs>
+                </div>
+              )}
+              
+              {/* Grupos */}
+              {chatsGrupos.length > 0 && (
+                <div className="mb-4">
+                  <div className="text-xs font-medium text-muted-foreground px-2 mb-1">
+                    Grupos
+                  </div>
+                  {chatsGrupos.map(conversa => (
+                    <ConversaItem 
+                      key={conversa.id}
+                      conversa={conversa}
+                      isActive={selectedConversa?.id === conversa.id}
+                      onClick={() => setSelectedConversa(conversa)}
+                      formatLastMessageDate={formatLastMessageDate}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+        </div>
       </div>
       
       {/* Área de mensagens */}
