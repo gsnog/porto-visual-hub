@@ -758,7 +758,7 @@ export default function Calendario() {
             <DialogTitle>Novo Evento</DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4 overflow-y-auto pr-1 flex-1">
+          <div className="space-y-4 overflow-y-auto px-1 flex-1">
             <div>
               <Label>Título *</Label>
               <Input 
