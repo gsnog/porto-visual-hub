@@ -77,8 +77,8 @@ export default function Calendario() {
   
   const currentUserId = '9'; // Pedro Piaes (mockado)
   
-  // Obter eventos visíveis baseado no scope
-  const eventosVisiveis = useMemo(() => {
+  // Eventos base (sem filtro de pessoa) para calcular pessoas disponíveis
+  const eventosBase = useMemo(() => {
     let eventos = getEventosVisiveis(currentUserId, scope);
     
     if (filterEquipe && scope !== 'self') {
@@ -87,13 +87,6 @@ export default function Calendario() {
       eventos = eventos.filter(e => 
         subordinadosIds.includes(e.criadorId) ||
         e.participantes.some(p => subordinadosIds.includes(p.id))
-      );
-    }
-    
-    if (filterPessoa) {
-      eventos = eventos.filter(e => 
-        e.criadorId === filterPessoa ||
-        e.participantes.some(p => p.id === filterPessoa)
       );
     }
     
@@ -106,17 +99,26 @@ export default function Calendario() {
     }
     
     return eventos;
-  }, [scope, filterEquipe, filterPessoa, filterSetor, filterTipo]);
+  }, [scope, filterEquipe, filterSetor, filterTipo]);
 
-  // Pessoas que possuem eventos no período visível
+  // Eventos visíveis (com filtro de pessoa aplicado)
+  const eventosVisiveis = useMemo(() => {
+    if (!filterPessoa) return eventosBase;
+    return eventosBase.filter(e => 
+      e.criadorId === filterPessoa ||
+      e.participantes.some(p => p.id === filterPessoa)
+    );
+  }, [eventosBase, filterPessoa]);
+
+  // Pessoas que possuem eventos no período (baseado nos eventos sem filtro de pessoa)
   const pessoasComEventos = useMemo(() => {
     const pessoaIds = new Set<string>();
-    eventosVisiveis.forEach(e => {
+    eventosBase.forEach(e => {
       pessoaIds.add(e.criadorId);
       e.participantes.forEach(p => pessoaIds.add(p.id));
     });
     return pessoasMock.filter(p => p.status === 'Ativo' && pessoaIds.has(p.id));
-  }, [eventosVisiveis]);
+  }, [eventosBase]);
   
   const canCreate = hasPermission('calendario', 'all', 'create');
   const canEdit = hasPermission('calendario', 'all', 'edit');
@@ -751,12 +753,12 @@ export default function Calendario() {
       
       {/* Modal de criar evento */}
       <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Novo Evento</DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4">
+          <div className="space-y-4 overflow-y-auto pr-1 flex-1">
             <div>
               <Label>Título *</Label>
               <Input 
