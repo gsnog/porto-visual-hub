@@ -161,7 +161,7 @@ function LayoutContent() {
 
       <div 
         className={cn(
-          "flex-1 flex flex-col transition-all duration-300",
+          "flex-1 flex flex-col transition-all duration-300 h-screen overflow-hidden",
           sidebarCollapsed ? "ml-20" : "ml-72"
         )}
       >
@@ -172,9 +172,9 @@ function LayoutContent() {
         />
 
         {/* Separator line between header and content */}
-        <div className="h-px w-full bg-border/60 dark:bg-border/40" />
+        <div className="h-px w-full bg-border/60 dark:bg-border/40 shrink-0" />
 
-        <main className="flex-1 p-6">
+        <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>

@@ -255,7 +255,7 @@ const App = () => (
             
             {/* Usuário e Notificações */}
             <Route path="/usuario/visualizar" element={<VisualizarPerfil />} />
-            <Route path="/usuario/editar" element={<EditarPerfil />} />
+            {/* Route removed: /usuario/editar */}
             <Route path="/usuario/excluir" element={<ExcluirPerfil />} />
             <Route path="/notificacoes" element={<Notificacoes />} />
             

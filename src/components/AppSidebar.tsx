@@ -183,7 +183,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-50 flex h-screen flex-col transition-all duration-300",
+        "fixed left-0 top-0 z-50 flex h-screen flex-col transition-all duration-300 border-r border-border",
         collapsed ? "w-20" : "w-72"
       )}
       style={{ background: "hsl(var(--sidebar-bg))" }}
@@ -261,9 +261,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                                       to={nestedItem.url}
                                       className={({ isActive }) =>
                                         cn(
-                                          "sidebar-item text-xs",
+                                      "sidebar-item text-xs",
                                           isActive
-                                            ? "text-primary font-semibold"
+                                            ? "sidebar-nav-active"
                                             : "text-[hsl(var(--sidebar-muted))] hover:text-[hsl(var(--sidebar-foreground))]"
                                         )
                                       }
@@ -283,7 +283,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                                 cn(
                                   "sidebar-item text-sm",
                                   isActive
-                                    ? "text-primary font-semibold"
+                                    ? "sidebar-nav-active"
                                     : "text-[hsl(var(--sidebar-muted))] hover:text-[hsl(var(--sidebar-foreground))]"
                                 )
                               }
