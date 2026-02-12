@@ -428,10 +428,10 @@ export default function Chat() {
             
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => handleStartCall('audio')}>
-                <Phone className="h-5 w-5" />
+                <Phone className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => handleStartCall('video')}>
-                <Video className="h-5 w-5" />
+                <Video className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
@@ -439,7 +439,7 @@ export default function Chat() {
                 className="h-9 w-9"
                 onClick={() => setShowInfoPanel(!showInfoPanel)}
               >
-                <Info className="h-5 w-5" />
+                <Info className="h-4 w-4" />
               </Button>
             </div>
           </div>
