@@ -395,13 +395,10 @@
     filter: drop-shadow(1px 0 0 hsl(0 0% 0%)) drop-shadow(-1px 0 0 hsl(0 0% 0%)) drop-shadow(0 1px 0 hsl(0 0% 0%)) drop-shadow(0 -1px 0 hsl(0 0% 0%));
   }
 
-  /* Center file input button vertically and horizontally */
+  /* Center file input button vertically */
   input[type="file"] {
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    text-align-last: center;
   }
 
   input[type="file"]::file-selector-button {
