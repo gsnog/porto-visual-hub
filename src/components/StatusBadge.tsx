@@ -16,12 +16,16 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "aguardando": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   "em processamento": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   "processando": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "análise": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "analise": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
   
   "vencida": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "vencido": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "cancelado": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "cancelada": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   "rejeitada": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "negado": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
+  "negada": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
   "recebida": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   "recebido": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
