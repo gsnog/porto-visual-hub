@@ -39,20 +39,20 @@ export default function UploadNFe() {
           </Select>
         </div>
 
-        <div className="form-row">
-          <label className="form-label">Selecione o PDF da NF</label>
-          <Input type="file" accept=".pdf" className="form-input w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
-        </div>
+         <div className="form-row">
+           <label className="form-label">Selecione o PDF da NF</label>
+           <Input type="file" accept=".pdf" className="form-input w-64 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+         </div>
 
-        <div className="form-row">
-          <label className="form-label">Selecione o PDF dos boletos</label>
-          <Input type="file" accept=".pdf" className="form-input w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
-        </div>
+         <div className="form-row">
+           <label className="form-label">Selecione o PDF dos boletos</label>
+           <Input type="file" accept=".pdf" className="form-input w-64 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+         </div>
 
-        <div className="form-row">
-          <label className="form-label">Selecione o arquivo XML</label>
-          <Input type="file" accept=".xml" className="form-input w-64 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
-        </div>
+         <div className="form-row">
+           <label className="form-label">Selecione o arquivo XML</label>
+           <Input type="file" accept=".xml" className="form-input w-64 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+         </div>
 
         <div className="flex gap-3 pt-4">
           <Button onClick={handleEnviar} className="btn-action px-6">Enviar XML</Button>
