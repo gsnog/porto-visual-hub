@@ -5,11 +5,12 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Users } from "lucide-react";
+import { Users, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
 import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+import { useCnpjLookup, formatCnpj } from "@/hooks/useCnpjLookup";
 
 const validationFields = [
   { name: "cnpj", label: "CNPJ", required: true },
@@ -43,6 +44,8 @@ const NovoCliente = () => {
     validationFields
   );
 
+  const { consultarCnpj, isSearching } = useCnpjLookup(setFieldValue);
+
   const handleSalvar = async () => {
     if (validateAll()) {
       await handleSave("/cadastro/financeiro/clientes", "Cliente salvo com sucesso!");
@@ -73,13 +76,21 @@ const NovoCliente = () => {
                 <Label className="text-sm font-medium">CNPJ <span className="text-destructive">*</span></Label>
                 <div className="flex gap-3 items-center">
                   <Input
-                    placeholder=""
+                    placeholder="00.000.000/0000-00"
                     className="form-input"
                     value={formData.cnpj}
-                    onChange={(e) => setFieldValue("cnpj", e.target.value)}
+                    onChange={(e) => setFieldValue("cnpj", formatCnpj(e.target.value))}
                     onBlur={() => setFieldTouched("cnpj")}
+                    maxLength={18}
                   />
-                  <Button className="btn-action px-6">Consultar</Button>
+                  <Button
+                    className="btn-action px-6"
+                    onClick={() => consultarCnpj(formData.cnpj)}
+                    disabled={isSearching}
+                    type="button"
+                  >
+                    {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Consultar"}
+                  </Button>
                 </div>
               </div>
 
