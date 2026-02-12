@@ -14,6 +14,7 @@ import {
   Grid3X3,
   LayoutGrid
 } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -270,44 +271,26 @@ export default function Calendario() {
         
         <div className="flex items-center gap-2">
           {/* Seletor de visualização */}
-          <div className="flex items-center bg-muted rounded p-1">
-            <Button 
-              variant={viewMode === 'dia' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setViewMode('dia')}
-              className="h-7 px-2"
-            >
-              <CalendarIcon className="h-4 w-4 mr-1" />
-              Dia
-            </Button>
-            <Button 
-              variant={viewMode === 'semana' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setViewMode('semana')}
-              className="h-7 px-2"
-            >
-              <Grid3X3 className="h-4 w-4 mr-1" />
-              Semana
-            </Button>
-            <Button 
-              variant={viewMode === 'mes' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setViewMode('mes')}
-              className="h-7 px-2"
-            >
-              <LayoutGrid className="h-4 w-4 mr-1" />
-              Mês
-            </Button>
-            <Button 
-              variant={viewMode === 'agenda' ? 'default' : 'ghost'} 
-              size="sm"
-              onClick={() => setViewMode('agenda')}
-              className="h-7 px-2"
-            >
-              <List className="h-4 w-4 mr-1" />
-              Agenda
-            </Button>
-          </div>
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+            <TabsList>
+              <TabsTrigger value="dia" className="gap-1">
+                <CalendarIcon className="h-4 w-4" />
+                Dia
+              </TabsTrigger>
+              <TabsTrigger value="semana" className="gap-1">
+                <Grid3X3 className="h-4 w-4" />
+                Semana
+              </TabsTrigger>
+              <TabsTrigger value="mes" className="gap-1">
+                <LayoutGrid className="h-4 w-4" />
+                Mês
+              </TabsTrigger>
+              <TabsTrigger value="agenda" className="gap-1">
+                <List className="h-4 w-4" />
+                Agenda
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
           
           <Button 
             variant="outline" 
