@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { getTotalNaoLidas } from "@/data/chat-mock";
-import { getKanbanNotifications } from "@/data/kanban-mock";
+
 
 interface TopbarProps {
   sidebarCollapsed: boolean;
@@ -51,7 +51,7 @@ export function Topbar({
   const { hasPermission } = usePermissions();
   const notificationCount = 3;
   const chatNaoLidas = getTotalNaoLidas('9');
-  const kanbanNotifications = getKanbanNotifications('9');
+  const kanbanNotifications = 0;
   
   const hasCalendarAccess = hasPermission('calendario', 'all', 'view');
   const hasChatAccess = hasPermission('chat', 'all', 'view');
