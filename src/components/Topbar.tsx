@@ -151,7 +151,7 @@ export function Topbar({
             title={app.title}
           >
             <app.icon className="h-5 w-5 text-foreground dark:text-white/70" />
-            {app.badge && app.badge > 0 && (
+            {app.badge !== undefined && app.badge > 0 && (
               <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                 {app.badge > 9 ? '9+' : app.badge}
               </span>
