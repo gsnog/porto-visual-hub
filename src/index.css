@@ -395,17 +395,9 @@
     filter: drop-shadow(1px 0 0 hsl(0 0% 0%)) drop-shadow(-1px 0 0 hsl(0 0% 0%)) drop-shadow(0 1px 0 hsl(0 0% 0%)) drop-shadow(0 -1px 0 hsl(0 0% 0%));
   }
 
-  /* Center file input button vertically */
+  /* File input - keep compact */
   input[type="file"] {
-    display: flex;
-    align-items: center;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-  }
-
-  input[type="file"]::file-selector-button {
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 0.875rem;
   }
 
   /* Dark mode scrollbar */
