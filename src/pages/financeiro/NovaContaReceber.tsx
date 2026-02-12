@@ -133,7 +133,7 @@ export default function NovaContaReceber() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Documento PDF</Label>
-                <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+                <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
               </div>
 
               <div className="space-y-2">

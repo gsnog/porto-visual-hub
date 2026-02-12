@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -8,7 +9,6 @@ import { CircleDollarSign } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
-import { ValidatedSelect } from "@/components/ui/validated-select";
 
 const validationFields = [
   { name: "diretoria", label: "Diretoria", required: true },
@@ -57,21 +57,16 @@ const NovoCentroCusto = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Diretoria <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3 items-center">
-                  <ValidatedSelect
-                    label=""
-                    required
-                    placeholder="Selecionar"
-                    options={[
-                      { value: "dir1", label: "Diretoria 1" },
-                      { value: "dir2", label: "Diretoria 2" },
-                    ]}
-                    value={formData.diretoria}
-                    onValueChange={(value) => setFieldValue("diretoria", value)}
-                    onBlur={() => setFieldTouched("diretoria")}
-                    error={getFieldError("diretoria")}
-                    touched={touched.diretoria}
-                  />
+                <div className="flex gap-3">
+                  <Select value={formData.diretoria} onValueChange={(value) => setFieldValue("diretoria", value)}>
+                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("diretoria")}>
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="dir1">Diretoria 1</SelectItem>
+                      <SelectItem value="dir2">Diretoria 2</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>

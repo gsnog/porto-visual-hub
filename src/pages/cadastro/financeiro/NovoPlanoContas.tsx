@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -8,7 +9,6 @@ import { FileText } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
-import { ValidatedSelect } from "@/components/ui/validated-select";
 
 const validationFields = [
   { name: "categoria", label: "Categoria", required: false },
@@ -58,41 +58,32 @@ const NovoPlanoContas = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Categoria</Label>
-                <div className="flex gap-3 items-center">
-                  <ValidatedSelect
-                    label=""
-                    placeholder="Selecionar"
-                    options={[
-                      { value: "cat1", label: "Categoria 1" },
-                      { value: "cat2", label: "Categoria 2" },
-                    ]}
-                    value={formData.categoria}
-                    onValueChange={(value) => setFieldValue("categoria", value)}
-                    onBlur={() => setFieldTouched("categoria")}
-                    error={getFieldError("categoria")}
-                    touched={touched.categoria}
-                  />
+                <div className="flex gap-3">
+                  <Select value={formData.categoria} onValueChange={(value) => setFieldValue("categoria", value)}>
+                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("categoria")}>
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="cat1">Categoria 1</SelectItem>
+                      <SelectItem value="cat2">Categoria 2</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Subcategoria <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3 items-center">
-                  <ValidatedSelect
-                    label=""
-                    required
-                    placeholder="Selecionar"
-                    options={[
-                      { value: "sub1", label: "Subcategoria 1" },
-                      { value: "sub2", label: "Subcategoria 2" },
-                    ]}
-                    value={formData.subcategoria}
-                    onValueChange={(value) => setFieldValue("subcategoria", value)}
-                    onBlur={() => setFieldTouched("subcategoria")}
-                    error={getFieldError("subcategoria")}
-                    touched={touched.subcategoria}
-                  />
+                <div className="flex gap-3">
+                  <Select value={formData.subcategoria} onValueChange={(value) => setFieldValue("subcategoria", value)}>
+                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("subcategoria")}>
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="sub1">Subcategoria 1</SelectItem>
+                      <SelectItem value="sub2">Subcategoria 2</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
@@ -101,21 +92,16 @@ const NovoPlanoContas = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Contábil <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3 items-center">
-                  <ValidatedSelect
-                    label=""
-                    required
-                    placeholder="Selecionar"
-                    options={[
-                      { value: "cont1", label: "Contábil 1" },
-                      { value: "cont2", label: "Contábil 2" },
-                    ]}
-                    value={formData.contabil}
-                    onValueChange={(value) => setFieldValue("contabil", value)}
-                    onBlur={() => setFieldTouched("contabil")}
-                    error={getFieldError("contabil")}
-                    touched={touched.contabil}
-                  />
+                <div className="flex gap-3">
+                  <Select value={formData.contabil} onValueChange={(value) => setFieldValue("contabil", value)}>
+                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("contabil")}>
+                      <SelectValue placeholder="Selecionar" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="cont1">Contábil 1</SelectItem>
+                      <SelectItem value="cont2">Contábil 2</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
