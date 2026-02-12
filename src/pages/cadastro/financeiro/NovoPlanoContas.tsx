@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -56,58 +57,67 @@ const NovoPlanoContas = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <ValidatedSelect
-                  label="Categoria"
-                  placeholder="Selecionar"
-                  options={[
-                    { value: "cat1", label: "Categoria 1" },
-                    { value: "cat2", label: "Categoria 2" },
-                  ]}
-                  value={formData.categoria}
-                  onValueChange={(value) => setFieldValue("categoria", value)}
-                  onBlur={() => setFieldTouched("categoria")}
-                  error={getFieldError("categoria")}
-                  touched={touched.categoria}
-                />
-                <Button className="btn-action px-4">Adicionar</Button>
+                <Label className="text-sm font-medium">Categoria</Label>
+                <div className="flex gap-3 items-center">
+                  <ValidatedSelect
+                    label=""
+                    placeholder="Selecionar"
+                    options={[
+                      { value: "cat1", label: "Categoria 1" },
+                      { value: "cat2", label: "Categoria 2" },
+                    ]}
+                    value={formData.categoria}
+                    onValueChange={(value) => setFieldValue("categoria", value)}
+                    onBlur={() => setFieldTouched("categoria")}
+                    error={getFieldError("categoria")}
+                    touched={touched.categoria}
+                  />
+                  <Button className="btn-action px-6">Adicionar</Button>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <ValidatedSelect
-                  label="Subcategoria"
-                  required
-                  placeholder="Selecionar"
-                  options={[
-                    { value: "sub1", label: "Subcategoria 1" },
-                    { value: "sub2", label: "Subcategoria 2" },
-                  ]}
-                  value={formData.subcategoria}
-                  onValueChange={(value) => setFieldValue("subcategoria", value)}
-                  onBlur={() => setFieldTouched("subcategoria")}
-                  error={getFieldError("subcategoria")}
-                  touched={touched.subcategoria}
-                />
-                <Button className="btn-action px-4">Adicionar</Button>
+                <Label className="text-sm font-medium">Subcategoria <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3 items-center">
+                  <ValidatedSelect
+                    label=""
+                    required
+                    placeholder="Selecionar"
+                    options={[
+                      { value: "sub1", label: "Subcategoria 1" },
+                      { value: "sub2", label: "Subcategoria 2" },
+                    ]}
+                    value={formData.subcategoria}
+                    onValueChange={(value) => setFieldValue("subcategoria", value)}
+                    onBlur={() => setFieldTouched("subcategoria")}
+                    error={getFieldError("subcategoria")}
+                    touched={touched.subcategoria}
+                  />
+                  <Button className="btn-action px-6">Adicionar</Button>
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <ValidatedSelect
-                  label="Contábil"
-                  required
-                  placeholder="Selecionar"
-                  options={[
-                    { value: "cont1", label: "Contábil 1" },
-                    { value: "cont2", label: "Contábil 2" },
-                  ]}
-                  value={formData.contabil}
-                  onValueChange={(value) => setFieldValue("contabil", value)}
-                  onBlur={() => setFieldTouched("contabil")}
-                  error={getFieldError("contabil")}
-                  touched={touched.contabil}
-                />
-                <Button className="btn-action px-4">Adicionar</Button>
+                <Label className="text-sm font-medium">Contábil <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3 items-center">
+                  <ValidatedSelect
+                    label=""
+                    required
+                    placeholder="Selecionar"
+                    options={[
+                      { value: "cont1", label: "Contábil 1" },
+                      { value: "cont2", label: "Contábil 2" },
+                    ]}
+                    value={formData.contabil}
+                    onValueChange={(value) => setFieldValue("contabil", value)}
+                    onBlur={() => setFieldTouched("contabil")}
+                    error={getFieldError("contabil")}
+                    touched={touched.contabil}
+                  />
+                  <Button className="btn-action px-6">Adicionar</Button>
+                </div>
               </div>
 
               <ValidatedInput
