@@ -427,16 +427,15 @@ export default function Chat() {
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="p-2" onClick={() => handleStartCall('audio')}>
+              <Button variant="ghost" className="p-2 h-auto w-auto" onClick={() => handleStartCall('audio')}>
                 <Phone className="h-5 w-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="p-2" onClick={() => handleStartCall('video')}>
+              <Button variant="ghost" className="p-2 h-auto w-auto" onClick={() => handleStartCall('video')}>
                 <Video className="h-5 w-5" />
               </Button>
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="p-2"
+                className="p-2 h-auto w-auto"
                 onClick={() => setShowInfoPanel(!showInfoPanel)}
               >
                 <Info className="h-5 w-5" />
