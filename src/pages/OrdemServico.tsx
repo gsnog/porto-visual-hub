@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
 import { Plus } from "lucide-react";
 import { TableActions } from "@/components/TableActions";
+import { StatusBadge } from "@/components/StatusBadge";
 
 const mockOrdens = [
   { id: 1, tipo: "Serviços Gerais", data: "19/12/2024", descricao: "Limpeza geral", responsavel: "João Silva", status: "Concluído" },
@@ -29,18 +30,6 @@ export default function OrdemServico() {
     })
   }, [filterTipo, filterDataInicio, filterDataFim])
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Concluído':
-        return 'text-primary font-medium';
-      case 'Em Andamento':
-        return 'text-blue-600 font-medium';
-      case 'Pendente':
-        return 'text-yellow-600 font-medium';
-      default:
-        return 'text-gray-600';
-    }
-  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -125,7 +114,7 @@ export default function OrdemServico() {
                   <TableCell className="text-center">{ordem.descricao}</TableCell>
                   <TableCell className="text-center">{ordem.responsavel}</TableCell>
                   <TableCell className="text-center">
-                    <span className={getStatusColor(ordem.status)}>{ordem.status}</span>
+                    <StatusBadge status={ordem.status} />
                   </TableCell>
                   <TableCell className="text-center">
                     <TableActions 
