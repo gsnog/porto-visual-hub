@@ -1113,7 +1113,7 @@ export default function Cadastro() {
                     variant="outline"
                     className="gap-2"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4 nav-arrow" />
                     Anterior
                   </Button>
                 )}

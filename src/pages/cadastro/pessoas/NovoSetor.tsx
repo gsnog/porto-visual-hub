@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Building2, Check, CheckCircle2, ChevronLeft, Loader2 } from "lucide-react";
+import { Building2, ChevronLeft, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { setoresMock, pessoasMock } from "@/data/pessoas-mock";
 
@@ -38,28 +38,7 @@ export default function NovoSetor() {
   return (
     <div className="flex flex-col h-full bg-background items-center">
       <div className="max-w-3xl w-full">
-        {/* Simple Progress */}
-        <div className="mb-8">
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex items-center">
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-md bg-primary text-primary-foreground scale-110">
-                  <Check className="h-5 w-5" />
-                </div>
-                <span className="text-xs font-medium text-primary hidden md:block">Dados do Setor</span>
-              </div>
-              <div className="w-12 h-1 mx-2 rounded-full bg-muted" />
-            </div>
-            <div className="flex items-center">
-              <div className="flex flex-col items-center gap-2 opacity-60">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-md bg-muted text-muted-foreground">
-                  <CheckCircle2 className="h-5 w-5" />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground hidden md:block">Finalizado</span>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <Card className="border-border shadow-lg">
           <CardContent className="p-6 md:p-8">
@@ -142,7 +121,7 @@ export default function NovoSetor() {
             onClick={() => navigate("/cadastro/pessoas/setores")}
             className="gap-2"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 nav-arrow" />
             Cancelar
           </Button>
           <Button onClick={handleSalvar} disabled={isSaving} className="gap-2">

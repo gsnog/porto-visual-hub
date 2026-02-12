@@ -1057,7 +1057,7 @@ export default function NovaPessoa() {
             onClick={currentStep === 1 ? handleCancelar : prevStep}
             className="gap-2"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 nav-arrow" />
             {currentStep === 1 ? "Cancelar" : "Anterior"}
           </Button>
 

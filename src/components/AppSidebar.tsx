@@ -91,6 +91,7 @@ const menuItems = [
       { title: "Ordem de Serviço", url: "/estoque/ordem-servico" },
       { title: "Requisições", url: "/estoque/requisicoes" },
       { title: "Saídas", url: "/estoque/saidas" },
+      { title: "Patrimônio", url: "/patrimonio" },
     ]
   },
   { 
@@ -115,7 +116,7 @@ const menuItems = [
       { title: "Serviços", url: "/operacional/servicos" },
     ]
   },
-  { title: "Patrimônio", url: "/patrimonio", icon: Building2 },
+  
   { 
     title: "Gestão de Pessoas", 
     icon: UserRoundPlus,
