@@ -71,41 +71,47 @@ const NovaEmbarcacao = () => {
               />
 
               <div className="space-y-2">
-                <ValidatedSelect
-                  label="Setores"
-                  required
-                  placeholder="Selecionar Setores"
-                  options={[
-                    { value: "setor1", label: "Setor 1" },
-                    { value: "setor2", label: "Setor 2" },
-                  ]}
-                  value={formData.setores}
-                  onValueChange={(value) => setFieldValue("setores", value)}
-                  onBlur={() => setFieldTouched("setores")}
-                  error={getFieldError("setores")}
-                  touched={touched.setores}
-                />
-                <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>Adicionar</Button>
+                <Label className="text-sm font-medium">Setores <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3 items-center">
+                  <ValidatedSelect
+                    label=""
+                    required
+                    placeholder="Selecionar Setores"
+                    options={[
+                      { value: "setor1", label: "Setor 1" },
+                      { value: "setor2", label: "Setor 2" },
+                    ]}
+                    value={formData.setores}
+                    onValueChange={(value) => setFieldValue("setores", value)}
+                    onBlur={() => setFieldTouched("setores")}
+                    error={getFieldError("setores")}
+                    touched={touched.setores}
+                  />
+                  <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>Adicionar</Button>
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <ValidatedSelect
-                  label="Cliente"
-                  required
-                  placeholder="Selecionar"
-                  options={[
-                    { value: "cliente1", label: "Cliente 1" },
-                    { value: "cliente2", label: "Cliente 2" },
-                  ]}
-                  value={formData.cliente}
-                  onValueChange={(value) => setFieldValue("cliente", value)}
-                  onBlur={() => setFieldTouched("cliente")}
-                  error={getFieldError("cliente")}
-                  touched={touched.cliente}
-                />
-                <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}>Adicionar</Button>
+                <Label className="text-sm font-medium">Cliente <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3 items-center">
+                  <ValidatedSelect
+                    label=""
+                    required
+                    placeholder="Selecionar"
+                    options={[
+                      { value: "cliente1", label: "Cliente 1" },
+                      { value: "cliente2", label: "Cliente 2" },
+                    ]}
+                    value={formData.cliente}
+                    onValueChange={(value) => setFieldValue("cliente", value)}
+                    onBlur={() => setFieldTouched("cliente")}
+                    error={getFieldError("cliente")}
+                    touched={touched.cliente}
+                  />
+                  <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}>Adicionar</Button>
+                </div>
               </div>
 
               <ValidatedInput

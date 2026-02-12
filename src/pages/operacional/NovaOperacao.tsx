@@ -65,36 +65,40 @@ const NovaOperacao = () => {
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Serviço</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="servico1">Serviço 1</SelectItem>
-                    <SelectItem value="servico2">Serviço 2</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button size="sm" className="btn-action px-6 mt-2" onClick={() => navigate("/operacional/novo-servico")}>
-                  Adicionar Serviço
-                </Button>
+                <div className="flex gap-3 items-center">
+                  <Select>
+                    <SelectTrigger className="form-input">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="servico1">Serviço 1</SelectItem>
+                      <SelectItem value="servico2">Serviço 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button size="sm" className="btn-action px-6" onClick={() => navigate("/operacional/novo-servico")}>
+                    Adicionar Serviço
+                  </Button>
+                </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Setor</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="setor1">Setor 1</SelectItem>
-                    <SelectItem value="setor2">Setor 2</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button size="sm" className="btn-action px-6 mt-2" onClick={() => navigate("/operacional/novo-setor")}>
-                  Adicionar Setor
-                </Button>
+                <div className="flex gap-3 items-center">
+                  <Select>
+                    <SelectTrigger className="form-input">
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="setor1">Setor 1</SelectItem>
+                      <SelectItem value="setor2">Setor 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button size="sm" className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>
+                    Adicionar Setor
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-2">

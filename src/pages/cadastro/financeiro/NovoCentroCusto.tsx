@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -55,21 +56,24 @@ const NovoCentroCusto = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <ValidatedSelect
-                  label="Diretoria"
-                  required
-                  placeholder="Selecionar"
-                  options={[
-                    { value: "dir1", label: "Diretoria 1" },
-                    { value: "dir2", label: "Diretoria 2" },
-                  ]}
-                  value={formData.diretoria}
-                  onValueChange={(value) => setFieldValue("diretoria", value)}
-                  onBlur={() => setFieldTouched("diretoria")}
-                  error={getFieldError("diretoria")}
-                  touched={touched.diretoria}
-                />
-                <Button className="btn-action px-6">Adicionar</Button>
+                <Label className="text-sm font-medium">Diretoria <span className="text-destructive">*</span></Label>
+                <div className="flex gap-3 items-center">
+                  <ValidatedSelect
+                    label=""
+                    required
+                    placeholder="Selecionar"
+                    options={[
+                      { value: "dir1", label: "Diretoria 1" },
+                      { value: "dir2", label: "Diretoria 2" },
+                    ]}
+                    value={formData.diretoria}
+                    onValueChange={(value) => setFieldValue("diretoria", value)}
+                    onBlur={() => setFieldTouched("diretoria")}
+                    error={getFieldError("diretoria")}
+                    touched={touched.diretoria}
+                  />
+                  <Button className="btn-action px-6">Adicionar</Button>
+                </div>
               </div>
 
               <ValidatedInput
