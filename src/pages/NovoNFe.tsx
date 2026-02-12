@@ -52,7 +52,7 @@ const NovoNFe = () => {
                 <Input 
                   type="file" 
                   accept=".pdf" 
-                  className="form-input file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
+                  className="form-input file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
                 />
               </div>
 
@@ -61,7 +61,7 @@ const NovoNFe = () => {
                 <Input 
                   type="file" 
                   accept=".xml" 
-                  className="form-input file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
+                  className="form-input file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" 
                 />
               </div>
             </div>

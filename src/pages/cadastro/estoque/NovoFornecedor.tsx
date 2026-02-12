@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -69,15 +71,17 @@ const NovoFornecedor = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <ValidatedInput
-                  label="CNPJ"
-                  value={formData.cnpj}
-                  onChange={(e) => setFieldValue("cnpj", e.target.value)}
-                  onBlur={() => setFieldTouched("cnpj")}
-                  error={getFieldError("cnpj")}
-                  touched={touched.cnpj}
-                />
-                <Button className="btn-action px-6 mt-2">Consultar</Button>
+                <Label className="text-sm font-medium">CNPJ</Label>
+                <div className="flex gap-3 items-center">
+                  <Input
+                    placeholder=""
+                    className="form-input"
+                    value={formData.cnpj}
+                    onChange={(e) => setFieldValue("cnpj", e.target.value)}
+                    onBlur={() => setFieldTouched("cnpj")}
+                  />
+                  <Button className="btn-action px-6">Consultar</Button>
+                </div>
               </div>
 
               <ValidatedInput
