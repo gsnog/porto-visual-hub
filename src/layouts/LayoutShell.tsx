@@ -80,7 +80,7 @@ const pageTitles: Record<string, { title: string; description?: string }> = {
   "/financeiro/contas-pagar/relatorio": { title: "Contas a Pagar", description: "Relatório de Contas a Pagar" },
   "/financeiro/fluxo-caixa/relatorio": { title: "Fluxo de Caixa", description: "Relatório de Fluxo de Caixa" },
   
-  // Patrimônio
+  // Patrimônio (under Estoque)
   "/patrimonio": { title: "Patrimônio", description: "Gerenciamento de patrimônio" },
   
   // Operacional - Páginas principais

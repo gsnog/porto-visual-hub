@@ -388,4 +388,22 @@
   .transition-smooth {
     @apply transition-all duration-200 ease-in-out;
   }
+
+  /* Subpage navigation arrows: green with black outline */
+  .nav-arrow {
+    color: hsl(var(--primary));
+    stroke: hsl(0 0% 0%);
+    paint-order: stroke fill;
+    stroke-width: 1px;
+  }
+
+  /* Center file input button */
+  input[type="file"] {
+    text-align: center;
+  }
+
+  input[type="file"]::file-selector-button {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
