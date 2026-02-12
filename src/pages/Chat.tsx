@@ -427,14 +427,14 @@ export default function Chat() {
             </div>
             
             <div className="flex items-center gap-2">
-              <button className="p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors" onClick={() => handleStartCall('audio')}>
-                <Phone className="h-5 w-5 text-foreground dark:text-white/70" />
+              <button className="p-2 rounded hover:bg-primary/10 transition-colors" onClick={() => handleStartCall('audio')}>
+                <Phone className="h-5 w-5 text-foreground dark:text-white/70 hover:text-primary" />
               </button>
-              <button className="p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors" onClick={() => handleStartCall('video')}>
-                <Video className="h-5 w-5 text-foreground dark:text-white/70" />
+              <button className="p-2 rounded hover:bg-primary/10 transition-colors" onClick={() => handleStartCall('video')}>
+                <Video className="h-5 w-5 text-foreground dark:text-white/70 hover:text-primary" />
               </button>
-              <button className="p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors" onClick={() => setShowInfoPanel(!showInfoPanel)}>
-                <Info className="h-5 w-5 text-foreground dark:text-white/70" />
+              <button className="p-2 rounded hover:bg-primary/10 transition-colors" onClick={() => setShowInfoPanel(!showInfoPanel)}>
+                <Info className="h-5 w-5 text-foreground dark:text-white/70 hover:text-primary" />
               </button>
             </div>
           </div>
