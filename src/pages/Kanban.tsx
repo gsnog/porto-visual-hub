@@ -69,9 +69,13 @@ export default function Kanban() {
   const [lists, setLists] = useState<KanbanList[]>(kanbanListsMock);
   const [cards, setCards] = useState<KanbanCard[]>(kanbanCardsMock);
 
-  // Drag and drop
+  // Drag and drop - cards
   const [draggedCard, setDraggedCard] = useState<KanbanCard | null>(null);
   const [dragOverListId, setDragOverListId] = useState<string | null>(null);
+
+  // Drag and drop - lists
+  const [draggedList, setDraggedList] = useState<KanbanList | null>(null);
+  const [dragOverListTarget, setDragOverListTarget] = useState<string | null>(null);
 
   const filteredBoards = useMemo(() => {
     if (!searchQuery.trim()) return boards;
@@ -114,8 +118,10 @@ export default function Kanban() {
 
   // Drag and Drop
   const handleDragStart = (e: React.DragEvent, card: KanbanCard) => {
+    e.stopPropagation();
     setDraggedCard(card);
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', 'card');
   };
 
   const handleDragOver = (e: React.DragEvent, listId: string) => {
@@ -139,7 +145,53 @@ export default function Kanban() {
     setDraggedCard(null);
   };
 
-  // CRUD - Boards
+  // Drag and Drop - Lists
+  const handleListDragStart = (e: React.DragEvent, list: KanbanList) => {
+    setDraggedList(list);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', 'list'); // mark as list drag
+  };
+
+  const handleListDragOver = (e: React.DragEvent, targetListId: string) => {
+    e.preventDefault();
+    if (!draggedList || draggedList.id === targetListId) return;
+    setDragOverListTarget(targetListId);
+  };
+
+  const handleListDrop = (e: React.DragEvent, targetListId: string) => {
+    e.preventDefault();
+    setDragOverListTarget(null);
+    if (!draggedList || draggedList.id === targetListId) {
+      setDraggedList(null);
+      return;
+    }
+
+    setLists((prev) => {
+      const boardLists = prev
+        .filter((l) => l.boardId === draggedList.boardId)
+        .sort((a, b) => a.position - b.position);
+      const otherLists = prev.filter((l) => l.boardId !== draggedList.boardId);
+
+      const fromIdx = boardLists.findIndex((l) => l.id === draggedList.id);
+      const toIdx = boardLists.findIndex((l) => l.id === targetListId);
+
+      const reordered = [...boardLists];
+      const [moved] = reordered.splice(fromIdx, 1);
+      reordered.splice(toIdx, 0, moved);
+
+      const updated = reordered.map((l, i) => ({ ...l, position: i }));
+      return [...otherLists, ...updated];
+    });
+
+    setDraggedList(null);
+  };
+
+  const handleListDragEnd = () => {
+    setDraggedList(null);
+    setDragOverListTarget(null);
+  };
+
+
   const handleCreateBoard = (title: string, description: string, memberIds: string[]) => {
     const newBoard: KanbanBoard = {
       id: `b_${Date.now()}`,
@@ -351,15 +403,31 @@ export default function Kanban() {
                 list={list}
                 cards={getCardsForList(list.id)}
                 isDragOver={dragOverListId === list.id}
-                onDragOver={(e) => handleDragOver(e, list.id)}
-                onDragLeave={() => setDragOverListId(null)}
-                onDrop={(e) => handleDrop(e, list.id)}
+                isListDragOver={dragOverListTarget === list.id}
+                isDraggingList={draggedList?.id === list.id}
+                onDragOver={(e) => {
+                  if (draggedList) {
+                    handleListDragOver(e, list.id);
+                  } else {
+                    handleDragOver(e, list.id);
+                  }
+                }}
+                onDragLeave={() => { setDragOverListId(null); setDragOverListTarget(null); }}
+                onDrop={(e) => {
+                  if (draggedList) {
+                    handleListDrop(e, list.id);
+                  } else {
+                    handleDrop(e, list.id);
+                  }
+                }}
                 onCardDragStart={handleDragStart}
                 onCardDragEnd={() => { setDraggedCard(null); setDragOverListId(null); }}
                 onCardClick={openCardModal}
                 onAddCard={(title) => handleAddCard(list.id, title)}
                 onRenameList={(title) => handleRenameList(list.id, title)}
                 onDeleteList={() => handleDeleteList(list.id)}
+                onListDragStart={(e) => handleListDragStart(e, list)}
+                onListDragEnd={handleListDragEnd}
               />
             ))}
 
@@ -460,6 +528,8 @@ interface KanbanListColumnProps {
   list: KanbanList;
   cards: KanbanCard[];
   isDragOver: boolean;
+  isListDragOver: boolean;
+  isDraggingList: boolean;
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent) => void;
@@ -469,12 +539,16 @@ interface KanbanListColumnProps {
   onAddCard: (title: string) => void;
   onRenameList: (title: string) => void;
   onDeleteList: () => void;
+  onListDragStart: (e: React.DragEvent) => void;
+  onListDragEnd: () => void;
 }
 
 function KanbanListColumn({
   list,
   cards,
   isDragOver,
+  isListDragOver,
+  isDraggingList,
   onDragOver,
   onDragLeave,
   onDrop,
@@ -484,6 +558,8 @@ function KanbanListColumn({
   onAddCard,
   onRenameList,
   onDeleteList,
+  onListDragStart,
+  onListDragEnd,
 }: KanbanListColumnProps) {
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState('');
@@ -507,9 +583,14 @@ function KanbanListColumn({
 
   return (
     <div
+      draggable
+      onDragStart={onListDragStart}
+      onDragEnd={onListDragEnd}
       className={cn(
-        'w-72 flex-shrink-0 bg-muted/50 rounded p-2 flex flex-col max-h-full',
-        isDragOver && 'ring-2 ring-primary ring-offset-2'
+        'w-72 flex-shrink-0 bg-muted/50 rounded p-2 flex flex-col max-h-full transition-all',
+        isDragOver && 'ring-2 ring-primary ring-offset-2',
+        isListDragOver && 'border-2 border-primary border-dashed',
+        isDraggingList && 'opacity-50'
       )}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
