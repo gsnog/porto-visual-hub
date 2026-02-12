@@ -306,7 +306,7 @@ export default function Chat() {
     : null;
   
   return (
-    <div className="flex h-[calc(100vh-4rem)] -mx-6 -my-6 overflow-hidden">
+    <div className="flex h-[calc(100vh-4rem)] -mx-6 -my-6 overflow-hidden w-screen">
       {/* Hidden file inputs */}
       <input ref={fileInputRef} type="file" className="hidden" onChange={(e) => handleFileSelected(e, 'file')} />
       <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelected(e, 'image')} />
