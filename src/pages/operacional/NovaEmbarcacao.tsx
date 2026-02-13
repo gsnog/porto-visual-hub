@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Ship, Plus } from "lucide-react";
+import { Ship } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
@@ -82,7 +82,7 @@ const NovaEmbarcacao = () => {
                       <SelectItem value="setor2">Setor 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>Adicionar</Button>
                 </div>
               </div>
             </div>
@@ -100,7 +100,7 @@ const NovaEmbarcacao = () => {
                       <SelectItem value="cliente2">Cliente 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}>Adicionar</Button>
                 </div>
               </div>
 

@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
 import { SimpleFormWizard } from "@/components/SimpleFormWizard"
 import { FormActionBar } from "@/components/FormActionBar"
-import { PackageMinus, Plus } from "lucide-react"
+import { PackageMinus } from "lucide-react"
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
 
 export default function NovaSaida() {
@@ -54,7 +54,7 @@ export default function NovaSaida() {
                       <SelectItem value="origem2">Estoque 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function NovaSaida() {
                       <SelectItem value="setor2">Setor 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 

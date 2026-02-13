@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -136,7 +135,7 @@ export default function NovaLocacao() {
             </div>
 
             <div className="flex gap-3">
-              <Button variant="outline" className="btn-outline"><Plus className="w-4 h-4" />Adicionar Item</Button>
+              <Button variant="outline" className="btn-outline">Adicionar Item</Button>
             </div>
 
             <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { FileText, Plus } from "lucide-react";
+import { FileText } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
@@ -68,7 +68,7 @@ const NovoPlanoContas = () => {
                       <SelectItem value="cat2">Categoria 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 
@@ -84,7 +84,7 @@ const NovoPlanoContas = () => {
                       <SelectItem value="sub2">Subcategoria 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
             </div>
@@ -102,7 +102,7 @@ const NovoPlanoContas = () => {
                       <SelectItem value="cont2">Contábil 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 

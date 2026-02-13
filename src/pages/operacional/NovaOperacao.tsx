@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Settings, Plus } from "lucide-react";
+import { Settings } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovaOperacao = () => {
@@ -76,7 +76,7 @@ const NovaOperacao = () => {
                     </SelectContent>
                   </Select>
                   <Button size="sm" className="btn-action px-6" onClick={() => navigate("/operacional/novo-servico")}>
-                    <Plus className="w-4 h-4" />Adicionar Serviço
+                    Adicionar Serviço
                   </Button>
                 </div>
               </div>
@@ -96,7 +96,7 @@ const NovaOperacao = () => {
                     </SelectContent>
                   </Select>
                   <Button size="sm" className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>
-                    <Plus className="w-4 h-4" />Adicionar Setor
+                    Adicionar Setor
                   </Button>
                 </div>
               </div>
@@ -120,7 +120,7 @@ const NovaOperacao = () => {
             </div>
 
             <div className="flex gap-3">
-              <Button variant="outline" className="btn-outline px-6"><Plus className="w-4 h-4" />Adicionar Serviço</Button>
+              <Button variant="outline" className="btn-outline px-6">Adicionar Serviço</Button>
             </div>
 
             <div className="space-y-4">

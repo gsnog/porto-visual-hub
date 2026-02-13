@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Package, Plus } from "lucide-react";
+import { Package } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovoItem = () => {
@@ -55,7 +55,7 @@ const NovoItem = () => {
                       <SelectItem value="nom2">Nomenclatura 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@ const NovoItem = () => {
                       <SelectItem value="ap2">Apresentação 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 
@@ -89,7 +89,7 @@ const NovoItem = () => {
                       <SelectItem value="forn2">Fornecedor 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@ const NovoItem = () => {
                       <SelectItem value="setor2">Setor 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
+                  <Button className="btn-action px-6">Adicionar</Button>
                 </div>
               </div>
 

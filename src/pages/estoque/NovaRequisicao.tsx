@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { ClipboardList, Trash2, Plus } from "lucide-react";
+import { ClipboardList, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedSelect } from "@/components/ui/validated-select";
@@ -164,7 +164,7 @@ export default function NovaRequisicao() {
 
             <div className="flex gap-3">
               <Button variant="outline" className="btn-outline" onClick={handleAddItem}>
-                <Plus className="w-4 h-4" />Adicionar Item
+                Adicionar Item
               </Button>
             </div>
 
