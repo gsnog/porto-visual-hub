@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, Plus } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 interface ItemOrdem {
@@ -135,7 +135,7 @@ export default function NovaOrdemCompra() {
 
               <div className="flex gap-3 mt-4">
                 <Button type="button" onClick={handleAddItem} className="btn-action">
-                  Adicionar Item
+                  <Plus className="w-4 h-4" />Adicionar Item
                 </Button>
               </div>
             </div>

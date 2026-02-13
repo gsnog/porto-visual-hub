@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { CircleDollarSign } from "lucide-react";
+import { CircleDollarSign, Plus } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
@@ -67,7 +67,7 @@ const NovoCentroCusto = () => {
                       <SelectItem value="dir2">Diretoria 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
+                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
                 </div>
               </div>
 

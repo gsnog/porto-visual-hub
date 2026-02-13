@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
+import { Plus } from "lucide-react"
 
 const SaidasPendentes = () => {
   const [filterBeneficiario, setFilterBeneficiario] = useState("")
@@ -25,7 +26,7 @@ const SaidasPendentes = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-4 items-center">
-          <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar</Button>
+          <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground"><Plus className="w-4 h-4" />Adicionar</Button>
           <Button className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Relatório</Button>
         </div>
 
