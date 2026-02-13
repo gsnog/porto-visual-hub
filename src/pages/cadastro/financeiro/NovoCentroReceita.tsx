@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Plus } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 
 const NovoCentroReceita = () => {
@@ -49,7 +49,7 @@ const NovoCentroReceita = () => {
                       <SelectItem value="dir2">Diretoria 2</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
+                  <Button className="btn-action px-6"><Plus className="w-4 h-4" />Adicionar</Button>
                 </div>
               </div>
 
