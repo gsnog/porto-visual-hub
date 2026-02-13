@@ -766,7 +766,7 @@ function KanbanCardItem({
         {assignee && (
           <div className="flex justify-end">
             <div
-              className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium"
+              className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold"
               title={assignee.nome}
             >
               {assignee.iniciais}
@@ -1089,7 +1089,7 @@ function CardDetailModal({
               </Select>
               {assignee && (
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
+                  <div className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
                     {assignee.iniciais}
                   </div>
                   <span className="text-sm">{assignee.nome}</span>
@@ -1256,7 +1256,7 @@ function NewBoardModal({
                         checked={selectedMembers.includes(pessoa.id)}
                         onCheckedChange={() => toggleMember(pessoa.id)}
                       />
-                      <div className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs font-medium">
+                      <div className="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
                         {pessoa.iniciais}
                       </div>
                       <div className="flex-1 min-w-0">
