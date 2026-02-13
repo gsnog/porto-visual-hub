@@ -107,18 +107,39 @@ export default function Hierarquia() {
     }));
   }, [expandedNodes]);
 
-  // Hierarquia por área — mostra árvore de gestores dentro de cada área
+  // Hierarquia por área — isolamento total por área
   const hierarchyByArea = useMemo(() => {
-    const areasRaiz = setoresMock.filter(s => !s.areaPaiId);
-    return areasRaiz.map(area => {
-      const allSubAreaIds = [area.id, ...setoresMock.filter(s => s.areaPaiId === area.id).map(s => s.id)];
-      const pessoasArea = pessoasMock.filter(p => allSubAreaIds.includes(p.setorId || ''));
-      // Find top-level people in this area (no manager, or manager is outside this area)
-      const pessoaIdsArea = new Set(pessoasArea.map(p => p.id));
-      const topLevel = pessoasArea.filter(p => !p.gestorId || !pessoaIdsArea.has(p.gestorId));
+    // Show all areas individually (not just root areas)
+    return setoresMock.map(area => {
+      // For each area, get only its direct sub-areas
+      const subAreas = setoresMock.filter(s => s.areaPaiId === area.id);
+      const allAreaIds = [area.id, ...subAreas.map(s => s.id)];
+      
+      // Get only people that belong to this area or its direct sub-areas
+      const pessoasArea = pessoasMock.filter(p => allAreaIds.includes(p.setorId || ''));
+      
+      // Filter out people whose primary area is a parent area (e.g., Diretor Geral in Diretoria)
+      // They should NOT appear in child areas
+      const pessoasAreaFiltered = pessoasArea.filter(p => {
+        // If this is not the person's direct setor and not a sub-area of this area, exclude
+        // More importantly: if the person's setorId is a PARENT of this area, exclude them
+        // (e.g., Diretor Geral with setorId='1' Diretoria should not appear in Financeiro)
+        if (p.setorId !== area.id && !subAreas.some(s => s.id === p.setorId)) {
+          return false;
+        }
+        // If this area has a parent, exclude people whose setorId is the parent area
+        if (area.areaPaiId && p.setorId === area.areaPaiId) {
+          return false;
+        }
+        return true;
+      });
+
+      // Find top-level people: those whose manager is outside this area
+      const pessoaIdsArea = new Set(pessoasAreaFiltered.map(p => p.id));
+      const topLevel = pessoasAreaFiltered.filter(p => !p.gestorId || !pessoaIdsArea.has(p.gestorId));
       
       function buildAreaHierarchy(parentId: string): HierarchyNode[] {
-        const subs = pessoasArea.filter(p => p.gestorId === parentId);
+        const subs = pessoasAreaFiltered.filter(p => p.gestorId === parentId);
         return subs.map(p => ({
           pessoa: p,
           subordinados: buildAreaHierarchy(p.id),
@@ -134,9 +155,9 @@ export default function Hierarquia() {
 
       return {
         area,
-        totalPessoas: pessoasArea.length,
+        totalPessoas: pessoasAreaFiltered.length,
         nodes,
-        subAreas: setoresMock.filter(s => s.areaPaiId === area.id).map(s => s.nome)
+        subAreas: subAreas.map(s => s.nome)
       };
     });
   }, [expandedNodes]);
