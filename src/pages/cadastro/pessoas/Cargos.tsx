@@ -19,7 +19,7 @@ import { Plus, Search, FileText } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
 import { cargosMock as cargosOriginal, type Cargo } from "@/data/pessoas-mock";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 export default function Cargos() {
@@ -43,12 +43,7 @@ export default function Cargos() {
     return matchesSearch && matchesNivel && matchesStatus;
   });
 
-  const handleExport = () => {
-    exportToExcel(
-      filtered.map(c => ({ Cargo: c.nome, Descrição: c.descricao, Nível: c.nivel, Status: c.status })),
-      "cadastro-cargos"
-    );
-  };
+  const getExportData = () => filtered.map(c => ({ Cargo: c.nome, Descrição: c.descricao, Nível: c.nivel, Status: c.status }));
 
   const handleDelete = () => {
     if (deleteId) {
@@ -68,10 +63,7 @@ export default function Cargos() {
             <Plus className="h-4 w-4" />
             Novo Cargo
           </Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}>
-            <FileText className="h-4 w-4" />
-            Exportar
-          </Button>
+          <ExportButton getData={getExportData} fileName="cadastro-cargos" />
         </div>
       </div>
 

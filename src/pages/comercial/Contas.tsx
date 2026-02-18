@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { contasMock } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
 import { toast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import { ExportButton } from "@/components/ExportButton";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -52,18 +52,11 @@ export default function Contas() {
     return pessoa?.nome.split(' ')[0] || 'N/A';
   };
 
-  const handleExport = () => {
-    const exportData = filteredContas.map(c => ({
-      "Nome Fantasia": c.nomeFantasia, "Razão Social": c.razaoSocial, CNPJ: c.cnpj,
-      Segmento: c.segmento, Porte: getPorteLabel(c.porte), Cidade: c.cidade, UF: c.uf,
-      Status: c.status, "Limite Crédito": c.limiteCredito || "", Responsável: getOwnerName(c.responsavelId)
-    }));
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Contas");
-    XLSX.writeFile(wb, "contas.xlsx");
-    toast({ title: "Exportação concluída" });
-  };
+  const getExportData = () => filteredContas.map(c => ({
+    "Nome Fantasia": c.nomeFantasia, "Razão Social": c.razaoSocial, CNPJ: c.cnpj,
+    Segmento: c.segmento, Porte: getPorteLabel(c.porte), Cidade: c.cidade, UF: c.uf,
+    Status: c.status, "Limite Crédito": c.limiteCredito || "", Responsável: getOwnerName(c.responsavelId)
+  }));
 
   return (
     <div className="space-y-6">
@@ -71,9 +64,7 @@ export default function Contas() {
         <Button onClick={() => navigate('/comercial/contas/nova')} className="gap-2">
           <Plus className="w-4 h-4" /> Nova Conta
         </Button>
-        <Button variant="outline" onClick={handleExport} className="gap-2 border-border">
-          <Download className="w-4 h-4" /> Exportar
-        </Button>
+        <ExportButton getData={getExportData} fileName="contas" sheetName="Contas" />
       </div>
 
       <FilterSection

@@ -9,7 +9,7 @@ import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockClientes = [
@@ -33,7 +33,7 @@ const Clientes = () => {
     { type: "text" as const, label: "CNPJ", placeholder: "Buscar por CNPJ...", value: searchCnpj, onChange: setSearchCnpj, width: "min-w-[180px]" }
   ];
   const filtered = items.filter(c => c.nome.toLowerCase().includes(searchNome.toLowerCase()) && c.cnpj.includes(searchCnpj));
-  const handleExport = () => { exportToExcel(filtered.map(c => ({ Nome: c.nome, "Razão Social": c.razaoSocial, CNPJ: c.cnpj, Email: c.email, Telefone: c.telefone })), "clientes"); };
+  const getExportData = () => filtered.map(c => ({ Nome: c.nome, "Razão Social": c.razaoSocial, CNPJ: c.cnpj, Email: c.email, Telefone: c.telefone }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Cliente excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (c: Cliente) => { setEditItem(c); setEditData({ nome: c.nome, razaoSocial: c.razaoSocial, cnpj: c.cnpj, email: c.email, telefone: c.telefone }); };
@@ -43,7 +43,7 @@ const Clientes = () => {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
           <Button onClick={() => navigate("/cadastro/financeiro/clientes/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Cliente</Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
+          <ExportButton getData={getExportData} fileName="clientes" />
         </div>
         <FilterSection fields={filterFields} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">

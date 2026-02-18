@@ -9,7 +9,7 @@ import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockItens = [
@@ -34,7 +34,7 @@ const Itens = () => {
     { type: "date" as const, label: "Data de Cadastro", value: searchData, onChange: setSearchData, width: "min-w-[160px]" }
   ];
   const filtered = items.filter(item => item.item.toLowerCase().includes(searchNome.toLowerCase()));
-  const handleExport = () => { exportToExcel(filtered.map(i => ({ ID: i.id, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores })), "itens-estoque"); };
+  const getExportData = () => filtered.map(i => ({ ID: i.id, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Item excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (i: Item) => { setEditItem(i); setEditData({ item: i.item, formaApresentacao: i.formaApresentacao, setores: i.setores }); };
@@ -44,7 +44,7 @@ const Itens = () => {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
           <Button onClick={() => navigate("/cadastro/estoque/itens/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Item</Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
+          <ExportButton getData={getExportData} fileName="itens-estoque" />
         </div>
         <FilterSection fields={filterFields} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">

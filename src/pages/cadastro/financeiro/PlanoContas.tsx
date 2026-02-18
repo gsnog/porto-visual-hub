@@ -9,7 +9,7 @@ import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockPlanos = [
@@ -28,7 +28,7 @@ const PlanoContas = () => {
   const [editItem, setEditItem] = useState<Plano | null>(null);
   const [editData, setEditData] = useState({ idPlano: "", categoria: "", subcategoria: "", contabil: "" });
   const filtered = items.filter(p => p.categoria.toLowerCase().includes(searchCat.toLowerCase()) && p.subcategoria.toLowerCase().includes(searchSub.toLowerCase()));
-  const handleExport = () => { exportToExcel(filtered.map(p => ({ "ID Plano": p.idPlano, Categoria: p.categoria, Subcategoria: p.subcategoria, Contábil: p.contabil })), "plano-contas"); };
+  const getExportData = () => filtered.map(p => ({ "ID Plano": p.idPlano, Categoria: p.categoria, Subcategoria: p.subcategoria, Contábil: p.contabil }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Plano de contas excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (p: Plano) => { setEditItem(p); setEditData({ idPlano: p.idPlano, categoria: p.categoria, subcategoria: p.subcategoria, contabil: p.contabil }); };
@@ -37,7 +37,7 @@ const PlanoContas = () => {
     <div className="flex flex-col h-full bg-background"><div className="space-y-6">
       <div className="flex flex-wrap gap-3 items-center">
         <Button onClick={() => navigate("/cadastro/financeiro/plano-contas/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Plano de Contas</Button>
-        <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
+        <ExportButton getData={getExportData} fileName="plano-contas" />
       </div>
       <FilterSection fields={[
         { type: "text" as const, label: "Categoria", placeholder: "Buscar categoria...", value: searchCat, onChange: setSearchCat, width: "flex-1 min-w-[200px]" },

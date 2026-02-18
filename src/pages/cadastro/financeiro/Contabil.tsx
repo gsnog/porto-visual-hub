@@ -9,7 +9,7 @@ import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockContabil = [{ id: 1, nome: "Ativo Circulante" }, { id: 2, nome: "Passivo Circulante" }, { id: 3, nome: "Patrimônio Líquido" }];
@@ -25,7 +25,7 @@ const Contabil = () => {
 
   const filterFields = [{ type: "text" as const, label: "Contábil", placeholder: "Buscar contábil...", value: searchContabil, onChange: setSearchContabil, width: "flex-1 min-w-[200px]" }];
   const filtered = items.filter(c => c.nome.toLowerCase().includes(searchContabil.toLowerCase()));
-  const handleExport = () => { exportToExcel(filtered.map(c => ({ Contábil: c.nome })), "contabil"); };
+  const getExportData = () => filtered.map(c => ({ Contábil: c.nome }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Contábil excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
 
@@ -34,7 +34,7 @@ const Contabil = () => {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
           <Button onClick={() => navigate("/cadastro/financeiro/contabil/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Contábil</Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
+          <ExportButton getData={getExportData} fileName="contabil" />
         </div>
         <FilterSection fields={filterFields} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">

@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { comissoesMock, oportunidadesMock, getContaById } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
 import { toast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import { ExportButton } from "@/components/ExportButton";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -69,18 +69,11 @@ export default function Comissoes() {
     { id: 3, descricao: 'Desconto inadimplência', percentual: -100, tipo: 'Estorno', condicao: 'Atraso > 90 dias' },
   ];
 
-  const handleExport = () => {
-    const exportData = filteredComissoes.map(c => {
-      const opInfo = getOportunidadeInfo(c.oportunidadeId);
-      return { Vendedor: getVendedorName(c.vendedorId), Oportunidade: opInfo.titulo, Conta: opInfo.conta,
-        "Valor Venda": opInfo.valor, "%": c.percentual, Comissão: c.valor, Status: c.status, "Data Base": c.dataBase };
-    });
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Comissões");
-    XLSX.writeFile(wb, "comissoes.xlsx");
-    toast({ title: "Exportação concluída" });
-  };
+  const getExportData = () => filteredComissoes.map(c => {
+    const opInfo = getOportunidadeInfo(c.oportunidadeId);
+    return { Vendedor: getVendedorName(c.vendedorId), Oportunidade: opInfo.titulo, Conta: opInfo.conta,
+      "Valor Venda": opInfo.valor, "%": c.percentual, Comissão: c.valor, Status: c.status, "Data Base": c.dataBase };
+  });
 
   return (
     <div className="space-y-6">
@@ -93,9 +86,7 @@ export default function Comissoes() {
             options: pessoasMock.slice(0, 5).map(p => ({ value: p.id, label: p.nome })), width: "min-w-[200px]" }
         ]}
       >
-        <Button variant="outline" onClick={handleExport} className="gap-2 border-border h-10">
-          <Download className="w-4 h-4" /> Exportar
-        </Button>
+        <ExportButton getData={getExportData} fileName="comissoes" sheetName="Comissões" />
       </FilterSection>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
