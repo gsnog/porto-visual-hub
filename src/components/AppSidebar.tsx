@@ -18,7 +18,7 @@ import { NavLink, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
 import logoSerp from "@/assets/logo-serp.png"
-import logoIcone from "@/assets/SERP - Logo (1).png"
+import logoIcone from "@/assets/Logo_Serp_27.png"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid },
