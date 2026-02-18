@@ -4,7 +4,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom";
 import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
-import { Plus } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Plus, FileText } from "lucide-react";
+import { exportToExcel } from "@/lib/exportToExcel";
+import { toast } from "@/hooks/use-toast";
 
 const mockItens = [
   { id: 1, dataCadastro: "10/01/2026", item: "Parafuso M8", formaApresentacao: "Caixa", setores: "Produção" },
@@ -13,83 +17,49 @@ const mockItens = [
 
 const Itens = () => {
   const navigate = useNavigate();
+  const [items, setItems] = useState(mockItens);
   const [searchNome, setSearchNome] = useState("");
   const [searchData, setSearchData] = useState("");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [viewItem, setViewItem] = useState<typeof mockItens[0] | null>(null);
 
   const filterFields = [
-    {
-      type: "text" as const,
-      label: "Nome",
-      placeholder: "Buscar por nome...",
-      value: searchNome,
-      onChange: setSearchNome,
-      width: "flex-1 min-w-[200px]"
-    },
-    {
-      type: "date" as const,
-      label: "Data de Cadastro",
-      value: searchData,
-      onChange: setSearchData,
-      width: "min-w-[160px]"
-    }
+    { type: "text" as const, label: "Nome", placeholder: "Buscar por nome...", value: searchNome, onChange: setSearchNome, width: "flex-1 min-w-[200px]" },
+    { type: "date" as const, label: "Data de Cadastro", value: searchData, onChange: setSearchData, width: "min-w-[160px]" }
   ];
-
-  const filteredItens = mockItens.filter(item =>
-    item.item.toLowerCase().includes(searchNome.toLowerCase())
-  );
+  const filtered = items.filter(item => item.item.toLowerCase().includes(searchNome.toLowerCase()));
+  const handleExport = () => { exportToExcel(filtered.map(i => ({ ID: i.id, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores })), "itens-estoque"); };
+  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Item excluído." }); } };
+  const deleteItem = items.find(i => i.id === deleteId);
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
-          <Button 
-            onClick={() => navigate("/cadastro/estoque/itens/novo")}
-            className="gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Novo Item
-          </Button>
+          <Button onClick={() => navigate("/cadastro/estoque/itens/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Item</Button>
+          <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
         </div>
-
-        <FilterSection 
-          fields={filterFields}
-          resultsCount={filteredItens.length}
-        />
-
+        <FilterSection fields={filterFields} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">
           <Table>
-            <TableHeader>
-              <TableRow className="bg-table-header">
-                <TableHead className="text-center font-semibold">Id Item</TableHead>
-                <TableHead className="text-center font-semibold">Data de Cadastro</TableHead>
-                <TableHead className="text-center font-semibold">Item</TableHead>
-                <TableHead className="text-center font-semibold">Forma de Apresentação</TableHead>
-                <TableHead className="text-center font-semibold">Setores</TableHead>
-                <TableHead className="text-center font-semibold">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
+            <TableHeader><TableRow className="bg-table-header">
+              <TableHead className="text-center font-semibold">Id Item</TableHead>
+              <TableHead className="text-center font-semibold">Data de Cadastro</TableHead>
+              <TableHead className="text-center font-semibold">Item</TableHead>
+              <TableHead className="text-center font-semibold">Forma de Apresentação</TableHead>
+              <TableHead className="text-center font-semibold">Setores</TableHead>
+              <TableHead className="text-center font-semibold">Ações</TableHead>
+            </TableRow></TableHeader>
             <TableBody>
-              {filteredItens.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Nenhum item encontrado.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredItens.map((item) => (
+              {filtered.length === 0 ? (<TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhum item encontrado.</TableCell></TableRow>) : (
+                filtered.map((item) => (
                   <TableRow key={item.id} className="hover:bg-table-hover transition-colors">
                     <TableCell className="text-center font-medium">{item.id}</TableCell>
                     <TableCell className="text-center">{item.dataCadastro}</TableCell>
                     <TableCell className="text-center font-medium">{item.item}</TableCell>
                     <TableCell className="text-center">{item.formaApresentacao}</TableCell>
                     <TableCell className="text-center">{item.setores}</TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', item.id)}
-                        onEdit={() => console.log('Edit', item.id)}
-                        onDelete={() => console.log('Delete', item.id)}
-                      />
-                    </TableCell>
+                    <TableCell className="text-center"><TableActions onView={() => setViewItem(item)} onEdit={() => toast({ title: "Editar", description: `Editando "${item.item}"...` })} onDelete={() => setDeleteId(item.id)} /></TableCell>
                   </TableRow>
                 ))
               )}
@@ -97,8 +67,18 @@ const Itens = () => {
           </Table>
         </div>
       </div>
+      <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
+        <DialogContent><DialogHeader><DialogTitle>{viewItem?.item}</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2"><InfoRow label="Data Cadastro" value={viewItem.dataCadastro} /><InfoRow label="Forma Apresentação" value={viewItem.formaApresentacao} /><InfoRow label="Setores" value={viewItem.setores} /></div>}</DialogContent>
+      </Dialog>
+      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem?.item}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return <div className="flex justify-between items-center py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{label}</span><span className="text-sm font-medium text-foreground">{value}</span></div>;
+}
 
 export default Itens;
