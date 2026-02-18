@@ -100,10 +100,13 @@ import Pessoas from "./pages/cadastro/pessoas/Pessoas";
 import NovaPessoa from "./pages/cadastro/pessoas/NovaPessoa";
 import SetoresAreas from "./pages/cadastro/pessoas/SetoresAreas";
 import NovoSetorPessoas from "./pages/cadastro/pessoas/NovoSetor";
+import Cargos from "./pages/cadastro/pessoas/Cargos";
+import NovoCargo from "./pages/cadastro/pessoas/NovoCargo";
 
 // Gestão de Pessoas
 import VisaoGeralRH from "./pages/gestao-pessoas/VisaoGeralRH";
 import PessoasVisao360 from "./pages/gestao-pessoas/PessoasVisao360";
+import PessoaDetalhe from "./pages/gestao-pessoas/PessoaDetalhe";
 import Hierarquia from "./pages/gestao-pessoas/Hierarquia";
 import Acessos from "./pages/gestao-pessoas/Acessos";
 import DashboardsGestao from "./pages/gestao-pessoas/Dashboards";
@@ -242,10 +245,13 @@ const App = () => (
             <Route path="/cadastro/pessoas/pessoas/nova" element={<NovaPessoa />} />
             <Route path="/cadastro/pessoas/setores" element={<SetoresAreas />} />
             <Route path="/cadastro/pessoas/setores/novo" element={<NovoSetorPessoas />} />
+            <Route path="/cadastro/pessoas/cargos" element={<Cargos />} />
+            <Route path="/cadastro/pessoas/cargos/novo" element={<NovoCargo />} />
             
             {/* Gestão de Pessoas */}
             <Route path="/gestao-pessoas/visao-geral" element={<VisaoGeralRH />} />
             <Route path="/gestao-pessoas/pessoas" element={<PessoasVisao360 />} />
+            <Route path="/gestao-pessoas/pessoas/:id" element={<PessoaDetalhe />} />
             <Route path="/gestao-pessoas/hierarquia" element={<Hierarquia />} />
             <Route path="/gestao-pessoas/acessos" element={<Acessos />} />
             <Route path="/gestao-pessoas/dashboards" element={<DashboardsGestao />} />

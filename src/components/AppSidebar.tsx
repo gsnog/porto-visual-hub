@@ -49,6 +49,7 @@ const menuItems = [
       { title: "Pessoas", subItems: [
         { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
         { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
+        { title: "Cargos", url: "/cadastro/pessoas/cargos" },
       ]},
     ]
   },
