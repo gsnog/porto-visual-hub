@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Target } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
@@ -13,8 +15,8 @@ const validationFields = [
   { name: "vendedorId", label: "Vendedor", required: true },
   { name: "tipo", label: "Tipo de Meta", required: true },
   { name: "area", label: "Área", required: true },
-  { name: "periodo", label: "Período", required: true },
-  { name: "valorMeta", label: "Valor da Meta", required: true },
+  { name: "periodoInicio", label: "Período Início", required: true },
+  { name: "periodoFim", label: "Período Fim", required: true },
 ];
 
 export default function NovaMeta() {
@@ -22,9 +24,18 @@ export default function NovaMeta() {
   const { handleSave, isSaving } = useSaveWithDelay();
 
   const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
-    { vendedorId: "", tipo: "", area: "", periodo: "", valorMeta: "" },
+    { vendedorId: "", tipo: "", area: "", periodoInicio: "", periodoFim: "", valorMeta: "" },
     validationFields
   );
+
+  const [tipoOptions, setTipoOptions] = useState([
+    { value: "receita", label: "Receita" },
+    { value: "novos_clientes", label: "Novos Clientes" },
+    { value: "margem", label: "Margem" },
+    { value: "renovacoes", label: "Renovações" },
+    { value: "reducao_custos", label: "Redução de Custos" },
+    { value: "producao", label: "Produção" },
+  ]);
 
   const handleSalvar = async () => {
     if (validateAll()) {
@@ -50,7 +61,7 @@ export default function NovaMeta() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ValidatedSelect label="Vendedor / Responsável" required value={formData.vendedorId} onChange={(v) => setFieldValue("vendedorId", v)}
                 onBlur={() => setFieldTouched("vendedorId")} error={getFieldError("vendedorId")} touched={touched.vendedorId}
-                options={pessoasMock.map(p => ({ value: p.id, label: p.nome }))} />
+                options={pessoasMock.map(p => ({ value: p.id, label: p.nome }))} searchable searchPlaceholder="Buscar vendedor..." />
               <ValidatedSelect label="Área" required value={formData.area} onChange={(v) => setFieldValue("area", v)}
                 onBlur={() => setFieldTouched("area")} error={getFieldError("area")} touched={touched.area}
                 options={[
@@ -62,27 +73,21 @@ export default function NovaMeta() {
                 ]} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <ValidatedSelect label="Tipo de Meta" required value={formData.tipo} onChange={(v) => setFieldValue("tipo", v)}
-                onBlur={() => setFieldTouched("tipo")} error={getFieldError("tipo")} touched={touched.tipo}
-                options={[
-                  { value: "receita", label: "Receita" },
-                  { value: "novos_clientes", label: "Novos Clientes" },
-                  { value: "margem", label: "Margem" },
-                  { value: "renovacoes", label: "Renovações" },
-                  { value: "reducao_custos", label: "Redução de Custos" },
-                  { value: "producao", label: "Produção" },
-                ]} />
-              <ValidatedSelect label="Período" required value={formData.periodo} onChange={(v) => setFieldValue("periodo", v)}
-                onBlur={() => setFieldTouched("periodo")} error={getFieldError("periodo")} touched={touched.periodo}
-                options={[
-                  { value: "2026-01", label: "Janeiro 2026" }, { value: "2026-02", label: "Fevereiro 2026" },
-                  { value: "2026-03", label: "Março 2026" }, { value: "2026-Q1", label: "Q1 2026" },
-                  { value: "2026-Q2", label: "Q2 2026" }, { value: "2026", label: "Ano 2026" }
-                ]} />
-              <ValidatedInput label="Valor da Meta" required type="number" placeholder="0" value={formData.valorMeta}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <DropdownWithAdd label="Tipo de Meta" required value={formData.tipo} onChange={(v) => setFieldValue("tipo", v)}
+                options={tipoOptions} onAddNew={(item) => setTipoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <ValidatedInput label="Valor da Meta" type="number" placeholder="0 (opcional)" value={formData.valorMeta}
                 onChange={(e) => setFieldValue("valorMeta", e.target.value)} onBlur={() => setFieldTouched("valorMeta")}
                 error={getFieldError("valorMeta")} touched={touched.valorMeta} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ValidatedInput label="Período Início" required type="date" value={formData.periodoInicio}
+                onChange={(e) => setFieldValue("periodoInicio", e.target.value)} onBlur={() => setFieldTouched("periodoInicio")}
+                error={getFieldError("periodoInicio")} touched={touched.periodoInicio} />
+              <ValidatedInput label="Período Fim" required type="date" value={formData.periodoFim}
+                onChange={(e) => setFieldValue("periodoFim", e.target.value)} onBlur={() => setFieldTouched("periodoFim")}
+                error={getFieldError("periodoFim")} touched={touched.periodoFim} />
             </div>
 
             <FormActionBar onSave={handleSalvar} onCancel={() => navigate("/comercial/metas")} isSaving={isSaving} />

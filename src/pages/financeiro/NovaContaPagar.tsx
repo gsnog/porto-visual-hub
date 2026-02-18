@@ -1,26 +1,45 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { useNavigate } from "react-router-dom"
-import { SimpleFormWizard } from "@/components/SimpleFormWizard"
-import { FormActionBar } from "@/components/FormActionBar"
-import { CreditCard } from "lucide-react"
-import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { SimpleFormWizard } from "@/components/SimpleFormWizard";
+import { FormActionBar } from "@/components/FormActionBar";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
+import { CreditCard } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedSelect } from "@/components/ui/validated-select";
+import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+
+const validationFields = [
+  { name: "beneficiario", label: "Beneficiário", required: true },
+  { name: "documento", label: "Documento", required: true },
+  { name: "valor", label: "Valor do Título", required: true },
+  { name: "dataFaturamento", label: "Data de Faturamento", required: true },
+  { name: "dataVencimento", label: "Data de Vencimento", required: true },
+];
 
 export default function NovaContaPagar() {
-  const navigate = useNavigate()
-  const { handleSalvar, isSaving } = useSaveWithDelay({
-    redirectTo: "/financeiro/contas-pagar",
-    successMessage: "Conta a pagar salva!",
-    successDescription: "O registro foi salvo com sucesso.",
-  })
+  const navigate = useNavigate();
+  const { handleSave, isSaving } = useSaveWithDelay();
 
-  const handleCancelar = () => {
-    navigate("/financeiro/contas-pagar")
-  }
+  const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
+    { beneficiario: "", centroCusto: "", documento: "", valor: "", dataFaturamento: "", dataVencimento: "", descricao: "" },
+    validationFields
+  );
+
+  const [beneficiarioOptions, setBeneficiarioOptions] = useState([
+    { value: "beneficiario1", label: "Beneficiário 1" }, { value: "beneficiario2", label: "Beneficiário 2" }
+  ]);
+  const [centroCustoOptions, setCentroCustoOptions] = useState([
+    { value: "centro1", label: "Centro 1" }, { value: "centro2", label: "Centro 2" }
+  ]);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/financeiro/contas-pagar", "Conta a pagar salva com sucesso!");
+    }
+  };
 
   return (
     <SimpleFormWizard title="Nova Conta a Pagar">
@@ -38,75 +57,37 @@ export default function NovaContaPagar() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Beneficiário <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="beneficiario1">Beneficiário 1</SelectItem>
-                      <SelectItem value="beneficiario2">Beneficiário 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Centro de Custo</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="centro1">Centro 1</SelectItem>
-                    <SelectItem value="centro2">Centro 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd label="Beneficiário" required value={formData.beneficiario} onChange={(v) => setFieldValue("beneficiario", v)}
+                options={beneficiarioOptions} onAddNew={(item) => setBeneficiarioOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <DropdownWithAdd label="Centro de Custo" value={formData.centroCusto} onChange={(v) => setFieldValue("centroCusto", v)}
+                options={centroCustoOptions} onAddNew={(item) => setCentroCustoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Documento <span className="text-destructive">*</span></Label>
-                <Input type="text" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Valor do Título <span className="text-destructive">*</span></Label>
-                <Input type="text" className="form-input" />
-              </div>
+              <ValidatedInput label="Documento" required value={formData.documento}
+                onChange={(e) => setFieldValue("documento", e.target.value)} onBlur={() => setFieldTouched("documento")}
+                error={getFieldError("documento")} touched={touched.documento} />
+              <ValidatedInput label="Valor do Título" required value={formData.valor}
+                onChange={(e) => setFieldValue("valor", e.target.value)} onBlur={() => setFieldTouched("valor")}
+                error={getFieldError("valor")} touched={touched.valor} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Data de Faturamento <span className="text-destructive">*</span></Label>
-                <Input type="date" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Data de Vencimento <span className="text-destructive">*</span></Label>
-                <Input type="date" className="form-input" />
-              </div>
+              <ValidatedInput label="Data de Faturamento" required type="date" value={formData.dataFaturamento}
+                onChange={(e) => setFieldValue("dataFaturamento", e.target.value)} onBlur={() => setFieldTouched("dataFaturamento")}
+                error={getFieldError("dataFaturamento")} touched={touched.dataFaturamento} />
+              <ValidatedInput label="Data de Vencimento" required type="date" value={formData.dataVencimento}
+                onChange={(e) => setFieldValue("dataVencimento", e.target.value)} onBlur={() => setFieldTouched("dataVencimento")}
+                error={getFieldError("dataVencimento")} touched={touched.dataVencimento} />
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Descrição</Label>
-                <Textarea className="form-input min-h-[100px]" />
-              </div>
-            </div>
+            <ValidatedTextarea label="Descrição" value={formData.descricao} onChange={(e) => setFieldValue("descricao", e.target.value)}
+              onBlur={() => setFieldTouched("descricao")} error={getFieldError("descricao")} touched={touched.descricao} />
 
-            <FormActionBar
-              onSave={handleSalvar}
-              onCancel={handleCancelar}
-              isSaving={isSaving}
-            />
+            <FormActionBar onSave={handleSalvar} onCancel={() => navigate("/financeiro/contas-pagar")} isSaving={isSaving} />
           </div>
         </CardContent>
       </Card>
     </SimpleFormWizard>
-  )
+  );
 }

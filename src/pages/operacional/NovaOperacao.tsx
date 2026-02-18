@@ -1,25 +1,78 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Settings } from "lucide-react";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
+import { Settings, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { toast } from "@/hooks/use-toast";
+
+interface ServicoItem {
+  id: number;
+  servico: string;
+  setor: string;
+  dataInicio: string;
+  desconto: string;
+  valorAdicional: string;
+}
+
+const validationFields = [
+  { name: "dataEntrada", label: "Data de Entrada", required: true },
+  { name: "embarcacao", label: "Embarcação", required: true },
+  { name: "previsaoEntrega", label: "Previsão de Entrega", required: true },
+];
 
 const NovaOperacao = () => {
   const navigate = useNavigate();
   const { isSaving, handleSave } = useSaveWithDelay();
 
-  const handleSalvar = () => {
-    handleSave("/operacional/operacao", "Operação salva com sucesso!");
+  const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
+    { dataEntrada: "", embarcacao: "", previsaoEntrega: "", servico: "", setor: "", dataInicio: "", desconto: "0", valorAdicional: "0" },
+    validationFields
+  );
+
+  const [embarcacaoOptions, setEmbarcacaoOptions] = useState([
+    { value: "embarcacao1", label: "Embarcação 1" }, { value: "embarcacao2", label: "Embarcação 2" }
+  ]);
+  const [servicoOptions, setServicoOptions] = useState([
+    { value: "servico1", label: "Serviço 1" }, { value: "servico2", label: "Serviço 2" }
+  ]);
+  const [setorOptions, setSetorOptions] = useState([
+    { value: "setor1", label: "Setor 1" }, { value: "setor2", label: "Setor 2" }
+  ]);
+  const [itens, setItens] = useState<ServicoItem[]>([]);
+
+  const handleAddServico = () => {
+    if (!formData.servico) {
+      toast({ title: "Selecione um serviço", variant: "destructive" });
+      return;
+    }
+    setItens(prev => [...prev, {
+      id: Date.now(),
+      servico: servicoOptions.find(s => s.value === formData.servico)?.label || formData.servico,
+      setor: setorOptions.find(s => s.value === formData.setor)?.label || formData.setor,
+      dataInicio: formData.dataInicio,
+      desconto: formData.desconto,
+      valorAdicional: formData.valorAdicional,
+    }]);
+    setFieldValue("servico", "");
+    setFieldValue("setor", "");
+    setFieldValue("dataInicio", "");
+    setFieldValue("desconto", "0");
+    setFieldValue("valorAdicional", "0");
   };
 
-  const handleCancelar = () => {
-    navigate("/operacional/operacao");
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/operacional/operacao", "Operação salva com sucesso!");
+    }
   };
 
   return (
@@ -38,90 +91,37 @@ const NovaOperacao = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Data de Entrada <span className="text-destructive">*</span></Label>
-                <Input type="date" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Embarcação <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="embarcacao1">Embarcação 1</SelectItem>
-                    <SelectItem value="embarcacao2">Embarcação 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <ValidatedInput label="Data de Entrada" required type="date" value={formData.dataEntrada}
+                onChange={(e) => setFieldValue("dataEntrada", e.target.value)} onBlur={() => setFieldTouched("dataEntrada")}
+                error={getFieldError("dataEntrada")} touched={touched.dataEntrada} />
+              <DropdownWithAdd label="Embarcação" required value={formData.embarcacao} onChange={(v) => setFieldValue("embarcacao", v)}
+                options={embarcacaoOptions} onAddNew={(item) => setEmbarcacaoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Previsão de Entrega <span className="text-destructive">*</span></Label>
-                <Input type="date" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Serviço</Label>
-                <div className="flex gap-3 items-center">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="servico1">Serviço 1</SelectItem>
-                      <SelectItem value="servico2">Serviço 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button size="sm" className="btn-action px-6" onClick={() => navigate("/operacional/novo-servico")}>
-                    Adicionar Serviço
-                  </Button>
-                </div>
-              </div>
+              <ValidatedInput label="Previsão de Entrega" required type="date" value={formData.previsaoEntrega}
+                onChange={(e) => setFieldValue("previsaoEntrega", e.target.value)} onBlur={() => setFieldTouched("previsaoEntrega")}
+                error={getFieldError("previsaoEntrega")} touched={touched.previsaoEntrega} />
+              <DropdownWithAdd label="Serviço" value={formData.servico} onChange={(v) => setFieldValue("servico", v)}
+                options={servicoOptions} onAddNew={(item) => setServicoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Setor</Label>
-                <div className="flex gap-3 items-center">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="setor1">Setor 1</SelectItem>
-                      <SelectItem value="setor2">Setor 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button size="sm" className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>
-                    Adicionar Setor
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Data de Início</Label>
-                <Input type="date" className="form-input" />
-              </div>
+              <DropdownWithAdd label="Setor" value={formData.setor} onChange={(v) => setFieldValue("setor", v)}
+                options={setorOptions} onAddNew={(item) => setSetorOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <ValidatedInput label="Data de Início" type="date" value={formData.dataInicio}
+                onChange={(e) => setFieldValue("dataInicio", e.target.value)} onBlur={() => setFieldTouched("dataInicio")}
+                error={getFieldError("dataInicio")} touched={touched.dataInicio} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Desconto</Label>
-                <Input defaultValue="R$ 0,00" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Valor Adicional</Label>
-                <Input defaultValue="R$ 0,00" className="form-input" />
-              </div>
+              <ValidatedInput label="Desconto" value={formData.desconto} onChange={(e) => setFieldValue("desconto", e.target.value)}
+                onBlur={() => setFieldTouched("desconto")} error={getFieldError("desconto")} touched={touched.desconto} />
+              <ValidatedInput label="Valor Adicional" value={formData.valorAdicional} onChange={(e) => setFieldValue("valorAdicional", e.target.value)}
+                onBlur={() => setFieldTouched("valorAdicional")} error={getFieldError("valorAdicional")} touched={touched.valorAdicional} />
             </div>
 
-            <div className="flex gap-3">
-              <Button variant="outline" className="btn-outline px-6">Adicionar Serviço</Button>
-            </div>
+            <Button variant="outline" onClick={handleAddServico}>Adicionar Serviço</Button>
 
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-foreground">Serviços e Setores</h2>
@@ -137,18 +137,29 @@ const NovaOperacao = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center">Nenhum serviço adicionado.</TableCell>
-                  </TableRow>
+                  {itens.length === 0 ? (
+                    <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">Nenhum serviço adicionado.</TableCell></TableRow>
+                  ) : (
+                    itens.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-center">{item.servico}</TableCell>
+                        <TableCell className="text-center">{item.setor}</TableCell>
+                        <TableCell className="text-center">{item.dataInicio}</TableCell>
+                        <TableCell className="text-center">{item.desconto}</TableCell>
+                        <TableCell className="text-center">{item.valorAdicional}</TableCell>
+                        <TableCell className="text-center">
+                          <Button variant="ghost" size="sm" onClick={() => setItens(prev => prev.filter(i => i.id !== item.id))} className="text-destructive hover:text-destructive">
+                            <Trash2 size={16} />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </div>
 
-            <FormActionBar
-              onSave={handleSalvar}
-              onCancel={handleCancelar}
-              isSaving={isSaving}
-            />
+            <FormActionBar onSave={handleSalvar} onCancel={() => navigate("/operacional/operacao")} isSaving={isSaving} />
           </div>
         </CardContent>
       </Card>
