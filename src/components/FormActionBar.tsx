@@ -23,7 +23,7 @@ export function FormActionBar({
       <Button
         onClick={onCancel}
         variant="ghost"
-        className="text-muted-foreground hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground dark:hover:text-primary-foreground"
         disabled={isSaving}
       >
         {cancelLabel}

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Trash2, Plus, Landmark } from "lucide-react"
+import { Plus, Landmark } from "lucide-react"
 import { DropdownWithAdd } from "@/components/DropdownWithAdd"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
@@ -26,16 +26,16 @@ const initialAssets: Asset[] = [
   { id: "5", codigo: "0005", item: "Automóvel", dataAquisicao: "05/05/2025", valor: "R$ 45.000,00", quantidade: "1" }
 ]
 
-type ViewState = 'list' | 'add' | 'details'
+type ViewState = 'list' | 'add'
 
 const Patrimonio = () => {
   const [currentView, setCurrentView] = useState<ViewState>('list')
   const [assets, setAssets] = useState(initialAssets)
-  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
   const [filterNome, setFilterNome] = useState("")
   const [filterData, setFilterData] = useState("")
+  const [viewItem, setViewItem] = useState<Asset | null>(null)
   const [editItem, setEditItem] = useState<Asset | null>(null)
-  const [editData, setEditData] = useState({ item: "", valor: "", quantidade: "" })
+  const [editData, setEditData] = useState({ codigo: "", item: "", dataAquisicao: "", valor: "", quantidade: "" })
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [formData, setFormData] = useState({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
 
@@ -55,13 +55,11 @@ const Patrimonio = () => {
   }, [assets, filterNome, filterData])
 
   const getExportData = () => filteredAssets.map(a => ({ Código: a.codigo, Item: a.item, "Data Aquisição": a.dataAquisicao, "Valor Unitário": a.valor, Quantidade: a.quantidade }))
-  const openEdit = (a: Asset) => { setEditItem(a); setEditData({ item: a.item, valor: a.valor, quantidade: a.quantidade }) }
+  const openEdit = (a: Asset) => { setEditItem(a); setEditData({ codigo: a.codigo, item: a.item, dataAquisicao: a.dataAquisicao, valor: a.valor, quantidade: a.quantidade }) }
   const handleSaveEdit = () => { if (editItem) { setAssets(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Patrimônio atualizado." }) } }
-  const handleDeleteConfirm = () => { if (deleteId) { setAssets(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); if (selectedAsset?.id === deleteId) { setCurrentView('list'); setSelectedAsset(null) } toast({ title: "Removido", description: "Patrimônio excluído." }) } }
+  const handleDeleteConfirm = () => { if (deleteId) { setAssets(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Patrimônio excluído." }) } }
   const deleteItemData = assets.find(i => i.id === deleteId)
 
-  const handleViewDetails = (asset: Asset) => { setSelectedAsset(asset); setCurrentView('details') }
-  const handleBackToList = () => { setCurrentView('list'); setSelectedAsset(null) }
   const handleAddNew = () => { setCurrentView('add') }
   const handleCancelAdd = () => { setCurrentView('list'); setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' }) }
 
@@ -93,22 +91,27 @@ const Patrimonio = () => {
             resultsCount={filteredAssets.length}
           />
 
-          <div className="rounded overflow-hidden">
+          <div className="rounded border border-border overflow-hidden">
             <Table>
-              <TableHeader><TableRow>
-                <TableHead className="text-center">Código</TableHead><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Data de Aquisição</TableHead><TableHead className="text-center">Valor Unitário</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead className="text-center">Ações</TableHead>
+              <TableHeader><TableRow className="bg-table-header">
+                <TableHead className="text-center font-semibold">Código</TableHead>
+                <TableHead className="text-center font-semibold">Item</TableHead>
+                <TableHead className="text-center font-semibold">Data de Aquisição</TableHead>
+                <TableHead className="text-center font-semibold">Valor Unitário</TableHead>
+                <TableHead className="text-center font-semibold">Quantidade</TableHead>
+                <TableHead className="text-center font-semibold">Ações</TableHead>
               </TableRow></TableHeader>
               <TableBody>
                 {filteredAssets.length === 0 ? (<TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhum patrimônio encontrado.</TableCell></TableRow>) : (
                   filteredAssets.map((asset) => (
-                    <TableRow key={asset.id}>
+                    <TableRow key={asset.id} className="hover:bg-table-hover transition-colors">
                       <TableCell className="text-center">{asset.codigo}</TableCell>
-                      <TableCell className="text-center">{asset.item}</TableCell>
+                      <TableCell className="text-center font-medium">{asset.item}</TableCell>
                       <TableCell className="text-center">{asset.dataAquisicao}</TableCell>
-                      <TableCell className="text-center">{asset.valor}</TableCell>
+                      <TableCell className="text-center font-semibold">{asset.valor}</TableCell>
                       <TableCell className="text-center">{asset.quantidade}</TableCell>
                       <TableCell className="text-center">
-                        <TableActions onView={() => handleViewDetails(asset)} onEdit={() => openEdit(asset)} onDelete={() => setDeleteId(asset.id)} />
+                        <TableActions onView={() => setViewItem(asset)} onEdit={() => openEdit(asset)} onDelete={() => setDeleteId(asset.id)} />
                       </TableCell>
                     </TableRow>
                   ))
@@ -118,20 +121,51 @@ const Patrimonio = () => {
           </div>
         </div>
 
-        <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-          <DialogContent><DialogHeader><DialogTitle>Editar Patrimônio</DialogTitle></DialogHeader>
-            <div className="space-y-3">
-              <div><Label>Item</Label><Input value={editData.item} onChange={e => setEditData({ ...editData, item: e.target.value })} /></div>
-              <div><Label>Valor Unitário</Label><Input value={editData.valor} onChange={e => setEditData({ ...editData, valor: e.target.value })} /></div>
-              <div><Label>Quantidade</Label><Input value={editData.quantidade} onChange={e => setEditData({ ...editData, quantidade: e.target.value })} /></div>
-            </div>
-            <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
+        {/* View Dialog */}
+        <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
+          <DialogContent>
+            <DialogHeader><DialogTitle>{viewItem?.item} ({viewItem?.codigo})</DialogTitle></DialogHeader>
+            {viewItem && (
+              <div className="space-y-2 py-2">
+                <InfoRow label="Código" value={viewItem.codigo} />
+                <InfoRow label="Item" value={viewItem.item} />
+                <InfoRow label="Data de Aquisição" value={viewItem.dataAquisicao} />
+                <InfoRow label="Valor Unitário" value={viewItem.valor} />
+                <InfoRow label="Quantidade" value={viewItem.quantidade} />
+              </div>
+            )}
           </DialogContent>
         </Dialog>
 
+        {/* Edit Dialog */}
+        <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader><DialogTitle>Editar Patrimônio</DialogTitle></DialogHeader>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+              <div className="space-y-2"><Label>Código</Label><Input value={editData.codigo} onChange={e => setEditData(p => ({ ...p, codigo: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Item</Label><Input value={editData.item} onChange={e => setEditData(p => ({ ...p, item: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Data de Aquisição</Label><Input value={editData.dataAquisicao} onChange={e => setEditData(p => ({ ...p, dataAquisicao: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Valor Unitário</Label><Input value={editData.valor} onChange={e => setEditData(p => ({ ...p, valor: e.target.value }))} /></div>
+              <div className="space-y-2"><Label>Quantidade</Label><Input value={editData.quantidade} onChange={e => setEditData(p => ({ ...p, quantidade: e.target.value }))} /></div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+              <Button onClick={handleSaveEdit}>Salvar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Dialog */}
         <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-          <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir patrimônio?</AlertDialogTitle><AlertDialogDescription>Deseja excluir "{deleteItemData?.item} ({deleteItemData?.codigo})"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
-            <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+              <AlertDialogDescription>Deseja excluir <strong>{deleteItemData?.item} ({deleteItemData?.codigo})</strong>?</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction>
+            </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
       </div>
@@ -164,50 +198,11 @@ const Patrimonio = () => {
     )
   }
 
-  if (currentView === 'details' && selectedAsset) {
-    return (
-      <div className="flex flex-col h-full bg-background">
-        <div className="space-y-6">
-          <div className="mb-6">
-            <Button onClick={handleBackToList} variant="ghost" className="text-primary hover:bg-primary/10 px-3 py-2 rounded font-semibold"><ArrowLeft className="h-5 w-5 mr-2" />Voltar à Lista</Button>
-            <h1 className="text-2xl font-semibold text-foreground mt-4">Detalhes do Item: {selectedAsset.item} ({selectedAsset.codigo})</h1>
-          </div>
-          <Card className="w-full max-w-2xl rounded shadow-lg border border-border bg-card">
-            <CardContent className="p-8">
-              <div className="space-y-4">
-                {Object.entries({ Código: selectedAsset.codigo, Item: selectedAsset.item, "Data de Aquisição": selectedAsset.dataAquisicao, "Valor Unitário": selectedAsset.valor, "Quantidade em Estoque": selectedAsset.quantidade }).map(([k, v]) => (
-                  <div key={k} className="grid grid-cols-2 gap-4 border-b border-border py-2"><label className="text-sm font-medium text-muted-foreground">{k}:</label><p className="text-base font-semibold">{v}</p></div>
-                ))}
-                <div className="flex gap-4 justify-start pt-8">
-                  <Button onClick={() => openEdit(selectedAsset)} className="rounded-md bg-primary hover:bg-primary/90 text-primary-foreground">Editar</Button>
-                  <Button onClick={() => setDeleteId(selectedAsset.id)} className="rounded-md bg-destructive hover:bg-destructive/90 text-destructive-foreground"><Trash2 className="h-4 w-4 mr-2" />Excluir</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-          <DialogContent><DialogHeader><DialogTitle>Editar Patrimônio</DialogTitle></DialogHeader>
-            <div className="space-y-3">
-              <div><Label>Item</Label><Input value={editData.item} onChange={e => setEditData({ ...editData, item: e.target.value })} /></div>
-              <div><Label>Valor Unitário</Label><Input value={editData.valor} onChange={e => setEditData({ ...editData, valor: e.target.value })} /></div>
-              <div><Label>Quantidade</Label><Input value={editData.quantidade} onChange={e => setEditData({ ...editData, quantidade: e.target.value })} /></div>
-            </div>
-            <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-          <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir patrimônio?</AlertDialogTitle><AlertDialogDescription>Deseja excluir "{deleteItemData?.item}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
-            <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    )
-  }
-
   return null
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return <div className="flex justify-between items-center py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{label}</span><span className="text-sm font-medium text-foreground">{value}</span></div>;
 }
 
 export default Patrimonio
