@@ -389,9 +389,17 @@
     @apply transition-all duration-200 ease-in-out;
   }
 
-  /* Subpage navigation arrows: green fill, no outline */
+  /* Subpage navigation arrows */
   .nav-arrow {
+    color: hsl(var(--foreground));
+  }
+
+  .dark .nav-arrow {
     color: hsl(var(--primary));
+  }
+
+  .dark *:hover > .nav-arrow {
+    color: hsl(var(--foreground));
   }
 
   /* File input - keep compact */
