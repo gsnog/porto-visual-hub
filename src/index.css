@@ -399,7 +399,7 @@
   }
 
   .dark *:hover > .nav-arrow {
-    color: hsl(var(--foreground));
+    color: hsl(0 0% 0%);
   }
 
   /* File input - keep compact */
