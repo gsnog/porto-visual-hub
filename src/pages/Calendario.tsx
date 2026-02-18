@@ -313,9 +313,9 @@ export default function Calendario() {
       {/* Filtros */}
       {showFilters && (
         <Card className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="flex flex-wrap gap-4 items-end">
             {(scope === 'team' || scope === 'all') && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 self-center">
                 <Switch 
                   id="filter-equipe"
                   checked={filterEquipe}
@@ -327,10 +327,10 @@ export default function Calendario() {
               </div>
             )}
             
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">Pessoa</Label>
+            <div className="flex flex-col gap-1.5 min-w-[180px]">
+              <label className="filter-label">Pessoa</label>
               <Select value={filterPessoa || "__all__"} onValueChange={(v) => setFilterPessoa(v === "__all__" ? "" : v)}>
-                <SelectTrigger className="h-9">
+                <SelectTrigger className="filter-input">
                   <SelectValue placeholder="Todas" />
                 </SelectTrigger>
                 <SelectContent>
@@ -342,10 +342,10 @@ export default function Calendario() {
               </Select>
             </div>
             
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">Setor/Área</Label>
+            <div className="flex flex-col gap-1.5 min-w-[180px]">
+              <label className="filter-label">Setor/Área</label>
               <Select value={filterSetor || "__all__"} onValueChange={(v) => setFilterSetor(v === "__all__" ? "" : v)}>
-                <SelectTrigger className="h-9">
+                <SelectTrigger className="filter-input">
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
@@ -357,10 +357,10 @@ export default function Calendario() {
               </Select>
             </div>
             
-            <div>
-              <Label className="text-xs text-muted-foreground mb-1 block">Tipo de Evento</Label>
+            <div className="flex flex-col gap-1.5 min-w-[180px]">
+              <label className="filter-label">Tipo de Evento</label>
               <Select value={filterTipo || "__all__"} onValueChange={(v) => setFilterTipo(v === "__all__" ? "" : v)}>
-                <SelectTrigger className="h-9">
+                <SelectTrigger className="filter-input">
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
                 <SelectContent>
@@ -372,10 +372,8 @@ export default function Calendario() {
               </Select>
             </div>
             
-            <div className="flex items-end">
-              <Button 
-                variant="ghost" 
-                size="sm"
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="gap-2 h-10"
                 onClick={() => {
                   setFilterPessoa('');
                   setFilterSetor('');
@@ -383,7 +381,8 @@ export default function Calendario() {
                   setFilterEquipe(false);
                 }}
               >
-                Limpar filtros
+                <X className="h-4 w-4" />
+                Limpar Filtros
               </Button>
             </div>
           </div>
@@ -471,7 +470,23 @@ export default function Calendario() {
                     <div className="text-xs text-muted-foreground py-3 text-right pr-2">
                       {hour}
                     </div>
-                    <div className="border-t min-h-[48px] py-1 space-y-1">
+                    <div 
+                      className="border-t min-h-[48px] py-1 space-y-1 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => {
+                        if (canCreate) {
+                          const hourNum = hour.split(':')[0];
+                          const nextHour = String(Number(hourNum) + 1).padStart(2, '0');
+                          setNovoEvento(prev => ({
+                            ...prev,
+                            dataInicio: formatDate(currentDate),
+                            dataFim: formatDate(currentDate),
+                            horaInicio: hour,
+                            horaFim: `${nextHour}:00`,
+                          }));
+                          setShowCreateModal(true);
+                        }
+                      }}
+                    >
                       {eventos.map(evento => (
                         <div
                           key={evento.id}

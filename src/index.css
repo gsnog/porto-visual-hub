@@ -59,7 +59,7 @@
 
     /* Table colors - light mode */
     --table-header: 220 30% 96%;
-    --table-header-foreground: 220 30% 15%;
+    --table-header-foreground: 0 0% 0%;
     --table-row: 0 0% 100%;
     --table-row-alt: 220 30% 97%;
     --table-row-hover: 220 30% 95%;
@@ -141,7 +141,7 @@
     --status-pending: 45 90% 55%;
 
     /* Table colors - cells match card/filter bg for consistency */
-    --table-header: 0 0% 12%;
+    --table-header: 0 0% 0%;
     --table-header-foreground: 0 0% 88%;
     --table-row: 220 8% 10%;
     --table-row-alt: 220 8% 11%;
@@ -407,47 +407,47 @@
     font-size: 0.875rem;
   }
 
-  /* Dark mode scrollbar */
-  .dark ::-webkit-scrollbar {
+  /* Global scrollbar */
+  ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
-  .dark ::-webkit-scrollbar-track {
-    background: hsl(220 10% 7%);
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
   }
 
-  .dark ::-webkit-scrollbar-thumb {
-    background: hsl(220 6% 22%);
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
     border-radius: 4px;
   }
 
-  .dark ::-webkit-scrollbar-thumb:hover {
-    background: hsl(220 6% 30%);
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
   }
 
-  .dark ::-webkit-scrollbar-corner {
-    background: hsl(220 10% 7%);
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--background));
   }
 
-  /* Firefox dark scrollbar */
-  .dark * {
+  /* Firefox scrollbar */
+  * {
     scrollbar-width: thin;
-    scrollbar-color: hsl(220 6% 22%) hsl(220 10% 7%);
+    scrollbar-color: hsl(var(--border)) hsl(var(--background));
   }
 
   /* Keep sidebar scrollbar hidden */
-  .dark [data-sidebar="sidebar"],
-  .dark [data-sidebar="content"],
-  .dark .sidebar-scroll,
-  .dark .sidebar-nav-scroll {
+  [data-sidebar="sidebar"],
+  [data-sidebar="content"],
+  .sidebar-scroll,
+  .sidebar-nav-scroll {
     scrollbar-width: none;
   }
 
-  .dark [data-sidebar="sidebar"]::-webkit-scrollbar,
-  .dark [data-sidebar="content"]::-webkit-scrollbar,
-  .dark .sidebar-scroll::-webkit-scrollbar,
-  .dark .sidebar-nav-scroll::-webkit-scrollbar {
+  [data-sidebar="sidebar"]::-webkit-scrollbar,
+  [data-sidebar="content"]::-webkit-scrollbar,
+  .sidebar-scroll::-webkit-scrollbar,
+  .sidebar-nav-scroll::-webkit-scrollbar {
     display: none;
     width: 0;
     height: 0;

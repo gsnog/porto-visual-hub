@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Bell, Calendar, MessageSquare, LayoutGrid, GripVertical } from "lucide-react";
+import { Bell, Calendar, MessageSquare, Columns3, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { getTotalNaoLidas } from "@/data/chat-mock";
@@ -19,7 +19,7 @@ type AppId = "kanban" | "calendario" | "chat";
 
 interface AppItem {
   id: AppId;
-  icon: typeof LayoutGrid;
+  icon: typeof Columns3;
   title: string;
   path: string;
   badge?: number;
@@ -65,7 +65,7 @@ export function Topbar({
   };
 
   const appItems: AppItem[] = [
-    { id: "kanban", icon: LayoutGrid, title: "Kanban", path: "/kanban", badge: kanbanNotifications },
+    { id: "kanban", icon: Columns3, title: "Kanban", path: "/kanban", badge: kanbanNotifications },
     { id: "calendario", icon: Calendar, title: "Calendário", path: "/calendario" },
     { id: "chat", icon: MessageSquare, title: "Chat", path: "/chat", badge: chatNaoLidas },
   ];
