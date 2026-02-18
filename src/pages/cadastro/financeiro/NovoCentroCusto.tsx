@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -9,6 +7,7 @@ import { CircleDollarSign } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 
 const validationFields = [
   { name: "diretoria", label: "Diretoria", required: true },
@@ -19,6 +18,10 @@ const validationFields = [
 const NovoCentroCusto = () => {
   const navigate = useNavigate();
   const { handleSave, isSaving } = useSaveWithDelay();
+  const [diretorias, setDiretorias] = useState([
+    { value: "dir1", label: "Diretoria 1" },
+    { value: "dir2", label: "Diretoria 2" },
+  ]);
 
   const {
     formData,
@@ -55,21 +58,18 @@ const NovoCentroCusto = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Diretoria <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select value={formData.diretoria} onValueChange={(value) => setFieldValue("diretoria", value)}>
-                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("diretoria")}>
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="dir1">Diretoria 1</SelectItem>
-                      <SelectItem value="dir2">Diretoria 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
+              <DropdownWithAdd
+                label="Diretoria"
+                required
+                value={formData.diretoria}
+                onChange={(value) => setFieldValue("diretoria", value)}
+                options={diretorias}
+                onAddNew={(name) => {
+                  const newVal = name.toLowerCase().replace(/\s/g, "-");
+                  setDiretorias(prev => [...prev, { value: newVal, label: name }]);
+                  setFieldValue("diretoria", newVal);
+                }}
+              />
 
               <ValidatedInput
                 label="Gerência"

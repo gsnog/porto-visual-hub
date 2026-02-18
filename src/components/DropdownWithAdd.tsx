@@ -19,6 +19,7 @@ interface DropdownWithAddProps {
 export function DropdownWithAdd({ label, value, onChange, options, onAddNew, placeholder, required }: DropdownWithAddProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newItemName, setNewItemName] = useState("");
+  const [search, setSearch] = useState("");
 
   const handleAdd = () => {
     if (newItemName.trim()) {
@@ -27,6 +28,10 @@ export function DropdownWithAdd({ label, value, onChange, options, onAddNew, pla
       setDialogOpen(false);
     }
   };
+
+  const filteredOptions = options.filter(opt =>
+    opt.label.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-2">
@@ -39,9 +44,21 @@ export function DropdownWithAdd({ label, value, onChange, options, onAddNew, pla
             <SelectValue placeholder={placeholder || `Selecione ${label.toLowerCase()}`} />
           </SelectTrigger>
           <SelectContent className="bg-popover">
-            {options.map((opt) => (
+            <div className="p-2">
+              <Input
+                placeholder="Buscar..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="h-8 text-sm"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+            {filteredOptions.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
             ))}
+            {filteredOptions.length === 0 && (
+              <div className="p-2 text-sm text-muted-foreground text-center">Nenhum resultado</div>
+            )}
           </SelectContent>
         </Select>
         <Button type="button" variant="outline" size="icon" onClick={() => setDialogOpen(true)} className="shrink-0">

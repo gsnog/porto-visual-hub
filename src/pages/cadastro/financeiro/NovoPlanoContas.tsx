@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -9,6 +7,7 @@ import { FileText } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 
 const validationFields = [
   { name: "categoria", label: "Categoria", required: false },
@@ -20,6 +19,18 @@ const validationFields = [
 const NovoPlanoContas = () => {
   const navigate = useNavigate();
   const { handleSave, isSaving } = useSaveWithDelay();
+  const [categorias, setCategorias] = useState([
+    { value: "cat1", label: "Categoria 1" },
+    { value: "cat2", label: "Categoria 2" },
+  ]);
+  const [subcategorias, setSubcategorias] = useState([
+    { value: "sub1", label: "Subcategoria 1" },
+    { value: "sub2", label: "Subcategoria 2" },
+  ]);
+  const [contabeis, setContabeis] = useState([
+    { value: "cont1", label: "Contábil 1" },
+    { value: "cont2", label: "Contábil 2" },
+  ]);
 
   const {
     formData,
@@ -40,6 +51,12 @@ const NovoPlanoContas = () => {
     navigate("/cadastro/financeiro/plano-contas");
   };
 
+  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, fieldName: "categoria" | "subcategoria" | "contabil" | "id") => (name: string) => {
+    const newVal = name.toLowerCase().replace(/\s/g, "-");
+    setter(prev => [...prev, { value: newVal, label: name }]);
+    setFieldValue(fieldName, newVal);
+  };
+
   return (
     <SimpleFormWizard title="Novo Plano de Contas">
       <Card className="border-border shadow-lg">
@@ -56,55 +73,33 @@ const NovoPlanoContas = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Categoria</Label>
-                <div className="flex gap-3">
-                  <Select value={formData.categoria} onValueChange={(value) => setFieldValue("categoria", value)}>
-                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("categoria")}>
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="cat1">Categoria 1</SelectItem>
-                      <SelectItem value="cat2">Categoria 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
+              <DropdownWithAdd
+                label="Categoria"
+                value={formData.categoria}
+                onChange={(value) => setFieldValue("categoria", value)}
+                options={categorias}
+                onAddNew={addOption(setCategorias, "categoria")}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Subcategoria <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select value={formData.subcategoria} onValueChange={(value) => setFieldValue("subcategoria", value)}>
-                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("subcategoria")}>
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="sub1">Subcategoria 1</SelectItem>
-                      <SelectItem value="sub2">Subcategoria 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
+              <DropdownWithAdd
+                label="Subcategoria"
+                required
+                value={formData.subcategoria}
+                onChange={(value) => setFieldValue("subcategoria", value)}
+                options={subcategorias}
+                onAddNew={addOption(setSubcategorias, "subcategoria")}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Contábil <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select value={formData.contabil} onValueChange={(value) => setFieldValue("contabil", value)}>
-                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("contabil")}>
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="cont1">Contábil 1</SelectItem>
-                      <SelectItem value="cont2">Contábil 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
+              <DropdownWithAdd
+                label="Contábil"
+                required
+                value={formData.contabil}
+                onChange={(value) => setFieldValue("contabil", value)}
+                options={contabeis}
+                onAddNew={addOption(setContabeis, "contabil")}
+              />
 
               <ValidatedInput
                 label="ID"
