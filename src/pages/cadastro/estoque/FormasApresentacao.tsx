@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
 import { exportToExcel } from "@/lib/exportToExcel";
 import { toast } from "@/hooks/use-toast";
@@ -22,6 +24,8 @@ const FormasApresentacao = () => {
   const [searchApresentacao, setSearchApresentacao] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<typeof mockApresentacoes[0] | null>(null);
+  const [editItem, setEditItem] = useState<typeof mockApresentacoes[0] | null>(null);
+  const [editNome, setEditNome] = useState("");
 
   const filterFields = [{ type: "text" as const, label: "Apresentação", placeholder: "Buscar apresentação...", value: searchApresentacao, onChange: setSearchApresentacao, width: "flex-1 min-w-[200px]" }];
   const filtered = items.filter(ap => ap.nome.toLowerCase().includes(searchApresentacao.toLowerCase()));
@@ -46,7 +50,7 @@ const FormasApresentacao = () => {
                 filtered.map((ap) => (
                   <TableRow key={ap.id} className="hover:bg-table-hover transition-colors">
                     <TableCell className="text-center font-medium">{ap.nome}</TableCell>
-                    <TableCell className="text-center"><TableActions onView={() => setViewItem(ap)} onEdit={() => toast({ title: "Editar", description: `Editando "${ap.nome}"...` })} onDelete={() => setDeleteId(ap.id)} /></TableCell>
+                    <TableCell className="text-center"><TableActions onView={() => setViewItem(ap)} onEdit={() => { setEditItem(ap); setEditNome(ap.nome); }} onDelete={() => setDeleteId(ap.id)} /></TableCell>
                   </TableRow>
                 ))
               )}
@@ -56,6 +60,16 @@ const FormasApresentacao = () => {
       </div>
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>{viewItem?.nome}</DialogTitle></DialogHeader>{viewItem && <div className="py-2"><div className="flex justify-between py-1"><span className="text-sm text-muted-foreground">Nome</span><span className="text-sm font-medium">{viewItem.nome}</span></div></div>}</DialogContent>
+      </Dialog>
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar Apresentação</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4"><div className="space-y-2"><Label>Nome</Label><Input value={editNome} onChange={e => setEditNome(e.target.value)} /></div></div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, nome: editNome } : i)); setEditItem(null); toast({ title: "Salvo", description: "Apresentação atualizada." }); } }}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem?.nome}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent>

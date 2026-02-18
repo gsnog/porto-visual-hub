@@ -12,8 +12,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { Plus, Search, FileText } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
@@ -28,6 +29,8 @@ export default function SetoresAreas() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [viewItem, setViewItem] = useState<Setor | null>(null);
+  const [editItem, setEditItem] = useState<Setor | null>(null);
+  const [editNome, setEditNome] = useState("");
 
   const filteredSetores = items.filter((setor) => {
     const matchesSearch = setor.nome.toLowerCase().includes(searchTerm.toLowerCase());
@@ -107,7 +110,7 @@ export default function SetoresAreas() {
                 <TableCell className="text-center">
                   <TableActions
                     onView={() => setViewItem(setor)}
-                    onEdit={() => toast({ title: "Editar setor", description: `Editando "${setor.nome}"...` })}
+                    onEdit={() => { setEditItem(setor); setEditNome(setor.nome); }}
                     onDelete={() => setDeleteId(setor.id)}
                   />
                 </TableCell>
@@ -130,6 +133,19 @@ export default function SetoresAreas() {
               <InfoRow label="Status" value={viewItem.status} />
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar Setor</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2"><Label>Nome do Setor</Label><Input value={editNome} onChange={e => setEditNome(e.target.value)} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, nome: editNome } : i)); setEditItem(null); toast({ title: "Salvo", description: "Setor atualizado." }); } }}>Salvar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
