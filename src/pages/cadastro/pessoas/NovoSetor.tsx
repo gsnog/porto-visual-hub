@@ -3,13 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ValidatedSelect } from "@/components/ui/validated-select";
 import { Button } from "@/components/ui/button";
 import { Building2, ChevronLeft, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
@@ -64,52 +58,21 @@ export default function NovoSetor() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Área Pai (Hierarquia)</Label>
-                  <Select value={formData.areaPai} onValueChange={(v) => updateField("areaPai", v)}>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar área pai" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="none">Nenhuma (Área Raiz)</SelectItem>
-                      {setoresMock.map((setor) => (
-                        <SelectItem key={setor.id} value={setor.id}>
-                          {setor.nome}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <ValidatedSelect label="Área Pai (Hierarquia)" value={formData.areaPai} onValueChange={(v) => updateField("areaPai", v)}
+                  placeholder="Selecionar área pai" options={[
+                    { value: "none", label: "Nenhuma (Área Raiz)" },
+                    ...setoresMock.map(s => ({ value: s.id, label: s.nome }))
+                  ]} />
 
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Responsável</Label>
-                  <Select value={formData.responsavel} onValueChange={(v) => updateField("responsavel", v)}>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar responsável" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      {gestoresDisponiveis.map((pessoa) => (
-                        <SelectItem key={pessoa.id} value={pessoa.id}>
-                          {pessoa.nome} - {pessoa.cargo}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <ValidatedSelect label="Responsável" value={formData.responsavel} onValueChange={(v) => updateField("responsavel", v)}
+                  placeholder="Selecionar responsável" options={gestoresDisponiveis.map(p => ({ value: p.id, label: `${p.nome} - ${p.cargo}` }))} />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Status</Label>
-                <Select value={formData.status} onValueChange={(v) => updateField("status", v)}>
-                  <SelectTrigger className="form-input">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="Ativo">Ativo</SelectItem>
-                    <SelectItem value="Inativo">Inativo</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <ValidatedSelect label="Status" value={formData.status} onValueChange={(v) => updateField("status", v)}
+                options={[
+                  { value: "Ativo", label: "Ativo" },
+                  { value: "Inativo", label: "Inativo" },
+                ]} />
             </div>
           </CardContent>
         </Card>
