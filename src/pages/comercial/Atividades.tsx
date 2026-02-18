@@ -5,12 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FilterSection } from "@/components/FilterSection";
+import { ExportButton } from "@/components/ExportButton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Calendar, Phone, Mail, FileText, CheckCircle, Clock, AlertTriangle } from "lucide-react";
+import { Plus, Calendar, Phone, Mail, FileText, CheckCircle, Clock, AlertTriangle, Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { atividadesMock as initialAtividades, oportunidadesMock, leadsMock } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
 import { toast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Atividades() {
   const navigate = useNavigate();
@@ -19,6 +24,10 @@ export default function Atividades() {
   const [statusFilter, setStatusFilter] = useState("");
   const [view, setView] = useState<"meu-dia" | "pendencias" | "todas">("meu-dia");
   const [atividades, setAtividades] = useState(initialAtividades);
+  const [viewItem, setViewItem] = useState<typeof initialAtividades[0] | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editItem, setEditItem] = useState<typeof initialAtividades[0] | null>(null);
+  const [editData, setEditData] = useState({ titulo: "", tipo: "", data: "", hora: "" });
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -82,6 +91,13 @@ export default function Atividades() {
   const atividadesVencidas = atividades.filter(a => a.status === 'pendente' && new Date(a.data) < new Date()).length;
   const atividadesHoje = atividades.filter(a => a.data === today || a.data === '2026-02-04').length;
 
+  const getExportData = () => filteredAtividades.map(a => ({ Título: a.titulo, Tipo: a.tipo, Status: a.status, Data: a.data, Hora: a.hora || '-', Responsável: getOwnerName(a.responsavelId), Relacionado: getRelacionadoLabel(a.relacionadoTipo, a.relacionadoId) || '-' }));
+
+  const openEdit = (a: typeof initialAtividades[0]) => { setEditItem(a); setEditData({ titulo: a.titulo, tipo: a.tipo, data: a.data, hora: a.hora || "" }); };
+  const handleSaveEdit = () => { if (editItem) { setAtividades(prev => prev.map(i => i.id === editItem.id ? { ...i, titulo: editData.titulo, tipo: editData.tipo as any, data: editData.data, hora: editData.hora } : i)); setEditItem(null); toast({ title: "Salvo", description: "Atividade atualizada." }); } };
+  const handleDelete = () => { if (deleteId) { setAtividades(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Atividade excluída." }); } };
+  const deleteItemData = atividades.find(i => i.id === deleteId);
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -121,9 +137,12 @@ export default function Atividades() {
             </TabsList>
           </Tabs>
         </div>
-        <Button onClick={() => navigate('/comercial/atividades/nova')} className="gap-2">
-          <Plus className="w-4 h-4" /> Nova Atividade
-        </Button>
+        <div className="flex items-center gap-3">
+          <ExportButton getData={getExportData} fileName="atividades" />
+          <Button onClick={() => navigate('/comercial/atividades/nova')} className="gap-2">
+            <Plus className="w-4 h-4" /> Nova Atividade
+          </Button>
+        </div>
       </div>
 
       <FilterSection
@@ -183,6 +202,11 @@ export default function Atividades() {
                         <SelectItem value="cancelada">Cancelada</SelectItem>
                       </SelectContent>
                     </Select>
+                    <div className="flex items-center gap-1 ml-auto">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewItem(atividade)}><Eye className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(atividade)}><Edit className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setDeleteId(atividade.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -190,6 +214,30 @@ export default function Atividades() {
           );
         })}
       </div>
+
+      <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
+        <DialogContent><DialogHeader><DialogTitle>Detalhes da Atividade</DialogTitle></DialogHeader>
+          {viewItem && <div className="space-y-2">{Object.entries({ Título: viewItem.titulo, Tipo: viewItem.tipo, Status: viewItem.status, Data: viewItem.data, Hora: viewItem.hora || '-', Responsável: getOwnerName(viewItem.responsavelId), Relacionado: getRelacionadoLabel(viewItem.relacionadoTipo, viewItem.relacionadoId) || '-' }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium capitalize">{v}</span></div>))}</div>}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent><DialogHeader><DialogTitle>Editar Atividade</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div><Label>Título</Label><Input value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} /></div>
+            <div><Label>Tipo</Label><Input value={editData.tipo} onChange={e => setEditData({ ...editData, tipo: e.target.value })} /></div>
+            <div><Label>Data</Label><Input type="date" value={editData.data} onChange={e => setEditData({ ...editData, data: e.target.value })} /></div>
+            <div><Label>Hora</Label><Input value={editData.hora} onChange={e => setEditData({ ...editData, hora: e.target.value })} /></div>
+          </div>
+          <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir atividade?</AlertDialogTitle><AlertDialogDescription>Deseja excluir "{deleteItemData?.titulo}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

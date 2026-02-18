@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { TableActions } from "@/components/TableActions";
 import { FilterSection } from "@/components/FilterSection";
-import { Plus, List, GripVertical, Calendar, LayoutList, Filter, Triangle } from "lucide-react";
+import { ExportButton } from "@/components/ExportButton";
+import { Plus, List, GripVertical, Calendar, LayoutList, Triangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { oportunidadesMock, etapasFunil, getContaById } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -20,6 +26,10 @@ export default function Oportunidades() {
   const [etapaFilter, setEtapaFilter] = useState("");
   const [draggedCard, setDraggedCard] = useState<string | null>(null);
   const [oportunidades, setOportunidades] = useState(oportunidadesMock);
+  const [viewItem, setViewItem] = useState<typeof oportunidadesMock[0] | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editItem, setEditItem] = useState<typeof oportunidadesMock[0] | null>(null);
+  const [editData, setEditData] = useState({ titulo: "", valorEstimado: "", probabilidade: "" });
 
   const filteredOps = oportunidades.filter(op => {
     const conta = getContaById(op.contaId);
@@ -54,12 +64,21 @@ export default function Oportunidades() {
     return colors[etapaId] || 'bg-muted';
   };
 
-  // Funnel data
   const funnelData = etapasFunil.filter(e => !['ganho', 'perdido'].includes(e.id)).map(etapa => {
     const ops = filteredOps.filter(op => op.etapa === etapa.id);
     return { ...etapa, count: ops.length, total: ops.reduce((s, o) => s + o.valorEstimado, 0) };
   });
-  const maxCount = Math.max(...funnelData.map(d => d.count), 1);
+
+  const getExportData = () => filteredOps.map(op => {
+    const conta = getContaById(op.contaId);
+    const etapa = etapasFunil.find(e => e.id === op.etapa);
+    return { Oportunidade: op.titulo, Conta: conta?.nomeFantasia || '', Valor: formatCurrency(op.valorEstimado), Etapa: etapa?.nome || '', Probabilidade: `${op.probabilidade}%`, Previsão: new Date(op.dataPrevisao).toLocaleDateString('pt-BR'), Proprietário: getOwnerName(op.proprietarioId) };
+  });
+
+  const openEdit = (op: typeof oportunidadesMock[0]) => { setEditItem(op); setEditData({ titulo: op.titulo, valorEstimado: String(op.valorEstimado), probabilidade: String(op.probabilidade) }); };
+  const handleSaveEdit = () => { if (editItem) { setOportunidades(prev => prev.map(i => i.id === editItem.id ? { ...i, titulo: editData.titulo, valorEstimado: Number(editData.valorEstimado), probabilidade: Number(editData.probabilidade) } : i)); setEditItem(null); toast({ title: "Salvo", description: "Oportunidade atualizada." }); } };
+  const handleDelete = () => { if (deleteId) { setOportunidades(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Oportunidade excluída." }); } };
+  const deleteItemData = oportunidades.find(i => i.id === deleteId);
 
   return (
     <div className="space-y-6">
@@ -77,9 +96,12 @@ export default function Oportunidades() {
             </Button>
           </div>
         </div>
-        <Button onClick={() => navigate('/comercial/oportunidades/nova')} className="gap-2">
-          <Plus className="w-4 h-4" /> Nova Oportunidade
-        </Button>
+        <div className="flex items-center gap-3">
+          <ExportButton getData={getExportData} fileName="oportunidades" />
+          <Button onClick={() => navigate('/comercial/oportunidades/nova')} className="gap-2">
+            <Plus className="w-4 h-4" /> Nova Oportunidade
+          </Button>
+        </div>
       </div>
 
       <FilterSection
@@ -227,7 +249,7 @@ export default function Oportunidades() {
                     </TableCell>
                     <TableCell>{new Date(op.dataPrevisao).toLocaleDateString('pt-BR')}</TableCell>
                     <TableCell>{getOwnerName(op.proprietarioId)}</TableCell>
-                    <TableCell><TableActions onView={() => {}} onEdit={() => {}} onDelete={() => {}} /></TableCell>
+                    <TableCell><TableActions onView={() => setViewItem(op)} onEdit={() => openEdit(op)} onDelete={() => setDeleteId(op.id)} /></TableCell>
                   </TableRow>
                 );
               })}
@@ -235,6 +257,29 @@ export default function Oportunidades() {
           </Table>
         </div>
       )}
+
+      <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
+        <DialogContent><DialogHeader><DialogTitle>Detalhes da Oportunidade</DialogTitle></DialogHeader>
+          {viewItem && <div className="space-y-2">{Object.entries({ Título: viewItem.titulo, Conta: getContaById(viewItem.contaId)?.nomeFantasia || '', Valor: formatCurrency(viewItem.valorEstimado), Etapa: etapasFunil.find(e => e.id === viewItem.etapa)?.nome || '', Probabilidade: `${viewItem.probabilidade}%`, Previsão: new Date(viewItem.dataPrevisao).toLocaleDateString('pt-BR'), Proprietário: getOwnerName(viewItem.proprietarioId), "Próxima Ação": viewItem.proximaAcao || '-' }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>))}</div>}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent><DialogHeader><DialogTitle>Editar Oportunidade</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div><Label>Título</Label><Input value={editData.titulo} onChange={e => setEditData({ ...editData, titulo: e.target.value })} /></div>
+            <div><Label>Valor Estimado</Label><Input type="number" value={editData.valorEstimado} onChange={e => setEditData({ ...editData, valorEstimado: e.target.value })} /></div>
+            <div><Label>Probabilidade (%)</Label><Input type="number" value={editData.probabilidade} onChange={e => setEditData({ ...editData, probabilidade: e.target.value })} /></div>
+          </div>
+          <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir oportunidade?</AlertDialogTitle><AlertDialogDescription>Deseja excluir "{deleteItemData?.titulo}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
