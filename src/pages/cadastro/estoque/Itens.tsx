@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
 import { exportToExcel } from "@/lib/exportToExcel";
 import { toast } from "@/hooks/use-toast";
@@ -15,13 +17,17 @@ const mockItens = [
   { id: 2, dataCadastro: "12/01/2026", item: "Cabo HDMI", formaApresentacao: "Unidade", setores: "TI" },
 ];
 
+type Item = typeof mockItens[0];
+
 const Itens = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState(mockItens);
   const [searchNome, setSearchNome] = useState("");
   const [searchData, setSearchData] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [viewItem, setViewItem] = useState<typeof mockItens[0] | null>(null);
+  const [viewItem, setViewItem] = useState<Item | null>(null);
+  const [editItem, setEditItem] = useState<Item | null>(null);
+  const [editData, setEditData] = useState({ item: "", formaApresentacao: "", setores: "" });
 
   const filterFields = [
     { type: "text" as const, label: "Nome", placeholder: "Buscar por nome...", value: searchNome, onChange: setSearchNome, width: "flex-1 min-w-[200px]" },
@@ -31,6 +37,7 @@ const Itens = () => {
   const handleExport = () => { exportToExcel(filtered.map(i => ({ ID: i.id, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores })), "itens-estoque"); };
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Item excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
+  const openEdit = (i: Item) => { setEditItem(i); setEditData({ item: i.item, formaApresentacao: i.formaApresentacao, setores: i.setores }); };
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -59,7 +66,7 @@ const Itens = () => {
                     <TableCell className="text-center font-medium">{item.item}</TableCell>
                     <TableCell className="text-center">{item.formaApresentacao}</TableCell>
                     <TableCell className="text-center">{item.setores}</TableCell>
-                    <TableCell className="text-center"><TableActions onView={() => setViewItem(item)} onEdit={() => toast({ title: "Editar", description: `Editando "${item.item}"...` })} onDelete={() => setDeleteId(item.id)} /></TableCell>
+                    <TableCell className="text-center"><TableActions onView={() => setViewItem(item)} onEdit={() => openEdit(item)} onDelete={() => setDeleteId(item.id)} /></TableCell>
                   </TableRow>
                 ))
               )}
@@ -69,6 +76,20 @@ const Itens = () => {
       </div>
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>{viewItem?.item}</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2"><InfoRow label="Data Cadastro" value={viewItem.dataCadastro} /><InfoRow label="Forma Apresentação" value={viewItem.formaApresentacao} /><InfoRow label="Setores" value={viewItem.setores} /></div>}</DialogContent>
+      </Dialog>
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar Item</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2"><Label>Item</Label><Input value={editData.item} onChange={e => setEditData(p => ({ ...p, item: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Forma de Apresentação</Label><Input value={editData.formaApresentacao} onChange={e => setEditData(p => ({ ...p, formaApresentacao: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Setores</Label><Input value={editData.setores} onChange={e => setEditData(p => ({ ...p, setores: e.target.value }))} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Item atualizado." }); } }}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem?.item}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent>

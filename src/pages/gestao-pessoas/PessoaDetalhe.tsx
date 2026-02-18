@@ -1,15 +1,32 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, User, Phone, MapPin, Landmark, FileText, Briefcase, Users } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { ArrowLeft, User, Phone, MapPin, Landmark, FileText, Briefcase, Users, Pencil } from "lucide-react";
 import { pessoasMock, setoresMock, getSubordinados, getCadeiaGestores } from "@/data/pessoas-mock";
 import { StatusBadge } from "@/components/StatusBadge";
+import { toast } from "@/hooks/use-toast";
 
 export default function PessoaDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const pessoa = pessoasMock.find(p => p.id === id);
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    nome: pessoa?.nome || "",
+    email: pessoa?.email || "",
+    telefone: pessoa?.telefone || "",
+    cargo: pessoa?.cargo || "",
+    endereco: pessoa?.endereco || "",
+    cidade: pessoa?.cidade || "",
+    estado: pessoa?.estado || "",
+    cep: pessoa?.cep || "",
+  });
 
   if (!pessoa) {
     return (
@@ -23,6 +40,11 @@ export default function PessoaDetalhe() {
   const subordinados = getSubordinados(pessoa.id);
   const cadeiaGestores = getCadeiaGestores(pessoa.id);
   const setor = setoresMock.find(s => s.id === pessoa.setorId);
+
+  const handleSaveEdit = () => {
+    setEditOpen(false);
+    toast({ title: "Perfil atualizado", description: `Dados de "${editData.nome}" foram salvos.` });
+  };
 
   return (
     <div className="space-y-6">
@@ -39,7 +61,11 @@ export default function PessoaDetalhe() {
             <h1 className="text-2xl font-bold text-foreground">{pessoa.nome}</h1>
             <p className="text-muted-foreground">{pessoa.cargo} · {pessoa.setor}</p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <Button variant="outline" className="gap-2" onClick={() => setEditOpen(true)}>
+              <Pencil className="h-4 w-4" />
+              Editar Perfil
+            </Button>
             <StatusBadge status={pessoa.status} />
           </div>
         </div>
@@ -163,6 +189,27 @@ export default function PessoaDetalhe() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Edit Modal */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Editar Perfil 360</DialogTitle></DialogHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="space-y-2"><Label>Nome</Label><Input value={editData.nome} onChange={e => setEditData(p => ({ ...p, nome: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Cargo</Label><Input value={editData.cargo} onChange={e => setEditData(p => ({ ...p, cargo: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>E-mail</Label><Input value={editData.email} onChange={e => setEditData(p => ({ ...p, email: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Telefone</Label><Input value={editData.telefone} onChange={e => setEditData(p => ({ ...p, telefone: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Endereço</Label><Input value={editData.endereco} onChange={e => setEditData(p => ({ ...p, endereco: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Cidade</Label><Input value={editData.cidade} onChange={e => setEditData(p => ({ ...p, cidade: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Estado</Label><Input value={editData.estado} onChange={e => setEditData(p => ({ ...p, estado: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>CEP</Label><Input value={editData.cep} onChange={e => setEditData(p => ({ ...p, cep: e.target.value }))} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveEdit}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -12,8 +12,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { Plus, Search, FileText } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
@@ -29,6 +30,9 @@ export default function Cargos() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [viewItem, setViewItem] = useState<Cargo | null>(null);
+  const [editItem, setEditItem] = useState<Cargo | null>(null);
+  const [editNome, setEditNome] = useState("");
+  const [editDescricao, setEditDescricao] = useState("");
 
   const niveis = [...new Set(items.map(c => c.nivel))];
 
@@ -116,7 +120,7 @@ export default function Cargos() {
                 <TableCell className="text-center">
                   <TableActions
                     onView={() => setViewItem(cargo)}
-                    onEdit={() => toast({ title: "Editar cargo", description: `Editando "${cargo.nome}"...` })}
+                    onEdit={() => { setEditItem(cargo); setEditNome(cargo.nome); setEditDescricao(cargo.descricao); }}
                     onDelete={() => setDeleteId(cargo.id)}
                   />
                 </TableCell>
@@ -138,6 +142,20 @@ export default function Cargos() {
               <InfoRow label="Status" value={viewItem.status} />
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar Cargo</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2"><Label>Nome do Cargo</Label><Input value={editNome} onChange={e => setEditNome(e.target.value)} /></div>
+            <div className="space-y-2"><Label>Descrição</Label><Input value={editDescricao} onChange={e => setEditDescricao(e.target.value)} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, nome: editNome, descricao: editDescricao } : i)); setEditItem(null); toast({ title: "Salvo", description: "Cargo atualizado." }); } }}>Salvar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
