@@ -248,9 +248,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                                 {subItem.title}
                               </span>
                               {openMenus.includes(`${item.title}-${subItem.title}`) ? (
-                                <ChevronDown className="h-3 w-3 text-foreground" />
+                                <ChevronDown className="h-3 w-3 text-foreground dark:text-primary" />
                               ) : (
-                                <ChevronRight className="h-3 w-3 text-foreground" />
+                                <ChevronRight className="h-3 w-3 text-foreground dark:text-primary" />
                               )}
                             </button>
                             
