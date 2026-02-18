@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
@@ -10,6 +9,8 @@ import { SimpleFormWizard } from "@/components/SimpleFormWizard"
 import { FormActionBar } from "@/components/FormActionBar"
 import { MapPin } from "lucide-react"
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
+import { useState } from "react"
+import { DropdownWithAdd } from "@/components/DropdownWithAdd"
 
 export default function NovaLocacao() {
   const navigate = useNavigate()
@@ -21,6 +22,30 @@ export default function NovaLocacao() {
 
   const handleCancelar = () => {
     navigate("/estoque/locacoes")
+  }
+
+  const [supplier, setSupplier] = useState("")
+  const [supplierOptions, setSupplierOptions] = useState([
+    { value: "supplier1", label: "Supplier 1" },
+    { value: "supplier2", label: "Supplier 2" },
+  ])
+
+  const [unidade, setUnidade] = useState("")
+  const [unidadeOptions, setUnidadeOptions] = useState([
+    { value: "unidade1", label: "Unidade 1" },
+    { value: "unidade2", label: "Unidade 2" },
+  ])
+
+  const [item, setItem] = useState("")
+  const [itemOptions, setItemOptions] = useState([
+    { value: "item1", label: "Item 1" },
+    { value: "item2", label: "Item 2" },
+  ])
+
+  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, valueSetter: React.Dispatch<React.SetStateAction<string>>) => (name: string) => {
+    const newValue = name.toLowerCase().replace(/\s+/g, "-")
+    setter(prev => [...prev, { value: newValue, label: name }])
+    valueSetter(newValue)
   }
 
   return (
@@ -39,31 +64,22 @@ export default function NovaLocacao() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Supplier</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="supplier1">Supplier 1</SelectItem>
-                    <SelectItem value="supplier2">Supplier 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Supplier"
+                value={supplier}
+                onChange={setSupplier}
+                options={supplierOptions}
+                onAddNew={addOption(setSupplierOptions, setSupplier)}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Unidade <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="unidade1">Unidade 1</SelectItem>
-                    <SelectItem value="unidade2">Unidade 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Unidade"
+                required
+                value={unidade}
+                onChange={setUnidade}
+                options={unidadeOptions}
+                onAddNew={addOption(setUnidadeOptions, setUnidade)}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -115,18 +131,13 @@ export default function NovaLocacao() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Item</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="item1">Item 1</SelectItem>
-                    <SelectItem value="item2">Item 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Item"
+                value={item}
+                onChange={setItem}
+                options={itemOptions}
+                onAddNew={addOption(setItemOptions, setItem)}
+              />
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Quantidade</Label>

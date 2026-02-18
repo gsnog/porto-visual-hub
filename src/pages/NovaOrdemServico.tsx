@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { ClipboardCheck } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 
 export default function NovaOrdemServico() {
   const navigate = useNavigate();
   const { isSaving, handleSave } = useSaveWithDelay();
   const [formData, setFormData] = useState({ tipoOrdem: "", descricao: "" });
+
+  const [tipoOptions, setTipoOptions] = useState([
+    { value: "servicos-gerais", label: "Serviços Gerais" },
+    { value: "patrimonio", label: "Patrimônio" },
+    { value: "suporte", label: "Suporte" },
+  ]);
 
   const handleSalvar = () => handleSave("/estoque/ordem-servico", "Ordem de serviço salva com sucesso!");
   const handleCancelar = () => navigate("/estoque/ordem-servico");
@@ -33,24 +38,22 @@ export default function NovaOrdemServico() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Tipo de Ordem <span className="text-destructive">*</span></Label>
-                <Select value={formData.tipoOrdem} onValueChange={(value) => setFormData({ ...formData, tipoOrdem: value })}>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="servicos-gerais">Serviços Gerais</SelectItem>
-                    <SelectItem value="patrimonio">Patrimônio</SelectItem>
-                    <SelectItem value="suporte">Suporte</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Tipo de Ordem"
+                required
+                value={formData.tipoOrdem}
+                onChange={(value) => setFormData({ ...formData, tipoOrdem: value })}
+                options={tipoOptions}
+                onAddNew={(name) => {
+                  const newValue = name.toLowerCase().replace(/\s+/g, "-");
+                  setTipoOptions(prev => [...prev, { value: newValue, label: name }]);
+                  setFormData(prev => ({ ...prev, tipoOrdem: newValue }));
+                }}
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Descrição</Label>
                 <Textarea 
                   value={formData.descricao} 
                   onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
