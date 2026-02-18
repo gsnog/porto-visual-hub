@@ -107,39 +107,22 @@ export default function Hierarquia() {
     }));
   }, [expandedNodes]);
 
-  // Hierarquia por área — isolamento total por área
+  // Hierarquia por área — somente áreas folha (sem sub-áreas) para evitar redundância com "Por Gestor"
   const hierarchyByArea = useMemo(() => {
-    // Show all areas individually (not just root areas)
-    return setoresMock.map(area => {
-      // For each area, get only its direct sub-areas
-      const subAreas = setoresMock.filter(s => s.areaPaiId === area.id);
-      const allAreaIds = [area.id, ...subAreas.map(s => s.id)];
-      
-      // Get only people that belong to this area or its direct sub-areas
-      const pessoasArea = pessoasMock.filter(p => allAreaIds.includes(p.setorId || ''));
-      
-      // Filter out people whose primary area is a parent area (e.g., Diretor Geral in Diretoria)
-      // They should NOT appear in child areas
-      const pessoasAreaFiltered = pessoasArea.filter(p => {
-        // If this is not the person's direct setor and not a sub-area of this area, exclude
-        // More importantly: if the person's setorId is a PARENT of this area, exclude them
-        // (e.g., Diretor Geral with setorId='1' Diretoria should not appear in Financeiro)
-        if (p.setorId !== area.id && !subAreas.some(s => s.id === p.setorId)) {
-          return false;
-        }
-        // If this area has a parent, exclude people whose setorId is the parent area
-        if (area.areaPaiId && p.setorId === area.areaPaiId) {
-          return false;
-        }
-        return true;
-      });
+    // Identifica áreas que têm filhos
+    const areasComFilhos = new Set(setoresMock.filter(s => s.areaPaiId).map(s => s.areaPaiId));
+    
+    // Filtra apenas áreas folha (que não são pais de ninguém)
+    const leafAreas = setoresMock.filter(area => !areasComFilhos.has(area.id));
 
-      // Find top-level people: those whose manager is outside this area
-      const pessoaIdsArea = new Set(pessoasAreaFiltered.map(p => p.id));
-      const topLevel = pessoasAreaFiltered.filter(p => !p.gestorId || !pessoaIdsArea.has(p.gestorId));
+    return leafAreas.map(area => {
+      const pessoasArea = pessoasMock.filter(p => p.setorId === area.id);
+      
+      const pessoaIdsArea = new Set(pessoasArea.map(p => p.id));
+      const topLevel = pessoasArea.filter(p => !p.gestorId || !pessoaIdsArea.has(p.gestorId));
       
       function buildAreaHierarchy(parentId: string): HierarchyNode[] {
-        const subs = pessoasAreaFiltered.filter(p => p.gestorId === parentId);
+        const subs = pessoasArea.filter(p => p.gestorId === parentId);
         return subs.map(p => ({
           pessoa: p,
           subordinados: buildAreaHierarchy(p.id),
@@ -155,11 +138,11 @@ export default function Hierarquia() {
 
       return {
         area,
-        totalPessoas: pessoasAreaFiltered.length,
+        totalPessoas: pessoasArea.length,
         nodes,
-        subAreas: subAreas.map(s => s.nome)
+        subAreas: [] as string[]
       };
-    });
+    }).filter(g => g.totalPessoas > 0);
   }, [expandedNodes]);
 
   const toggleExpand = (id: string) => {
