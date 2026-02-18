@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Bell, Calendar, MessageSquare, Columns3, GripVertical } from "lucide-react";
+import { HelpTooltip } from "@/components/HelpTooltip";
 import { cn } from "@/lib/utils";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { getTotalNaoLidas } from "@/data/chat-mock";
@@ -142,7 +143,7 @@ export function Topbar({
               location.pathname === app.path && "bg-muted dark:bg-white/10",
               dragOverApp === app.id && draggedApp !== app.id && "ring-2 ring-primary/50"
             )}
-            title={app.title}
+            title={app.title === "Kanban" ? "Kanban - Gerencie tarefas visualmente" : app.title === "Calendário" ? "Calendário - Veja compromissos e eventos" : "Chat - Comunique-se com a equipe"}
           >
             <app.icon className="h-5 w-5 text-foreground dark:text-white/70" />
             {app.badge !== undefined && app.badge > 0 && (
@@ -160,7 +161,7 @@ export function Topbar({
             "relative p-2 rounded hover:bg-muted dark:hover:bg-white/10 transition-colors",
             location.pathname === "/notificacoes" && "bg-muted dark:bg-white/10"
           )}
-          title="Notificações"
+          title="Notificações - Alertas e avisos do sistema"
         >
           <Bell className="h-5 w-5 text-foreground dark:text-white/70" />
           {notificationCount > 0 && (

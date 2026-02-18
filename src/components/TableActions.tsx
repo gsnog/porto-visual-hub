@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, ChevronDown } from "lucide-react";
+import { HelpTooltip } from "@/components/HelpTooltip";
 
 interface TableActionsProps {
   onView?: () => void;
@@ -15,36 +16,39 @@ interface TableActionsProps {
 
 export function TableActions({ onView, onEdit, onDelete }: TableActionsProps) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-1 border-border">
-          Ações
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-popover border border-border z-50">
-        {onView && (
-          <DropdownMenuItem onClick={onView} className="gap-2 cursor-pointer">
-            <Eye className="h-4 w-4" />
-            Visualizar
-          </DropdownMenuItem>
-        )}
-        {onEdit && (
-          <DropdownMenuItem onClick={onEdit} className="gap-2 cursor-pointer">
-            <Edit className="h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-        )}
-        {onDelete && (
-          <DropdownMenuItem 
-            onClick={onDelete} 
-            className="gap-2 cursor-pointer text-destructive focus:text-destructive"
-          >
-            <Trash2 className="h-4 w-4" />
-            Excluir
-          </DropdownMenuItem>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="inline-flex items-center gap-1">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-1 border-border">
+            Ações
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="bg-popover border border-border z-50">
+          {onView && (
+            <DropdownMenuItem onClick={onView} className="gap-2 cursor-pointer">
+              <Eye className="h-4 w-4" />
+              Visualizar
+            </DropdownMenuItem>
+          )}
+          {onEdit && (
+            <DropdownMenuItem onClick={onEdit} className="gap-2 cursor-pointer">
+              <Edit className="h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          )}
+          {onDelete && (
+            <DropdownMenuItem 
+              onClick={onDelete} 
+              className="gap-2 cursor-pointer text-destructive focus:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+              Excluir
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <HelpTooltip text="Visualizar detalhes, editar dados ou excluir este registro." size={13} />
+    </div>
   );
 }

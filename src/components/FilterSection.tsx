@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ReactNode } from "react"
+import { HelpTooltip } from "@/components/HelpTooltip"
 
 interface FilterField {
   type: "text" | "date" | "select"
@@ -40,7 +41,10 @@ export function FilterSection({
         <div className="flex flex-wrap gap-4 items-end">
           {fields.map((field, index) => (
             <div key={index} className={`flex flex-col gap-1.5 ${field.width || 'min-w-[180px]'}`}>
-              <label className="filter-label">{field.label}</label>
+              <div className="flex items-center gap-1">
+                <label className="filter-label">{field.label}</label>
+                <HelpTooltip text={`Filtrar resultados por ${field.label.toLowerCase()}.`} size={12} />
+              </div>
               
               {field.type === "text" && (
                 <Input
@@ -80,7 +84,7 @@ export function FilterSection({
           
           {children}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button onClick={onFilter} className="gap-2 h-10">
               <Filter className="h-4 w-4" />
               Filtrar
@@ -89,6 +93,7 @@ export function FilterSection({
               <X className="h-4 w-4" />
               Limpar Filtros
             </Button>
+            <HelpTooltip text="Use os filtros para refinar os resultados da tabela. Clique em 'Limpar' para resetar." size={13} />
           </div>
         </div>
       </div>
