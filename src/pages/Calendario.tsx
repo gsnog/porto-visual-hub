@@ -315,15 +315,18 @@ export default function Calendario() {
         <Card className="p-4">
           <div className="flex flex-wrap gap-4 items-end">
             {(scope === 'team' || scope === 'all') && (
-              <div className="flex items-center gap-2 self-center">
-                <Switch 
-                  id="filter-equipe"
-                  checked={filterEquipe}
-                  onCheckedChange={setFilterEquipe}
-                />
-                <Label htmlFor="filter-equipe" className="text-sm">
-                  Pessoas abaixo de mim
-                </Label>
+              <div className="flex flex-col gap-1.5 min-w-[180px]">
+                <label className="filter-label">Equipe</label>
+                <div className="flex items-center gap-2 h-10">
+                  <Switch 
+                    id="filter-equipe"
+                    checked={filterEquipe}
+                    onCheckedChange={setFilterEquipe}
+                  />
+                  <Label htmlFor="filter-equipe" className="text-sm">
+                    Pessoas abaixo de mim
+                  </Label>
+                </div>
               </div>
             )}
             

@@ -114,10 +114,10 @@ export default function Acessos() {
                   <div className="rounded border border-border overflow-hidden">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-                          <TableHead className="text-white font-semibold">Módulo</TableHead>
+                        <TableRow>
+                          <TableHead>Módulo</TableHead>
                           {Object.entries(acoesLabels).map(([key, label]) => (
-                            <TableHead key={key} className="text-white font-semibold text-center w-20">
+                            <TableHead key={key} className="text-center w-20">
                               {label}
                             </TableHead>
                           ))}
@@ -173,13 +173,13 @@ export default function Acessos() {
               <div className="rounded border border-border">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-                      <TableHead className="text-white font-semibold">Pessoa</TableHead>
-                      <TableHead className="text-white font-semibold">Setor</TableHead>
-                      <TableHead className="text-white font-semibold">Cargo</TableHead>
-                      <TableHead className="text-white font-semibold">Perfil Atual</TableHead>
-                      <TableHead className="text-white font-semibold">Status Acesso</TableHead>
-                      <TableHead className="text-white font-semibold text-center">Ações</TableHead>
+                    <TableRow>
+                      <TableHead>Pessoa</TableHead>
+                      <TableHead>Setor</TableHead>
+                      <TableHead>Cargo</TableHead>
+                      <TableHead>Perfil Atual</TableHead>
+                      <TableHead>Status Acesso</TableHead>
+                      <TableHead className="text-center">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
