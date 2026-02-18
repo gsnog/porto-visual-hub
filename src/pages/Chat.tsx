@@ -312,8 +312,8 @@ export default function Chat() {
       <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelected(e, 'image')} />
 
       {/* Sidebar de conversas */}
-      <div className="w-80 min-w-[320px] border-r bg-card flex flex-col overflow-hidden">
-        <div className="p-4 border-b shrink-0">
+      <div className="w-80 min-w-[320px] border-r border-border/30 bg-card flex flex-col overflow-hidden">
+        <div className="p-4 border-b border-border/30 shrink-0">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-semibold text-foreground">Chat</h2>
             <DropdownMenu>
@@ -387,7 +387,7 @@ export default function Chat() {
       {selectedConversa ? (
         <div className="flex-1 flex flex-col bg-background min-w-0 overflow-hidden">
           {/* Header da conversa */}
-          <div className="h-14 px-4 border-b flex items-center justify-between bg-card shrink-0">
+          <div className="h-14 px-4 border-b border-border/30 flex items-center justify-between bg-card shrink-0">
             <div 
               className={cn("flex items-center gap-3", selectedConversa.tipo === 'direto' && "cursor-pointer")}
               onClick={handleConversaHeaderClick}
@@ -491,7 +491,7 @@ export default function Chat() {
           </div>
           
           {/* Input de mensagem */}
-          <div className="p-4 border-t bg-card shrink-0">
+          <div className="p-4 border-t border-border/30 bg-card shrink-0">
             <div className="flex items-end gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -563,8 +563,8 @@ export default function Chat() {
       
       {/* Painel de informações */}
       {showInfoPanel && selectedConversa && (
-        <div className="w-72 min-w-[288px] border-l bg-card flex flex-col overflow-hidden">
-          <div className="p-4 border-b flex items-center justify-between shrink-0">
+        <div className="w-72 min-w-[288px] border-l border-border/30 bg-card flex flex-col overflow-hidden">
+          <div className="p-4 border-b border-border/30 flex items-center justify-between shrink-0">
             <h3 className="font-medium text-sm">Informações</h3>
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowInfoPanel(false)}>
               <X className="h-4 w-4" />

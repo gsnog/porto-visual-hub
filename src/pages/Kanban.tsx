@@ -303,7 +303,7 @@ export default function Kanban() {
             {filteredBoards.map((board) => (
               <Card
                 key={board.id}
-                className="cursor-pointer hover:shadow-md transition-shadow group"
+                className="cursor-pointer hover:shadow-md transition-shadow group border-transparent"
                 onClick={() => openBoard(board)}
               >
                 <CardContent className="p-4">
@@ -729,7 +729,7 @@ function KanbanCardItem({
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onClick={onClick}
-      className="cursor-pointer hover:shadow-md transition-shadow"
+      className="cursor-pointer hover:shadow-md transition-shadow border-transparent"
     >
       <CardContent className="p-3 space-y-2">
         <p className="text-sm font-medium">{card.title}</p>
