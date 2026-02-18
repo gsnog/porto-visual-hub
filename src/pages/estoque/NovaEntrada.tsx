@@ -1,13 +1,14 @@
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
 import { SimpleFormWizard } from "@/components/SimpleFormWizard"
 import { FormActionBar } from "@/components/FormActionBar"
 import { PackagePlus } from "lucide-react"
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
+import { useState } from "react"
+import { DropdownWithAdd } from "@/components/DropdownWithAdd"
 
 export default function NovaEntrada() {
   const navigate = useNavigate()
@@ -19,6 +20,36 @@ export default function NovaEntrada() {
 
   const handleCancelar = () => {
     navigate("/estoque/entradas")
+  }
+
+  const [item, setItem] = useState("")
+  const [itemOptions, setItemOptions] = useState([
+    { value: "item1", label: "Item 1" },
+    { value: "item2", label: "Item 2" },
+  ])
+
+  const [estoqueOrigem, setEstoqueOrigem] = useState("")
+  const [estoqueOrigemOptions, setEstoqueOrigemOptions] = useState([
+    { value: "origem1", label: "Estoque 1" },
+    { value: "origem2", label: "Estoque 2" },
+  ])
+
+  const [estoqueDestino, setEstoqueDestino] = useState("")
+  const [estoqueDestinoOptions, setEstoqueDestinoOptions] = useState([
+    { value: "destino1", label: "Estoque 1" },
+    { value: "destino2", label: "Estoque 2" },
+  ])
+
+  const [operacao, setOperacao] = useState("")
+  const [operacaoOptions, setOperacaoOptions] = useState([
+    { value: "compra", label: "Compra" },
+    { value: "transferencia", label: "Transferência" },
+  ])
+
+  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, valueSetter: React.Dispatch<React.SetStateAction<string>>) => (name: string) => {
+    const newValue = name.toLowerCase().replace(/\s+/g, "-")
+    setter(prev => [...prev, { value: newValue, label: name }])
+    valueSetter(newValue)
   }
 
   return (
@@ -42,18 +73,14 @@ export default function NovaEntrada() {
                 <Input type="date" className="form-input" />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Item <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="item1">Item 1</SelectItem>
-                    <SelectItem value="item2">Item 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Item"
+                required
+                value={item}
+                onChange={setItem}
+                options={itemOptions}
+                onAddNew={addOption(setItemOptions, setItem)}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,46 +89,32 @@ export default function NovaEntrada() {
                 <Input type="date" className="form-input" />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Estoque de Origem</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="origem1">Estoque 1</SelectItem>
-                    <SelectItem value="origem2">Estoque 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Estoque de Origem"
+                value={estoqueOrigem}
+                onChange={setEstoqueOrigem}
+                options={estoqueOrigemOptions}
+                onAddNew={addOption(setEstoqueOrigemOptions, setEstoqueOrigem)}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Estoque de Destino <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="destino1">Estoque 1</SelectItem>
-                    <SelectItem value="destino2">Estoque 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Estoque de Destino"
+                required
+                value={estoqueDestino}
+                onChange={setEstoqueDestino}
+                options={estoqueDestinoOptions}
+                onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Operação</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="compra">Compra</SelectItem>
-                    <SelectItem value="transferencia">Transferência</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Operação"
+                value={operacao}
+                onChange={setOperacao}
+                options={operacaoOptions}
+                onAddNew={addOption(setOperacaoOptions, setOperacao)}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

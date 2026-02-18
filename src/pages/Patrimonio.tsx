@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Trash2, Plus, Landmark } from "lucide-react"
+import { DropdownWithAdd } from "@/components/DropdownWithAdd"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
 import { SimpleFormWizard } from "@/components/SimpleFormWizard"
@@ -42,6 +42,13 @@ const Patrimonio = () => {
     valor: '',
     quantidade: ''
   })
+
+  const [itemOptions, setItemOptions] = useState([
+    { value: "automovel", label: "Automóvel" },
+    { value: "equipamento", label: "Equipamento" },
+    { value: "mobiliario", label: "Mobiliário" },
+    { value: "software", label: "Software" },
+  ])
 
   const filteredAssets = useMemo(() => {
     return mockAssets.filter(asset => {
@@ -187,20 +194,18 @@ const Patrimonio = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Item <span className="text-destructive">*</span></Label>
-                  <Select value={formData.item} onValueChange={(value) => setFormData(prev => ({...prev, item: value}))}>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecione o tipo" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="automovel">Automóvel</SelectItem>
-                      <SelectItem value="equipamento">Equipamento</SelectItem>
-                      <SelectItem value="mobiliario">Mobiliário</SelectItem>
-                      <SelectItem value="software">Software</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <DropdownWithAdd
+                  label="Item"
+                  required
+                  value={formData.item}
+                  onChange={(value) => setFormData(prev => ({...prev, item: value}))}
+                  options={itemOptions}
+                  onAddNew={(name) => {
+                    const newValue = name.toLowerCase().replace(/\s+/g, "-");
+                    setItemOptions(prev => [...prev, { value: newValue, label: name }]);
+                    setFormData(prev => ({ ...prev, item: newValue }));
+                  }}
+                />
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Data de Aquisição <span className="text-destructive">*</span></Label>

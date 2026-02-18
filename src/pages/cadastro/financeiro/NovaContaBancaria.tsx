@@ -1,14 +1,21 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { Landmark } from "lucide-react";
+import { useState } from "react";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 
 const NovaContaBancaria = () => {
   const navigate = useNavigate();
+  const [tipo, setTipo] = useState("");
+  const [tipoOptions, setTipoOptions] = useState([
+    { value: "corrente", label: "Corrente" },
+    { value: "poupanca", label: "Poupança" },
+    { value: "investimento", label: "Investimento" },
+  ]);
 
   const handleSalvar = () => {
     navigate("/cadastro/financeiro/conta-bancaria");
@@ -34,19 +41,18 @@ const NovaContaBancaria = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Tipo <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="corrente">Corrente</SelectItem>
-                    <SelectItem value="poupanca">Poupança</SelectItem>
-                    <SelectItem value="investimento">Investimento</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd
+                label="Tipo"
+                required
+                value={tipo}
+                onChange={setTipo}
+                options={tipoOptions}
+                onAddNew={(name) => {
+                  const newValue = name.toLowerCase().replace(/\s+/g, "-");
+                  setTipoOptions(prev => [...prev, { value: newValue, label: name }]);
+                  setTipo(newValue);
+                }}
+              />
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Código do Banco <span className="text-destructive">*</span></Label>
