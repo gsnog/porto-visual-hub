@@ -8,7 +8,7 @@ import { Plus, Download, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { contatosMock, getContaById } from "@/data/comercial-mock";
 import { toast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import { ExportButton } from "@/components/ExportButton";
 
 export default function Contatos() {
   const navigate = useNavigate();
@@ -36,20 +36,13 @@ export default function Contatos() {
     }
   };
 
-  const handleExport = () => {
-    const exportData = filteredContatos.map(c => {
-      const conta = getContaById(c.contaId);
-      return {
-        Nome: c.nome, Cargo: c.cargo, Email: c.email, Telefone: c.telefone,
-        Papel: getPapelLabel(c.papel), Empresa: conta?.nomeFantasia || 'N/A', Tags: c.tags.join(', ')
-      };
-    });
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Contatos");
-    XLSX.writeFile(wb, "contatos.xlsx");
-    toast({ title: "Exportação concluída" });
-  };
+  const getExportData = () => filteredContatos.map(c => {
+    const conta = getContaById(c.contaId);
+    return {
+      Nome: c.nome, Cargo: c.cargo, Email: c.email, Telefone: c.telefone,
+      Papel: getPapelLabel(c.papel), Empresa: conta?.nomeFantasia || 'N/A', Tags: c.tags.join(', ')
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -57,9 +50,7 @@ export default function Contatos() {
         <Button onClick={() => navigate('/comercial/contatos/novo')} className="gap-2">
           <Plus className="w-4 h-4" /> Novo Contato
         </Button>
-        <Button variant="outline" onClick={handleExport} className="gap-2 border-border">
-          <Download className="w-4 h-4" /> Exportar
-        </Button>
+        <ExportButton getData={getExportData} fileName="contatos" sheetName="Contatos" />
       </div>
 
       <FilterSection

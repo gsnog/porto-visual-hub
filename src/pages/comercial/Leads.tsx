@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { leadsMock, origensLead } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
 import { toast } from "@/hooks/use-toast";
+import { ExportButton } from "@/components/ExportButton";
 import * as XLSX from "xlsx";
 
 export default function Leads() {
@@ -70,18 +71,11 @@ export default function Leads() {
     e.target.value = "";
   };
 
-  const handleExport = () => {
-    const exportData = filteredLeads.map(l => ({
-      Nome: l.nome, Empresa: l.empresa, Email: l.email, Telefone: l.telefone,
-      Origem: l.origem, Status: getStatusLabel(l.status), Score: l.score,
-      Proprietário: getOwnerName(l.proprietarioId), "Última Atividade": l.ultimaAtividade
-    }));
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Leads");
-    XLSX.writeFile(wb, "leads.xlsx");
-    toast({ title: "Exportação concluída" });
-  };
+  const getExportData = () => filteredLeads.map(l => ({
+    Nome: l.nome, Empresa: l.empresa, Email: l.email, Telefone: l.telefone,
+    Origem: l.origem, Status: getStatusLabel(l.status), Score: l.score,
+    Proprietário: getOwnerName(l.proprietarioId), "Última Atividade": l.ultimaAtividade
+  }));
 
   return (
     <div className="space-y-6">
@@ -93,9 +87,7 @@ export default function Leads() {
         <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="gap-2 border-border">
           <Upload className="w-4 h-4" /> Importar
         </Button>
-        <Button variant="outline" onClick={handleExport} className="gap-2 border-border">
-          <Download className="w-4 h-4" /> Exportar
-        </Button>
+        <ExportButton getData={getExportData} fileName="leads" sheetName="Leads" />
       </div>
 
       <FilterSection

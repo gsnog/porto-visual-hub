@@ -10,7 +10,7 @@ import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockContas = [
@@ -34,7 +34,7 @@ const ContaBancaria = () => {
     { type: "text" as const, label: "Número da Conta", placeholder: "Buscar por conta...", value: searchConta, onChange: setSearchConta, width: "min-w-[180px]" }
   ];
   const filtered = items.filter(c => c.banco.toLowerCase().includes(searchBanco.toLowerCase()) && c.numeroConta.includes(searchConta));
-  const handleExport = () => { exportToExcel(filtered.map(c => ({ "Código Banco": c.codigoBanco, Banco: c.banco, Agência: c.agencia, Conta: c.numeroConta, Tipo: c.tipo, Saldo: c.saldo })), "contas-bancarias"); };
+  const getExportData = () => filtered.map(c => ({ "Código Banco": c.codigoBanco, Banco: c.banco, Agência: c.agencia, Conta: c.numeroConta, Tipo: c.tipo, Saldo: c.saldo }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Conta excluída." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (c: Conta) => { setEditItem(c); setEditData({ codigoBanco: c.codigoBanco, banco: c.banco, agencia: c.agencia, numeroConta: c.numeroConta, tipo: c.tipo, saldo: c.saldo }); };
@@ -44,7 +44,7 @@ const ContaBancaria = () => {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
           <Button onClick={() => navigate("/cadastro/financeiro/conta-bancaria/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Conta</Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
+          <ExportButton getData={getExportData} fileName="contas-bancarias" />
           <Button onClick={() => navigate("/cadastro/financeiro/conciliacao-bancaria")} variant="outline" className="gap-2 border-border">Conciliação Bancária</Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="outline" className="gap-2 border-border">Transferências<ChevronDown className="w-4 h-4" /></Button></DropdownMenuTrigger>

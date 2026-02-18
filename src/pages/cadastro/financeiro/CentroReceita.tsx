@@ -9,7 +9,7 @@ import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, FileText } from "lucide-react";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockCentrosReceita = [
@@ -29,7 +29,7 @@ const CentroReceita = () => {
 
   const filterFields = [{ type: "text" as const, label: "Centro de Receita", placeholder: "Buscar centro de receita...", value: searchCentro, onChange: setSearchCentro, width: "flex-1 min-w-[200px]" }];
   const filtered = items.filter(c => c.nome.toLowerCase().includes(searchCentro.toLowerCase()));
-  const handleExport = () => { exportToExcel(filtered.map(c => ({ "Centro de Receita": c.nome, Diretoria: c.diretoria, Gerência: c.gerencia, Departamento: c.departamento })), "centros-receita"); };
+  const getExportData = () => filtered.map(c => ({ "Centro de Receita": c.nome, Diretoria: c.diretoria, Gerência: c.gerencia, Departamento: c.departamento }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Centro de receita excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (c: CR) => { setEditItem(c); setEditData({ nome: c.nome, diretoria: c.diretoria, gerencia: c.gerencia, departamento: c.departamento }); };
@@ -39,7 +39,7 @@ const CentroReceita = () => {
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
           <Button onClick={() => navigate("/cadastro/financeiro/centro-receita/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Centro de Receita</Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}><FileText className="w-4 h-4" />Exportar</Button>
+          <ExportButton getData={getExportData} fileName="centros-receita" />
         </div>
         <FilterSection fields={filterFields} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">

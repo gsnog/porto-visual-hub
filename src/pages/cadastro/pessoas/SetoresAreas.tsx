@@ -19,7 +19,7 @@ import { Plus, Search, FileText } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
 import { setoresMock as setoresOriginal, type Setor } from "@/data/pessoas-mock";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 export default function SetoresAreas() {
@@ -38,12 +38,7 @@ export default function SetoresAreas() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleExport = () => {
-    exportToExcel(
-      filteredSetores.map(s => ({ Nome: s.nome, "Área Pai": s.areaPaiNome || "—", Responsável: s.responsavelNome || "—", "Qtde Pessoas": s.qtdePessoas, Status: s.status })),
-      "cadastro-setores-areas"
-    );
-  };
+  const getExportData = () => filteredSetores.map(s => ({ Nome: s.nome, "Área Pai": s.areaPaiNome || "—", Responsável: s.responsavelNome || "—", "Qtde Pessoas": s.qtdePessoas, Status: s.status }));
 
   const handleDelete = () => {
     if (deleteId) {
@@ -63,10 +58,7 @@ export default function SetoresAreas() {
             <Plus className="h-4 w-4" />
             Novo Setor
           </Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}>
-            <FileText className="h-4 w-4" />
-            Exportar
-          </Button>
+          <ExportButton getData={getExportData} fileName="cadastro-setores-areas" />
         </div>
       </div>
 

@@ -18,7 +18,7 @@ import { Plus, Search, FileText } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
 import { pessoasMock as pessoasOriginal, setoresMock, cargosMock, tiposVinculo, type Pessoa } from "@/data/pessoas-mock";
-import { exportToExcel } from "@/lib/exportToExcel";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 export default function Pessoas() {
@@ -42,12 +42,7 @@ export default function Pessoas() {
     return matchesSearch && matchesStatus && matchesSetor && matchesCargo && matchesVinculo;
   });
 
-  const handleExport = () => {
-    exportToExcel(
-      filteredPessoas.map(p => ({ Nome: p.nome, Email: p.email, Telefone: p.telefone, Cargo: p.cargo, Setor: p.setor, Vínculo: p.tipoVinculo, Status: p.status, Admissão: p.dataAdmissao })),
-      "cadastro-pessoas"
-    );
-  };
+  const getExportData = () => filteredPessoas.map(p => ({ Nome: p.nome, Email: p.email, Telefone: p.telefone, Cargo: p.cargo, Setor: p.setor, Vínculo: p.tipoVinculo, Status: p.status, Admissão: p.dataAdmissao }));
 
   const handleDelete = () => {
     if (deleteId) {
@@ -67,10 +62,7 @@ export default function Pessoas() {
             <Plus className="h-4 w-4" />
             Nova Pessoa
           </Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}>
-            <FileText className="h-4 w-4" />
-            Exportar
-          </Button>
+          <ExportButton getData={getExportData} fileName="cadastro-pessoas" />
         </div>
       </div>
 

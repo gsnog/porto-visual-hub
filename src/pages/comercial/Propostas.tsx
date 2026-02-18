@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { propostasMock, getContaById, oportunidadesMock } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
 import { toast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
+import { ExportButton } from "@/components/ExportButton";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -42,20 +42,13 @@ export default function Propostas() {
   const getOwnerName = (ownerId: string) => pessoasMock.find(p => p.id === ownerId)?.nome.split(' ')[0] || 'N/A';
   const getOportunidadeTitulo = (opId: string) => oportunidadesMock.find(o => o.id === opId)?.titulo || 'N/A';
 
-  const handleExport = () => {
-    const exportData = filteredPropostas.map(p => {
-      const conta = getContaById(p.contaId);
-      return {
-        "Nº Proposta": p.numero, Conta: conta?.nomeFantasia || '', Oportunidade: getOportunidadeTitulo(p.oportunidadeId),
-        Valor: p.valor, Status: p.status, Validade: p.validade, Versão: p.versao, Responsável: getOwnerName(p.responsavelId)
-      };
-    });
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Propostas");
-    XLSX.writeFile(wb, "propostas.xlsx");
-    toast({ title: "Exportação concluída" });
-  };
+  const getExportData = () => filteredPropostas.map(p => {
+    const conta = getContaById(p.contaId);
+    return {
+      "Nº Proposta": p.numero, Conta: conta?.nomeFantasia || '', Oportunidade: getOportunidadeTitulo(p.oportunidadeId),
+      Valor: p.valor, Status: p.status, Validade: p.validade, Versão: p.versao, Responsável: getOwnerName(p.responsavelId)
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -63,9 +56,7 @@ export default function Propostas() {
         <Button onClick={() => navigate('/comercial/propostas/nova')} className="gap-2">
           <Plus className="w-4 h-4" /> Nova Proposta
         </Button>
-        <Button variant="outline" onClick={handleExport} className="gap-2 border-border">
-          <Download className="w-4 h-4" /> Exportar
-        </Button>
+        <ExportButton getData={getExportData} fileName="propostas" sheetName="Propostas" />
       </div>
 
       <FilterSection
