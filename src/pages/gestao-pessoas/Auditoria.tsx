@@ -185,13 +185,13 @@ export default function Auditoria() {
           <div className="rounded border border-border">
             <Table>
               <TableHeader>
-                <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-                  <TableHead className="text-white font-semibold w-24">Tipo</TableHead>
-                  <TableHead className="text-white font-semibold">Ação</TableHead>
-                  <TableHead className="text-white font-semibold">Pessoa</TableHead>
-                  <TableHead className="text-white font-semibold">Por</TableHead>
-                  <TableHead className="text-white font-semibold">Data/Hora</TableHead>
-                  <TableHead className="text-white font-semibold">Detalhes</TableHead>
+                <TableRow>
+                  <TableHead className="w-24">Tipo</TableHead>
+                  <TableHead>Ação</TableHead>
+                  <TableHead>Pessoa</TableHead>
+                  <TableHead>Por</TableHead>
+                  <TableHead>Data/Hora</TableHead>
+                  <TableHead>Detalhes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

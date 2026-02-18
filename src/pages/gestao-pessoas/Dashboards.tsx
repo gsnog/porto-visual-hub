@@ -52,14 +52,14 @@ export default function Dashboards() {
               <div className="rounded border border-border overflow-hidden">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-                      <TableHead className="text-white font-semibold">Perfil</TableHead>
+                    <TableRow>
+                      <TableHead>Perfil</TableHead>
                       {availableDashboards.map((dash) => (
-                        <TableHead key={dash.id} className="text-white font-semibold text-center">
+                        <TableHead key={dash.id} className="text-center">
                           <div className="flex flex-col items-center gap-1">
                             <span>{dash.name.replace("Dashboard ", "")}</span>
                             {dash.sensitive && (
-                              <span className="text-[10px] text-yellow-300">(Sensível)</span>
+                              <span className="text-[10px] text-warning">(Sensível)</span>
                             )}
                           </div>
                         </TableHead>
@@ -122,11 +122,11 @@ export default function Dashboards() {
               <div className="rounded border border-border overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-                      <TableHead className="text-white font-semibold">Pessoa</TableHead>
-                      <TableHead className="text-white font-semibold">Perfil Base</TableHead>
+                    <TableRow>
+                      <TableHead>Pessoa</TableHead>
+                      <TableHead>Perfil Base</TableHead>
                       {availableDashboards.map((dash) => (
-                        <TableHead key={dash.id} className="text-white font-semibold text-center min-w-[120px]">
+                        <TableHead key={dash.id} className="text-center min-w-[120px]">
                           {dash.name.replace("Dashboard ", "")}
                         </TableHead>
                       ))}

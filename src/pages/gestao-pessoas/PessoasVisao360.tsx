@@ -83,13 +83,13 @@ export default function PessoasVisao360() {
       <div className="rounded border border-border">
         <Table>
           <TableHeader>
-            <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-              <TableHead className="text-white font-semibold">Nome</TableHead>
-              <TableHead className="text-white font-semibold">Área</TableHead>
-              <TableHead className="text-white font-semibold">Cargo</TableHead>
-              <TableHead className="text-white font-semibold">Gestor</TableHead>
-              <TableHead className="text-white font-semibold">Status</TableHead>
-              <TableHead className="text-white font-semibold text-center">Ações Rápidas</TableHead>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>Área</TableHead>
+              <TableHead>Cargo</TableHead>
+              <TableHead>Gestor</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-center">Ações Rápidas</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
