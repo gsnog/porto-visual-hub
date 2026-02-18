@@ -68,18 +68,6 @@ const menuItems = [
     ]
   },
   { 
-    title: "Marketing", 
-    icon: BarChart3,
-    basePath: "/marketing",
-    subItems: [
-      { title: "Visão Geral", url: "/marketing/visao-geral" },
-      { title: "Campanhas", url: "/marketing/campanhas" },
-      { title: "Canais", url: "/marketing/canais" },
-      { title: "Leads (MQL/SQL)", url: "/marketing/leads" },
-      { title: "Atribuição e ROI", url: "/marketing/atribuicao" },
-    ]
-  },
-  { 
     title: "Estoque", 
     icon: Package,
     basePath: "/estoque",

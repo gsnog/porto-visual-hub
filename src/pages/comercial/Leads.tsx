@@ -1,53 +1,36 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
 import { FilterSection } from "@/components/FilterSection";
-import { 
-  Plus, Search, Upload, Users, Flame, Thermometer, Snowflake, CheckCircle, XCircle
-} from "lucide-react";
+import { Plus, Upload, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { leadsMock, origensLead } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
+import { toast } from "@/hooks/use-toast";
+import * as XLSX from "xlsx";
 
 export default function Leads() {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("__all__");
-  const [origemFilter, setOrigemFilter] = useState("__all__");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [origemFilter, setOrigemFilter] = useState("");
 
   const filteredLeads = leadsMock.filter(lead => {
-    const matchSearch = lead.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchSearch = !searchTerm || lead.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
                        lead.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
                        lead.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchStatus = statusFilter === "__all__" || lead.status === statusFilter;
-    const matchOrigem = origemFilter === "__all__" || lead.origem === origemFilter;
+    const matchStatus = !statusFilter || lead.status === statusFilter;
+    const matchOrigem = !origemFilter || lead.origem === origemFilter;
     return matchSearch && matchStatus && matchOrigem;
   });
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'quente': return <Flame className="h-4 w-4 text-destructive" />;
-      case 'morno': return <Thermometer className="h-4 w-4 text-warning" />;
-      case 'frio': return <Snowflake className="h-4 w-4 text-info" />;
-      case 'convertido': return <CheckCircle className="h-4 w-4 text-success" />;
-      case 'perdido': return <XCircle className="h-4 w-4 text-muted-foreground" />;
-      default: return <Users className="h-4 w-4 text-primary" />;
-    }
-  };
-
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
-      'novo': 'Novo',
-      'quente': 'Quente',
-      'morno': 'Morno',
-      'frio': 'Frio',
-      'convertido': 'Convertido',
-      'perdido': 'Perdido'
+      'novo': 'Novo', 'quente': 'Quente', 'morno': 'Morno',
+      'frio': 'Frio', 'convertido': 'Convertido', 'perdido': 'Perdido'
     };
     return labels[status] || status;
   };
@@ -68,88 +51,66 @@ export default function Leads() {
     return pessoa?.nome.split(' ')[0] || 'N/A';
   };
 
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const data = new Uint8Array(evt.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+        toast({ title: "Importação concluída", description: `${jsonData.length} registros importados com sucesso.` });
+      } catch {
+        toast({ title: "Erro na importação", description: "Arquivo inválido.", variant: "destructive" });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    e.target.value = "";
+  };
+
+  const handleExport = () => {
+    const exportData = filteredLeads.map(l => ({
+      Nome: l.nome, Empresa: l.empresa, Email: l.email, Telefone: l.telefone,
+      Origem: l.origem, Status: getStatusLabel(l.status), Score: l.score,
+      Proprietário: getOwnerName(l.proprietarioId), "Última Atividade": l.ultimaAtividade
+    }));
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Leads");
+    XLSX.writeFile(wb, "leads.xlsx");
+    toast({ title: "Exportação concluída" });
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar leads..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 w-[300px]"
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Upload className="h-4 w-4 mr-2" />
-            Importar
-          </Button>
-          <Button onClick={() => navigate('/comercial/leads/novo')}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Lead
-          </Button>
-        </div>
+      <div className="flex flex-wrap gap-3 items-center">
+        <Button onClick={() => navigate('/comercial/leads/novo')} className="gap-2">
+          <Plus className="w-4 h-4" /> Novo Lead
+        </Button>
+        <input ref={fileInputRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleImport} />
+        <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="gap-2 border-border">
+          <Upload className="w-4 h-4" /> Importar
+        </Button>
+        <Button variant="outline" onClick={handleExport} className="gap-2 border-border">
+          <Download className="w-4 h-4" /> Exportar
+        </Button>
       </div>
 
-      {/* Filtros */}
-      <Card className="border border-border rounded p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Status:</span>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[150px] h-9">
-                <SelectValue placeholder="Todos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">Todos</SelectItem>
-                <SelectItem value="novo">Novo</SelectItem>
-                <SelectItem value="quente">Quente</SelectItem>
-                <SelectItem value="morno">Morno</SelectItem>
-                <SelectItem value="frio">Frio</SelectItem>
-                <SelectItem value="convertido">Convertido</SelectItem>
-                <SelectItem value="perdido">Perdido</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Origem:</span>
-            <Select value={origemFilter} onValueChange={setOrigemFilter}>
-              <SelectTrigger className="w-[150px] h-9">
-                <SelectValue placeholder="Todas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">Todas</SelectItem>
-                {origensLead.map(origem => (
-                  <SelectItem key={origem} value={origem}>{origem}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+      <FilterSection
+        fields={[
+          { type: "text", label: "Buscar", placeholder: "Nome, empresa ou email...", value: searchTerm, onChange: setSearchTerm, width: "flex-1 min-w-[200px]" },
+          { type: "select", label: "Status", placeholder: "Todos", value: statusFilter, onChange: setStatusFilter, options: [
+            { value: "novo", label: "Novo" }, { value: "quente", label: "Quente" }, { value: "morno", label: "Morno" },
+            { value: "frio", label: "Frio" }, { value: "convertido", label: "Convertido" }, { value: "perdido", label: "Perdido" }
+          ], width: "min-w-[160px]" },
+          { type: "select", label: "Origem", placeholder: "Todas", value: origemFilter, onChange: setOrigemFilter,
+            options: origensLead.map(o => ({ value: o, label: o })), width: "min-w-[160px]" }
+        ]}
+        resultsCount={filteredLeads.length}
+      />
 
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => {
-              setStatusFilter("__all__");
-              setOrigemFilter("__all__");
-              setSearchTerm("");
-            }}
-          >
-            Limpar Filtros
-          </Button>
-
-          <span className="ml-auto text-sm text-muted-foreground">
-            {filteredLeads.length} resultado(s)
-          </span>
-        </div>
-      </Card>
-
-      {/* Tabela */}
       <div className="rounded border border-border">
         <Table>
           <TableHeader>
@@ -178,21 +139,13 @@ export default function Leads() {
                 </TableCell>
                 <TableCell>{lead.origem}</TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(lead.status)}
-                    <StatusBadge status={getStatusBadgeStatus(lead.status)} />
-                  </div>
+                  <StatusBadge status={getStatusBadgeStatus(lead.status)} />
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <div className="w-12 h-2 bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full ${
-                          lead.score >= 70 ? 'bg-success' : 
-                          lead.score >= 40 ? 'bg-warning' : 'bg-muted-foreground'
-                        }`}
-                        style={{ width: `${lead.score}%` }}
-                      />
+                      <div className={`h-full rounded-full ${lead.score >= 70 ? 'bg-success' : lead.score >= 40 ? 'bg-warning' : 'bg-muted-foreground'}`}
+                        style={{ width: `${lead.score}%` }} />
                     </div>
                     <span className="text-sm">{lead.score}</span>
                   </div>
@@ -200,11 +153,7 @@ export default function Leads() {
                 <TableCell>{getOwnerName(lead.proprietarioId)}</TableCell>
                 <TableCell className="text-muted-foreground">{lead.ultimaAtividade}</TableCell>
                 <TableCell>
-                  <TableActions 
-                    onView={() => {}}
-                    onEdit={() => {}}
-                    onDelete={() => {}}
-                  />
+                  <TableActions onView={() => {}} onEdit={() => {}} onDelete={() => {}} />
                 </TableCell>
               </TableRow>
             ))}

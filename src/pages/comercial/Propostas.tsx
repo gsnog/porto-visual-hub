@@ -1,31 +1,30 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
-import { Plus, Search, FileText, Send, Copy } from "lucide-react";
+import { FilterSection } from "@/components/FilterSection";
+import { Plus, Download, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { propostasMock, getContaById, oportunidadesMock } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
+import { toast } from "@/hooks/use-toast";
+import * as XLSX from "xlsx";
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
-};
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
 export default function Propostas() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("__all__");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const filteredPropostas = propostasMock.filter(proposta => {
     const conta = getContaById(proposta.contaId);
-    const matchSearch = proposta.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchSearch = !searchTerm || proposta.numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
                        conta?.nomeFantasia.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchStatus = statusFilter === "__all__" || proposta.status === statusFilter;
+    const matchStatus = !statusFilter || proposta.status === statusFilter;
     return matchSearch && matchStatus;
   });
 
@@ -40,73 +39,46 @@ export default function Propostas() {
     }
   };
 
-  const getOwnerName = (ownerId: string) => {
-    const pessoa = pessoasMock.find(p => p.id === ownerId);
-    return pessoa?.nome.split(' ')[0] || 'N/A';
-  };
+  const getOwnerName = (ownerId: string) => pessoasMock.find(p => p.id === ownerId)?.nome.split(' ')[0] || 'N/A';
+  const getOportunidadeTitulo = (opId: string) => oportunidadesMock.find(o => o.id === opId)?.titulo || 'N/A';
 
-  const getOportunidadeTitulo = (opId: string) => {
-    const op = oportunidadesMock.find(o => o.id === opId);
-    return op?.titulo || 'N/A';
+  const handleExport = () => {
+    const exportData = filteredPropostas.map(p => {
+      const conta = getContaById(p.contaId);
+      return {
+        "Nº Proposta": p.numero, Conta: conta?.nomeFantasia || '', Oportunidade: getOportunidadeTitulo(p.oportunidadeId),
+        Valor: p.valor, Status: p.status, Validade: p.validade, Versão: p.versao, Responsável: getOwnerName(p.responsavelId)
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Propostas");
+    XLSX.writeFile(wb, "propostas.xlsx");
+    toast({ title: "Exportação concluída" });
   };
 
   return (
     <div className="space-y-6">
-      {/* Header Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar propostas..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 w-[300px]"
-          />
-        </div>
-        <Button onClick={() => navigate('/comercial/propostas/nova')}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Proposta
+      <div className="flex flex-wrap gap-3 items-center">
+        <Button onClick={() => navigate('/comercial/propostas/nova')} className="gap-2">
+          <Plus className="w-4 h-4" /> Nova Proposta
+        </Button>
+        <Button variant="outline" onClick={handleExport} className="gap-2 border-border">
+          <Download className="w-4 h-4" /> Exportar
         </Button>
       </div>
 
-      {/* Filtros */}
-      <Card className="border border-border rounded p-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Status:</span>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[150px] h-9">
-                <SelectValue placeholder="Todos" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">Todos</SelectItem>
-                <SelectItem value="rascunho">Rascunho</SelectItem>
-                <SelectItem value="enviada">Enviada</SelectItem>
-                <SelectItem value="aprovada">Aprovada</SelectItem>
-                <SelectItem value="recusada">Recusada</SelectItem>
-                <SelectItem value="expirada">Expirada</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <FilterSection
+        fields={[
+          { type: "text", label: "Buscar", placeholder: "Nº proposta ou conta...", value: searchTerm, onChange: setSearchTerm, width: "flex-1 min-w-[200px]" },
+          { type: "select", label: "Status", placeholder: "Todos", value: statusFilter, onChange: setStatusFilter, options: [
+            { value: "rascunho", label: "Rascunho" }, { value: "enviada", label: "Enviada" },
+            { value: "aprovada", label: "Aprovada" }, { value: "recusada", label: "Recusada" }, { value: "expirada", label: "Expirada" }
+          ], width: "min-w-[160px]" }
+        ]}
+        resultsCount={filteredPropostas.length}
+      />
 
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => {
-              setStatusFilter("__all__");
-              setSearchTerm("");
-            }}
-          >
-            Limpar Filtros
-          </Button>
-
-          <span className="ml-auto text-sm text-muted-foreground">
-            {filteredPropostas.length} resultado(s)
-          </span>
-        </div>
-      </Card>
-
-      {/* Tabela */}
       <div className="rounded border border-border">
         <Table>
           <TableHeader>
@@ -126,7 +98,6 @@ export default function Propostas() {
             {filteredPropostas.map((proposta) => {
               const conta = getContaById(proposta.contaId);
               const isExpired = new Date(proposta.validade) < new Date() && proposta.status === 'enviada';
-              
               return (
                 <TableRow key={proposta.id} className="hover:bg-muted/50 cursor-pointer">
                   <TableCell>
@@ -146,16 +117,10 @@ export default function Propostas() {
                   <TableCell className={isExpired ? 'text-destructive' : ''}>
                     {new Date(proposta.validade).toLocaleDateString('pt-BR')}
                   </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">v{proposta.versao}</Badge>
-                  </TableCell>
+                  <TableCell><Badge variant="outline">v{proposta.versao}</Badge></TableCell>
                   <TableCell>{getOwnerName(proposta.responsavelId)}</TableCell>
                   <TableCell>
-                    <TableActions 
-                      onView={() => {}}
-                      onEdit={() => {}}
-                      onDelete={() => {}}
-                    />
+                    <TableActions onView={() => {}} onEdit={() => {}} onDelete={() => {}} />
                   </TableCell>
                 </TableRow>
               );
