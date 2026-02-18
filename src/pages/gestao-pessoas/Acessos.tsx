@@ -36,6 +36,7 @@ const modulosSistema = [
   { id: 'gestao_pessoas', nome: 'Gestão de Pessoas', acoes: ['view', 'create', 'edit', 'delete'] },
   { id: 'calendario', nome: 'Calendário', acoes: ['view', 'create', 'edit', 'delete'] },
   { id: 'chat', nome: 'Chat', acoes: ['view', 'create'] },
+  { id: 'comercial', nome: 'Comercial', acoes: ['view', 'create', 'edit', 'delete', 'export'] },
 ];
 
 const acoesLabels: Record<string, string> = {

@@ -23,6 +23,7 @@ export interface ValidatedSelectProps {
   options: SelectOption[];
   value?: string;
   onValueChange?: (value: string) => void;
+  onChange?: (value: string) => void;
   onBlur?: () => void;
   className?: string;
   disabled?: boolean;
@@ -39,6 +40,7 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
       options,
       value,
       onValueChange,
+      onChange,
       onBlur,
       className,
       disabled,
@@ -46,13 +48,14 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
     ref
   ) => {
     const hasError = touched && !!error;
+    const handleChange = onValueChange || onChange;
 
     return (
       <div className="space-y-2">
         <Label className="text-sm font-medium">
           {label} {required && <span className="text-destructive">*</span>}
         </Label>
-        <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+        <Select value={value} onValueChange={handleChange} disabled={disabled}>
           <SelectTrigger
             ref={ref}
             className={cn(
