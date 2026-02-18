@@ -1,15 +1,13 @@
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Ship } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
-import { ValidatedSelect } from "@/components/ui/validated-select";
 
 const validationFields = [
   { name: "nome", label: "Nome", required: true, minLength: 2, maxLength: 100 },
@@ -22,26 +20,22 @@ const NovaEmbarcacao = () => {
   const navigate = useNavigate();
   const { handleSave, isSaving } = useSaveWithDelay();
 
-  const {
-    formData,
-    setFieldValue,
-    setFieldTouched,
-    validateAll,
-    getFieldError,
-    touched,
-  } = useFormValidation(
+  const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
     { nome: "", setores: "", cliente: "", dimensoes: "" },
     validationFields
   );
+
+  const [setorOptions, setSetorOptions] = useState([
+    { value: "setor1", label: "Setor 1" }, { value: "setor2", label: "Setor 2" }
+  ]);
+  const [clienteOptions, setClienteOptions] = useState([
+    { value: "cliente1", label: "Cliente 1" }, { value: "cliente2", label: "Cliente 2" }
+  ]);
 
   const handleSalvar = async () => {
     if (validateAll()) {
       await handleSave("/operacional/embarcacoes", "Embarcação salva com sucesso!");
     }
-  };
-
-  const handleCancelar = () => {
-    navigate("/operacional/embarcacoes");
   };
 
   return (
@@ -60,66 +54,20 @@ const NovaEmbarcacao = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ValidatedInput
-                label="Nome"
-                required
-                value={formData.nome}
-                onChange={(e) => setFieldValue("nome", e.target.value)}
-                onBlur={() => setFieldTouched("nome")}
-                error={getFieldError("nome")}
-                touched={touched.nome}
-              />
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Setores <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select value={formData.setores} onValueChange={(value) => setFieldValue("setores", value)}>
-                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("setores")}>
-                      <SelectValue placeholder="Selecionar Setores" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="setor1">Setor 1</SelectItem>
-                      <SelectItem value="setor2">Setor 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6" onClick={() => navigate("/operacional/novo-setor")}>Adicionar</Button>
-                </div>
-              </div>
+              <ValidatedInput label="Nome" required value={formData.nome} onChange={(e) => setFieldValue("nome", e.target.value)}
+                onBlur={() => setFieldTouched("nome")} error={getFieldError("nome")} touched={touched.nome} />
+              <DropdownWithAdd label="Setores" required value={formData.setores} onChange={(v) => setFieldValue("setores", v)}
+                options={setorOptions} onAddNew={(item) => setSetorOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Cliente <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select value={formData.cliente} onValueChange={(value) => setFieldValue("cliente", value)}>
-                    <SelectTrigger className="form-input" onBlur={() => setFieldTouched("cliente")}>
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="cliente1">Cliente 1</SelectItem>
-                      <SelectItem value="cliente2">Cliente 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6" onClick={() => navigate("/cadastro/financeiro/novo-cliente")}>Adicionar</Button>
-                </div>
-              </div>
-
-              <ValidatedInput
-                label="Dimensões"
-                required
-                value={formData.dimensoes}
-                onChange={(e) => setFieldValue("dimensoes", e.target.value)}
-                onBlur={() => setFieldTouched("dimensoes")}
-                error={getFieldError("dimensoes")}
-                touched={touched.dimensoes}
-              />
+              <DropdownWithAdd label="Cliente" required value={formData.cliente} onChange={(v) => setFieldValue("cliente", v)}
+                options={clienteOptions} onAddNew={(item) => setClienteOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <ValidatedInput label="Dimensões" required value={formData.dimensoes} onChange={(e) => setFieldValue("dimensoes", e.target.value)}
+                onBlur={() => setFieldTouched("dimensoes")} error={getFieldError("dimensoes")} touched={touched.dimensoes} />
             </div>
 
-            <FormActionBar
-              onSave={handleSalvar}
-              onCancel={handleCancelar}
-              isSaving={isSaving}
-            />
+            <FormActionBar onSave={handleSalvar} onCancel={() => navigate("/operacional/embarcacoes")} isSaving={isSaving} />
           </div>
         </CardContent>
       </Card>

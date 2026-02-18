@@ -2,16 +2,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { ClipboardList, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
-import { ValidatedSelect } from "@/components/ui/validated-select";
 import { ValidatedTextarea } from "@/components/ui/validated-textarea";
 import { toast } from "@/hooks/use-toast";
 
@@ -34,22 +33,24 @@ export default function NovaRequisicao() {
   const [selectedItem, setSelectedItem] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
-  const {
-    formData,
-    setFieldValue,
-    setFieldTouched,
-    validateAll,
-    getFieldError,
-    touched,
-  } = useFormValidation({ setor: "", projeto: "", observacoes: "" }, validationFields);
+  const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
+    { setor: "", projeto: "", observacoes: "" },
+    validationFields
+  );
+
+  const [setorOptions, setSetorOptions] = useState([
+    { value: "setor1", label: "Setor 1" }, { value: "setor2", label: "Setor 2" }
+  ]);
+  const [projetoOptions, setProjetoOptions] = useState([
+    { value: "projeto1", label: "Projeto 1" }, { value: "projeto2", label: "Projeto 2" }
+  ]);
+  const [itemOptions, setItemOptions] = useState([
+    { value: "Item 1", label: "Item 1" }, { value: "Item 2", label: "Item 2" }
+  ]);
 
   const handleAddItem = () => {
     if (!selectedItem || !quantidade) {
-      toast({
-        title: "Campos obrigatórios",
-        description: "Selecione um item e informe a quantidade",
-        variant: "destructive",
-      });
+      toast({ title: "Campos obrigatórios", description: "Selecione um item e informe a quantidade", variant: "destructive" });
       return;
     }
     setItens([...itens, { id: Date.now(), item: selectedItem, quantidade }]);
@@ -64,19 +65,11 @@ export default function NovaRequisicao() {
   const handleSalvar = async () => {
     if (validateAll()) {
       if (itens.length === 0) {
-        toast({
-          title: "Itens obrigatórios",
-          description: "Adicione pelo menos um item à requisição",
-          variant: "destructive",
-        });
+        toast({ title: "Itens obrigatórios", description: "Adicione pelo menos um item à requisição", variant: "destructive" });
         return;
       }
       await handleSave("/estoque/requisicoes", "Requisição salva com sucesso!");
     }
-  };
-
-  const handleCancelar = () => {
-    navigate("/estoque/requisicoes");
   };
 
   return (
@@ -95,78 +88,26 @@ export default function NovaRequisicao() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ValidatedSelect
-                label="Setor"
-                required
-                placeholder="Selecionar"
-                options={[
-                  { value: "setor1", label: "Setor 1" },
-                  { value: "setor2", label: "Setor 2" },
-                ]}
-                value={formData.setor}
-                onValueChange={(value) => setFieldValue("setor", value)}
-                onBlur={() => setFieldTouched("setor")}
-                error={getFieldError("setor")}
-                touched={touched.setor}
-              />
-
-              <ValidatedSelect
-                label="Projeto"
-                placeholder="Selecionar"
-                options={[
-                  { value: "projeto1", label: "Projeto 1" },
-                  { value: "projeto2", label: "Projeto 2" },
-                ]}
-                value={formData.projeto}
-                onValueChange={(value) => setFieldValue("projeto", value)}
-                onBlur={() => setFieldTouched("projeto")}
-                error={getFieldError("projeto")}
-                touched={touched.projeto}
-              />
+              <DropdownWithAdd label="Setor" required value={formData.setor} onChange={(v) => setFieldValue("setor", v)}
+                options={setorOptions} onAddNew={(item) => setSetorOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <DropdownWithAdd label="Projeto" value={formData.projeto} onChange={(v) => setFieldValue("projeto", v)}
+                options={projetoOptions} onAddNew={(item) => setProjetoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              <ValidatedTextarea
-                label="Observações"
-                className="min-h-[150px]"
-                value={formData.observacoes}
-                onChange={(e) => setFieldValue("observacoes", e.target.value)}
-                onBlur={() => setFieldTouched("observacoes")}
-                error={getFieldError("observacoes")}
-                touched={touched.observacoes}
-              />
-            </div>
+            <ValidatedTextarea label="Observações" className="min-h-[150px]" value={formData.observacoes}
+              onChange={(e) => setFieldValue("observacoes", e.target.value)} onBlur={() => setFieldTouched("observacoes")}
+              error={getFieldError("observacoes")} touched={touched.observacoes} />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Item</Label>
-                <Select value={selectedItem} onValueChange={setSelectedItem}>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="Item 1">Item 1</SelectItem>
-                    <SelectItem value="Item 2">Item 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
+              <DropdownWithAdd label="Item" value={selectedItem} onChange={setSelectedItem}
+                options={itemOptions} onAddNew={(item) => setItemOptions(prev => [...prev, { value: item, label: item }])} />
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Quantidade</Label>
-                <Input
-                  type="number"
-                  className="form-input"
-                  value={quantidade}
-                  onChange={(e) => setQuantidade(e.target.value)}
-                />
+                <Input type="number" className="form-input" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} />
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button variant="outline" className="btn-outline" onClick={handleAddItem}>
-                Adicionar Item
-              </Button>
-            </div>
+            <Button variant="outline" onClick={handleAddItem}>Adicionar Item</Button>
 
             <h2 className="text-xl font-semibold text-foreground pt-4">Itens</h2>
 
@@ -180,23 +121,14 @@ export default function NovaRequisicao() {
               </TableHeader>
               <TableBody>
                 {itens.length === 0 ? (
-                  <TableRow>
-                    <TableCell className="text-center text-muted-foreground" colSpan={3}>
-                      Nenhum item adicionado
-                    </TableCell>
-                  </TableRow>
+                  <TableRow><TableCell className="text-center text-muted-foreground" colSpan={3}>Nenhum item adicionado</TableCell></TableRow>
                 ) : (
                   itens.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="text-center">{item.item}</TableCell>
                       <TableCell className="text-center">{item.quantidade}</TableCell>
                       <TableCell className="text-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveItem(item.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive">
                           <Trash2 size={16} />
                         </Button>
                       </TableCell>
@@ -206,11 +138,7 @@ export default function NovaRequisicao() {
               </TableBody>
             </Table>
 
-            <FormActionBar
-              onSave={handleSalvar}
-              onCancel={handleCancelar}
-              isSaving={isSaving}
-            />
+            <FormActionBar onSave={handleSalvar} onCancel={() => navigate("/estoque/requisicoes")} isSaving={isSaving} />
           </div>
         </CardContent>
       </Card>

@@ -1,25 +1,49 @@
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { useNavigate } from "react-router-dom"
-import { SimpleFormWizard } from "@/components/SimpleFormWizard"
-import { FormActionBar } from "@/components/FormActionBar"
-import { Receipt } from "lucide-react"
-import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { SimpleFormWizard } from "@/components/SimpleFormWizard";
+import { FormActionBar } from "@/components/FormActionBar";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
+import { Receipt } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { ValidatedInput } from "@/components/ui/validated-input";
+import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+
+const validationFields = [
+  { name: "cliente", label: "Cliente", required: true },
+  { name: "documento", label: "Documento", required: true },
+  { name: "valor", label: "Valor do Título", required: true },
+  { name: "dataFaturamento", label: "Data de Faturamento", required: true },
+  { name: "dataVencimento", label: "Data de Vencimento", required: true },
+];
 
 export default function NovaContaReceber() {
-  const navigate = useNavigate()
-  const { isSaving, handleSave } = useSaveWithDelay()
+  const navigate = useNavigate();
+  const { isSaving, handleSave } = useSaveWithDelay();
 
-  const handleSalvar = () => {
-    handleSave("/financeiro/contas-receber", "Conta a receber salva com sucesso!")
-  }
+  const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
+    { cliente: "", centroReceita: "", planoContas: "", documento: "", valor: "", multa: "0", encargos: "0", juros: "0", desconto: "0", valorTotal: "", dataFaturamento: "", dataVencimento: "", parcelas: "1", descricao: "" },
+    validationFields
+  );
 
-  const handleCancelar = () => {
-    navigate("/financeiro/contas-receber")
-  }
+  const [clienteOptions, setClienteOptions] = useState([
+    { value: "cliente1", label: "Cliente 1" }, { value: "cliente2", label: "Cliente 2" }
+  ]);
+  const [centroReceitaOptions, setCentroReceitaOptions] = useState([
+    { value: "centro1", label: "Centro 1" }, { value: "centro2", label: "Centro 2" }
+  ]);
+  const [planoContasOptions, setPlanoContasOptions] = useState([
+    { value: "plano1", label: "Plano 1" }, { value: "plano2", label: "Plano 2" }
+  ]);
+
+  const handleSalvar = async () => {
+    if (validateAll()) {
+      await handleSave("/financeiro/contas-receber", "Conta a receber salva com sucesso!");
+    }
+  };
 
   return (
     <SimpleFormWizard title="Nova Conta a Receber">
@@ -37,126 +61,70 @@ export default function NovaContaReceber() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Cliente <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="cliente1">Cliente 1</SelectItem>
-                    <SelectItem value="cliente2">Cliente 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Centro de Receita</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="centro1">Centro 1</SelectItem>
-                    <SelectItem value="centro2">Centro 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <DropdownWithAdd label="Cliente" required value={formData.cliente} onChange={(v) => setFieldValue("cliente", v)}
+                options={clienteOptions} onAddNew={(item) => setClienteOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <DropdownWithAdd label="Centro de Receita" value={formData.centroReceita} onChange={(v) => setFieldValue("centroReceita", v)}
+                options={centroReceitaOptions} onAddNew={(item) => setCentroReceitaOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Plano de Contas</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="plano1">Plano 1</SelectItem>
-                    <SelectItem value="plano2">Plano 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Documento <span className="text-destructive">*</span></Label>
-                <Input type="text" className="form-input" />
-              </div>
+              <DropdownWithAdd label="Plano de Contas" value={formData.planoContas} onChange={(v) => setFieldValue("planoContas", v)}
+                options={planoContasOptions} onAddNew={(item) => setPlanoContasOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <ValidatedInput label="Documento" required value={formData.documento}
+                onChange={(e) => setFieldValue("documento", e.target.value)} onBlur={() => setFieldTouched("documento")}
+                error={getFieldError("documento")} touched={touched.documento} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Valor do Título <span className="text-destructive">*</span></Label>
-                <Input type="text" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Multa</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Encargos</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
+              <ValidatedInput label="Valor do Título" required value={formData.valor}
+                onChange={(e) => setFieldValue("valor", e.target.value)} onBlur={() => setFieldTouched("valor")}
+                error={getFieldError("valor")} touched={touched.valor} />
+              <ValidatedInput label="Multa" type="number" value={formData.multa}
+                onChange={(e) => setFieldValue("multa", e.target.value)} onBlur={() => setFieldTouched("multa")}
+                error={getFieldError("multa")} touched={touched.multa} />
+              <ValidatedInput label="Encargos" type="number" value={formData.encargos}
+                onChange={(e) => setFieldValue("encargos", e.target.value)} onBlur={() => setFieldTouched("encargos")}
+                error={getFieldError("encargos")} touched={touched.encargos} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Juros</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
+              <ValidatedInput label="Juros" type="number" value={formData.juros}
+                onChange={(e) => setFieldValue("juros", e.target.value)} onBlur={() => setFieldTouched("juros")}
+                error={getFieldError("juros")} touched={touched.juros} />
+              <ValidatedInput label="Desconto" type="number" value={formData.desconto}
+                onChange={(e) => setFieldValue("desconto", e.target.value)} onBlur={() => setFieldTouched("desconto")}
+                error={getFieldError("desconto")} touched={touched.desconto} />
+              <ValidatedInput label="Valor Total" value={formData.valorTotal}
+                onChange={(e) => setFieldValue("valorTotal", e.target.value)} onBlur={() => setFieldTouched("valorTotal")}
+                error={getFieldError("valorTotal")} touched={touched.valorTotal} />
+            </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Desconto</Label>
-                <Input type="number" defaultValue="0" className="form-input" />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Valor Total</Label>
-                <Input type="text" className="form-input" />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ValidatedInput label="Data de Faturamento" required type="date" value={formData.dataFaturamento}
+                onChange={(e) => setFieldValue("dataFaturamento", e.target.value)} onBlur={() => setFieldTouched("dataFaturamento")}
+                error={getFieldError("dataFaturamento")} touched={touched.dataFaturamento} />
+              <ValidatedInput label="Data de Vencimento" required type="date" value={formData.dataVencimento}
+                onChange={(e) => setFieldValue("dataVencimento", e.target.value)} onBlur={() => setFieldTouched("dataVencimento")}
+                error={getFieldError("dataVencimento")} touched={touched.dataVencimento} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Data de Faturamento <span className="text-destructive">*</span></Label>
-                <Input type="date" className="form-input" />
+                <Label className="text-sm font-medium">Documento PDF</Label>
+                <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
               </div>
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Data de Vencimento <span className="text-destructive">*</span></Label>
-                <Input type="date" className="form-input" />
-              </div>
+              <ValidatedInput label="Número de Parcelas" type="number" value={formData.parcelas}
+                onChange={(e) => setFieldValue("parcelas", e.target.value)} onBlur={() => setFieldTouched("parcelas")}
+                error={getFieldError("parcelas")} touched={touched.parcelas} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div className="space-y-2">
-                 <Label className="text-sm font-medium">Documento PDF</Label>
-                 <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
-               </div>
+            <ValidatedTextarea label="Descrição" value={formData.descricao} onChange={(e) => setFieldValue("descricao", e.target.value)}
+              onBlur={() => setFieldTouched("descricao")} error={getFieldError("descricao")} touched={touched.descricao} />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Número de Parcelas</Label>
-                <Input type="number" defaultValue="1" className="form-input" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Descrição</Label>
-                <Textarea className="form-input min-h-[100px]" />
-              </div>
-            </div>
-
-            <FormActionBar
-              onSave={handleSalvar}
-              onCancel={handleCancelar}
-              isSaving={isSaving}
-            />
+            <FormActionBar onSave={handleSalvar} onCancel={() => navigate("/financeiro/contas-receber")} isSaving={isSaving} />
           </div>
         </CardContent>
       </Card>
     </SimpleFormWizard>
-  )
+  );
 }

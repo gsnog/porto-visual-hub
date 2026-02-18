@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -7,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export interface SelectOption {
@@ -27,6 +29,8 @@ export interface ValidatedSelectProps {
   onBlur?: () => void;
   className?: string;
   disabled?: boolean;
+  searchable?: boolean;
+  searchPlaceholder?: string;
 }
 
 const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps>(
@@ -44,11 +48,18 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
       onBlur,
       className,
       disabled,
+      searchable = false,
+      searchPlaceholder = "Buscar...",
     },
     ref
   ) => {
     const hasError = touched && !!error;
     const handleChange = onValueChange || onChange;
+    const [search, setSearch] = useState("");
+
+    const filteredOptions = searchable
+      ? options.filter(o => o.label.toLowerCase().includes(search.toLowerCase()))
+      : options;
 
     return (
       <div className="space-y-2">
@@ -68,11 +79,25 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent className="bg-popover">
-            {options.map((option) => (
+            {searchable && (
+              <div className="p-2">
+                <Input
+                  placeholder={searchPlaceholder}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-8 text-sm"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
+            {filteredOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
             ))}
+            {searchable && filteredOptions.length === 0 && (
+              <div className="p-2 text-sm text-muted-foreground text-center">Nenhum resultado</div>
+            )}
           </SelectContent>
         </Select>
         {hasError && (

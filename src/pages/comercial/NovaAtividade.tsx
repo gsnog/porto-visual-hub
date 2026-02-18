@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Calendar } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
@@ -26,6 +28,11 @@ export default function NovaAtividade() {
     { titulo: "", tipo: "", data: "", hora: "", responsavelId: "", relacionadoTipo: "", relacionadoId: "", descricao: "" },
     validationFields
   );
+
+  const [tipoOptions, setTipoOptions] = useState([
+    { value: "reuniao", label: "Reunião" }, { value: "ligacao", label: "Ligação" },
+    { value: "email", label: "Email" }, { value: "tarefa", label: "Tarefa" }, { value: "follow-up", label: "Follow-up" }
+  ]);
 
   const getRelacionadoOptions = () => {
     if (formData.relacionadoTipo === 'oportunidade') return oportunidadesMock.map(o => ({ value: o.id, label: o.titulo }));
@@ -58,12 +65,8 @@ export default function NovaAtividade() {
               onBlur={() => setFieldTouched("titulo")} error={getFieldError("titulo")} touched={touched.titulo} />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <ValidatedSelect label="Tipo" required value={formData.tipo} onChange={(v) => setFieldValue("tipo", v)}
-                onBlur={() => setFieldTouched("tipo")} error={getFieldError("tipo")} touched={touched.tipo}
-                options={[
-                  { value: "reuniao", label: "Reunião" }, { value: "ligacao", label: "Ligação" },
-                  { value: "email", label: "Email" }, { value: "tarefa", label: "Tarefa" }, { value: "follow-up", label: "Follow-up" }
-                ]} />
+              <DropdownWithAdd label="Tipo" required value={formData.tipo} onChange={(v) => setFieldValue("tipo", v)}
+                options={tipoOptions} onAddNew={(item) => setTipoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
               <ValidatedInput label="Data" required type="date" value={formData.data}
                 onChange={(e) => setFieldValue("data", e.target.value)} onBlur={() => setFieldTouched("data")}
                 error={getFieldError("data")} touched={touched.data} />

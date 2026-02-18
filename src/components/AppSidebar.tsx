@@ -3,6 +3,7 @@ import {
   LayoutGrid, 
   ClipboardList, 
   Package, 
+  Briefcase,
   TrendingUp,
   Building2,
   UserRoundPlus,
@@ -53,7 +54,7 @@ const menuItems = [
   },
   { 
     title: "Comercial", 
-    icon: TrendingUp,
+    icon: Briefcase,
     basePath: "/comercial",
     subItems: [
       { title: "Visão Geral", url: "/comercial/visao-geral" },
