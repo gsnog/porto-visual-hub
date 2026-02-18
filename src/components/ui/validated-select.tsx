@@ -48,7 +48,7 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
       onBlur,
       className,
       disabled,
-      searchable = false,
+      searchable = true,
       searchPlaceholder = "Buscar...",
     },
     ref

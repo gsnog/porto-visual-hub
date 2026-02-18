@@ -3,8 +3,8 @@ import {
   LayoutGrid, 
   ClipboardList, 
   Package, 
-  Briefcase,
-  TrendingUp,
+   TrendingUp,
+   DollarSign,
   Building2,
   UserRoundPlus,
   LogOut,
@@ -54,7 +54,7 @@ const menuItems = [
   },
   { 
     title: "Comercial", 
-    icon: Briefcase,
+    icon: TrendingUp,
     basePath: "/comercial",
     subItems: [
       { title: "Visão Geral", url: "/comercial/visao-geral" },
@@ -85,7 +85,7 @@ const menuItems = [
   },
   { 
     title: "Financeiro", 
-    icon: TrendingUp,
+    icon: DollarSign,
     basePath: "/financeiro",
     subItems: [
       { title: "Contas a Receber", url: "/financeiro/contas-receber" },

@@ -1,25 +1,37 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { useNavigate } from "react-router-dom"
-import { SimpleFormWizard } from "@/components/SimpleFormWizard"
-import { FormActionBar } from "@/components/FormActionBar"
-import { PackageMinus } from "lucide-react"
-import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { SimpleFormWizard } from "@/components/SimpleFormWizard";
+import { FormActionBar } from "@/components/FormActionBar";
+import { PackageMinus } from "lucide-react";
+import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { DropdownWithAdd } from "@/components/DropdownWithAdd";
+import { ValidatedSelect } from "@/components/ui/validated-select";
 
 export default function NovaSaida() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { handleSalvar, isSaving } = useSaveWithDelay({
     redirectTo: "/estoque/saidas",
     successMessage: "Saída salva!",
     successDescription: "O registro foi salvo com sucesso.",
-  })
+  });
+
+  const [estoqueOrigem, setEstoqueOrigem] = useState("");
+  const [setor, setSetor] = useState("");
+  const [origens, setOrigens] = useState([
+    { value: "origem1", label: "Estoque 1" },
+    { value: "origem2", label: "Estoque 2" },
+  ]);
+  const [setores, setSetores] = useState([
+    { value: "setor1", label: "Setor 1" },
+    { value: "setor2", label: "Setor 2" },
+  ]);
 
   const handleCancelar = () => {
-    navigate("/estoque/saidas")
-  }
+    navigate("/estoque/saidas");
+  };
 
   return (
     <SimpleFormWizard title="Nova Saída">
@@ -42,67 +54,52 @@ export default function NovaSaida() {
                 <Input type="date" className="form-input" />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Estoque de Origem <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="origem1">Estoque 1</SelectItem>
-                      <SelectItem value="origem2">Estoque 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
+              <DropdownWithAdd
+                label="Estoque de Origem"
+                required
+                value={estoqueOrigem}
+                onChange={setEstoqueOrigem}
+                options={origens}
+                onAddNew={(name) => {
+                  const newVal = name.toLowerCase().replace(/\s/g, "-");
+                  setOrigens(prev => [...prev, { value: newVal, label: name }]);
+                  setEstoqueOrigem(newVal);
+                }}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Setor <span className="text-destructive">*</span></Label>
-                <div className="flex gap-3">
-                  <Select>
-                    <SelectTrigger className="form-input">
-                      <SelectValue placeholder="Selecionar" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="setor1">Setor 1</SelectItem>
-                      <SelectItem value="setor2">Setor 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button className="btn-action px-6">Adicionar</Button>
-                </div>
-              </div>
+              <DropdownWithAdd
+                label="Setor"
+                required
+                value={setor}
+                onChange={setSetor}
+                options={setores}
+                onAddNew={(name) => {
+                  const newVal = name.toLowerCase().replace(/\s/g, "-");
+                  setSetores(prev => [...prev, { value: newVal, label: name }]);
+                  setSetor(newVal);
+                }}
+              />
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Operação</Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="consumo">Consumo</SelectItem>
-                    <SelectItem value="transferencia">Transferência</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <ValidatedSelect
+                label="Operação"
+                options={[
+                  { value: "consumo", label: "Consumo" },
+                  { value: "transferencia", label: "Transferência" },
+                ]}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Item <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="item1">Item 1</SelectItem>
-                    <SelectItem value="item2">Item 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <ValidatedSelect
+                label="Item"
+                required
+                options={[
+                  { value: "item1", label: "Item 1" },
+                  { value: "item2", label: "Item 2" },
+                ]}
+              />
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Quantidade <span className="text-destructive">*</span></Label>
@@ -111,18 +108,14 @@ export default function NovaSaida() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Estoque de Destino <span className="text-destructive">*</span></Label>
-                <Select>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecionar" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="destino1">Estoque 1</SelectItem>
-                    <SelectItem value="destino2">Estoque 2</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <ValidatedSelect
+                label="Estoque de Destino"
+                required
+                options={[
+                  { value: "destino1", label: "Estoque 1" },
+                  { value: "destino2", label: "Estoque 2" },
+                ]}
+              />
             </div>
 
             <FormActionBar
@@ -134,5 +127,5 @@ export default function NovaSaida() {
         </CardContent>
       </Card>
     </SimpleFormWizard>
-  )
+  );
 }
