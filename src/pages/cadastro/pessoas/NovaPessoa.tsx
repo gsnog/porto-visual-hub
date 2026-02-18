@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { ValidatedSelect } from "@/components/ui/validated-select"
 import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
 import { 
@@ -389,64 +390,20 @@ export default function NovaPessoa() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Setor/Área <span className="text-destructive">*</span></Label>
-                    <Select value={formData.setor} onValueChange={(v) => updateField("setor", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar setor" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {setoresMock.map(setor => (
-                          <SelectItem key={setor.id} value={setor.id}>{setor.nome}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Cargo <span className="text-destructive">*</span></Label>
-                    <Select value={formData.cargo} onValueChange={(v) => updateField("cargo", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar cargo" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {cargosMock.map(cargo => (
-                          <SelectItem key={cargo.id} value={cargo.nome}>{cargo.nome}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="Setor/Área" required value={formData.setor} onValueChange={(v) => updateField("setor", v)}
+                    placeholder="Selecionar setor" options={setoresMock.map(s => ({ value: s.id, label: s.nome }))} />
+                  <ValidatedSelect label="Cargo" required value={formData.cargo} onValueChange={(v) => updateField("cargo", v)}
+                    placeholder="Selecionar cargo" options={cargosMock.map(c => ({ value: c.nome, label: c.nome }))} />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Gestor Direto</Label>
-                    <Select value={formData.gestorDireto} onValueChange={(v) => updateField("gestorDireto", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar gestor" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="none">Sem gestor (cargo de liderança)</SelectItem>
-                        {gestoresDisponiveis.map(pessoa => (
-                          <SelectItem key={pessoa.id} value={pessoa.id}>
-                            {pessoa.nome} - {pessoa.cargo}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Tipo de Vínculo <span className="text-destructive">*</span></Label>
-                    <Select value={formData.tipoVinculo} onValueChange={(v) => updateField("tipoVinculo", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar vínculo" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {tiposVinculo.map(tipo => (
-                          <SelectItem key={tipo.value} value={tipo.value}>{tipo.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="Gestor Direto" value={formData.gestorDireto} onValueChange={(v) => updateField("gestorDireto", v)}
+                    placeholder="Selecionar gestor" options={[
+                      { value: "none", label: "Sem gestor (cargo de liderança)" },
+                      ...gestoresDisponiveis.map(p => ({ value: p.id, label: `${p.nome} - ${p.cargo}` }))
+                    ]} />
+                  <ValidatedSelect label="Tipo de Vínculo" required value={formData.tipoVinculo} onValueChange={(v) => updateField("tipoVinculo", v)}
+                    placeholder="Selecionar vínculo" options={tiposVinculo} />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -459,19 +416,12 @@ export default function NovaPessoa() {
                       onChange={(e) => updateField("dataAdmissao", e.target.value)}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Status <span className="text-destructive">*</span></Label>
-                    <Select value={formData.statusPessoa} onValueChange={(v) => updateField("statusPessoa", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="Ativo">Ativo</SelectItem>
-                        <SelectItem value="Afastado">Afastado</SelectItem>
-                        <SelectItem value="Desligado">Desligado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="Status" required value={formData.statusPessoa} onValueChange={(v) => updateField("statusPessoa", v)}
+                    placeholder="Selecionar status" options={[
+                      { value: "Ativo", label: "Ativo" },
+                      { value: "Afastado", label: "Afastado" },
+                      { value: "Desligado", label: "Desligado" },
+                    ]} />
                 </div>
 
                 <div className="space-y-2">
@@ -556,74 +506,19 @@ export default function NovaPessoa() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Sexo</Label>
-                    <Select value={formData.sexo} onValueChange={(v) => updateField("sexo", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {opcoesSelecao.sexo.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Estado Civil</Label>
-                    <Select value={formData.estadoCivil} onValueChange={(v) => updateField("estadoCivil", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {opcoesSelecao.estadoCivil.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Nacionalidade</Label>
-                    <Select value={formData.nacionalidade} onValueChange={(v) => updateField("nacionalidade", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {opcoesSelecao.nacionalidade.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="Sexo" value={formData.sexo} onValueChange={(v) => updateField("sexo", v)}
+                    options={opcoesSelecao.sexo} />
+                  <ValidatedSelect label="Estado Civil" value={formData.estadoCivil} onValueChange={(v) => updateField("estadoCivil", v)}
+                    options={opcoesSelecao.estadoCivil} />
+                  <ValidatedSelect label="Nacionalidade" value={formData.nacionalidade} onValueChange={(v) => updateField("nacionalidade", v)}
+                    options={opcoesSelecao.nacionalidade} />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Raça/Cor</Label>
-                    <Select value={formData.racaCor} onValueChange={(v) => updateField("racaCor", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {opcoesSelecao.racaCor.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Grau de Instrução</Label>
-                    <Select value={formData.grauInstrucao} onValueChange={(v) => updateField("grauInstrucao", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {opcoesSelecao.grauInstrucao.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="Raça/Cor" value={formData.racaCor} onValueChange={(v) => updateField("racaCor", v)}
+                    options={opcoesSelecao.racaCor} />
+                  <ValidatedSelect label="Grau de Instrução" value={formData.grauInstrucao} onValueChange={(v) => updateField("grauInstrucao", v)}
+                    options={opcoesSelecao.grauInstrucao} />
                 </div>
               </div>
             )}
@@ -788,19 +683,8 @@ export default function NovaPessoa() {
                       onChange={(e) => updateField("cidade", e.target.value)}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Estado <span className="text-destructive">*</span></Label>
-                    <Select value={formData.estado} onValueChange={(v) => updateField("estado", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="UF" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {estadosBrasil.map(uf => (
-                          <SelectItem key={uf.sigla} value={uf.sigla}>{uf.sigla} - {uf.nome}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="Estado" required value={formData.estado} onValueChange={(v) => updateField("estado", v)}
+                    placeholder="UF" options={estadosBrasil.map(uf => ({ value: uf.sigla, label: `${uf.sigla} - ${uf.nome}` }))} />
                 </div>
               </div>
             )}
@@ -819,34 +703,27 @@ export default function NovaPessoa() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Banco <span className="text-destructive">*</span></Label>
-                    <Select value={formData.banco} onValueChange={(v) => updateField("banco", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar banco" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover max-h-[300px]">
-                        {bancosBrasil.map(banco => (
-                          <SelectItem key={banco.codigo} value={banco.codigo}>
-                            {banco.codigo} - {banco.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Tipo de Conta <span className="text-destructive">*</span></Label>
-                    <Select value={formData.tipoConta} onValueChange={(v) => updateField("tipoConta", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Selecionar" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="corrente">Conta Corrente</SelectItem>
-                        <SelectItem value="poupanca">Conta Poupança</SelectItem>
-                        <SelectItem value="salario">Conta Salário</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect
+                    label="Banco"
+                    required
+                    value={formData.banco}
+                    onValueChange={(v) => updateField("banco", v)}
+                    placeholder="Selecionar banco"
+                    options={bancosBrasil.map(banco => ({ value: banco.codigo, label: `${banco.codigo} - ${banco.nome}` }))}
+                    searchPlaceholder="Buscar banco..."
+                  />
+                  <ValidatedSelect
+                    label="Tipo de Conta"
+                    required
+                    value={formData.tipoConta}
+                    onValueChange={(v) => updateField("tipoConta", v)}
+                    placeholder="Selecionar"
+                    options={[
+                      { value: "corrente", label: "Conta Corrente" },
+                      { value: "poupanca", label: "Conta Poupança" },
+                      { value: "salario", label: "Conta Salário" },
+                    ]}
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -934,19 +811,8 @@ export default function NovaPessoa() {
                       onChange={(e) => updateField("orgaoExpedidor", e.target.value)}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">UF RG</Label>
-                    <Select value={formData.ufRg} onValueChange={(v) => updateField("ufRg", v)}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="UF" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {estadosBrasil.map(uf => (
-                          <SelectItem key={uf.sigla} value={uf.sigla}>{uf.sigla}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ValidatedSelect label="UF RG" value={formData.ufRg} onValueChange={(v) => updateField("ufRg", v)}
+                    placeholder="UF" options={estadosBrasil.map(uf => ({ value: uf.sigla, label: uf.sigla }))} />
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Expedição</Label>
                     <Input 
