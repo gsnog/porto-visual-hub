@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { GradientCard } from "@/components/financeiro/GradientCard";
 import { FilterSection } from "@/components/FilterSection";
+import { ExportButton } from "@/components/ExportButton";
 import { Target, TrendingUp, DollarSign, BarChart3, Plus } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from "recharts";
 import { useNavigate } from "react-router-dom";
@@ -41,12 +42,15 @@ export default function MetasForecast() {
     { mes: 'Abr', meta: 500000, realizado: 0, forecast: 510000 },
   ];
 
+  const getExportData = () => vendedoresData.map(v => ({ Vendedor: v.nome, Meta: formatCurrency(v.meta), Realizado: formatCurrency(v.realizado), Forecast: formatCurrency(v.forecast), Pipeline: formatCurrency(v.pipeline) }));
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-3 items-center">
         <Button onClick={() => navigate('/comercial/metas/nova')} className="gap-2">
           <Plus className="w-4 h-4" /> Criar Meta
         </Button>
+        <ExportButton getData={getExportData} fileName="metas-forecast" />
       </div>
 
       <FilterSection
