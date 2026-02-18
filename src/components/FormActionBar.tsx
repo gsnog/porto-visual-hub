@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { HelpTooltip } from "@/components/HelpTooltip";
 
 interface FormActionBarProps {
   onSave: () => void;
@@ -20,6 +21,7 @@ export function FormActionBar({
 }: FormActionBarProps) {
   return (
     <div className="flex items-center justify-end mt-8 pt-6 border-t border-border gap-3">
+      <HelpTooltip text="Salvar grava as alterações no sistema. Cancelar descarta e retorna à listagem." size={13} />
       <Button
         onClick={onCancel}
         variant="ghost"

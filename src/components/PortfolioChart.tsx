@@ -1,4 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { HelpTooltip } from "@/components/HelpTooltip";
 
 const mockData = [
   { month: "Jul", value: 85000 },
@@ -51,7 +52,10 @@ export function PortfolioChart() {
       {/* Header */}
       <div className="flex items-baseline gap-4 mb-6">
         <div>
-          <p className="text-sm text-muted-foreground mb-2">Balanço do Portfólio</p>
+          <div className="flex items-center gap-1 mb-2">
+            <p className="text-sm text-muted-foreground">Balanço do Portfólio</p>
+            <HelpTooltip text="Evolução do valor total do portfólio nos últimos meses." size={13} />
+          </div>
           <div className="flex items-baseline gap-3">
             <span className="text-4xl font-bold tracking-tight text-foreground">
               {formatCurrency(totalValue)}

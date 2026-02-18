@@ -20,22 +20,24 @@ import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
 import logoSerp from "@/assets/logo-serp.png"
 import logoIcone from "@/assets/Logo_Serp_27.png"
+import { HelpTooltip } from "@/components/HelpTooltip"
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutGrid },
+  { title: "Dashboard", url: "/", icon: LayoutGrid, help: "Visão geral com indicadores e métricas do sistema." },
   { 
     title: "Cadastro", 
     icon: ClipboardList,
     basePath: "/cadastro",
+    help: "Cadastro de dados mestres: itens, fornecedores, clientes, setores e contas.",
     subItems: [
-      { title: "Estoque", subItems: [
+      { title: "Estoque", help: "Cadastros relacionados ao controle de estoque.", subItems: [
         { title: "Formas de Apresentação", url: "/cadastro/estoque/formas-apresentacao" },
         { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
         { title: "Itens", url: "/cadastro/estoque/itens" },
         { title: "Setores", url: "/cadastro/estoque/setores" },
         { title: "Unidades", url: "/cadastro/estoque/unidades" },
       ]},
-      { title: "Financeiro", subItems: [
+      { title: "Financeiro", help: "Cadastros financeiros: contas, centros de custo e planos de contas.", subItems: [
         { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
         { title: "Clientes", url: "/cadastro/financeiro/clientes" },
         { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
@@ -46,7 +48,7 @@ const menuItems = [
         { title: "Subcategorias", url: "/cadastro/financeiro/subcategorias" },
         { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
       ]},
-      { title: "Pessoas", subItems: [
+      { title: "Pessoas", help: "Cadastro de pessoas, setores e cargos.", subItems: [
         { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
         { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
         { title: "Cargos", url: "/cadastro/pessoas/cargos" },
@@ -57,6 +59,7 @@ const menuItems = [
     title: "Comercial", 
     icon: TrendingUp,
     basePath: "/comercial",
+    help: "Gestão comercial: leads, oportunidades, propostas, metas e comissões.",
     subItems: [
       { title: "Visão Geral", url: "/comercial/visao-geral" },
       { title: "Leads", url: "/comercial/leads" },
@@ -73,6 +76,7 @@ const menuItems = [
     title: "Estoque", 
     icon: Package,
     basePath: "/estoque",
+    help: "Controle de estoque: entradas, saídas, inventário, requisições e patrimônio.",
     subItems: [
       { title: "Entradas", url: "/estoque/entradas" },
       { title: "Inventário", url: "/estoque/inventario" },
@@ -88,6 +92,7 @@ const menuItems = [
     title: "Financeiro", 
     icon: DollarSign,
     basePath: "/financeiro",
+    help: "Módulo financeiro: contas a pagar/receber, fluxo de caixa e XML.",
     subItems: [
       { title: "Contas a Receber", url: "/financeiro/contas-receber" },
       { title: "Contas a Pagar", url: "/financeiro/contas-pagar" },
@@ -99,6 +104,7 @@ const menuItems = [
     title: "Operacional", 
     icon: BarChart3,
     basePath: "/operacional",
+    help: "Gestão operacional: setores, embarcações, operações e serviços.",
     subItems: [
       { title: "Setor", url: "/operacional/setor" },
       { title: "Embarcações", url: "/operacional/embarcacoes" },
@@ -111,6 +117,7 @@ const menuItems = [
     title: "Gestão de Pessoas", 
     icon: UserRoundPlus,
     basePath: "/gestao-pessoas",
+    help: "RH e gestão de pessoas: visão 360º, hierarquia, acessos e auditoria.",
     subItems: [
       { title: "Visão Geral (RH)", url: "/gestao-pessoas/visao-geral" },
       { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
@@ -216,6 +223,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                         <span className="flex-1 text-left text-sm text-[hsl(var(--sidebar-foreground))]">
                           {item.title}
                         </span>
+                        {'help' in item && item.help && <HelpTooltip text={item.help} size={12} side="right" />}
                         {openMenus.includes(item.title) ? (
                           <ChevronDown className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
                         ) : (
@@ -237,6 +245,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                               <span className="flex-1 text-left text-[hsl(var(--sidebar-muted))]">
                                 {subItem.title}
                               </span>
+                              {'help' in subItem && subItem.help && <HelpTooltip text={subItem.help as string} size={11} side="right" />}
                               {openMenus.includes(`${item.title}-${subItem.title}`) ? (
                                 <ChevronDown className="h-3 w-3 text-foreground dark:text-primary" />
                               ) : (
@@ -296,9 +305,12 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                 >
                   <item.icon className="h-5 w-5 shrink-0 text-[hsl(var(--sidebar-foreground))]" />
                   {!collapsed && (
-                    <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
-                      {item.title}
-                    </span>
+                    <>
+                      <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
+                        {item.title}
+                      </span>
+                      {'help' in item && item.help && <HelpTooltip text={item.help} size={12} side="right" />}
+                    </>
                   )}
                 </NavLink>
               )}
@@ -321,16 +333,24 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             <Moon className="h-5 w-5 shrink-0 text-[hsl(var(--sidebar-foreground))]" />
           )}
           {!collapsed && (
-            <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
-              {theme === "dark" ? "Modo Diurno" : "Modo Noturno"}
-            </span>
+            <>
+              <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
+                {theme === "dark" ? "Modo Diurno" : "Modo Noturno"}
+              </span>
+              <HelpTooltip text="Alternar entre tema claro e escuro." size={12} side="right" />
+            </>
           )}
         </button>
 
         {/* Logout */}
         <button className="sidebar-item w-full text-red-500 hover:bg-red-500/20">
           <LogOut className="h-5 w-5 shrink-0" />
-          {!collapsed && <span className="text-sm">Sair</span>}
+          {!collapsed && (
+            <>
+              <span className="text-sm">Sair</span>
+              <HelpTooltip text="Encerrar a sessão e sair do sistema." size={12} side="right" />
+            </>
+          )}
         </button>
       </div>
     </aside>
