@@ -92,8 +92,6 @@ import NovoServico from "./pages/operacional/NovoServico";
 
 // Usuário
 import VisualizarPerfil from "./pages/usuario/VisualizarPerfil";
-import EditarPerfil from "./pages/usuario/EditarPerfil";
-import ExcluirPerfil from "./pages/usuario/ExcluirPerfil";
 import Login from "./pages/Login";
 import Notificacoes from "./pages/Notificacoes";
 
@@ -255,8 +253,6 @@ const App = () => (
             
             {/* Usuário e Notificações */}
             <Route path="/usuario/visualizar" element={<VisualizarPerfil />} />
-            {/* Route removed: /usuario/editar */}
-            <Route path="/usuario/excluir" element={<ExcluirPerfil />} />
             <Route path="/notificacoes" element={<Notificacoes />} />
             
             {/* Módulos Globais - Header */}

@@ -1,13 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Bell, ChevronDown, Eye, Trash2, Calendar, MessageSquare, LayoutGrid, GripVertical } from "lucide-react";
+import { Bell, Calendar, MessageSquare, LayoutGrid, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { getTotalNaoLidas } from "@/data/chat-mock";
 
@@ -180,36 +174,19 @@ export function Topbar({
         <div className="h-8 w-px bg-border dark:bg-white/20 ml-2" />
 
         {/* User info with dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-              <div className="flex h-10 w-10 items-center justify-center rounded bg-primary text-primary-foreground font-bold text-sm">
-                PP
-              </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="text-sm font-semibold">Pedro Piaes</span>
-                <span className="text-xs text-muted-foreground dark:text-white/60">Desenvolvedor</span>
-              </div>
-              <ChevronDown className="h-4 w-4 text-muted-foreground dark:text-white/60" />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-card border border-border">
-            <DropdownMenuItem 
-              className="cursor-pointer gap-2"
-              onClick={() => navigate("/usuario/visualizar")}
-            >
-              <Eye className="h-4 w-4" />
-              Visualizar
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              className="cursor-pointer gap-2 text-destructive hover:!text-white hover:!bg-destructive focus:!text-white focus:!bg-destructive"
-              onClick={() => navigate("/usuario/excluir")}
-            >
-              <Trash2 className="h-4 w-4" />
-              Excluir
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div 
+          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={() => navigate("/usuario/visualizar")}
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded bg-primary text-primary-foreground font-bold text-sm">
+            PP
+          </div>
+          <div className="hidden sm:flex flex-col">
+            <span className="text-sm font-semibold">Pedro Piaes</span>
+            <span className="text-xs text-muted-foreground dark:text-white/60">Desenvolvedor</span>
+          </div>
+          
+        </div>
       </div>
     </header>
   );
