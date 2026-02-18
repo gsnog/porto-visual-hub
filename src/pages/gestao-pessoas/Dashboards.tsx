@@ -56,12 +56,7 @@ export default function Dashboards() {
                       <TableHead>Perfil</TableHead>
                       {availableDashboards.map((dash) => (
                         <TableHead key={dash.id} className="text-center">
-                          <div className="flex flex-col items-center gap-1">
-                            <span>{dash.name.replace("Dashboard ", "")}</span>
-                            {dash.sensitive && (
-                              <span className="text-[10px] text-warning">(Sensível)</span>
-                            )}
-                          </div>
+                          <span>{dash.name.replace("Dashboard ", "")}</span>
                         </TableHead>
                       ))}
                     </TableRow>
