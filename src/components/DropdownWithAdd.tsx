@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { HelpTooltip } from "@/components/HelpTooltip";
 
 interface DropdownWithAddProps {
   label: string;
@@ -18,7 +17,7 @@ interface DropdownWithAddProps {
   helpText?: string;
 }
 
-export function DropdownWithAdd({ label, value, onChange, options, onAddNew, placeholder, required, helpText }: DropdownWithAddProps) {
+export function DropdownWithAdd({ label, value, onChange, options, onAddNew, placeholder, required }: DropdownWithAddProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [search, setSearch] = useState("");
@@ -37,12 +36,9 @@ export function DropdownWithAdd({ label, value, onChange, options, onAddNew, pla
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-1">
-        <Label className="text-sm font-medium">
-          {label} {required && <span className="text-destructive">*</span>}
-        </Label>
-        <HelpTooltip text={helpText || `Selecione um(a) ${label.toLowerCase()} da lista ou clique em "+" para adicionar um(a) novo(a).`} size={13} />
-      </div>
+      <Label className="text-sm font-medium">
+        {label} {required && <span className="text-destructive">*</span>}
+      </Label>
       <div className="flex gap-2 items-center">
         <Select value={value} onValueChange={onChange}>
           <SelectTrigger className="form-input flex-1">

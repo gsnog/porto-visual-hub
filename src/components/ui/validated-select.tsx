@@ -10,7 +10,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { HelpTooltip } from "@/components/HelpTooltip";
 
 export interface SelectOption {
   value: string;
@@ -66,12 +65,9 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
 
     return (
       <div className="space-y-2">
-        <div className="flex items-center gap-1">
-          <Label className="text-sm font-medium">
-            {label} {required && <span className="text-destructive">*</span>}
-          </Label>
-          <HelpTooltip text={helpText || `Selecione ${label.toLowerCase()} na lista${required ? ' (obrigatório)' : ''}.`} size={12} />
-        </div>
+        <Label className="text-sm font-medium">
+          {label} {required && <span className="text-destructive">*</span>}
+        </Label>
         <Select value={value} onValueChange={handleChange} disabled={disabled}>
           <SelectTrigger
             ref={ref}

@@ -61,6 +61,7 @@ export default function Calendario() {
   const [filterSetor, setFilterSetor] = useState('');
   const [filterTipo, setFilterTipo] = useState('');
   const [filterEquipe, setFilterEquipe] = useState(false);
+  const [participanteSearch, setParticipanteSearch] = useState('');
   
   // Novo evento
   const [novoEvento, setNovoEvento] = useState({
@@ -416,9 +417,9 @@ export default function Calendario() {
                   <div
                     key={idx}
                     className={cn(
-                      "min-h-[100px] p-1 border rounded cursor-pointer hover:bg-muted/50 transition-colors",
+                      "min-h-[100px] p-1 border border-border dark:border-transparent rounded cursor-pointer hover:bg-muted/50 transition-colors",
                       !day.isCurrentMonth && "bg-muted/30 text-muted-foreground",
-                      isToday && "border-primary bg-primary/5"
+                      isToday && "border-primary dark:border-primary bg-primary/5"
                     )}
                     onClick={() => {
                       setCurrentDate(day.date);
@@ -474,7 +475,7 @@ export default function Calendario() {
                       {hour}
                     </div>
                     <div 
-                      className="border-t min-h-[48px] py-1 space-y-1 cursor-pointer hover:bg-muted/50 transition-colors"
+                      className="border-t border-border dark:border-transparent min-h-[48px] py-1 space-y-1 cursor-pointer hover:bg-muted/50 transition-colors"
                       onClick={() => {
                         if (canCreate) {
                           const hourNum = hour.split(':')[0];
@@ -557,7 +558,7 @@ export default function Calendario() {
                     return (
                       <div 
                         key={dayIdx} 
-                        className="border-t border-l min-h-[48px] p-0.5"
+                        className="border-t border-l border-border dark:border-transparent min-h-[48px] p-0.5"
                       >
                         {eventos.map(evento => (
                           <div
@@ -845,8 +846,14 @@ export default function Calendario() {
             
             <div>
               <Label>Participantes</Label>
+              <Input
+                placeholder="Buscar participante..."
+                value={participanteSearch}
+                onChange={(e) => setParticipanteSearch(e.target.value)}
+                className="mt-2"
+              />
               <div className="mt-2 max-h-40 overflow-y-auto border rounded p-2 space-y-1">
-                {pessoasMock.filter(p => p.status === 'Ativo' && p.id !== currentUserId).map(p => (
+                {pessoasMock.filter(p => p.status === 'Ativo' && p.id !== currentUserId && p.nome.toLowerCase().includes(participanteSearch.toLowerCase())).map(p => (
                   <label key={p.id} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-muted/50 rounded px-1 py-0.5">
                     <Checkbox
                       checked={novoEvento.participantes.includes(p.id)}

@@ -1,6 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
-import { HelpTooltip } from "@/components/HelpTooltip";
 
 export interface GradientCardProps {
   title: string;
@@ -53,7 +52,7 @@ const variantConfig = {
   },
 };
 
-export const GradientCard = ({ title, value, icon: Icon, trend, variant, helpText }: GradientCardProps) => {
+export const GradientCard = ({ title, value, icon: Icon, trend, variant }: GradientCardProps) => {
   const config = variantConfig[variant];
 
   return (
@@ -77,10 +76,7 @@ export const GradientCard = ({ title, value, icon: Icon, trend, variant, helpTex
           </div>
         )}
       </div>
-      <div className="flex items-center gap-1 mb-1">
-        <p className="text-sm font-medium text-muted-foreground">{title}</p>
-        <HelpTooltip text={helpText || `Indicador: ${title}.`} size={12} />
-      </div>
+      <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
       <p className="text-2xl font-bold tracking-tight text-foreground">{value}</p>
     </div>
   );

@@ -6,7 +6,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, ChevronDown } from "lucide-react";
-import { HelpTooltip } from "@/components/HelpTooltip";
 
 interface TableActionsProps {
   onView?: () => void;
@@ -16,8 +15,7 @@ interface TableActionsProps {
 
 export function TableActions({ onView, onEdit, onDelete }: TableActionsProps) {
   return (
-    <div className="inline-flex items-center gap-1">
-      <DropdownMenu>
+    <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm" className="gap-1 border-border">
             Ações
@@ -47,8 +45,6 @@ export function TableActions({ onView, onEdit, onDelete }: TableActionsProps) {
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
-      </DropdownMenu>
-      <HelpTooltip text="Visualizar detalhes, editar dados ou excluir este registro." size={13} />
-    </div>
+    </DropdownMenu>
   );
 }
