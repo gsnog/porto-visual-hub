@@ -86,8 +86,9 @@ export const availableDashboards = [
   { id: 'geral', name: 'Dashboard Geral', sensitive: false },
   { id: 'financeiro', name: 'Dashboard Financeiro', sensitive: true },
   { id: 'estoque', name: 'Dashboard Estoque', sensitive: false },
-  { id: 'operacional', name: 'Dashboard Operacional', sensitive: false },
   { id: 'patrimonio', name: 'Dashboard Patrimônio', sensitive: false },
+  { id: 'comercial', name: 'Dashboard Comercial', sensitive: false },
+  { id: 'rh', name: 'Dashboard Gestão de Pessoas', sensitive: false },
 ];
 
 interface UserPermissions {
