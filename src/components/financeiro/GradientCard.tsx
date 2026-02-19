@@ -134,7 +134,8 @@ export const GradientCard = ({ title, value, icon: Icon, trend, variant, delay =
       transition={{ duration: 0.5, delay: delay * 0.1, ease: "easeOut" }}
       className={`relative overflow-hidden bg-card rounded-2xl p-6 transition-all duration-300 shadow-sm shadow-black/[0.04] dark:shadow-black/20 hover:shadow-xl ${config.shadow} hover:-translate-y-1 group`}
     >
-      <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${'accentBar' in config ? config.accentBar : ''} opacity-80`} />
+      {/* Color dot indicator */}
+      <div className={`absolute top-4 right-16 w-2.5 h-2.5 rounded-full bg-gradient-to-r ${'accentBar' in config ? config.accentBar : ''} opacity-80`} />
       
       <div className="flex items-start justify-between mb-4">
         <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{title}</p>

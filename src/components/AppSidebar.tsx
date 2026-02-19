@@ -208,7 +208,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         {collapsed ? (
           <img src={logoIcone} alt="S" className="h-12 object-contain" />
         ) : (
-          <img src={theme === "dark" ? logoSerpDark : logoSerpLight} alt="SERP" className="h-28 object-contain" />
+          <img src={theme === "dark" ? logoSerpDark : logoSerpLight} alt="SERP" className="h-36 object-contain" />
         )}
         
         {/* Toggle button - aligned with logo divider */}
