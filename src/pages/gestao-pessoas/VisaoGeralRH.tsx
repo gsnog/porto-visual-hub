@@ -1,10 +1,9 @@
 import { GradientCard } from "@/components/financeiro/GradientCard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCheck, UserX, AlertTriangle, TrendingUp } from "lucide-react";
-import { getEstatisticasRH, pessoasMock } from "@/data/pessoas-mock";
+import { getEstatisticasRH } from "@/data/pessoas-mock";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
-const tooltipStyle = { background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' };
+const tooltipStyle = { background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' };
 
 export default function VisaoGeralRH() {
   const stats = getEstatisticasRH();
@@ -37,8 +36,8 @@ export default function VisaoGeralRH() {
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Distribuição por Status */}
-        <div className="bg-card border border-border rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Distribuição por Status</h3>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Distribuição por Status</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -50,6 +49,7 @@ export default function VisaoGeralRH() {
                   outerRadius={95}
                   paddingAngle={4}
                   dataKey="value"
+                  cornerRadius={6}
                   label={({ name, value }) => `${name}: ${value}`}
                 >
                   {pieData.map((entry, index) => (
@@ -63,15 +63,21 @@ export default function VisaoGeralRH() {
         </div>
 
         {/* Pessoas por Setor */}
-        <div className="bg-card border border-border rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Pessoas por Setor</h3>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Pessoas por Setor</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} layout="vertical">
+                <defs>
+                  <linearGradient id="rhSetorGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                  </linearGradient>
+                </defs>
                 <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis dataKey="setor" type="category" width={100} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="quantidade" fill="hsl(var(--primary))" radius={[0, 8, 8, 0]} />
+                <Bar dataKey="quantidade" fill="url(#rhSetorGrad)" radius={[4, 12, 12, 4]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -79,13 +85,13 @@ export default function VisaoGeralRH() {
       </div>
 
       {/* Últimas Alterações */}
-      <div className="bg-card border border-border rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-4">Últimas Alterações</h3>
+      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+        <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Alterações</h3>
         <div className="space-y-1">
           {ultimasAlteracoes.map((alt) => (
-            <div key={alt.id} className="flex items-center justify-between py-3 border-b border-border/30 last:border-0">
+            <div key={alt.id} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-muted">
+                <div className="p-2 rounded-xl bg-muted">
                   <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div>

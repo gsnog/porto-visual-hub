@@ -211,12 +211,12 @@ const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)
 }
 
-// ===== SHARED COMPONENTS =====
+// ===== PREMIUM SHARED COMPONENTS =====
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card/95 backdrop-blur-md border border-border rounded-lg p-3 shadow-2xl">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1.5">{label}</p>
+      <div className="bg-card/98 backdrop-blur-xl border border-border/50 rounded-xl p-4 shadow-2xl shadow-black/10 dark:shadow-black/30">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{label}</p>
         {payload.map((entry: any, index: number) => (
           <p key={index} className="text-sm font-bold" style={{ color: entry.color }}>
             {entry.name}: {typeof entry.value === 'number' && entry.value > 100 ? formatCurrency(entry.value) : entry.value}
@@ -229,9 +229,9 @@ const ChartTooltip = ({ active, payload, label }: any) => {
 }
 
 const ChartCard = ({ title, children, className = "", action }: { title: string; children: React.ReactNode; className?: string; action?: React.ReactNode }) => (
-  <div className={`bg-card border border-border rounded-xl p-5 ${className}`}>
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+  <div className={`bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/[0.06] dark:hover:shadow-black/30 ${className}`}>
+    <div className="flex items-center justify-between mb-5">
+      <h3 className="text-sm font-semibold text-foreground tracking-tight">{title}</h3>
       {action}
     </div>
     <div className="h-64">{children}</div>
@@ -240,19 +240,18 @@ const ChartCard = ({ title, children, className = "", action }: { title: string;
 
 const AlertCard = ({ title, count, type }: { title: string; count: number; type: "warning" | "danger" | "info" }) => {
   const config = {
-    danger: { bg: "bg-rose-400/5 dark:bg-rose-500/8", icon: "text-rose-500", text: "text-rose-600 dark:text-rose-400", accent: "bg-rose-400" },
-    warning: { bg: "bg-amber-400/5 dark:bg-amber-500/8", icon: "text-amber-500", text: "text-amber-600 dark:text-amber-400", accent: "bg-amber-400" },
-    info: { bg: "bg-blue-400/5 dark:bg-blue-500/8", icon: "text-blue-500", text: "text-blue-600 dark:text-blue-400", accent: "bg-blue-400" },
+    danger: { bg: "bg-rose-500/5 dark:bg-rose-500/8", icon: "text-rose-500", text: "text-rose-600 dark:text-rose-400", shadow: "shadow-rose-500/5" },
+    warning: { bg: "bg-amber-500/5 dark:bg-amber-500/8", icon: "text-amber-500", text: "text-amber-600 dark:text-amber-400", shadow: "shadow-amber-500/5" },
+    info: { bg: "bg-blue-500/5 dark:bg-blue-500/8", icon: "text-blue-500", text: "text-blue-600 dark:text-blue-400", shadow: "shadow-blue-500/5" },
   }[type]
 
   return (
-    <div className={`relative overflow-hidden flex items-center gap-4 p-5 rounded-xl ${config.bg} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/5`}>
-      <div className={`absolute top-0 left-0 right-0 h-[2px] ${config.accent} opacity-50`} />
-      <div className={`p-2.5 rounded-lg ${config.bg}`}>
+    <div className={`relative overflow-hidden flex items-center gap-4 p-6 rounded-2xl ${config.bg} shadow-sm ${config.shadow} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+      <div className={`p-3 rounded-xl ${config.bg}`}>
         <AlertTriangle className={`h-5 w-5 ${config.icon}`} />
       </div>
       <div>
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
+        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{title}</p>
         <p className={`text-3xl font-bold ${config.text} mt-1`}>{count}</p>
       </div>
     </div>
@@ -260,7 +259,7 @@ const AlertCard = ({ title, count, type }: { title: string; count: number; type:
 }
 
 const FilterBar = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-card border border-border rounded-xl p-4">
+  <div className="bg-card rounded-2xl p-4 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
     <div className="flex flex-wrap items-center gap-4">
       <Filter className="h-4 w-4 text-muted-foreground" />
       {children}
@@ -271,14 +270,14 @@ const FilterBar = ({ children }: { children: React.ReactNode }) => (
 const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d", "90d", "1y"] }: { periodo: string; setPeriodo: (v: string) => void; options?: string[] }) => (
   <div className="flex items-center gap-2">
     <span className="text-xs text-muted-foreground font-medium">Período:</span>
-    <div className="flex gap-1 bg-muted/50 rounded-lg p-0.5">
+    <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
       {options.map((p) => (
         <Button
           key={p}
           variant={periodo === p ? "default" : "ghost"}
           size="sm"
           onClick={() => setPeriodo(p)}
-          className="h-7 px-2.5 text-xs rounded-md"
+          className="h-7 px-2.5 text-xs rounded-lg"
         >
           {p}
         </Button>
@@ -287,10 +286,8 @@ const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d"
   </div>
 )
 
-// Chart shared config
+// Chart shared config — PREMIUM: no grid, minimal axes
 const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 }
-const gridStroke = "hsl(var(--border))"
-const gridProps = { stroke: gridStroke, strokeOpacity: 0.4, strokeDasharray: "none" as const, vertical: false }
 
 // ===== DASHBOARD GERAL =====
 const DashboardGeral = () => {
@@ -324,7 +321,7 @@ const DashboardGeral = () => {
       {/* Financeiro Cards */}
       {(tipo === "todos" || tipo === "financeiro") && (
         <div>
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Financeiro</h3>
+          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Financeiro</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
             <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
@@ -337,7 +334,7 @@ const DashboardGeral = () => {
       {/* Estoque Cards */}
       {(tipo === "todos" || tipo === "estoque") && (
         <div>
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Estoque</h3>
+          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Estoque</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
             <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" />
@@ -350,7 +347,7 @@ const DashboardGeral = () => {
       {/* Patrimônio Cards */}
       {(tipo === "todos" || tipo === "patrimonio") && (
         <div>
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Patrimônio</h3>
+          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Patrimônio</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" />
             <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
@@ -359,47 +356,75 @@ const DashboardGeral = () => {
         </div>
       )}
 
-      {/* Portfolio Chart */}
+      {/* Portfolio Chart — Hero Dark Accent */}
       {(tipo === "todos" || tipo === "financeiro") && <PortfolioChart />}
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartCard title="Evolução Financeira no Tempo">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={evolutionData}>
-              <CartesianGrid {...gridProps} />
+            <AreaChart data={evolutionData}>
+              <defs>
+                <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(72 100% 50%)" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="hsl(72 100% 50%)" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="gradSaldo" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--chart-3))" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="hsl(var(--chart-3))" stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Line type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" strokeWidth={2.5} dot={false} activeDot={{ r: 4, fill: "hsl(72 100% 50%)", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
-              <Line type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
-              <Line type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--chart-3))" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
-            </LineChart>
+              <Area type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" fill="url(#gradEntradas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(72 100% 50%)", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
+              <Area type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" fill="url(#gradSaidas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
+              <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--chart-3))" fill="url(#gradSaldo)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
+            </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Entradas vs Saídas por Período">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolutionData} barGap={6}>
-              <CartesianGrid {...gridProps} />
+            <BarChart data={evolutionData} barGap={8}>
+              <defs>
+                <linearGradient id="barGradEntradas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                  <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                </linearGradient>
+                <linearGradient id="barGradSaidas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="hsl(72 100% 50%)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="saidas" name="Saídas" fill="hsl(var(--destructive))" radius={[6, 6, 0, 0]} opacity={0.75} />
+              <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[10, 10, 4, 4]} />
+              <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[10, 10, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Consumo de Estoque por Setor">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={consumoSetorData} layout="vertical" barSize={22}>
+            <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
+              <defs>
+                <linearGradient id="barHorizGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                </linearGradient>
+              </defs>
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 8, 8, 0]} />
+              <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[4, 12, 12, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -407,11 +432,11 @@ const DashboardGeral = () => {
         <ChartCard title="Distribuição do Patrimônio por Tipo">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value"
+              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
+              <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -426,9 +451,9 @@ const DashboardGeral = () => {
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-xl">
-          <CardHeader><CardTitle className="text-sm font-semibold">Top 5 Maiores Custos</CardTitle></CardHeader>
-          <CardContent>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Maiores Custos</h3></div>
+          <div className="px-6 pb-6">
             <Table>
               <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -441,12 +466,12 @@ const DashboardGeral = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="border border-border rounded-xl">
-          <CardHeader><CardTitle className="text-sm font-semibold">Top 5 Ativos Patrimoniais</CardTitle></CardHeader>
-          <CardContent>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Ativos Patrimoniais</h3></div>
+          <div className="px-6 pb-6">
             <Table>
               <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor Total</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -459,16 +484,16 @@ const DashboardGeral = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-card border border-border rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-4">Últimas Movimentações Relevantes</h3>
+      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+        <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Movimentações Relevantes</h3>
         <div className="space-y-1">
           {ultimasMovimentacoes.map((mov, index) => (
-            <div key={index} className="flex items-center justify-between py-3 border-b border-border/30 last:border-0">
+            <div key={index} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
               <div className="flex items-center gap-3">
                 <div className={`w-2.5 h-2.5 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : mov.tipo === "Pagamento" ? "bg-rose-400" : "bg-amber-400"}`} />
                 <div>
@@ -526,29 +551,37 @@ const DashboardFinanceiro = () => {
             <AreaChart data={evolutionData}>
               <defs>
                 <linearGradient id="colorSaldoFin" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid {...gridProps} />
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" fill="url(#colorSaldoFin)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
+              <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" fill="url(#colorSaldoFin)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Entradas vs Saídas">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolutionData} barGap={6}>
-              <CartesianGrid {...gridProps} />
+            <BarChart data={evolutionData} barGap={8}>
+              <defs>
+                <linearGradient id="finBarEntradas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                  <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                </linearGradient>
+                <linearGradient id="finBarSaidas" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="hsl(72 100% 50%)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="saidas" name="Saídas" fill="hsl(var(--destructive))" radius={[6, 6, 0, 0]} opacity={0.75} />
+              <Bar dataKey="entradas" name="Entradas" fill="url(#finBarEntradas)" radius={[10, 10, 4, 4]} />
+              <Bar dataKey="saidas" name="Saídas" fill="url(#finBarSaidas)" radius={[10, 10, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -559,11 +592,16 @@ const DashboardFinanceiro = () => {
         <ChartCard title="Contas a Receber por Status">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={contasStatusData}>
-              <CartesianGrid {...gridProps} />
+              <defs>
+                <linearGradient id="recStatusGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                  <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="receber" name="A Receber" fill="hsl(72 100% 50%)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="receber" name="A Receber" fill="url(#recStatusGrad)" radius={[10, 10, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -571,11 +609,16 @@ const DashboardFinanceiro = () => {
         <ChartCard title="Contas a Pagar por Status">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={contasStatusData}>
-              <CartesianGrid {...gridProps} />
+              <defs>
+                <linearGradient id="pagStatusGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="pagar" name="A Pagar" fill="hsl(var(--destructive))" radius={[6, 6, 0, 0]} opacity={0.75} />
+              <Bar dataKey="pagar" name="A Pagar" fill="url(#pagStatusGrad)" radius={[10, 10, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -583,11 +626,11 @@ const DashboardFinanceiro = () => {
         <ChartCard title="Distribuição por Tipo de Documento">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={tipoDocumentoData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value"
+              <Pie data={tipoDocumentoData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {tipoDocumentoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
+              <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -595,9 +638,9 @@ const DashboardFinanceiro = () => {
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-xl">
-          <CardHeader><CardTitle className="text-sm font-semibold">Contas a Receber</CardTitle></CardHeader>
-          <CardContent>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Contas a Receber</h3></div>
+          <div className="px-6 pb-6">
             <Table>
               <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Cliente</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -612,12 +655,12 @@ const DashboardFinanceiro = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="border border-border rounded-xl">
-          <CardHeader><CardTitle className="text-sm font-semibold">Contas a Pagar</CardTitle></CardHeader>
-          <CardContent>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Contas a Pagar</h3></div>
+          <div className="px-6 pb-6">
             <Table>
               <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Beneficiário</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -632,16 +675,16 @@ const DashboardFinanceiro = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Cash Flow Detail */}
-      <div className="bg-card border border-border rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-4">Fluxo de Caixa Detalhado</h3>
+      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+        <h3 className="text-sm font-semibold text-foreground mb-5">Fluxo de Caixa Detalhado</h3>
         <div className="space-y-1">
           {ultimasMovimentacoes.filter(m => m.tipo !== "Saída Estoque").map((mov, index) => (
-            <div key={index} className="flex items-center justify-between py-3 border-b border-border/30 last:border-0">
+            <div key={index} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
               <div className="flex items-center gap-3">
                 <div className={`w-2.5 h-2.5 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : "bg-rose-400"}`} />
                 <div>
@@ -661,16 +704,16 @@ const DashboardFinanceiro = () => {
       </div>
 
       {/* Fiscal Documents */}
-      <Card className="border border-border rounded-xl">
-        <CardHeader><CardTitle className="text-sm font-semibold">Documentos Fiscais (XML / NF-e)</CardTitle></CardHeader>
-        <CardContent>
+      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Documentos Fiscais</h3></div>
+        <div className="px-6 pb-6">
           <Table>
             <TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Tipo</TableHead><TableHead>Emissão</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
             <TableBody>
               {documentosFiscaisData.map((doc) => (
                 <TableRow key={doc.numero}>
                   <TableCell className="font-medium text-xs">{doc.numero}</TableCell>
-                  <TableCell><StatusBadge status={doc.tipo} /></TableCell>
+                  <TableCell className="text-sm">{doc.tipo}</TableCell>
                   <TableCell className="text-sm">{doc.emissao}</TableCell>
                   <TableCell className="text-right font-semibold text-sm">{doc.valor}</TableCell>
                   <TableCell><StatusBadge status={doc.status} /></TableCell>
@@ -678,20 +721,22 @@ const DashboardFinanceiro = () => {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
+
+// ===== DASHBOARD ESTOQUE =====
 const DashboardEstoque = () => {
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
   const [unidade, setUnidade] = useState<string>("todos")
   const [setor, setSetor] = useState<string>("todos")
   const [status, setStatus] = useState<string>("todos")
 
-  const unidades = ["todos", "Almoxarifado SP", "Almoxarifado RJ", "TI Central", "Manutenção"]
-  const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo", "Operacional"]
-  const statusList = ["todos", "Normal", "Crítico", "Pendente"]
+  const unidades = ["todos", "Almoxarifado SP", "TI Central", "Manutenção", "Almoxarifado RJ"]
+  const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo"]
+  const statusList = ["todos", "Normal", "Crítico"]
 
   return (
     <div className="space-y-6">
@@ -727,13 +772,18 @@ const DashboardEstoque = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartCard title="Evolução de Estoque no Tempo">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={estoqueEvolutionData}>
-              <CartesianGrid {...gridProps} />
+            <AreaChart data={estoqueEvolutionData}>
+              <defs>
+                <linearGradient id="estQtdGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Line type="monotone" dataKey="quantidade" name="Quantidade" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
-            </LineChart>
+              <Area type="monotone" dataKey="quantidade" name="Quantidade" stroke="hsl(var(--primary))" fill="url(#estQtdGrad)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
+            </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
@@ -742,26 +792,31 @@ const DashboardEstoque = () => {
             <AreaChart data={estoqueEvolutionData}>
               <defs>
                 <linearGradient id="colorValorEstoque" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(72 100% 50%)" stopOpacity={0.3} />
+                  <stop offset="0%" stopColor="hsl(72 100% 50%)" stopOpacity={0.25} />
                   <stop offset="100%" stopColor="hsl(72 100% 50%)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid {...gridProps} />
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(72 100% 50%)" fill="url(#colorValorEstoque)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
+              <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(72 100% 50%)" fill="url(#colorValorEstoque)" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="Consumo por Setor">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={consumoSetorData} layout="vertical" barSize={22}>
+            <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
+              <defs>
+                <linearGradient id="estSetorGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                </linearGradient>
+              </defs>
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valor" name="Consumo" fill="hsl(var(--primary))" radius={[0, 8, 8, 0]} />
+              <Bar dataKey="valor" name="Consumo" fill="url(#estSetorGrad)" radius={[4, 12, 12, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -769,11 +824,16 @@ const DashboardEstoque = () => {
         <ChartCard title="Estoque por Unidade / Almoxarifado">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={estoqueUnidadeData}>
-              <CartesianGrid {...gridProps} />
+              <defs>
+                <linearGradient id="estUnidGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                  <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="unidade" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valor" name="Valor" fill="hsl(72 100% 50%)" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="valor" name="Valor" fill="url(#estUnidGrad)" radius={[10, 10, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -781,9 +841,9 @@ const DashboardEstoque = () => {
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded-xl">
-          <CardHeader><CardTitle className="text-sm font-semibold">Top 10 Itens em Estoque</CardTitle></CardHeader>
-          <CardContent>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Top 10 Itens em Estoque</h3></div>
+          <div className="px-6 pb-6">
             <Table>
               <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -797,12 +857,12 @@ const DashboardEstoque = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="border border-border rounded-xl">
-          <CardHeader><CardTitle className="text-sm font-semibold">Top 10 Itens Mais Consumidos</CardTitle></CardHeader>
-          <CardContent>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Top 10 Itens Mais Consumidos</h3></div>
+          <div className="px-6 pb-6">
             <Table>
               <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Consumo</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -816,13 +876,13 @@ const DashboardEstoque = () => {
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      <Card className="border border-border rounded-xl">
-        <CardHeader><CardTitle className="text-sm font-semibold">Visão Geral do Inventário</CardTitle></CardHeader>
-        <CardContent>
+      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Visão Geral do Inventário</h3></div>
+        <div className="px-6 pb-6">
           <Table>
             <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Unidade</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
             <TableBody>
@@ -837,12 +897,12 @@ const DashboardEstoque = () => {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card className="border border-border rounded-xl">
-        <CardHeader><CardTitle className="text-sm font-semibold">Histórico Consolidado de Movimentações</CardTitle></CardHeader>
-        <CardContent>
+      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Histórico Consolidado de Movimentações</h3></div>
+        <div className="px-6 pb-6">
           <Table>
             <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Tipo</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Requisitante</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
             <TableBody>
@@ -858,8 +918,8 @@ const DashboardEstoque = () => {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
@@ -920,15 +980,14 @@ const DashboardPatrimonio = () => {
             <AreaChart data={patrimonioEvolutionData}>
               <defs>
                 <linearGradient id="patrimonioGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid {...gridProps} />
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
+              <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -936,11 +995,11 @@ const DashboardPatrimonio = () => {
         <ChartCard title="Valor do Patrimônio por Tipo">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value"
+              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
+              <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -951,11 +1010,11 @@ const DashboardPatrimonio = () => {
         <ChartCard title="Quantidade por Tipo">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={patrimonioQuantidadeData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value"
+              <Pie data={patrimonioQuantidadeData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, value }) => `${name}: ${value}`} labelLine={false}>
                 {patrimonioQuantidadeData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
+              <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -963,10 +1022,16 @@ const DashboardPatrimonio = () => {
         <ChartCard title="Top 5 Itens por Valor Total">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={topPatrimonioData.map(i => ({ ...i, valorNum: parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) * 1000 }))} layout="vertical" barSize={18}>
+              <defs>
+                <linearGradient id="patTopGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                </linearGradient>
+              </defs>
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="item" tick={{ ...axisStyle, fontSize: 9 }} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valorNum" name="Valor" fill="hsl(var(--primary))" radius={[0, 8, 8, 0]} />
+              <Bar dataKey="valorNum" name="Valor" fill="url(#patTopGrad)" radius={[4, 12, 12, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -974,23 +1039,32 @@ const DashboardPatrimonio = () => {
         <ChartCard title="Aquisições por Período">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={aquisicoesPorPeriodoData}>
-              <CartesianGrid {...gridProps} />
+              <defs>
+                <linearGradient id="patAqGrad1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                </linearGradient>
+                <linearGradient id="patAqGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(72 80% 60%)" stopOpacity={1} />
+                  <stop offset="100%" stopColor="hsl(72 80% 60%)" stopOpacity={0.5} />
+                </linearGradient>
+              </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis yAxisId="left" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
-              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="hsl(72 80% 60%)" radius={[6, 6, 0, 0]} />
+              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="url(#patAqGrad1)" radius={[10, 10, 4, 4]} />
+              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="url(#patAqGrad2)" radius={[10, 10, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       </div>
 
       {/* Tables */}
-      <Card className="border border-border rounded-xl">
-        <CardHeader><CardTitle className="text-sm font-semibold">Visão Geral do Patrimônio</CardTitle></CardHeader>
-        <CardContent>
+      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Visão Geral do Patrimônio</h3></div>
+        <div className="px-6 pb-6">
           <Table>
             <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor Unitário</TableHead><TableHead className="text-center">Status</TableHead></TableRow></TableHeader>
             <TableBody>
@@ -1005,12 +1079,12 @@ const DashboardPatrimonio = () => {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card className="border border-border rounded-xl">
-        <CardHeader><CardTitle className="text-sm font-semibold">Histórico de Aquisições</CardTitle></CardHeader>
-        <CardContent>
+      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Histórico de Aquisições</h3></div>
+        <div className="px-6 pb-6">
           <Table>
             <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
             <TableBody>
@@ -1025,8 +1099,8 @@ const DashboardPatrimonio = () => {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
@@ -1047,7 +1121,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="space-y-6">
-        {/* Tab Selector - Pill style with icons */}
+        {/* Tab Selector */}
         <Tabs value={activeDashboard} onValueChange={(v) => setActiveDashboard(v as DashboardType)}>
           <TabsList>
             {tabs.map(({ key, label, icon: Icon }) => (
