@@ -3,20 +3,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PortfolioChart } from "@/components/PortfolioChart"
 import { SummaryCards } from "@/components/financeiro/SummaryCards"
 import { GradientCard } from "@/components/financeiro/GradientCard"
 import { StatusBadge } from "@/components/StatusBadge"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
-  ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter
+  ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter,
+  LayoutGrid, UserRoundPlus
 } from "lucide-react"
 import { 
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid
 } from "recharts"
+import VisaoGeralComercial from "@/pages/comercial/VisaoGeral"
+import VisaoGeralRH from "@/pages/gestao-pessoas/VisaoGeralRH"
 
-type DashboardType = "geral" | "financeiro" | "estoque" | "patrimonio"
+type DashboardType = "geral" | "financeiro" | "estoque" | "patrimonio" | "comercial" | "rh"
 type PeriodoType = "1h" | "24h" | "7d" | "30d" | "90d" | "1y"
 type TipoType = "todos" | "financeiro" | "estoque" | "patrimonio"
 
@@ -1032,37 +1036,36 @@ const DashboardPatrimonio = () => {
 const Dashboard = () => {
   const [activeDashboard, setActiveDashboard] = useState<DashboardType>("geral")
 
-  const tabs: { key: DashboardType; label: string }[] = [
-    { key: "geral", label: "Geral" },
-    { key: "financeiro", label: "Financeiro" },
-    { key: "estoque", label: "Estoque" },
-    { key: "patrimonio", label: "Patrimônio" },
+  const tabs: { key: DashboardType; label: string; icon: typeof LayoutGrid }[] = [
+    { key: "geral", label: "Geral", icon: LayoutGrid },
+    { key: "financeiro", label: "Financeiro", icon: DollarSign },
+    { key: "estoque", label: "Estoque", icon: Package },
+    { key: "patrimonio", label: "Patrimônio", icon: Building2 },
+    { key: "comercial", label: "Comercial", icon: TrendingUp },
+    { key: "rh", label: "RH", icon: UserRoundPlus },
   ]
 
   return (
     <div className="flex flex-col h-full">
       <div className="space-y-6">
-        {/* Tab Selector - Pill style */}
-        <div className="flex bg-card border border-border rounded p-1 w-fit gap-1">
-          {tabs.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setActiveDashboard(key)}
-              className={`px-5 py-2 text-sm font-medium rounded transition-all duration-200 ${
-                activeDashboard === key
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        {/* Tab Selector - Pill style with icons */}
+        <Tabs value={activeDashboard} onValueChange={(v) => setActiveDashboard(v as DashboardType)}>
+          <TabsList>
+            {tabs.map(({ key, label, icon: Icon }) => (
+              <TabsTrigger key={key} value={key} className="gap-2">
+                <Icon className="h-4 w-4" />
+                {label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
         {activeDashboard === "geral" && <DashboardGeral />}
         {activeDashboard === "financeiro" && <DashboardFinanceiro />}
         {activeDashboard === "estoque" && <DashboardEstoque />}
         {activeDashboard === "patrimonio" && <DashboardPatrimonio />}
+        {activeDashboard === "comercial" && <VisaoGeralComercial />}
+        {activeDashboard === "rh" && <VisaoGeralRH />}
       </div>
     </div>
   )
