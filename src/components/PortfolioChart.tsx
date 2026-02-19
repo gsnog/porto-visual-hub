@@ -30,8 +30,8 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card border border-border rounded p-3 shadow-xl">
-        <p className="text-xs text-muted-foreground mb-1">{label}</p>
+      <div className="bg-card/95 backdrop-blur-md border border-border rounded-lg p-3 shadow-xl">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
         <p className="text-sm font-bold text-foreground">
           {formatCurrency(payload[0].value)}
         </p>
@@ -47,11 +47,11 @@ export function PortfolioChart() {
   const percentChange = ((totalValue - previousValue) / previousValue) * 100;
 
   return (
-    <div className="bg-card border border-border rounded p-6">
+    <div className="bg-card border border-border rounded-xl p-6">
       {/* Header */}
       <div className="flex items-baseline gap-4 mb-6">
         <div>
-          <p className="text-sm text-muted-foreground mb-2">Balanço do Portfólio</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Balanço do Portfólio</p>
           <div className="flex items-baseline gap-3">
             <span className="text-4xl font-bold tracking-tight text-foreground">
               {formatCurrency(totalValue)}
@@ -69,7 +69,8 @@ export function PortfolioChart() {
           <AreaChart data={mockData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
+                <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                <stop offset="50%" stopColor="hsl(var(--primary))" stopOpacity={0.08} />
                 <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
               </linearGradient>
             </defs>
@@ -94,6 +95,8 @@ export function PortfolioChart() {
               stroke="hsl(var(--primary))"
               strokeWidth={2.5}
               fill="url(#colorValue)"
+              dot={false}
+              activeDot={{ r: 5, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>

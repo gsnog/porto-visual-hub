@@ -76,7 +76,7 @@ export default function VisaoGeralComercial() {
   return (
     <div className="space-y-6">
       {/* Filtros */}
-      <Card className="border border-border rounded p-4">
+      <Card className="border border-border rounded-xl p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -150,7 +150,7 @@ export default function VisaoGeralComercial() {
 
       {/* Segunda linha de cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border border-border rounded p-4 cursor-pointer hover:shadow-md transition-shadow"
+        <Card className="border border-border rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow"
           onClick={() => navigate('/comercial/propostas')}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -166,7 +166,7 @@ export default function VisaoGeralComercial() {
           </div>
         </Card>
 
-        <Card className="border border-border rounded p-4 cursor-pointer hover:shadow-md transition-shadow"
+        <Card className="border border-border rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow"
           onClick={() => navigate('/comercial/atividades')}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -182,7 +182,7 @@ export default function VisaoGeralComercial() {
           </div>
         </Card>
 
-        <Card className="border border-border rounded p-4">
+        <Card className="border border-border rounded-xl p-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded bg-destructive/10">
               <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -198,7 +198,7 @@ export default function VisaoGeralComercial() {
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Funil de Vendas */}
-        <Card className="border border-border rounded">
+        <Card className="border border-border rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold">Funil de Vendas</CardTitle>
           </CardHeader>
@@ -212,23 +212,23 @@ export default function VisaoGeralComercial() {
                     `${value} ops - ${formatCurrency(props.payload.amount)}`,
                     'Oportunidades'
                   ]}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
                 />
-                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 8, 8, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Ranking Vendedores */}
-        <Card className="border border-border rounded">
+        <Card className="border border-border rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold">Ranking de Vendedores</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {rankingVendedores.map((v, i) => (
-                <div key={v.nome} className="flex items-center justify-between p-3 rounded bg-muted/50">
+                <div key={v.nome} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                   <div className="flex items-center gap-3">
                     <span className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-semibold">
                       {i + 1}
@@ -248,7 +248,7 @@ export default function VisaoGeralComercial() {
 
       {/* Motivos de Perda */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border border-border rounded">
+        <Card className="border border-border rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-semibold">Motivos de Perda</CardTitle>
           </CardHeader>
@@ -270,7 +270,7 @@ export default function VisaoGeralComercial() {
                 </Pie>
                 <Tooltip 
                   formatter={(value: number) => [`${value}%`, 'Percentual']}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -286,7 +286,7 @@ export default function VisaoGeralComercial() {
         </Card>
 
         {/* Próximas Atividades */}
-        <Card className="border border-border rounded">
+        <Card className="border border-border rounded-xl">
           <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-base font-semibold">Próximas Atividades</CardTitle>
             <Button variant="ghost" size="sm" onClick={() => navigate('/comercial/atividades')}>
