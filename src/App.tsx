@@ -148,6 +148,8 @@ import ImpostosAliquotas from "./pages/cadastro/fiscal/ImpostosAliquotas";
 
 // Fiscal
 import NotasFiscais from "./pages/fiscal/NotasFiscais";
+import NovaNotaFiscal from "./pages/fiscal/NovaNotaFiscal";
+import NotaFiscalDetalhe from "./pages/fiscal/NotaFiscalDetalhe";
 import MonitorEmissao from "./pages/fiscal/MonitorEmissao";
 import ExportacoesRelatorios from "./pages/fiscal/ExportacoesRelatorios";
 
@@ -309,6 +311,8 @@ const App = () => (
             
             {/* Fiscal */}
             <Route path="/fiscal/notas" element={<NotasFiscais />} />
+            <Route path="/fiscal/notas/nova" element={<NovaNotaFiscal />} />
+            <Route path="/fiscal/notas/:id" element={<NotaFiscalDetalhe />} />
             <Route path="/fiscal/monitor" element={<MonitorEmissao />} />
             <Route path="/fiscal/exportacoes" element={<ExportacoesRelatorios />} />
           </Route>
