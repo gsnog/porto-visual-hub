@@ -1042,7 +1042,7 @@ const Dashboard = () => {
     { key: "estoque", label: "Estoque", icon: Package },
     { key: "patrimonio", label: "Patrimônio", icon: Building2 },
     { key: "comercial", label: "Comercial", icon: TrendingUp },
-    { key: "rh", label: "RH", icon: UserRoundPlus },
+    { key: "rh", label: "Gestão de Pessoas", icon: UserRoundPlus },
   ]
 
   return (

@@ -249,7 +249,7 @@ const App = () => (
             <Route path="/cadastro/pessoas/cargos/novo" element={<NovoCargo />} />
             
             {/* Gestão de Pessoas */}
-            <Route path="/gestao-pessoas/visao-geral" element={<VisaoGeralRH />} />
+            {/* Gestão de Pessoas */}
             <Route path="/gestao-pessoas/pessoas" element={<PessoasVisao360 />} />
             <Route path="/gestao-pessoas/pessoas/:id" element={<PessoaDetalhe />} />
             <Route path="/gestao-pessoas/hierarquia" element={<Hierarquia />} />
@@ -267,7 +267,7 @@ const App = () => (
             <Route path="/kanban" element={<Kanban />} />
             
             {/* Comercial */}
-            <Route path="/comercial/visao-geral" element={<VisaoGeralComercial />} />
+            {/* Comercial */}
             <Route path="/comercial/leads" element={<LeadsComercial />} />
             <Route path="/comercial/leads/novo" element={<NovoLead />} />
             <Route path="/comercial/contas" element={<ContasComercial />} />

@@ -61,8 +61,8 @@ const menuItems = [
     basePath: "/comercial",
     help: "Gestão comercial: leads, oportunidades, propostas, metas e comissões.",
     subItems: [
-      { title: "Visão Geral", url: "/comercial/visao-geral" },
       { title: "Leads", url: "/comercial/leads" },
+      { title: "Contas", url: "/comercial/contas" },
       { title: "Contas", url: "/comercial/contas" },
       { title: "Contatos", url: "/comercial/contatos" },
       { title: "Oportunidades", url: "/comercial/oportunidades" },
@@ -119,7 +119,7 @@ const menuItems = [
     basePath: "/gestao-pessoas",
     help: "RH e gestão de pessoas: visão 360º, hierarquia, acessos e auditoria.",
     subItems: [
-      { title: "Visão Geral (RH)", url: "/gestao-pessoas/visao-geral" },
+      { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
       { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
       { title: "Hierarquia", url: "/gestao-pessoas/hierarquia" },
       { title: "Acessos", url: "/gestao-pessoas/acessos" },
