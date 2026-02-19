@@ -16,10 +16,10 @@ const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 };
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-black/80 dark:bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl">
-        <p className="text-[10px] text-white/50 uppercase tracking-widest mb-2 font-semibold">{label}</p>
+      <div className="bg-muted/70 dark:bg-muted/60 backdrop-blur-xl border border-border/50 rounded-xl p-4 shadow-2xl">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm font-bold text-white">
+          <p key={index} className="text-sm font-bold text-foreground">
             {entry.name}: {entry.value}
           </p>
         ))}
@@ -121,7 +121,7 @@ export default function DashboardComercial() {
                   <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
                   <YAxis dataKey="name" type="category" width={110} tick={axisStyle} axisLine={false} tickLine={false} />
                   <Tooltip content={<ChartTooltip />} cursor={false} />
-                  <Bar dataKey="value" fill="url(#comFunilGrad)" radius={[999, 999, 999, 999]} />
+                  <Bar dataKey="value" fill="url(#comFunilGrad)" radius={[12, 12, 12, 12]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

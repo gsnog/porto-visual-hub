@@ -42,15 +42,15 @@ type VariantConfig = HeroConfig | StandardConfig;
 const variantConfig: Record<string, VariantConfig> = {
   success: {
     isHero: true,
-    heroBg: "bg-gradient-to-br from-lime-500 via-lime-400 to-lime-500",
-    iconBg: "bg-white/20",
-    iconColor: "text-white",
-    titleColor: "text-white/80",
-    valueColor: "text-white",
-    trendColor: "text-white/90",
-    trendBg: "bg-white/20",
-    trendMuted: "text-white/60",
-    shadow: "shadow-lime-500/20 hover:shadow-lime-500/30",
+    heroBg: "bg-primary",
+    iconBg: "bg-black/10",
+    iconColor: "text-primary-foreground",
+    titleColor: "text-primary-foreground/80",
+    valueColor: "text-primary-foreground",
+    trendColor: "text-primary-foreground/90",
+    trendBg: "bg-black/10",
+    trendMuted: "text-primary-foreground/60",
+    shadow: "shadow-primary/20 hover:shadow-primary/30",
   },
   danger: {
     isHero: false,
@@ -103,7 +103,7 @@ export const GradientCard = ({ title, value, icon: Icon, trend, variant, delay =
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: delay * 0.1, ease: "easeOut" }}
-        className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-300 shadow-lg ${config.heroBg} ${config.shadow} hover:-translate-y-1 group`}
+        className={`relative overflow-hidden rounded-2xl p-6 transition-all duration-300 shadow-lg border-2 border-primary/30 dark:border-primary/20 ${config.heroBg} ${config.shadow} hover:-translate-y-1 group`}
       >
         <div className="flex items-start justify-between mb-4">
           <p className={`text-[11px] font-semibold uppercase tracking-widest ${config.titleColor}`}>{title}</p>

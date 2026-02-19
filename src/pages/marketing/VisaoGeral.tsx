@@ -183,9 +183,9 @@ export default function VisaoGeralMarketing() {
                 <YAxis dataKey="etapa" type="category" width={100} tick={{ fontSize: 12 }} />
                 <Tooltip 
                   formatter={(value: number) => [value, 'Quantidade']}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+                  contentStyle={{ background: 'hsl(var(--muted) / 0.7)', border: '1px solid hsl(var(--border) / 0.5)', borderRadius: '12px', backdropFilter: 'blur(24px)' }}
                 />
-                <Bar dataKey="valor" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="valor" fill="hsl(var(--primary))" radius={[12, 12, 12, 12]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -202,11 +202,11 @@ export default function VisaoGeralMarketing() {
                 <XAxis dataKey="canal" tick={{ fontSize: 10 }} angle={-45} textAnchor="end" height={80} />
                 <YAxis />
                 <Tooltip 
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }}
+                  contentStyle={{ background: 'hsl(var(--muted) / 0.7)', border: '1px solid hsl(var(--border) / 0.5)', borderRadius: '12px', backdropFilter: 'blur(24px)' }}
                 />
-                <Bar dataKey="leads" name="Leads" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="mql" name="MQL" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="sql" name="SQL" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="leads" name="Leads" fill="hsl(var(--primary))" radius={[12, 12, 12, 12]} />
+                <Bar dataKey="mql" name="MQL" fill="hsl(var(--warning))" radius={[12, 12, 12, 12]} />
+                <Bar dataKey="sql" name="SQL" fill="hsl(var(--success))" radius={[12, 12, 12, 12]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
