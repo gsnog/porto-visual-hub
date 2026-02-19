@@ -16,43 +16,46 @@ export default function DashboardMarketing() {
   return (
     <div className="space-y-6">
       {/* Filter Bar */}
-      <div className="bg-card border border-border rounded p-4">
+      <div className="bg-card rounded-2xl p-4 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
         <div className="flex flex-wrap items-center gap-4">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground font-medium">Período:</span>
-            <div className="flex gap-1">
+            <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
               {["7d", "30d", "90d"].map(p => (
-                <Button key={p} variant={periodo === p ? "default" : "outline"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs">{p}</Button>
+                <Button key={p} variant={periodo === p ? "default" : "ghost"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs rounded-lg">{p}</Button>
               ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Hero Stat */}
-      <div className="bg-card border border-border rounded p-6">
-        <p className="text-sm text-muted-foreground mb-2">Leads Captados no Período</p>
-        <div className="flex items-baseline gap-3">
-          <span className="text-4xl font-bold tracking-tight text-foreground">{metricas.leads}</span>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400">+15% vs período anterior</span>
-        </div>
-        <div className="flex gap-6 mt-4">
-          <div>
-            <p className="text-xs text-muted-foreground">MQL</p>
-            <p className="text-lg font-bold text-foreground">{metricas.mql}</p>
+      {/* Hero Dark Accent Card */}
+      <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0B0D0F] via-[#131619] to-[#0B0D0F] shadow-xl shadow-black/20">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10">
+          <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">Leads Captados no Período</p>
+          <div className="flex items-baseline gap-4">
+            <span className="text-5xl font-bold tracking-tight text-white">{metricas.leads}</span>
+            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-lime-400/15 text-lime-400 border border-lime-400/20">+15% vs período anterior</span>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground">SQL</p>
-            <p className="text-lg font-bold text-foreground">{metricas.sql}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Conversões</p>
-            <p className="text-lg font-bold text-foreground">{metricas.conversoes}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">ROI Médio</p>
-            <p className="text-lg font-bold text-lime-600 dark:text-lime-400">{metricas.roi.toFixed(0)}%</p>
+          <div className="flex gap-8 mt-6">
+            <div>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest">MQL</p>
+              <p className="text-xl font-bold text-white mt-1">{metricas.mql}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest">SQL</p>
+              <p className="text-xl font-bold text-white mt-1">{metricas.sql}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest">Conversões</p>
+              <p className="text-xl font-bold text-white mt-1">{metricas.conversoes}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest">ROI Médio</p>
+              <p className="text-xl font-bold text-lime-400 mt-1">{metricas.roi.toFixed(0)}%</p>
+            </div>
           </div>
         </div>
       </div>
@@ -67,29 +70,41 @@ export default function DashboardMarketing() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card border border-border rounded p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Funil de Marketing</h3>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Funil de Marketing</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={funilMarketingData} layout="vertical" barSize={18}>
+                <defs>
+                  <linearGradient id="mktFunilGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                  </linearGradient>
+                </defs>
                 <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
                 <YAxis dataKey="etapa" type="category" width={90} tick={axisStyle} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px' }} />
-                <Bar dataKey="valor" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} />
+                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+                <Bar dataKey="valor" fill="url(#mktFunilGrad)" radius={[4, 12, 12, 4]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Leads por Canal</h3>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Leads por Canal</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={leadsPorCanalData.slice(0, 5)}>
+                <defs>
+                  <linearGradient id="mktCanalGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                    <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                  </linearGradient>
+                </defs>
                 <XAxis dataKey="canal" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
                 <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px' }} />
-                <Bar dataKey="leads" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+                <Bar dataKey="leads" fill="url(#mktCanalGrad)" radius={[10, 10, 4, 4]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -97,15 +112,15 @@ export default function DashboardMarketing() {
       </div>
 
       {/* ROI Table */}
-      <div className="bg-card border border-border rounded p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-4">ROI por Campanha</h3>
-        <div className="space-y-2">
+      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+        <h3 className="text-sm font-semibold text-foreground mb-5">ROI por Campanha</h3>
+        <div className="space-y-2.5">
           {roiPorCampanhaData.map((c, i) => (
-            <div key={i} className="flex items-center justify-between p-3.5 rounded bg-muted/30 border border-border/50 hover:bg-muted/50 transition-colors">
+            <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
               <span className="font-medium text-sm text-foreground">{c.campanha}</span>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-muted-foreground">{formatCurrency(c.gasto)} investido</span>
-                <span className={`font-bold text-sm px-2.5 py-1 rounded-full ${
+                <span className={`font-bold text-sm px-3 py-1 rounded-full ${
                   c.roi >= 0 
                     ? 'bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400' 
                     : 'bg-rose-400/10 text-rose-600 dark:bg-rose-400/15 dark:text-rose-400'

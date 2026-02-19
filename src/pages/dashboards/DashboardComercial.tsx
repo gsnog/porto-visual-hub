@@ -15,10 +15,10 @@ const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 };
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card border border-border rounded p-3 shadow-xl backdrop-blur-sm">
-        <p className="text-xs text-muted-foreground mb-1.5">{label}</p>
+      <div className="bg-card/98 backdrop-blur-xl border border-border/50 rounded-xl p-4 shadow-2xl shadow-black/10 dark:shadow-black/30">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm font-semibold" style={{ color: entry.color }}>
+          <p key={index} className="text-sm font-bold" style={{ color: entry.color }}>
             {entry.name}: {entry.value}
           </p>
         ))}
@@ -53,14 +53,14 @@ export default function DashboardComercial() {
   return (
     <div className="space-y-6">
       {/* Filter Bar */}
-      <div className="bg-card border border-border rounded p-4">
+      <div className="bg-card rounded-2xl p-4 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
         <div className="flex flex-wrap items-center gap-4">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground font-medium">Período:</span>
-            <div className="flex gap-1">
+            <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
               {["7d", "30d", "90d"].map(p => (
-                <Button key={p} variant={periodo === p ? "default" : "outline"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs">{p}</Button>
+                <Button key={p} variant={periodo === p ? "default" : "ghost"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs rounded-lg">{p}</Button>
               ))}
             </div>
           </div>
@@ -82,42 +82,49 @@ export default function DashboardComercial() {
         <GradientCard title="Atividades Vencidas" value={atividadesVencidas.toString()} icon={AlertTriangle} variant="danger" />
       </div>
 
-      {/* Hero Stat */}
-      <div className="bg-card border border-border rounded p-6">
-        <p className="text-sm text-muted-foreground mb-2">Valor Total no Pipeline</p>
-        <div className="flex items-baseline gap-3">
-          <span className="text-4xl font-bold tracking-tight text-foreground">{formatCurrency(pipelineTotal)}</span>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400">+18% vs mês anterior</span>
+      {/* Hero Dark Accent Card */}
+      <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0B0D0F] via-[#131619] to-[#0B0D0F] shadow-xl shadow-black/20">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
+        <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">Valor Total no Pipeline</p>
+        <div className="flex items-baseline gap-4">
+          <span className="text-5xl font-bold tracking-tight text-white">{formatCurrency(pipelineTotal)}</span>
+          <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-lime-400/15 text-lime-400 border border-lime-400/20">+18% vs mês anterior</span>
         </div>
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card border border-border rounded p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Pipeline por Etapa</h3>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Pipeline por Etapa</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={funilData} layout="vertical" barSize={18}>
+                <defs>
+                  <linearGradient id="comFunilGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                  </linearGradient>
+                </defs>
                 <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
                 <YAxis dataKey="name" type="category" width={110} tick={axisStyle} axisLine={false} tickLine={false} />
                 <Tooltip formatter={(v: number, n: string, p: any) => [`${v} — ${formatCurrency(p.payload.amount)}`, 'Oportunidades']}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px' }} />
-                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} />
+                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+                <Bar dataKey="value" fill="url(#comFunilGrad)" radius={[4, 12, 12, 4]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded p-5">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Motivos de Perda</h3>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Motivos de Perda</h3>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={motivosPerdaData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+                <Pie data={motivosPerdaData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value" cornerRadius={6}>
                   {motivosPerdaData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
                 <Tooltip formatter={(v: number) => [`${v}%`]}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '4px' }} />
+                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
