@@ -4,10 +4,33 @@ import { useState } from "react";
 import { Target, DollarSign, TrendingUp, Users, Filter } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { getMetricasGerais, funilMarketingData, leadsPorCanalData, roiPorCampanhaData } from "@/data/marketing-mock";
+import { motion } from "framer-motion";
 
 const formatCurrency = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
 const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 };
+
+const ChartTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-black/80 dark:bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl">
+        <p className="text-[10px] text-white/50 uppercase tracking-widest mb-2 font-semibold">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-sm font-bold text-white">
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: delay * 0.1, ease: "easeOut" }}>
+    {children}
+  </motion.div>
+);
 
 export default function DashboardMarketing() {
   const [periodo, setPeriodo] = useState("30d");
@@ -16,122 +39,132 @@ export default function DashboardMarketing() {
   return (
     <div className="space-y-6">
       {/* Filter Bar */}
-      <div className="bg-card rounded-2xl p-4 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-        <div className="flex flex-wrap items-center gap-4">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground font-medium">Período:</span>
-            <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
-              {["7d", "30d", "90d"].map(p => (
-                <Button key={p} variant={periodo === p ? "default" : "ghost"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs rounded-lg">{p}</Button>
-              ))}
+      <FadeIn>
+        <div className="filter-card">
+          <div className="flex flex-wrap items-center gap-4">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground font-medium">Período:</span>
+              <div className="flex gap-1 bg-muted/50 rounded-full p-0.5">
+                {["7d", "30d", "90d"].map(p => (
+                  <Button key={p} variant={periodo === p ? "default" : "ghost"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs rounded-full">{p}</Button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Hero Dark Accent Card */}
-      <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0B0D0F] via-[#131619] to-[#0B0D0F] shadow-xl shadow-black/20">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10">
-          <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">Leads Captados no Período</p>
-          <div className="flex items-baseline gap-4">
-            <span className="text-5xl font-bold tracking-tight text-white">{metricas.leads}</span>
-            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-lime-400/15 text-lime-400 border border-lime-400/20">+15% vs período anterior</span>
-          </div>
-          <div className="flex gap-8 mt-6">
-            <div>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest">MQL</p>
-              <p className="text-xl font-bold text-white mt-1">{metricas.mql}</p>
+      <FadeIn delay={1}>
+        <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0B0D0F] via-[#131619] to-[#0B0D0F] shadow-xl shadow-black/20">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10">
+            <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">Leads Captados no Período</p>
+            <div className="flex items-baseline gap-4">
+              <span className="text-5xl font-bold tracking-tight text-white">{metricas.leads}</span>
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-lime-400/15 text-lime-400 border border-lime-400/20">+15% vs período anterior</span>
             </div>
-            <div>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest">SQL</p>
-              <p className="text-xl font-bold text-white mt-1">{metricas.sql}</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest">Conversões</p>
-              <p className="text-xl font-bold text-white mt-1">{metricas.conversoes}</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest">ROI Médio</p>
-              <p className="text-xl font-bold text-lime-400 mt-1">{metricas.roi.toFixed(0)}%</p>
+            <div className="flex gap-8 mt-6">
+              <div>
+                <p className="text-[10px] text-white/30 uppercase tracking-widest">MQL</p>
+                <p className="text-xl font-bold text-white mt-1">{metricas.mql}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-white/30 uppercase tracking-widest">SQL</p>
+                <p className="text-xl font-bold text-white mt-1">{metricas.sql}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-white/30 uppercase tracking-widest">Conversões</p>
+                <p className="text-xl font-bold text-white mt-1">{metricas.conversoes}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-white/30 uppercase tracking-widest">ROI Médio</p>
+                <p className="text-xl font-bold text-lime-400 mt-1">{metricas.roi.toFixed(0)}%</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GradientCard title="Leads Captados" value={metricas.leads.toString()} icon={Users} variant="info" trend={{ value: "+15%", positive: true }} />
-        <GradientCard title="MQL → SQL" value={`${metricas.mql} → ${metricas.sql}`} icon={Target} variant="warning" />
-        <GradientCard title="CAC" value={formatCurrency(metricas.cac)} icon={DollarSign} variant="orange" />
-        <GradientCard title="ROI Médio" value={`${metricas.roi.toFixed(0)}%`} icon={TrendingUp} variant="success" />
+        <GradientCard title="Leads Captados" value={metricas.leads.toString()} icon={Users} variant="info" trend={{ value: "+15%", positive: true }} delay={2} />
+        <GradientCard title="MQL → SQL" value={`${metricas.mql} → ${metricas.sql}`} icon={Target} variant="warning" delay={3} />
+        <GradientCard title="CAC" value={formatCurrency(metricas.cac)} icon={DollarSign} variant="orange" delay={4} />
+        <GradientCard title="ROI Médio" value={`${metricas.roi.toFixed(0)}%`} icon={TrendingUp} variant="success" delay={5} />
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-          <h3 className="text-sm font-semibold text-foreground mb-5">Funil de Marketing</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={funilMarketingData} layout="vertical" barSize={18}>
-                <defs>
-                  <linearGradient id="mktFunilGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
-                  </linearGradient>
-                </defs>
-                <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
-                <YAxis dataKey="etapa" type="category" width={90} tick={axisStyle} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="valor" fill="url(#mktFunilGrad)" radius={[4, 12, 12, 4]} />
-              </BarChart>
-            </ResponsiveContainer>
+        <FadeIn delay={6}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Funil de Marketing</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={funilMarketingData} layout="vertical" barSize={18}>
+                  <defs>
+                    <linearGradient id="mktFunilGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis dataKey="etapa" type="category" width={90} tick={axisStyle} axisLine={false} tickLine={false} />
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                  <Bar dataKey="valor" fill="url(#mktFunilGrad)" radius={[999, 999, 999, 999]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
-        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-          <h3 className="text-sm font-semibold text-foreground mb-5">Leads por Canal</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={leadsPorCanalData.slice(0, 5)}>
-                <defs>
-                  <linearGradient id="mktCanalGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(72 100% 55%)" />
-                    <stop offset="100%" stopColor="hsl(72 100% 40%)" />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="canal" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="leads" fill="url(#mktCanalGrad)" radius={[10, 10, 4, 4]} />
-              </BarChart>
-            </ResponsiveContainer>
+        <FadeIn delay={7}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Leads por Canal</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={leadsPorCanalData.slice(0, 5)}>
+                  <defs>
+                    <linearGradient id="mktCanalGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                      <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="canal" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                  <Bar dataKey="leads" fill="url(#mktCanalGrad)" radius={[999, 999, 999, 999]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
 
       {/* ROI Table */}
-      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-        <h3 className="text-sm font-semibold text-foreground mb-5">ROI por Campanha</h3>
-        <div className="space-y-2.5">
-          {roiPorCampanhaData.map((c, i) => (
-            <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-              <span className="font-medium text-sm text-foreground">{c.campanha}</span>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-muted-foreground">{formatCurrency(c.gasto)} investido</span>
-                <span className={`font-bold text-sm px-3 py-1 rounded-full ${
-                  c.roi >= 0 
-                    ? 'bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400' 
-                    : 'bg-rose-400/10 text-rose-600 dark:bg-rose-400/15 dark:text-rose-400'
-                }`}>
-                  {c.roi > 0 ? '+' : ''}{c.roi.toFixed(0)}%
-                </span>
+      <FadeIn delay={8}>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">ROI por Campanha</h3>
+          <div className="space-y-2.5">
+            {roiPorCampanhaData.map((c, i) => (
+              <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+                <span className="font-medium text-sm text-foreground">{c.campanha}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground">{formatCurrency(c.gasto)} investido</span>
+                  <span className={`font-bold text-sm px-3 py-1 rounded-full ${
+                    c.roi >= 0 
+                      ? 'bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400' 
+                      : 'bg-rose-400/10 text-rose-600 dark:bg-rose-400/15 dark:text-rose-400'
+                  }`}>
+                    {c.roi > 0 ? '+' : ''}{c.roi.toFixed(0)}%
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   );
 }

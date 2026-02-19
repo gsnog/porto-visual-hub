@@ -2,8 +2,29 @@ import { GradientCard } from "@/components/financeiro/GradientCard";
 import { Users, UserCheck, UserX, AlertTriangle, TrendingUp } from "lucide-react";
 import { getEstatisticasRH } from "@/data/pessoas-mock";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { motion } from "framer-motion";
 
-const tooltipStyle = { background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' };
+const ChartTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-black/80 dark:bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl">
+        <p className="text-[10px] text-white/50 uppercase tracking-widest mb-2 font-semibold">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-sm font-bold text-white">
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: delay * 0.1, ease: "easeOut" }}>
+    {children}
+  </motion.div>
+);
 
 export default function VisaoGeralRH() {
   const stats = getEstatisticasRH();
@@ -13,6 +34,7 @@ export default function VisaoGeralRH() {
     { name: "Afastados", value: stats.afastados, color: "hsl(45 100% 50%)" },
     { name: "Desligados", value: stats.desligados, color: "hsl(0 80% 60%)" },
   ];
+  const pieTotal = pieData.reduce((s, d) => s + d.value, 0);
 
   const barData = stats.porSetor.filter(s => s.quantidade > 0);
 
@@ -27,86 +49,94 @@ export default function VisaoGeralRH() {
     <div className="space-y-6">
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GradientCard title="Total de Pessoas" value={stats.total.toString()} icon={Users} variant="info" />
-        <GradientCard title="Ativos" value={stats.ativos.toString()} icon={UserCheck} variant="success" trend={{ value: "+3%", positive: true }} />
-        <GradientCard title="Afastados" value={stats.afastados.toString()} icon={UserX} variant="warning" />
-        <GradientCard title="Sem Gestor" value={stats.semGestor.toString()} icon={AlertTriangle} variant="danger" />
+        <GradientCard title="Total de Pessoas" value={stats.total.toString()} icon={Users} variant="info" delay={0} />
+        <GradientCard title="Ativos" value={stats.ativos.toString()} icon={UserCheck} variant="success" trend={{ value: "+3%", positive: true }} delay={1} />
+        <GradientCard title="Afastados" value={stats.afastados.toString()} icon={UserX} variant="warning" delay={2} />
+        <GradientCard title="Sem Gestor" value={stats.semGestor.toString()} icon={AlertTriangle} variant="danger" delay={3} />
       </div>
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Distribuição por Status */}
-        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-          <h3 className="text-sm font-semibold text-foreground mb-5">Distribuição por Status</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={65}
-                  outerRadius={95}
-                  paddingAngle={4}
-                  dataKey="value"
-                  cornerRadius={6}
-                  label={({ name, value }) => `${name}: ${value}`}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={tooltipStyle} />
-              </PieChart>
-            </ResponsiveContainer>
+        <FadeIn delay={4}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Distribuição por Status</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={65}
+                    outerRadius={95}
+                    paddingAngle={4}
+                    dataKey="value"
+                    cornerRadius={6}
+                    label={({ name, value }) => `${name}: ${value}`}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <text x="50%" y="46%" textAnchor="middle" dominantBaseline="middle" className="fill-foreground" style={{ fontSize: 18, fontWeight: 700 }}>{pieTotal}</text>
+                  <text x="50%" y="58%" textAnchor="middle" dominantBaseline="middle" className="fill-muted-foreground" style={{ fontSize: 10 }}>Total</text>
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Pessoas por Setor */}
-        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-          <h3 className="text-sm font-semibold text-foreground mb-5">Pessoas por Setor</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} layout="vertical">
-                <defs>
-                  <linearGradient id="rhSetorGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
-                  </linearGradient>
-                </defs>
-                <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis dataKey="setor" type="category" width={100} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="quantidade" fill="url(#rhSetorGrad)" radius={[4, 12, 12, 4]} />
-              </BarChart>
-            </ResponsiveContainer>
+        <FadeIn delay={5}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Pessoas por Setor</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData} layout="vertical">
+                  <defs>
+                    <linearGradient id="rhSetorGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis dataKey="setor" type="category" width={100} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                  <Bar dataKey="quantidade" fill="url(#rhSetorGrad)" radius={[999, 999, 999, 999]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
 
       {/* Últimas Alterações */}
-      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-        <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Alterações</h3>
-        <div className="space-y-1">
-          {ultimasAlteracoes.map((alt) => (
-            <div key={alt.id} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-muted">
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+      <FadeIn delay={6}>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Alterações</h3>
+          <div className="space-y-1">
+            {ultimasAlteracoes.map((alt) => (
+              <div key={alt.id} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-muted">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm text-foreground">{alt.acao}</p>
+                    <p className="text-xs text-muted-foreground">{alt.pessoa}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-sm text-foreground">{alt.acao}</p>
-                  <p className="text-xs text-muted-foreground">{alt.pessoa}</p>
+                <div className="text-right">
+                  <p className="text-sm text-foreground">{alt.data}</p>
+                  <p className="text-xs text-muted-foreground">por {alt.usuario}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm text-foreground">{alt.data}</p>
-                <p className="text-xs text-muted-foreground">por {alt.usuario}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   );
 }
