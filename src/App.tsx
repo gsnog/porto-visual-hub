@@ -139,6 +139,18 @@ import NovaMeta from "./pages/comercial/NovaMeta";
 // Dashboards
 import DashboardComercial from "./pages/dashboards/DashboardComercial";
 
+// Cadastro - Fiscal
+import EmpresaFiscal from "./pages/cadastro/fiscal/EmpresaFiscal";
+import SeriesNumeracao from "./pages/cadastro/fiscal/SeriesNumeracao";
+import RegrasFiscais from "./pages/cadastro/fiscal/RegrasFiscais";
+import NovaRegraFiscal from "./pages/cadastro/fiscal/NovaRegraFiscal";
+import ImpostosAliquotas from "./pages/cadastro/fiscal/ImpostosAliquotas";
+
+// Fiscal
+import NotasFiscais from "./pages/fiscal/NotasFiscais";
+import MonitorEmissao from "./pages/fiscal/MonitorEmissao";
+import ExportacoesRelatorios from "./pages/fiscal/ExportacoesRelatorios";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -287,6 +299,18 @@ const App = () => (
             
             {/* Dashboards Globais */}
             <Route path="/dashboards/comercial" element={<DashboardComercial />} />
+            
+            {/* Cadastro - Fiscal */}
+            <Route path="/cadastro/fiscal/empresa" element={<EmpresaFiscal />} />
+            <Route path="/cadastro/fiscal/series" element={<SeriesNumeracao />} />
+            <Route path="/cadastro/fiscal/regras-fiscais" element={<RegrasFiscais />} />
+            <Route path="/cadastro/fiscal/regras-fiscais/nova" element={<NovaRegraFiscal />} />
+            <Route path="/cadastro/fiscal/impostos" element={<ImpostosAliquotas />} />
+            
+            {/* Fiscal */}
+            <Route path="/fiscal/notas" element={<NotasFiscais />} />
+            <Route path="/fiscal/monitor" element={<MonitorEmissao />} />
+            <Route path="/fiscal/exportacoes" element={<ExportacoesRelatorios />} />
           </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
