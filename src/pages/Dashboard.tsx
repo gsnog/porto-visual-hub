@@ -216,10 +216,10 @@ const formatCurrency = (value: number) => {
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-black/80 dark:bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl">
-        <p className="text-[10px] text-white/50 uppercase tracking-widest mb-2 font-semibold">{label}</p>
+      <div className="bg-muted/70 dark:bg-muted/60 backdrop-blur-xl border border-border/50 rounded-xl p-4 shadow-2xl">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm font-bold text-white">
+          <p key={index} className="text-sm font-bold text-foreground">
             {entry.name}: {typeof entry.value === 'number' && entry.value > 100 ? formatCurrency(entry.value) : entry.value}
           </p>
         ))}
@@ -289,14 +289,14 @@ const FilterBar = ({ children }: { children: React.ReactNode }) => (
 const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d", "90d", "1y"] }: { periodo: string; setPeriodo: (v: string) => void; options?: string[] }) => (
   <div className="flex items-center gap-2">
     <span className="text-xs text-muted-foreground font-medium">Período:</span>
-    <div className="flex gap-1 bg-muted/50 rounded-full p-0.5">
+    <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
       {options.map((p) => (
         <Button
           key={p}
           variant={periodo === p ? "default" : "ghost"}
           size="sm"
           onClick={() => setPeriodo(p)}
-          className="h-7 px-2.5 text-xs rounded-full"
+          className="h-7 px-2.5 text-xs rounded-xl"
         >
           {p}
         </Button>
@@ -337,13 +337,13 @@ const DashboardGeral = () => {
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
         <Select value={setor} onValueChange={setSetor}>
-          <SelectTrigger className="w-[160px] h-7 text-xs rounded-full"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
+          <SelectTrigger className="w-[160px] h-7 text-xs rounded-xl"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
           <SelectContent>
             {setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos os setores" : s}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
-          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Todos" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-xl"><SelectValue placeholder="Todos" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             <SelectItem value="financeiro">Financeiro</SelectItem>
@@ -441,8 +441,8 @@ const DashboardGeral = () => {
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[999, 999, 999, 999]} />
-              <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[12, 12, 12, 12]} />
+              <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -459,7 +459,7 @@ const DashboardGeral = () => {
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -573,15 +573,15 @@ const DashboardFinanceiro = () => {
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
         <Select value={cliente} onValueChange={setCliente}>
-          <SelectTrigger className="w-[140px] h-7 text-xs rounded-full"><SelectValue placeholder="Cliente" /></SelectTrigger>
+          <SelectTrigger className="w-[140px] h-7 text-xs rounded-xl"><SelectValue placeholder="Cliente" /></SelectTrigger>
           <SelectContent>{clientes.map((c) => <SelectItem key={c} value={c}>{c === "todos" ? "Todos Clientes" : c}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={beneficiario} onValueChange={setBeneficiario}>
-          <SelectTrigger className="w-[150px] h-7 text-xs rounded-full"><SelectValue placeholder="Beneficiário" /></SelectTrigger>
+          <SelectTrigger className="w-[150px] h-7 text-xs rounded-xl"><SelectValue placeholder="Beneficiário" /></SelectTrigger>
           <SelectContent>{beneficiarios.map((b) => <SelectItem key={b} value={b}>{b === "todos" ? "Todos Beneficiários" : b}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-xl"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>{statusList.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Status" : s}</SelectItem>)}</SelectContent>
         </Select>
       </FilterBar>
@@ -624,8 +624,8 @@ const DashboardFinanceiro = () => {
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="url(#finBarEntradas)" radius={[999, 999, 999, 999]} />
-              <Bar dataKey="saidas" name="Saídas" fill="url(#finBarSaidas)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="entradas" name="Entradas" fill="url(#finBarEntradas)" radius={[12, 12, 12, 12]} />
+              <Bar dataKey="saidas" name="Saídas" fill="url(#finBarSaidas)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -645,7 +645,7 @@ const DashboardFinanceiro = () => {
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="receber" name="A Receber" fill="url(#recStatusGrad)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="receber" name="A Receber" fill="url(#recStatusGrad)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -662,7 +662,7 @@ const DashboardFinanceiro = () => {
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="pagar" name="A Pagar" fill="url(#pagStatusGrad)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="pagar" name="A Pagar" fill="url(#pagStatusGrad)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -794,15 +794,15 @@ const DashboardEstoque = () => {
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
         <Select value={unidade} onValueChange={setUnidade}>
-          <SelectTrigger className="w-[150px] h-7 text-xs rounded-full"><SelectValue placeholder="Unidade" /></SelectTrigger>
+          <SelectTrigger className="w-[150px] h-7 text-xs rounded-xl"><SelectValue placeholder="Unidade" /></SelectTrigger>
           <SelectContent>{unidades.map((u) => <SelectItem key={u} value={u}>{u === "todos" ? "Todas Unidades" : u}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={setor} onValueChange={setSetor}>
-          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Setor" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-xl"><SelectValue placeholder="Setor" /></SelectTrigger>
           <SelectContent>{setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Setores" : s}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-[120px] h-7 text-xs rounded-full"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-[120px] h-7 text-xs rounded-xl"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>{statusList.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Status" : s}</SelectItem>)}</SelectContent>
         </Select>
       </FilterBar>
@@ -867,7 +867,7 @@ const DashboardEstoque = () => {
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="valor" name="Consumo" fill="url(#estSetorGrad)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="valor" name="Consumo" fill="url(#estSetorGrad)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -884,7 +884,7 @@ const DashboardEstoque = () => {
               <XAxis dataKey="unidade" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="valor" name="Valor" fill="url(#estUnidGrad)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="valor" name="Valor" fill="url(#estUnidGrad)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -1007,21 +1007,21 @@ const DashboardPatrimonio = () => {
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground font-medium">Aquisição:</span>
           <input type="date" value={dataAquisicao} onChange={(e) => setDataAquisicao(e.target.value)}
-            className="filter-input h-7 px-3 rounded-full border border-input bg-background text-xs" />
+            className="filter-input h-7 px-3 rounded-xl border border-input bg-background text-xs" />
         </div>
         <Select value={codigoItem} onValueChange={setCodigoItem}>
-          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Código" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-xl"><SelectValue placeholder="Código" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             {visaoGeralPatrimonioData.map((p) => <SelectItem key={p.codigo} value={p.codigo}>{p.codigo}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={tipoItem} onValueChange={setTipoItem}>
-          <SelectTrigger className="w-[140px] h-7 text-xs rounded-full"><SelectValue placeholder="Tipo" /></SelectTrigger>
+          <SelectTrigger className="w-[140px] h-7 text-xs rounded-xl"><SelectValue placeholder="Tipo" /></SelectTrigger>
           <SelectContent>{tiposPatrimonio.map((t) => <SelectItem key={t} value={t}>{t === "todos" ? "Todos os tipos" : t}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={faixaValor} onValueChange={setFaixaValor}>
-          <SelectTrigger className="w-[160px] h-7 text-xs rounded-full"><SelectValue placeholder="Faixa de Valor" /></SelectTrigger>
+          <SelectTrigger className="w-[160px] h-7 text-xs rounded-xl"><SelectValue placeholder="Faixa de Valor" /></SelectTrigger>
           <SelectContent>{faixasValor.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}</SelectContent>
         </Select>
       </FilterBar>
@@ -1095,7 +1095,7 @@ const DashboardPatrimonio = () => {
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="item" tick={{ ...axisStyle, fontSize: 9 }} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="valorNum" name="Valor" fill="url(#patTopGrad)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="valorNum" name="Valor" fill="url(#patTopGrad)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -1118,8 +1118,8 @@ const DashboardPatrimonio = () => {
               <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="url(#patAqGrad1)" radius={[999, 999, 999, 999]} />
-              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="url(#patAqGrad2)" radius={[999, 999, 999, 999]} />
+              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="url(#patAqGrad1)" radius={[12, 12, 12, 12]} />
+              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="url(#patAqGrad2)" radius={[12, 12, 12, 12]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
