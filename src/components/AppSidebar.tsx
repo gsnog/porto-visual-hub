@@ -120,7 +120,6 @@ const menuItems = [
     help: "RH e gestão de pessoas: visão 360º, hierarquia, acessos e auditoria.",
     subItems: [
       { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
-      { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
       { title: "Hierarquia", url: "/gestao-pessoas/hierarquia" },
       { title: "Acessos", url: "/gestao-pessoas/acessos" },
       { title: "Dashboards", url: "/gestao-pessoas/dashboards" },
