@@ -25,6 +25,11 @@ const modulosSistema = [
     id: 'dashboard', nome: 'Dashboard',
     features: [
       { id: 'dashboard_geral', nome: 'Dashboard Geral', acoes: ['view'] },
+      { id: 'dashboard_financeiro', nome: 'Dashboard Financeiro', acoes: ['view'] },
+      { id: 'dashboard_estoque', nome: 'Dashboard Estoque', acoes: ['view'] },
+      { id: 'dashboard_patrimonio', nome: 'Dashboard Patrimônio', acoes: ['view'] },
+      { id: 'dashboard_comercial', nome: 'Dashboard Comercial', acoes: ['view'] },
+      { id: 'dashboard_gestao_pessoas', nome: 'Dashboard Gestão de Pessoas', acoes: ['view'] },
     ]
   },
   {
@@ -62,7 +67,7 @@ const modulosSistema = [
   {
     id: 'comercial', nome: 'Comercial',
     features: [
-      { id: 'com_visao_geral', nome: 'Visão Geral', acoes: ['view'] },
+      
       { id: 'com_leads', nome: 'Leads', acoes: ['view', 'create', 'edit', 'delete'] },
       { id: 'com_contas', nome: 'Contas', acoes: ['view', 'create', 'edit', 'delete'] },
       { id: 'com_contatos', nome: 'Contatos', acoes: ['view', 'create', 'edit', 'delete'] },
@@ -107,7 +112,7 @@ const modulosSistema = [
   {
     id: 'gestao_pessoas', nome: 'Gestão de Pessoas',
     features: [
-      { id: 'gp_visao_geral', nome: 'Visão Geral (RH)', acoes: ['view'] },
+      
       { id: 'gp_pessoas', nome: 'Pessoas (360º)', acoes: ['view', 'create', 'edit', 'delete', 'edit_360'] },
       { id: 'gp_hierarquia', nome: 'Hierarquia', acoes: ['view'] },
       { id: 'gp_acessos', nome: 'Acessos', acoes: ['view', 'create', 'edit', 'delete'] },
