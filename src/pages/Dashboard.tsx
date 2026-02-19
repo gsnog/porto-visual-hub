@@ -8,6 +8,7 @@ import { PortfolioChart } from "@/components/PortfolioChart"
 import { SummaryCards } from "@/components/financeiro/SummaryCards"
 import { GradientCard } from "@/components/financeiro/GradientCard"
 import { StatusBadge } from "@/components/StatusBadge"
+import { motion } from "framer-motion"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
   ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter,
@@ -15,7 +16,7 @@ import {
 } from "lucide-react"
 import { 
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid
+  XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid, Label
 } from "recharts"
 import VisaoGeralComercial from "@/pages/comercial/VisaoGeral"
 import VisaoGeralRH from "@/pages/gestao-pessoas/VisaoGeralRH"
@@ -215,10 +216,10 @@ const formatCurrency = (value: number) => {
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card/98 backdrop-blur-xl border border-border/50 rounded-xl p-4 shadow-2xl shadow-black/10 dark:shadow-black/30">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{label}</p>
+      <div className="bg-black/80 dark:bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl">
+        <p className="text-[10px] text-white/50 uppercase tracking-widest mb-2 font-semibold">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm font-bold" style={{ color: entry.color }}>
+          <p key={index} className="text-sm font-bold text-white">
             {entry.name}: {typeof entry.value === 'number' && entry.value > 100 ? formatCurrency(entry.value) : entry.value}
           </p>
         ))}
@@ -228,17 +229,31 @@ const ChartTooltip = ({ active, payload, label }: any) => {
   return null
 }
 
-const ChartCard = ({ title, children, className = "", action }: { title: string; children: React.ReactNode; className?: string; action?: React.ReactNode }) => (
-  <div className={`bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/[0.06] dark:hover:shadow-black/30 ${className}`}>
-    <div className="flex items-center justify-between mb-5">
-      <h3 className="text-sm font-semibold text-foreground tracking-tight">{title}</h3>
-      {action}
-    </div>
-    <div className="h-64">{children}</div>
-  </div>
+// Animation wrapper
+const FadeIn = ({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: delay * 0.1, ease: "easeOut" }}
+    className={className}
+  >
+    {children}
+  </motion.div>
 )
 
-const AlertCard = ({ title, count, type }: { title: string; count: number; type: "warning" | "danger" | "info" }) => {
+const ChartCard = ({ title, children, className = "", action, delay = 0 }: { title: string; children: React.ReactNode; className?: string; action?: React.ReactNode; delay?: number }) => (
+  <FadeIn delay={delay}>
+    <div className={`bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20 transition-all duration-300 hover:shadow-lg hover:shadow-black/[0.06] dark:hover:shadow-black/30 ${className}`}>
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-sm font-semibold text-foreground tracking-tight">{title}</h3>
+        {action}
+      </div>
+      <div className="h-64">{children}</div>
+    </div>
+  </FadeIn>
+)
+
+const AlertCard = ({ title, count, type, delay = 0 }: { title: string; count: number; type: "warning" | "danger" | "info"; delay?: number }) => {
   const config = {
     danger: { bg: "bg-rose-500/5 dark:bg-rose-500/8", icon: "text-rose-500", text: "text-rose-600 dark:text-rose-400", shadow: "shadow-rose-500/5" },
     warning: { bg: "bg-amber-500/5 dark:bg-amber-500/8", icon: "text-amber-500", text: "text-amber-600 dark:text-amber-400", shadow: "shadow-amber-500/5" },
@@ -246,38 +261,42 @@ const AlertCard = ({ title, count, type }: { title: string; count: number; type:
   }[type]
 
   return (
-    <div className={`relative overflow-hidden flex items-center gap-4 p-6 rounded-2xl ${config.bg} shadow-sm ${config.shadow} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
-      <div className={`p-3 rounded-xl ${config.bg}`}>
-        <AlertTriangle className={`h-5 w-5 ${config.icon}`} />
+    <FadeIn delay={delay}>
+      <div className={`relative overflow-hidden flex items-center gap-4 p-6 rounded-2xl ${config.bg} shadow-sm ${config.shadow} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}>
+        <div className={`p-3 rounded-xl ${config.bg}`}>
+          <AlertTriangle className={`h-5 w-5 ${config.icon}`} />
+        </div>
+        <div>
+          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{title}</p>
+          <p className={`text-3xl font-bold ${config.text} mt-1`}>{count}</p>
+        </div>
       </div>
-      <div>
-        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">{title}</p>
-        <p className={`text-3xl font-bold ${config.text} mt-1`}>{count}</p>
-      </div>
-    </div>
+    </FadeIn>
   )
 }
 
 const FilterBar = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-card rounded-2xl p-4 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-    <div className="flex flex-wrap items-center gap-4">
-      <Filter className="h-4 w-4 text-muted-foreground" />
-      {children}
+  <FadeIn>
+    <div className="filter-card">
+      <div className="flex flex-wrap items-center gap-4">
+        <Filter className="h-4 w-4 text-muted-foreground" />
+        {children}
+      </div>
     </div>
-  </div>
+  </FadeIn>
 )
 
 const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d", "90d", "1y"] }: { periodo: string; setPeriodo: (v: string) => void; options?: string[] }) => (
   <div className="flex items-center gap-2">
     <span className="text-xs text-muted-foreground font-medium">Período:</span>
-    <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
+    <div className="flex gap-1 bg-muted/50 rounded-full p-0.5">
       {options.map((p) => (
         <Button
           key={p}
           variant={periodo === p ? "default" : "ghost"}
           size="sm"
           onClick={() => setPeriodo(p)}
-          className="h-7 px-2.5 text-xs rounded-lg"
+          className="h-7 px-2.5 text-xs rounded-full"
         >
           {p}
         </Button>
@@ -289,6 +308,20 @@ const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d"
 // Chart shared config — PREMIUM: no grid, minimal axes
 const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 }
 
+// Donut center label renderer
+const renderDonutCenter = (text: string, subtext?: string) => (
+  <>
+    <text x="50%" y={subtext ? "46%" : "50%"} textAnchor="middle" dominantBaseline="middle" className="fill-foreground text-xl font-bold" style={{ fontSize: 18, fontWeight: 700 }}>
+      {text}
+    </text>
+    {subtext && (
+      <text x="50%" y="58%" textAnchor="middle" dominantBaseline="middle" className="fill-muted-foreground" style={{ fontSize: 10 }}>
+        {subtext}
+      </text>
+    )}
+  </>
+)
+
 // ===== DASHBOARD GERAL =====
 const DashboardGeral = () => {
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
@@ -297,18 +330,20 @@ const DashboardGeral = () => {
 
   const setores = ["todos", "Produção", "Manutenção", "TI", "Administrativo", "Operacional"]
 
+  const patrimonioTotal = patrimonioTipoData.reduce((s, d) => s + d.value, 0)
+
   return (
     <div className="space-y-6">
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
         <Select value={setor} onValueChange={setSetor}>
-          <SelectTrigger className="w-[160px] h-7 text-xs"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
+          <SelectTrigger className="w-[160px] h-7 text-xs rounded-full"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
           <SelectContent>
             {setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos os setores" : s}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
-          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Todos" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Todos" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             <SelectItem value="financeiro">Financeiro</SelectItem>
@@ -320,48 +355,48 @@ const DashboardGeral = () => {
 
       {/* Financeiro Cards */}
       {(tipo === "todos" || tipo === "financeiro") && (
-        <div>
+        <FadeIn delay={1}>
           <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Financeiro</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" />
-            <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" />
-            <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" />
-            <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" />
+            <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" delay={1} />
+            <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" delay={2} />
+            <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" delay={3} />
+            <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" delay={4} />
           </div>
-        </div>
+        </FadeIn>
       )}
 
       {/* Estoque Cards */}
       {(tipo === "todos" || tipo === "estoque") && (
-        <div>
+        <FadeIn delay={2}>
           <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Estoque</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
-            <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" />
-            <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" />
-            <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" />
+            <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" delay={3} />
+            <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" delay={4} />
+            <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" delay={5} />
+            <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" delay={6} />
           </div>
-        </div>
+        </FadeIn>
       )}
 
       {/* Patrimônio Cards */}
       {(tipo === "todos" || tipo === "patrimonio") && (
-        <div>
+        <FadeIn delay={3}>
           <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Patrimônio</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" />
-            <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" />
-            <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" />
+            <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" delay={4} />
+            <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" delay={5} />
+            <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" delay={6} />
           </div>
-        </div>
+        </FadeIn>
       )}
 
       {/* Portfolio Chart — Hero Dark Accent */}
-      {(tipo === "todos" || tipo === "financeiro") && <PortfolioChart />}
+      {(tipo === "todos" || tipo === "financeiro") && <FadeIn delay={4}><PortfolioChart /></FadeIn>}
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Evolução Financeira no Tempo">
+        <ChartCard title="Evolução Financeira no Tempo" delay={5}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={evolutionData}>
               <defs>
@@ -380,7 +415,7 @@ const DashboardGeral = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Area type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" fill="url(#gradEntradas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(72 100% 50%)", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
               <Area type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" fill="url(#gradSaidas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
@@ -389,7 +424,7 @@ const DashboardGeral = () => {
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Entradas vs Saídas por Período">
+        <ChartCard title="Entradas vs Saídas por Período" delay={6}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={evolutionData} barGap={8}>
               <defs>
@@ -404,15 +439,15 @@ const DashboardGeral = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[10, 10, 4, 4]} />
-              <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[10, 10, 4, 4]} />
+              <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Consumo de Estoque por Setor">
+        <ChartCard title="Consumo de Estoque por Setor" delay={7}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
               <defs>
@@ -423,20 +458,21 @@ const DashboardGeral = () => {
               </defs>
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[4, 12, 12, 4]} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Distribuição do Patrimônio por Tipo">
+        <ChartCard title="Distribuição do Patrimônio por Tipo" delay={8}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+              {renderDonutCenter(formatCurrency(patrimonioTotal), "Total")}
+              <Tooltip content={<ChartTooltip />} cursor={false} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -444,71 +480,77 @@ const DashboardGeral = () => {
 
       {/* Alerts */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" />
-        <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" />
-        <AlertCard title="Itens de Estoque Críticos" count={5} type="info" />
+        <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" delay={9} />
+        <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" delay={10} />
+        <AlertCard title="Itens de Estoque Críticos" count={5} type="info" delay={11} />
       </div>
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-          <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Maiores Custos</h3></div>
-          <div className="px-6 pb-6">
-            <Table>
-              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
-              <TableBody>
-                {topCustosData.map((item) => (
-                  <TableRow key={item.codigo}>
-                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                    <TableCell className="text-sm">{item.item}</TableCell>
-                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <FadeIn delay={12}>
+          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+            <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Maiores Custos</h3></div>
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {topCustosData.map((item) => (
+                    <TableRow key={item.codigo}>
+                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                      <TableCell className="text-sm">{item.item}</TableCell>
+                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
-        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-          <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Ativos Patrimoniais</h3></div>
-          <div className="px-6 pb-6">
-            <Table>
-              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor Total</TableHead></TableRow></TableHeader>
-              <TableBody>
-                {topPatrimonioData.map((item) => (
-                  <TableRow key={item.codigo}>
-                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                    <TableCell className="text-sm">{item.item}</TableCell>
-                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <FadeIn delay={13}>
+          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+            <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Ativos Patrimoniais</h3></div>
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor Total</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {topPatrimonioData.map((item) => (
+                    <TableRow key={item.codigo}>
+                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                      <TableCell className="text-sm">{item.item}</TableCell>
+                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-        <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Movimentações Relevantes</h3>
-        <div className="space-y-1">
-          {ultimasMovimentacoes.map((mov, index) => (
-            <div key={index} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
-              <div className="flex items-center gap-3">
-                <div className={`w-2.5 h-2.5 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : mov.tipo === "Pagamento" ? "bg-rose-400" : "bg-amber-400"}`} />
-                <div>
-                  <p className="font-medium text-sm">{mov.tipo}</p>
-                  <p className="text-xs text-muted-foreground">{mov.descricao}</p>
+      <FadeIn delay={14}>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Movimentações Relevantes</h3>
+          <div className="space-y-1">
+            {ultimasMovimentacoes.map((mov, index) => (
+              <div key={index} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className={`w-2.5 h-2.5 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : mov.tipo === "Pagamento" ? "bg-rose-400" : "bg-amber-400"}`} />
+                  <div>
+                    <p className="font-medium text-sm">{mov.tipo}</p>
+                    <p className="text-xs text-muted-foreground">{mov.descricao}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-lime-600 dark:text-lime-400" : mov.tipo === "Pagamento" ? "text-rose-600 dark:text-rose-400" : ""}`}>{mov.valor}</p>
+                  <p className="text-xs text-muted-foreground">{mov.data}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-lime-600 dark:text-lime-400" : mov.tipo === "Pagamento" ? "text-rose-600 dark:text-rose-400" : ""}`}>{mov.valor}</p>
-                <p className="text-xs text-muted-foreground">{mov.data}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   )
 }
@@ -524,20 +566,22 @@ const DashboardFinanceiro = () => {
   const beneficiarios = ["todos", "Fornecedor A", "Fornecedor B", "Fornecedor C", "Fornecedor D"]
   const statusList = ["todos", "Em Aberto", "Vencida", "Paga", "Recebida", "Processada", "Pendente"]
 
+  const tipoDocTotal = tipoDocumentoData.reduce((s, d) => s + d.value, 0)
+
   return (
     <div className="space-y-6">
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
         <Select value={cliente} onValueChange={setCliente}>
-          <SelectTrigger className="w-[140px] h-7 text-xs"><SelectValue placeholder="Cliente" /></SelectTrigger>
+          <SelectTrigger className="w-[140px] h-7 text-xs rounded-full"><SelectValue placeholder="Cliente" /></SelectTrigger>
           <SelectContent>{clientes.map((c) => <SelectItem key={c} value={c}>{c === "todos" ? "Todos Clientes" : c}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={beneficiario} onValueChange={setBeneficiario}>
-          <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Beneficiário" /></SelectTrigger>
+          <SelectTrigger className="w-[150px] h-7 text-xs rounded-full"><SelectValue placeholder="Beneficiário" /></SelectTrigger>
           <SelectContent>{beneficiarios.map((b) => <SelectItem key={b} value={b}>{b === "todos" ? "Todos Beneficiários" : b}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>{statusList.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Status" : s}</SelectItem>)}</SelectContent>
         </Select>
       </FilterBar>
@@ -546,7 +590,7 @@ const DashboardFinanceiro = () => {
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Evolução do Fluxo de Caixa">
+        <ChartCard title="Evolução do Fluxo de Caixa" delay={1}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={evolutionData}>
               <defs>
@@ -557,13 +601,13 @@ const DashboardFinanceiro = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" fill="url(#colorSaldoFin)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Entradas vs Saídas">
+        <ChartCard title="Entradas vs Saídas" delay={2}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={evolutionData} barGap={8}>
               <defs>
@@ -578,10 +622,10 @@ const DashboardFinanceiro = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="url(#finBarEntradas)" radius={[10, 10, 4, 4]} />
-              <Bar dataKey="saidas" name="Saídas" fill="url(#finBarSaidas)" radius={[10, 10, 4, 4]} />
+              <Bar dataKey="entradas" name="Entradas" fill="url(#finBarEntradas)" radius={[999, 999, 999, 999]} />
+              <Bar dataKey="saidas" name="Saídas" fill="url(#finBarSaidas)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -589,7 +633,7 @@ const DashboardFinanceiro = () => {
 
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <ChartCard title="Contas a Receber por Status">
+        <ChartCard title="Contas a Receber por Status" delay={3}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={contasStatusData}>
               <defs>
@@ -600,13 +644,13 @@ const DashboardFinanceiro = () => {
               </defs>
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="receber" name="A Receber" fill="url(#recStatusGrad)" radius={[10, 10, 4, 4]} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="receber" name="A Receber" fill="url(#recStatusGrad)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Contas a Pagar por Status">
+        <ChartCard title="Contas a Pagar por Status" delay={4}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={contasStatusData}>
               <defs>
@@ -617,20 +661,21 @@ const DashboardFinanceiro = () => {
               </defs>
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="pagar" name="A Pagar" fill="url(#pagStatusGrad)" radius={[10, 10, 4, 4]} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="pagar" name="A Pagar" fill="url(#pagStatusGrad)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Distribuição por Tipo de Documento">
+        <ChartCard title="Distribuição por Tipo de Documento" delay={5}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie data={tipoDocumentoData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {tipoDocumentoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip formatter={(value: number) => `${value}%`} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+              {renderDonutCenter(`${tipoDocTotal}`, "Documentos")}
+              <Tooltip content={<ChartTooltip />} cursor={false} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -638,91 +683,97 @@ const DashboardFinanceiro = () => {
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Contas a Receber</h3></div>
-          <div className="px-6 pb-6">
-            <Table>
-              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Cliente</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
-              <TableBody>
-                {contasReceberData.map((item) => (
-                  <TableRow key={item.codigo}>
-                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                    <TableCell className="text-sm">{item.cliente}</TableCell>
-                    <TableCell className="text-sm">{item.vencimento}</TableCell>
-                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                    <TableCell><StatusBadge status={item.status} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <FadeIn delay={6}>
+          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+            <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Contas a Receber</h3></div>
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Cliente</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {contasReceberData.map((item) => (
+                    <TableRow key={item.codigo}>
+                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                      <TableCell className="text-sm">{item.cliente}</TableCell>
+                      <TableCell className="text-sm">{item.vencimento}</TableCell>
+                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                      <TableCell><StatusBadge status={item.status} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
-        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Contas a Pagar</h3></div>
-          <div className="px-6 pb-6">
-            <Table>
-              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Beneficiário</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
-              <TableBody>
-                {contasPagarData.map((item) => (
-                  <TableRow key={item.codigo}>
-                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                    <TableCell className="text-sm">{item.beneficiario}</TableCell>
-                    <TableCell className="text-sm">{item.vencimento}</TableCell>
-                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                    <TableCell><StatusBadge status={item.status} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        <FadeIn delay={7}>
+          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+            <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Contas a Pagar</h3></div>
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Beneficiário</TableHead><TableHead>Vencimento</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {contasPagarData.map((item) => (
+                    <TableRow key={item.codigo}>
+                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                      <TableCell className="text-sm">{item.beneficiario}</TableCell>
+                      <TableCell className="text-sm">{item.vencimento}</TableCell>
+                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                      <TableCell><StatusBadge status={item.status} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
 
-      {/* Cash Flow Detail */}
-      <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-        <h3 className="text-sm font-semibold text-foreground mb-5">Fluxo de Caixa Detalhado</h3>
-        <div className="space-y-1">
-          {ultimasMovimentacoes.filter(m => m.tipo !== "Saída Estoque").map((mov, index) => (
-            <div key={index} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
-              <div className="flex items-center gap-3">
-                <div className={`w-2.5 h-2.5 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : "bg-rose-400"}`} />
-                <div>
-                  <p className="font-medium text-sm">{mov.tipo}</p>
-                  <p className="text-xs text-muted-foreground">{mov.descricao}</p>
+      {/* Recent Transactions */}
+      <FadeIn delay={8}>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Movimentações</h3>
+          <div className="space-y-1">
+            {ultimasMovimentacoes.map((mov, index) => (
+              <div key={index} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
+                <div className="flex items-center gap-3">
+                  <div className={`w-2.5 h-2.5 rounded-full ${mov.tipo === "Recebimento" ? "bg-lime-400" : mov.tipo === "Pagamento" ? "bg-rose-400" : "bg-amber-400"}`} />
+                  <div>
+                    <p className="font-medium text-sm">{mov.tipo}</p>
+                    <p className="text-xs text-muted-foreground">{mov.descricao}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-lime-600 dark:text-lime-400" : mov.tipo === "Pagamento" ? "text-rose-600 dark:text-rose-400" : ""}`}>{mov.valor}</p>
+                  <p className="text-xs text-muted-foreground">{mov.data}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className={`font-semibold text-sm ${mov.tipo === "Recebimento" ? "text-lime-600 dark:text-lime-400" : "text-rose-600 dark:text-rose-400"}`}>
-                  {mov.tipo === "Recebimento" ? "+" : "-"}{mov.valor}
-                </p>
-                <p className="text-xs text-muted-foreground">{mov.data}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Fiscal Documents */}
-      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Documentos Fiscais</h3></div>
-        <div className="px-6 pb-6">
-          <Table>
-            <TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Tipo</TableHead><TableHead>Emissão</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {documentosFiscaisData.map((doc) => (
-                <TableRow key={doc.numero}>
-                  <TableCell className="font-medium text-xs">{doc.numero}</TableCell>
-                  <TableCell className="text-sm">{doc.tipo}</TableCell>
-                  <TableCell className="text-sm">{doc.emissao}</TableCell>
-                  <TableCell className="text-right font-semibold text-sm">{doc.valor}</TableCell>
-                  <TableCell><StatusBadge status={doc.status} /></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <FadeIn delay={9}>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Documentos Fiscais</h3></div>
+          <div className="px-6 pb-6">
+            <Table>
+              <TableHeader><TableRow><TableHead>Número</TableHead><TableHead>Tipo</TableHead><TableHead>Emissão</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {documentosFiscaisData.map((doc) => (
+                  <TableRow key={doc.numero}>
+                    <TableCell className="font-medium text-xs">{doc.numero}</TableCell>
+                    <TableCell className="text-sm">{doc.tipo}</TableCell>
+                    <TableCell className="text-sm">{doc.emissao}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{doc.valor}</TableCell>
+                    <TableCell><StatusBadge status={doc.status} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   )
 }
@@ -743,34 +794,34 @@ const DashboardEstoque = () => {
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
         <Select value={unidade} onValueChange={setUnidade}>
-          <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Unidade" /></SelectTrigger>
+          <SelectTrigger className="w-[150px] h-7 text-xs rounded-full"><SelectValue placeholder="Unidade" /></SelectTrigger>
           <SelectContent>{unidades.map((u) => <SelectItem key={u} value={u}>{u === "todos" ? "Todas Unidades" : u}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={setor} onValueChange={setSetor}>
-          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Setor" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Setor" /></SelectTrigger>
           <SelectContent>{setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Setores" : s}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-[120px] h-7 text-xs"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-[120px] h-7 text-xs rounded-full"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>{statusList.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Status" : s}</SelectItem>)}</SelectContent>
         </Select>
       </FilterBar>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" />
-        <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-8%", positive: false }} variant="warning" />
-        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} variant="success" />
+        <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" delay={1} />
+        <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-8%", positive: false }} variant="warning" delay={2} />
+        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} variant="success" delay={3} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <GradientCard title="Itens em Estoque" value="3.485" icon={Package} variant="info" />
-        <GradientCard title="Requisições Pendentes" value="12" icon={Receipt} variant="warning" />
-        <GradientCard title="Itens Críticos" value="5" icon={AlertTriangle} variant="danger" />
+        <GradientCard title="Itens em Estoque" value="3.485" icon={Package} variant="info" delay={4} />
+        <GradientCard title="Requisições Pendentes" value="12" icon={Receipt} variant="warning" delay={5} />
+        <GradientCard title="Itens Críticos" value="5" icon={AlertTriangle} variant="danger" delay={6} />
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Evolução de Estoque no Tempo">
+        <ChartCard title="Evolução de Estoque no Tempo" delay={7}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={estoqueEvolutionData}>
               <defs>
@@ -781,13 +832,13 @@ const DashboardEstoque = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="quantidade" name="Quantidade" stroke="hsl(var(--primary))" fill="url(#estQtdGrad)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Valor Financeiro do Estoque no Tempo">
+        <ChartCard title="Valor Financeiro do Estoque no Tempo" delay={8}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={estoqueEvolutionData}>
               <defs>
@@ -798,13 +849,13 @@ const DashboardEstoque = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(72 100% 50%)" fill="url(#colorValorEstoque)" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Consumo por Setor">
+        <ChartCard title="Consumo por Setor" delay={9}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
               <defs>
@@ -815,13 +866,13 @@ const DashboardEstoque = () => {
               </defs>
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valor" name="Consumo" fill="url(#estSetorGrad)" radius={[4, 12, 12, 4]} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="valor" name="Consumo" fill="url(#estSetorGrad)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Estoque por Unidade / Almoxarifado">
+        <ChartCard title="Estoque por Unidade / Almoxarifado" delay={10}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={estoqueUnidadeData}>
               <defs>
@@ -832,8 +883,8 @@ const DashboardEstoque = () => {
               </defs>
               <XAxis dataKey="unidade" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valor" name="Valor" fill="url(#estUnidGrad)" radius={[10, 10, 4, 4]} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="valor" name="Valor" fill="url(#estUnidGrad)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -841,85 +892,93 @@ const DashboardEstoque = () => {
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FadeIn delay={11}>
+          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+            <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Top 10 Itens em Estoque</h3></div>
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {topItensEstoqueData.map((item) => (
+                    <TableRow key={item.codigo}>
+                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                      <TableCell className="text-sm">{item.item}</TableCell>
+                      <TableCell className="text-center text-sm">{item.quantidade}</TableCell>
+                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={12}>
+          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+            <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Top 10 Itens Mais Consumidos</h3></div>
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Consumo</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {topItensConsumidosData.map((item) => (
+                    <TableRow key={item.codigo}>
+                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                      <TableCell className="text-sm">{item.item}</TableCell>
+                      <TableCell className="text-center text-sm">{item.consumo}</TableCell>
+                      <TableCell className="text-sm">{item.setor}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+
+      <FadeIn delay={13}>
         <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Top 10 Itens em Estoque</h3></div>
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Visão Geral do Inventário</h3></div>
           <div className="px-6 pb-6">
             <Table>
-              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Unidade</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
-                {topItensEstoqueData.map((item) => (
-                  <TableRow key={item.codigo}>
-                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                    <TableCell className="text-sm">{item.item}</TableCell>
+                {inventarioData.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium text-sm">{item.item}</TableCell>
                     <TableCell className="text-center text-sm">{item.quantidade}</TableCell>
+                    <TableCell className="text-sm">{item.unidade}</TableCell>
                     <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                    <TableCell><StatusBadge status={item.status} /></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
         </div>
+      </FadeIn>
 
+      <FadeIn delay={14}>
         <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Top 10 Itens Mais Consumidos</h3></div>
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Histórico Consolidado de Movimentações</h3></div>
           <div className="px-6 pb-6">
             <Table>
-              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Consumo</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Tipo</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Requisitante</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
               <TableBody>
-                {topItensConsumidosData.map((item) => (
-                  <TableRow key={item.codigo}>
-                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                    <TableCell className="text-sm">{item.item}</TableCell>
-                    <TableCell className="text-center text-sm">{item.consumo}</TableCell>
-                    <TableCell className="text-sm">{item.setor}</TableCell>
+                {historicoMovimentacoesEstoque.map((mov, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-sm">{mov.data}</TableCell>
+                    <TableCell><StatusBadge status={mov.tipo} /></TableCell>
+                    <TableCell className="font-medium text-sm">{mov.item}</TableCell>
+                    <TableCell className="text-center text-sm">{mov.quantidade}</TableCell>
+                    <TableCell className="text-sm">{mov.requisitante}</TableCell>
+                    <TableCell className="text-sm">{mov.setor}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
         </div>
-      </div>
-
-      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Visão Geral do Inventário</h3></div>
-        <div className="px-6 pb-6">
-          <Table>
-            <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Unidade</TableHead><TableHead className="text-right">Valor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {inventarioData.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium text-sm">{item.item}</TableCell>
-                  <TableCell className="text-center text-sm">{item.quantidade}</TableCell>
-                  <TableCell className="text-sm">{item.unidade}</TableCell>
-                  <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                  <TableCell><StatusBadge status={item.status} /></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Histórico Consolidado de Movimentações</h3></div>
-        <div className="px-6 pb-6">
-          <Table>
-            <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Tipo</TableHead><TableHead>Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead>Requisitante</TableHead><TableHead>Setor</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {historicoMovimentacoesEstoque.map((mov, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-sm">{mov.data}</TableCell>
-                  <TableCell><StatusBadge status={mov.tipo} /></TableCell>
-                  <TableCell className="font-medium text-sm">{mov.item}</TableCell>
-                  <TableCell className="text-center text-sm">{mov.quantidade}</TableCell>
-                  <TableCell className="text-sm">{mov.requisitante}</TableCell>
-                  <TableCell className="text-sm">{mov.setor}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+      </FadeIn>
     </div>
   )
 }
@@ -939,43 +998,46 @@ const DashboardPatrimonio = () => {
     { value: "100000+", label: "Acima de R$ 100.000" },
   ]
 
+  const patrimonioTotal = patrimonioTipoData.reduce((s, d) => s + d.value, 0)
+  const patrimonioQtdTotal = patrimonioQuantidadeData.reduce((s, d) => s + d.value, 0)
+
   return (
     <div className="space-y-6">
       <FilterBar>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground font-medium">Aquisição:</span>
           <input type="date" value={dataAquisicao} onChange={(e) => setDataAquisicao(e.target.value)}
-            className="filter-input h-7 px-3 rounded border border-input bg-background text-xs" />
+            className="filter-input h-7 px-3 rounded-full border border-input bg-background text-xs" />
         </div>
         <Select value={codigoItem} onValueChange={setCodigoItem}>
-          <SelectTrigger className="w-[130px] h-7 text-xs"><SelectValue placeholder="Código" /></SelectTrigger>
+          <SelectTrigger className="w-[130px] h-7 text-xs rounded-full"><SelectValue placeholder="Código" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
             {visaoGeralPatrimonioData.map((p) => <SelectItem key={p.codigo} value={p.codigo}>{p.codigo}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={tipoItem} onValueChange={setTipoItem}>
-          <SelectTrigger className="w-[140px] h-7 text-xs"><SelectValue placeholder="Tipo" /></SelectTrigger>
+          <SelectTrigger className="w-[140px] h-7 text-xs rounded-full"><SelectValue placeholder="Tipo" /></SelectTrigger>
           <SelectContent>{tiposPatrimonio.map((t) => <SelectItem key={t} value={t}>{t === "todos" ? "Todos os tipos" : t}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={faixaValor} onValueChange={setFaixaValor}>
-          <SelectTrigger className="w-[160px] h-7 text-xs"><SelectValue placeholder="Faixa de Valor" /></SelectTrigger>
+          <SelectTrigger className="w-[160px] h-7 text-xs rounded-full"><SelectValue placeholder="Faixa de Valor" /></SelectTrigger>
           <SelectContent>{faixasValor.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}</SelectContent>
         </Select>
       </FilterBar>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <GradientCard title="Valor Adquirido no Período" value="R$ 45.000,00" icon={ArrowUpRight} variant="success" trend={{ value: "+12%", positive: true }} />
-        <GradientCard title="Baixas no Período" value="R$ 8.000,00" icon={ArrowDownRight} variant="warning" trend={{ value: "-2%", positive: false }} />
-        <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={DollarSign} variant="success" trend={{ value: "+5.2%", positive: true }} />
-        <GradientCard title="Total de Itens Patrimoniais" value="156" icon={Building2} variant="info" />
-        <GradientCard title="Tipos de Patrimônio Ativos" value="4" icon={BarChart3} variant="neutral" />
+        <GradientCard title="Valor Adquirido no Período" value="R$ 45.000,00" icon={ArrowUpRight} variant="success" trend={{ value: "+12%", positive: true }} delay={1} />
+        <GradientCard title="Baixas no Período" value="R$ 8.000,00" icon={ArrowDownRight} variant="warning" trend={{ value: "-2%", positive: false }} delay={2} />
+        <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={DollarSign} variant="success" trend={{ value: "+5.2%", positive: true }} delay={3} />
+        <GradientCard title="Total de Itens Patrimoniais" value="156" icon={Building2} variant="info" delay={4} />
+        <GradientCard title="Tipos de Patrimônio Ativos" value="4" icon={BarChart3} variant="neutral" delay={5} />
       </div>
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Evolução do Valor Patrimonial">
+        <ChartCard title="Evolução do Valor Patrimonial" delay={6}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={patrimonioEvolutionData}>
               <defs>
@@ -986,20 +1048,21 @@ const DashboardPatrimonio = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Valor do Patrimônio por Tipo">
+        <ChartCard title="Valor do Patrimônio por Tipo" delay={7}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
                 {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+              {renderDonutCenter(formatCurrency(patrimonioTotal), "Total")}
+              <Tooltip content={<ChartTooltip />} cursor={false} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -1007,19 +1070,20 @@ const DashboardPatrimonio = () => {
 
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <ChartCard title="Quantidade por Tipo">
+        <ChartCard title="Quantidade por Tipo" delay={8}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie data={patrimonioQuantidadeData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, value }) => `${name}: ${value}`} labelLine={false}>
                 {patrimonioQuantidadeData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
+              {renderDonutCenter(`${patrimonioQtdTotal}`, "Itens")}
+              <Tooltip content={<ChartTooltip />} cursor={false} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Top 5 Itens por Valor Total">
+        <ChartCard title="Top 5 Itens por Valor Total" delay={9}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={topPatrimonioData.map(i => ({ ...i, valorNum: parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) * 1000 }))} layout="vertical" barSize={18}>
               <defs>
@@ -1030,13 +1094,13 @@ const DashboardPatrimonio = () => {
               </defs>
               <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="item" tick={{ ...axisStyle, fontSize: 9 }} width={100} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="valorNum" name="Valor" fill="url(#patTopGrad)" radius={[4, 12, 12, 4]} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="valorNum" name="Valor" fill="url(#patTopGrad)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Aquisições por Período">
+        <ChartCard title="Aquisições por Período" delay={10}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={aquisicoesPorPeriodoData}>
               <defs>
@@ -1052,55 +1116,59 @@ const DashboardPatrimonio = () => {
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis yAxisId="left" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="url(#patAqGrad1)" radius={[10, 10, 4, 4]} />
-              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="url(#patAqGrad2)" radius={[10, 10, 4, 4]} />
+              <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="url(#patAqGrad1)" radius={[999, 999, 999, 999]} />
+              <Bar yAxisId="right" dataKey="valor" name="Valor (R$)" fill="url(#patAqGrad2)" radius={[999, 999, 999, 999]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       </div>
 
       {/* Tables */}
-      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Visão Geral do Patrimônio</h3></div>
-        <div className="px-6 pb-6">
-          <Table>
-            <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor Unitário</TableHead><TableHead className="text-center">Status</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {visaoGeralPatrimonioData.map((item) => (
-                <TableRow key={item.codigo}>
-                  <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                  <TableCell className="text-sm">{item.item}</TableCell>
-                  <TableCell className="text-sm">{item.tipo}</TableCell>
-                  <TableCell className="text-right font-semibold text-sm">{item.valorUnit}</TableCell>
-                  <TableCell className="text-center"><StatusBadge status={item.status} /></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <FadeIn delay={11}>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Visão Geral do Patrimônio</h3></div>
+          <div className="px-6 pb-6">
+            <Table>
+              <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor Unitário</TableHead><TableHead className="text-center">Status</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {visaoGeralPatrimonioData.map((item) => (
+                  <TableRow key={item.codigo}>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.item}</TableCell>
+                    <TableCell className="text-sm">{item.tipo}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valorUnit}</TableCell>
+                    <TableCell className="text-center"><StatusBadge status={item.status} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </div>
+      </FadeIn>
 
-      <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-        <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Histórico de Aquisições</h3></div>
-        <div className="px-6 pb-6">
-          <Table>
-            <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {historicoPatrimonio.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-sm">{item.data}</TableCell>
-                  <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                  <TableCell className="text-sm">{item.item}</TableCell>
-                  <TableCell className="text-sm">{item.tipo}</TableCell>
-                  <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <FadeIn delay={12}>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Histórico de Aquisições</h3></div>
+          <div className="px-6 pb-6">
+            <Table>
+              <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead>Tipo</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {historicoPatrimonio.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-sm">{item.data}</TableCell>
+                    <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                    <TableCell className="text-sm">{item.item}</TableCell>
+                    <TableCell className="text-sm">{item.tipo}</TableCell>
+                    <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </div>
+      </FadeIn>
     </div>
   )
 }

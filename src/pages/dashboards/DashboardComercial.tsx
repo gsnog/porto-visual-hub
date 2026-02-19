@@ -7,6 +7,7 @@ import { Target, DollarSign, TrendingUp, Users, AlertTriangle, Filter } from "lu
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { oportunidadesMock, etapasFunil, getPipelineTotal, getForecastPonderado, metasMock, atividadesMock } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
+import { motion } from "framer-motion";
 
 const formatCurrency = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
@@ -15,10 +16,10 @@ const axisStyle = { fill: "hsl(var(--muted-foreground))", fontSize: 11 };
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card/98 backdrop-blur-xl border border-border/50 rounded-xl p-4 shadow-2xl shadow-black/10 dark:shadow-black/30">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 font-semibold">{label}</p>
+      <div className="bg-black/80 dark:bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-4 shadow-2xl">
+        <p className="text-[10px] text-white/50 uppercase tracking-widest mb-2 font-semibold">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm font-bold" style={{ color: entry.color }}>
+          <p key={index} className="text-sm font-bold text-white">
             {entry.name}: {entry.value}
           </p>
         ))}
@@ -27,6 +28,12 @@ const ChartTooltip = ({ active, payload, label }: any) => {
   }
   return null;
 };
+
+const FadeIn = ({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) => (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: delay * 0.1, ease: "easeOut" }} className={className}>
+    {children}
+  </motion.div>
+);
 
 export default function DashboardComercial() {
   const [periodo, setPeriodo] = useState("30d");
@@ -49,94 +56,103 @@ export default function DashboardComercial() {
     { name: 'Timing', value: 20, color: 'hsl(var(--primary))' },
     { name: 'Outros', value: 20, color: 'hsl(var(--muted-foreground))' },
   ];
+  const motivosTotal = motivosPerdaData.reduce((s, d) => s + d.value, 0);
 
   return (
     <div className="space-y-6">
       {/* Filter Bar */}
-      <div className="bg-card rounded-2xl p-4 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-        <div className="flex flex-wrap items-center gap-4">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground font-medium">Período:</span>
-            <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
-              {["7d", "30d", "90d"].map(p => (
-                <Button key={p} variant={periodo === p ? "default" : "ghost"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs rounded-lg">{p}</Button>
-              ))}
+      <FadeIn>
+        <div className="filter-card">
+          <div className="flex flex-wrap items-center gap-4">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground font-medium">Período:</span>
+              <div className="flex gap-1 bg-muted/50 rounded-full p-0.5">
+                {["7d", "30d", "90d"].map(p => (
+                  <Button key={p} variant={periodo === p ? "default" : "ghost"} size="sm" onClick={() => setPeriodo(p)} className="h-7 px-2.5 text-xs rounded-full">{p}</Button>
+                ))}
+              </div>
             </div>
+            <Select value={vendedor} onValueChange={setVendedor}>
+              <SelectTrigger className="w-[180px] h-7 text-xs rounded-full"><SelectValue placeholder="Todos os vendedores" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">Todos</SelectItem>
+                {pessoasMock.slice(0, 5).map(p => <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={vendedor} onValueChange={setVendedor}>
-            <SelectTrigger className="w-[180px] h-7 text-xs"><SelectValue placeholder="Todos os vendedores" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">Todos</SelectItem>
-              {pessoasMock.slice(0, 5).map(p => <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>)}
-            </SelectContent>
-          </Select>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GradientCard title="Pipeline Total" value={formatCurrency(pipelineTotal)} icon={DollarSign} variant="info" trend={{ value: "+18%", positive: true }} />
-        <GradientCard title="Forecast Ponderado" value={formatCurrency(forecastMes)} icon={TrendingUp} variant="warning" />
-        <GradientCard title="Meta vs Realizado" value={`${(realizadoTotal/metaTotal*100).toFixed(0)}%`} icon={Target} variant="success" />
-        <GradientCard title="Atividades Vencidas" value={atividadesVencidas.toString()} icon={AlertTriangle} variant="danger" />
+        <GradientCard title="Pipeline Total" value={formatCurrency(pipelineTotal)} icon={DollarSign} variant="info" trend={{ value: "+18%", positive: true }} delay={1} />
+        <GradientCard title="Forecast Ponderado" value={formatCurrency(forecastMes)} icon={TrendingUp} variant="warning" delay={2} />
+        <GradientCard title="Meta vs Realizado" value={`${(realizadoTotal/metaTotal*100).toFixed(0)}%`} icon={Target} variant="success" delay={3} />
+        <GradientCard title="Atividades Vencidas" value={atividadesVencidas.toString()} icon={AlertTriangle} variant="danger" delay={4} />
       </div>
 
       {/* Hero Dark Accent Card */}
-      <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0B0D0F] via-[#131619] to-[#0B0D0F] shadow-xl shadow-black/20">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
-        <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">Valor Total no Pipeline</p>
-        <div className="flex items-baseline gap-4">
-          <span className="text-5xl font-bold tracking-tight text-white">{formatCurrency(pipelineTotal)}</span>
-          <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-lime-400/15 text-lime-400 border border-lime-400/20">+18% vs mês anterior</span>
+      <FadeIn delay={5}>
+        <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-[#0B0D0F] via-[#131619] to-[#0B0D0F] shadow-xl shadow-black/20">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-lime-400/5 rounded-full blur-3xl pointer-events-none" />
+          <p className="text-[11px] text-white/40 uppercase tracking-widest font-semibold mb-2">Valor Total no Pipeline</p>
+          <div className="flex items-baseline gap-4">
+            <span className="text-5xl font-bold tracking-tight text-white">{formatCurrency(pipelineTotal)}</span>
+            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-lime-400/15 text-lime-400 border border-lime-400/20">+18% vs mês anterior</span>
+          </div>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-          <h3 className="text-sm font-semibold text-foreground mb-5">Pipeline por Etapa</h3>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={funilData} layout="vertical" barSize={18}>
-                <defs>
-                  <linearGradient id="comFunilGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
-                  </linearGradient>
-                </defs>
-                <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
-                <YAxis dataKey="name" type="category" width={110} tick={axisStyle} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(v: number, n: string, p: any) => [`${v} — ${formatCurrency(p.payload.amount)}`, 'Oportunidades']}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="value" fill="url(#comFunilGrad)" radius={[4, 12, 12, 4]} />
-              </BarChart>
-            </ResponsiveContainer>
+        <FadeIn delay={6}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Pipeline por Etapa</h3>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={funilData} layout="vertical" barSize={18}>
+                  <defs>
+                    <linearGradient id="comFunilGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis dataKey="name" type="category" width={110} tick={axisStyle} axisLine={false} tickLine={false} />
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                  <Bar dataKey="value" fill="url(#comFunilGrad)" radius={[999, 999, 999, 999]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
-        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-          <h3 className="text-sm font-semibold text-foreground mb-5">Motivos de Perda</h3>
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={motivosPerdaData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value" cornerRadius={6}>
-                  {motivosPerdaData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                </Pie>
-                <Tooltip formatter={(v: number) => [`${v}%`]}
-                  contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border)/0.5)', borderRadius: '12px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)' }} />
-              </PieChart>
-            </ResponsiveContainer>
+        <FadeIn delay={7}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-5">Motivos de Perda</h3>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={motivosPerdaData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value" cornerRadius={6}>
+                    {motivosPerdaData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                  </Pie>
+                  <text x="50%" y="46%" textAnchor="middle" dominantBaseline="middle" className="fill-foreground" style={{ fontSize: 18, fontWeight: 700 }}>{motivosTotal}%</text>
+                  <text x="50%" y="58%" textAnchor="middle" dominantBaseline="middle" className="fill-muted-foreground" style={{ fontSize: 10 }}>Total</text>
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex flex-wrap justify-center gap-4 mt-3">
+              {motivosPerdaData.map(m => (
+                <div key={m.name} className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: m.color }} />
+                  <span className="text-xs text-muted-foreground">{m.name} ({m.value}%)</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 mt-3">
-            {motivosPerdaData.map(m => (
-              <div key={m.name} className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: m.color }} />
-                <span className="text-xs text-muted-foreground">{m.name} ({m.value}%)</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        </FadeIn>
       </div>
     </div>
   );
