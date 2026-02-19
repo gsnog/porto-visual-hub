@@ -13,7 +13,8 @@ import {
   ChevronLeft,
   BarChart3,
   Sun,
-  Moon
+  Moon,
+  Receipt
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
@@ -53,6 +54,12 @@ const menuItems = [
         { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
         { title: "Cargos", url: "/cadastro/pessoas/cargos" },
       ]},
+      { title: "Fiscal", help: "Parâmetros fiscais: empresa, séries, regras e impostos.", subItems: [
+        { title: "Empresa (Dados Fiscais)", url: "/cadastro/fiscal/empresa" },
+        { title: "Séries e Numeração", url: "/cadastro/fiscal/series" },
+        { title: "Regras Fiscais", url: "/cadastro/fiscal/regras-fiscais" },
+        { title: "Impostos e Alíquotas", url: "/cadastro/fiscal/impostos" },
+      ]},
     ]
   },
   { 
@@ -70,6 +77,17 @@ const menuItems = [
       { title: "Atividades", url: "/comercial/atividades" },
       { title: "Metas e Forecast", url: "/comercial/metas" },
       { title: "Comissões", url: "/comercial/comissoes" },
+    ]
+  },
+  { 
+    title: "Fiscal", 
+    icon: Receipt,
+    basePath: "/fiscal",
+    help: "Módulo fiscal: emissão de notas, monitor de emissão e relatórios.",
+    subItems: [
+      { title: "Notas Fiscais", url: "/fiscal/notas" },
+      { title: "Monitor de Emissão", url: "/fiscal/monitor" },
+      { title: "Exportações / Relatórios", url: "/fiscal/exportacoes" },
     ]
   },
   { 
