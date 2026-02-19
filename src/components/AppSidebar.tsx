@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
 import logoSerp from "@/assets/logo-serp.png"
 import logoIcone from "@/assets/Logo_Serp_27.png"
-import { HelpTooltip } from "@/components/HelpTooltip"
+
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid, help: "Visão geral com indicadores e métricas do sistema." },
@@ -223,7 +223,6 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                         <span className="flex-1 text-left text-sm text-[hsl(var(--sidebar-foreground))]">
                           {item.title}
                         </span>
-                        {'help' in item && item.help && <HelpTooltip text={item.help} size={12} side="right" />}
                         {openMenus.includes(item.title) ? (
                           <ChevronDown className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
                         ) : (
@@ -245,7 +244,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                               <span className="flex-1 text-left text-[hsl(var(--sidebar-muted))]">
                                 {subItem.title}
                               </span>
-                              {'help' in subItem && subItem.help && <HelpTooltip text={subItem.help as string} size={11} side="right" />}
+                              
                               {openMenus.includes(`${item.title}-${subItem.title}`) ? (
                                 <ChevronDown className="h-3 w-3 text-foreground dark:text-primary" />
                               ) : (
@@ -309,7 +308,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                       <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
                         {item.title}
                       </span>
-                      {'help' in item && item.help && <HelpTooltip text={item.help} size={12} side="right" />}
+                      
                     </>
                   )}
                 </NavLink>
@@ -337,7 +336,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
               <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
                 {theme === "dark" ? "Modo Diurno" : "Modo Noturno"}
               </span>
-              <HelpTooltip text="Alternar entre tema claro e escuro." size={12} side="right" />
+              
             </>
           )}
         </button>
@@ -348,7 +347,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
           {!collapsed && (
             <>
               <span className="text-sm">Sair</span>
-              <HelpTooltip text="Encerrar a sessão e sair do sistema." size={12} side="right" />
+              
             </>
           )}
         </button>

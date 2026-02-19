@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FileText, FileSpreadsheet, ChevronDown } from "lucide-react";
 import { exportData, type ExportFormat } from "@/lib/exportData";
-import { HelpTooltip } from "@/components/HelpTooltip";
 
 interface ExportButtonProps {
   getData: () => Record<string, unknown>[];
@@ -22,8 +21,7 @@ export function ExportButton({ getData, fileName, sheetName }: ExportButtonProps
   };
 
   return (
-    <div className="inline-flex items-center gap-1">
-      <DropdownMenu>
+    <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="gap-2 border-border">
             <FileText className="h-4 w-4" />
@@ -41,8 +39,6 @@ export function ExportButton({ getData, fileName, sheetName }: ExportButtonProps
             Exportar PDF
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
-      <HelpTooltip text="Exportar os dados filtrados em formato Excel (.xlsx) ou PDF." size={13} />
-    </div>
+    </DropdownMenu>
   );
 }

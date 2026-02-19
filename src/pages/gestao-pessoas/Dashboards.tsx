@@ -144,9 +144,9 @@ export default function Dashboards() {
                             <Button 
                               variant="ghost" 
                               size="sm"
-                              className="gap-1"
+                              className="gap-1 group/eye"
                             >
-                              <Eye className="h-4 w-4 text-primary" />
+                              <Eye className="h-4 w-4 text-primary group-hover/eye:text-white transition-colors" />
                             </Button>
                           </TableCell>
                         ))}
