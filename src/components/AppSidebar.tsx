@@ -19,7 +19,8 @@ import {
 import { NavLink, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
-import logoSerp from "@/assets/logo-serp.png"
+import logoSerpLight from "@/assets/logo-serp-light.png"
+import logoSerpDark from "@/assets/logo-serp-dark.png"
 import logoIcone from "@/assets/Logo_Serp_27.png"
 
 
@@ -69,7 +70,6 @@ const menuItems = [
     help: "Gestão comercial: leads, oportunidades, propostas, metas e comissões.",
     subItems: [
       { title: "Leads", url: "/comercial/leads" },
-      { title: "Contas", url: "/comercial/contas" },
       { title: "Contas", url: "/comercial/contas" },
       { title: "Contatos", url: "/comercial/contatos" },
       { title: "Oportunidades", url: "/comercial/oportunidades" },
@@ -208,7 +208,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
         {collapsed ? (
           <img src={logoIcone} alt="S" className="h-12 object-contain" />
         ) : (
-          <img src={logoSerp} alt="SERP" className="h-28 object-contain" />
+          <img src={theme === "dark" ? logoSerpDark : logoSerpLight} alt="SERP" className="h-28 object-contain" />
         )}
         
         {/* Toggle button - aligned with logo divider */}

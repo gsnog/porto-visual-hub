@@ -277,31 +277,25 @@ const AlertCard = ({ title, count, type, delay = 0 }: { title: string; count: nu
 
 const FilterBar = ({ children }: { children: React.ReactNode }) => (
   <FadeIn>
-    <div className="filter-card">
-      <div className="flex flex-wrap items-center gap-4">
-        <Filter className="h-4 w-4 text-muted-foreground" />
-        {children}
+    <div className="space-y-4">
+      <div className="filter-card">
+        <div className="flex flex-wrap gap-4 items-end">
+          {children}
+        </div>
       </div>
     </div>
   </FadeIn>
 )
 
 const PeriodFilter = ({ periodo, setPeriodo, options = ["1h", "24h", "7d", "30d", "90d", "1y"] }: { periodo: string; setPeriodo: (v: string) => void; options?: string[] }) => (
-  <div className="flex items-center gap-2">
-    <span className="text-xs text-muted-foreground font-medium">Período:</span>
-    <div className="flex gap-1 bg-muted/50 rounded-xl p-0.5">
-      {options.map((p) => (
-        <Button
-          key={p}
-          variant={periodo === p ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setPeriodo(p)}
-          className="h-7 px-2.5 text-xs rounded-xl"
-        >
-          {p}
-        </Button>
-      ))}
-    </div>
+  <div className="flex flex-col gap-1.5 min-w-[200px]">
+    <label className="filter-label">Período</label>
+    <Select value={periodo} onValueChange={setPeriodo}>
+      <SelectTrigger className="filter-input"><SelectValue /></SelectTrigger>
+      <SelectContent>
+        {options.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+      </SelectContent>
+    </Select>
   </div>
 )
 
@@ -336,21 +330,27 @@ const DashboardGeral = () => {
     <div className="space-y-6">
       <FilterBar>
         <PeriodFilter periodo={periodo} setPeriodo={(v) => setPeriodo(v as PeriodoType)} />
-        <Select value={setor} onValueChange={setSetor}>
-          <SelectTrigger className="w-[160px] h-7 text-xs rounded-xl"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
-          <SelectContent>
-            {setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos os setores" : s}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
-          <SelectTrigger className="w-[130px] h-7 text-xs rounded-xl"><SelectValue placeholder="Todos" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="financeiro">Financeiro</SelectItem>
-            <SelectItem value="estoque">Estoque</SelectItem>
-            <SelectItem value="patrimonio">Patrimônio</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col gap-1.5 min-w-[160px]">
+          <label className="filter-label">Setor</label>
+          <Select value={setor} onValueChange={setSetor}>
+            <SelectTrigger className="filter-input"><SelectValue placeholder="Todos os setores" /></SelectTrigger>
+            <SelectContent>
+              {setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos os setores" : s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-1.5 min-w-[130px]">
+          <label className="filter-label">Tipo</label>
+          <Select value={tipo} onValueChange={(v) => setTipo(v as TipoType)}>
+            <SelectTrigger className="filter-input"><SelectValue placeholder="Todos" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos</SelectItem>
+              <SelectItem value="financeiro">Financeiro</SelectItem>
+              <SelectItem value="estoque">Estoque</SelectItem>
+              <SelectItem value="patrimonio">Patrimônio</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </FilterBar>
 
       {/* Financeiro Cards */}

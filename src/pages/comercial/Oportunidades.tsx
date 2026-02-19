@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { TableActions } from "@/components/TableActions";
 import { FilterSection } from "@/components/FilterSection";
 import { ExportButton } from "@/components/ExportButton";
-import { Plus, List, GripVertical, Calendar, LayoutList, Triangle } from "lucide-react";
+import { Plus, List, GripVertical, Calendar, LayoutList, Filter as FunnelIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { oportunidadesMock, etapasFunil, getContaById } from "@/data/comercial-mock";
 import { pessoasMock } from "@/data/pessoas-mock";
@@ -92,7 +92,7 @@ export default function Oportunidades() {
               <LayoutList className="h-4 w-4" />
             </Button>
             <Button variant={view === "funil" ? "default" : "ghost"} size="sm" onClick={() => setView("funil")} className="rounded-none">
-              <Triangle className="h-4 w-4" />
+              <FunnelIcon className="h-4 w-4" />
             </Button>
           </div>
         </div>
