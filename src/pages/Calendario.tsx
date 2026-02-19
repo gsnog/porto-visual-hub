@@ -417,7 +417,7 @@ export default function Calendario() {
                   <div
                     key={idx}
                     className={cn(
-                      "min-h-[100px] p-1 border border-border dark:border-transparent rounded cursor-pointer hover:bg-muted/50 transition-colors",
+                      "min-h-[100px] p-1 border border-border dark:border-[hsl(220_6%_15%)] rounded cursor-pointer hover:bg-muted/50 transition-colors",
                       !day.isCurrentMonth && "bg-muted/30 text-muted-foreground",
                       isToday && "border-primary dark:border-primary bg-primary/5"
                     )}
@@ -475,7 +475,7 @@ export default function Calendario() {
                       {hour}
                     </div>
                     <div 
-                      className="border-t border-border dark:border-transparent min-h-[48px] py-1 space-y-1 cursor-pointer hover:bg-muted/50 transition-colors"
+                      className="border-t border-border dark:border-[hsl(220_6%_15%)] min-h-[48px] py-1 space-y-1 cursor-pointer hover:bg-muted/50 transition-colors"
                       onClick={() => {
                         if (canCreate) {
                           const hourNum = hour.split(':')[0];
@@ -558,7 +558,7 @@ export default function Calendario() {
                     return (
                       <div 
                         key={dayIdx} 
-                        className="border-t border-l border-border dark:border-transparent min-h-[48px] p-0.5"
+                        className="border-t border-l border-border dark:border-[hsl(220_6%_15%)] min-h-[48px] p-0.5"
                       >
                         {eventos.map(evento => (
                           <div
