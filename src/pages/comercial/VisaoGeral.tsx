@@ -5,7 +5,7 @@ import { GradientCard } from "@/components/financeiro/GradientCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { 
   Users, Target, FileText, TrendingUp, DollarSign, Calendar, Phone, 
-  AlertTriangle, Filter, ArrowUpRight, ChevronRight
+  AlertTriangle, ArrowUpRight, ChevronRight
 } from "lucide-react";
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, 
@@ -101,43 +101,34 @@ export default function VisaoGeralComercial() {
     <div className="space-y-6">
       {/* Filtros */}
       <FadeIn>
-        <div className="filter-card">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">Filtros:</span>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Período:</span>
-              <div className="flex gap-1 bg-muted/50 rounded-full p-0.5">
-                {["7d", "30d", "90d", "1y"].map((p) => (
-                  <Button
-                    key={p}
-                    variant={periodo === p ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setPeriodo(p)}
-                    className="h-7 px-2.5 text-xs rounded-full"
-                  >
-                    {p}
-                  </Button>
-                ))}
+        <div className="space-y-4">
+          <div className="filter-card">
+            <div className="flex flex-wrap gap-4 items-end">
+              <div className="flex flex-col gap-1.5 min-w-[200px]">
+                <label className="filter-label">Período</label>
+                <Select value={periodo} onValueChange={setPeriodo}>
+                  <SelectTrigger className="filter-input"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["7d", "30d", "90d", "1y"].map((p) => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Vendedor:</span>
-              <Select value={vendedor} onValueChange={setVendedor}>
-                <SelectTrigger className="w-[180px] h-7 text-xs rounded-full">
-                  <SelectValue placeholder="Todos" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">Todos</SelectItem>
-                  {pessoasMock.slice(0, 5).map(p => (
-                    <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col gap-1.5 min-w-[180px]">
+                <label className="filter-label">Vendedor</label>
+                <Select value={vendedor} onValueChange={setVendedor}>
+                  <SelectTrigger className="filter-input">
+                    <SelectValue placeholder="Todos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__all__">Todos</SelectItem>
+                    {pessoasMock.slice(0, 5).map(p => (
+                      <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </div>
@@ -225,7 +216,7 @@ export default function VisaoGeralComercial() {
                     content={<ChartTooltip />}
                     cursor={false}
                   />
-                  <Bar dataKey="value" fill="url(#visaoFunilGrad)" radius={[12, 12, 12, 12]} />
+                  <Bar dataKey="value" fill="url(#visaoFunilGrad)" radius={[4, 4, 4, 4]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

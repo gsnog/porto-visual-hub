@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { GradientCard } from "@/components/financeiro/GradientCard";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, UserCheck, UserX, AlertTriangle, TrendingUp } from "lucide-react";
 import { getEstatisticasRH } from "@/data/pessoas-mock";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -28,6 +30,11 @@ const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export default function VisaoGeralRH() {
   const stats = getEstatisticasRH();
+  const [periodo, setPeriodo] = useState("30d");
+  const [statusFilter, setStatusFilter] = useState("todos");
+  const [setorFilter, setSetorFilter] = useState("todos");
+
+  const setores = ["todos", ...stats.porSetor.filter(s => s.quantidade > 0).map(s => s.setor)];
 
   const pieData = [
     { name: "Ativos", value: stats.ativos, color: "hsl(72 100% 50%)" },
@@ -47,6 +54,46 @@ export default function VisaoGeralRH() {
 
   return (
     <div className="space-y-6">
+      {/* Filtros */}
+      <FadeIn>
+        <div className="space-y-4">
+          <div className="filter-card">
+            <div className="flex flex-wrap gap-4 items-end">
+              <div className="flex flex-col gap-1.5 min-w-[200px]">
+                <label className="filter-label">Período</label>
+                <Select value={periodo} onValueChange={setPeriodo}>
+                  <SelectTrigger className="filter-input"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["7d", "30d", "90d", "1y"].map((p) => (
+                      <SelectItem key={p} value={p}>{p}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1.5 min-w-[150px]">
+                <label className="filter-label">Status</label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="filter-input"><SelectValue placeholder="Todos" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos</SelectItem>
+                    <SelectItem value="ativo">Ativo</SelectItem>
+                    <SelectItem value="afastado">Afastado</SelectItem>
+                    <SelectItem value="desligado">Desligado</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1.5 min-w-[160px]">
+                <label className="filter-label">Setor</label>
+                <Select value={setorFilter} onValueChange={setSetorFilter}>
+                  <SelectTrigger className="filter-input"><SelectValue placeholder="Todos Setores" /></SelectTrigger>
+                  <SelectContent>{setores.map((s) => <SelectItem key={s} value={s}>{s === "todos" ? "Todos Setores" : s}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </FadeIn>
+
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <GradientCard title="Total de Pessoas" value={stats.total.toString()} icon={Users} variant="info" delay={0} />
@@ -104,7 +151,7 @@ export default function VisaoGeralRH() {
                   <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis dataKey="setor" type="category" width={100} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<ChartTooltip />} cursor={false} />
-                  <Bar dataKey="quantidade" fill="url(#rhSetorGrad)" radius={[12, 12, 12, 12]} />
+                  <Bar dataKey="quantidade" fill="url(#rhSetorGrad)" radius={[4, 4, 4, 4]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
