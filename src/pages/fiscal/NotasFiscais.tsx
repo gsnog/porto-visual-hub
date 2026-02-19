@@ -95,7 +95,7 @@ const NotasFiscais = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild><Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-popover">
-                        <DropdownMenuItem className="gap-2"><Eye className="h-4 w-4" />Visualizar</DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2" onClick={() => navigate(`/fiscal/notas/${n.id}`)}><Eye className="h-4 w-4" />Visualizar</DropdownMenuItem>
                         <DropdownMenuItem className="gap-2"><FileDown className="h-4 w-4" />Baixar XML</DropdownMenuItem>
                         <DropdownMenuItem className="gap-2"><FileDown className="h-4 w-4" />Baixar PDF/DANFE</DropdownMenuItem>
                         {n.status === "Rejeitada" && <DropdownMenuItem className="gap-2" onClick={() => toast({ title: "Reenviando...", description: `Nota #${n.numero} está sendo reenviada.` })}><RotateCcw className="h-4 w-4" />Reenviar</DropdownMenuItem>}

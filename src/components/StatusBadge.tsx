@@ -56,8 +56,14 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "desligado": { bg: "bg-red-500/20", text: "text-red-600 dark:text-red-500" },
   
   "nf-e": { bg: "bg-primary/20", text: "text-primary" },
+  "nfs-e": { bg: "bg-blue-500/20", text: "text-blue-600 dark:text-blue-400" },
   "xml": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   "ni": { bg: "bg-muted", text: "text-muted-foreground" },
+  "rascunho": { bg: "bg-muted", text: "text-muted-foreground" },
+  "em validação": { bg: "bg-yellow-500/20", text: "text-yellow-600 dark:text-yellow-500" },
+  "enviada": { bg: "bg-blue-500/20", text: "text-blue-600 dark:text-blue-500" },
+  "sucesso": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "homologado": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
 }
 
 const defaultStyle = { bg: "bg-muted", text: "text-muted-foreground" }
