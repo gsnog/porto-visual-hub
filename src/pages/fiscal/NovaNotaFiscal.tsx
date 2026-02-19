@@ -122,7 +122,40 @@ export default function NovaNotaFiscal() {
     setTributos(prev => prev.map((t, i) => i === idx ? { ...t, [field]: value } : t));
   };
 
+  const validateCnpj = (cpfCnpj: string) => {
+    const digits = cpfCnpj.replace(/\D/g, "");
+    return digits.length === 11 || digits.length === 14;
+  };
+
   const handleSave = (action: "rascunho" | "validar" | "emitir") => {
+    // Validate items
+    if (itens.length === 0) {
+      toast({ title: "Erro de validação", description: "Adicione pelo menos um item antes de salvar.", variant: "destructive" });
+      setCurrentStep(2);
+      return;
+    }
+
+    // Validate client CNPJ
+    if (clienteSelecionado && !validateCnpj(clienteSelecionado.cpfCnpj)) {
+      toast({ title: "Erro de validação", description: "CPF/CNPJ do cliente é inválido.", variant: "destructive" });
+      setCurrentStep(1);
+      return;
+    }
+
+    // Validate justification for adjusted taxes
+    const adjustedWithoutJustification = tributos.filter(
+      t => t.valorFinal !== t.valorCalculado && !t.justificativa.trim()
+    );
+    if (adjustedWithoutJustification.length > 0) {
+      toast({
+        title: "Justificativa obrigatória",
+        description: `Informe a justificativa para os tributos ajustados: ${adjustedWithoutJustification.map(t => t.imposto).join(", ")}`,
+        variant: "destructive"
+      });
+      setCurrentStep(4);
+      return;
+    }
+
     setIsSaving(true);
     setTimeout(() => {
       setIsSaving(false);

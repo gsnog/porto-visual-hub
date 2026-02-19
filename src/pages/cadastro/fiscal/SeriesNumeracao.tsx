@@ -39,7 +39,7 @@ const SeriesNumeracao = () => {
   return (
     <div className="flex flex-col h-full bg-background"><div className="space-y-6">
       <div className="flex flex-wrap gap-3 items-center">
-        <Button onClick={() => setShowNew(true)} className="gap-2"><Plus className="w-4 h-4" />Nova Série</Button>
+        <Button onClick={() => navigate("/cadastro/fiscal/series/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Série</Button>
         <ExportButton getData={getExportData} fileName="series-numeracao" />
       </div>
       <FilterSection fields={[{ type: "text" as const, label: "Buscar", placeholder: "Buscar por tipo ou série...", value: search, onChange: setSearch, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered.length} />
