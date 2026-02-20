@@ -204,23 +204,25 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
       style={{ background: "hsl(var(--sidebar-bg))" }}
     >
       {/* Logo */}
-      <div className="relative flex h-20 items-center justify-center border-b border-[hsl(var(--sidebar-border))] px-4 overflow-hidden">
-        <img
-          src={logoIcone}
-          alt="S"
-          className={cn(
-            "absolute object-contain transition-all duration-300 ease-in-out h-10",
-            collapsed ? "opacity-100 scale-100" : "opacity-0 scale-75"
-          )}
-        />
-        <img
-          src={theme === "dark" ? logoSerpDark : logoSerpLight}
-          alt="SERP"
-          className={cn(
-            "absolute object-contain transition-all duration-300 ease-in-out h-14",
-            collapsed ? "opacity-0 scale-75" : "opacity-100 scale-100"
-          )}
-        />
+      <div className="relative flex h-20 items-center justify-center border-b border-[hsl(var(--sidebar-border))] px-4">
+        <div className="relative flex items-center justify-center overflow-hidden w-full h-full">
+          <img
+            src={logoIcone}
+            alt="S"
+            className={cn(
+              "absolute object-contain transition-all duration-300 ease-in-out h-12",
+              collapsed ? "opacity-100 scale-100" : "opacity-0 scale-75"
+            )}
+          />
+          <img
+            src={theme === "dark" ? logoSerpDark : logoSerpLight}
+            alt="SERP"
+            className={cn(
+              "absolute object-contain transition-all duration-300 ease-in-out h-16",
+              collapsed ? "opacity-0 scale-75" : "opacity-100 scale-100"
+            )}
+          />
+        </div>
         
         {/* Toggle button - aligned with logo divider */}
         <button
