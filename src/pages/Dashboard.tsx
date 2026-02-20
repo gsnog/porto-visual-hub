@@ -353,182 +353,185 @@ const DashboardGeral = () => {
         </div>
       </FilterBar>
 
-      {/* Financeiro Cards */}
+      {/* ── FINANCEIRO SECTION ── */}
       {(tipo === "todos" || tipo === "financeiro") && (
-        <FadeIn delay={1}>
-          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Financeiro</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" delay={1} />
-            <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" delay={2} />
-            <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" delay={3} />
-            <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" delay={4} />
+        <>
+          <FadeIn delay={1}>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Financeiro</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" delay={1} />
+              <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" delay={2} />
+              <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" delay={3} />
+              <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" delay={4} />
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={2}><PortfolioChart /></FadeIn>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ChartCard title="Evolução Financeira no Tempo" delay={3}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={evolutionData}>
+                  <defs>
+                    <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(72 100% 50%)" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="hsl(72 100% 50%)" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="gradSaldo" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--chart-3))" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="hsl(var(--chart-3))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Area type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" fill="url(#gradEntradas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(72 100% 50%)", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
+                  <Area type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" fill="url(#gradSaidas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
+                  <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--chart-3))" fill="url(#gradSaldo)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
+            <ChartCard title="Entradas vs Saídas por Período" delay={4}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={evolutionData} barGap={8}>
+                  <defs>
+                    <linearGradient id="barGradEntradas" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(72 100% 55%)" />
+                      <stop offset="100%" stopColor="hsl(72 100% 40%)" />
+                    </linearGradient>
+                    <linearGradient id="barGradSaidas" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[4, 4, 4, 4]} />
+                  <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[4, 4, 4, 4]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
           </div>
-        </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" delay={5} />
+            <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" delay={6} />
+          </div>
+
+          <FadeIn delay={7}>
+            <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+              <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Maiores Custos</h3></div>
+              <div className="px-6 pb-6">
+                <Table>
+                  <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {topCustosData.map((item) => (
+                      <TableRow key={item.codigo}>
+                        <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                        <TableCell className="text-sm">{item.item}</TableCell>
+                        <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </FadeIn>
+        </>
       )}
 
-      {/* Estoque Cards */}
+      {/* ── ESTOQUE SECTION ── */}
       {(tipo === "todos" || tipo === "estoque") && (
-        <FadeIn delay={2}>
-          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Estoque</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" delay={3} />
-            <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" delay={4} />
-            <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" delay={5} />
-            <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" delay={6} />
-          </div>
-        </FadeIn>
+        <>
+          <FadeIn delay={8}>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Estoque</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" delay={3} />
+              <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" delay={4} />
+              <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" delay={5} />
+              <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" delay={6} />
+            </div>
+          </FadeIn>
+
+          <ChartCard title="Consumo de Estoque por Setor" delay={9}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
+                <defs>
+                  <linearGradient id="barHorizGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+                  </linearGradient>
+                </defs>
+                <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
+                <Tooltip content={<ChartTooltip />} cursor={false} />
+                <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[4, 4, 4, 4]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          <AlertCard title="Itens de Estoque Críticos" count={5} type="info" delay={10} />
+        </>
       )}
 
-      {/* Patrimônio Cards */}
+      {/* ── PATRIMÔNIO SECTION ── */}
       {(tipo === "todos" || tipo === "patrimonio") && (
-        <FadeIn delay={3}>
-          <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Patrimônio</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" delay={4} />
-            <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" delay={5} />
-            <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" delay={6} />
+        <>
+          <FadeIn delay={11}>
+            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Patrimônio</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" delay={4} />
+              <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" delay={5} />
+              <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" delay={6} />
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ChartCard title="Distribuição do Patrimônio por Tipo" delay={12}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={6}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                    {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                  </Pie>
+                  {renderDonutCenter(formatCurrency(patrimonioTotal), "Total")}
+                  <Tooltip content={<ChartTooltip />} cursor={false} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
+            <FadeIn delay={13}>
+              <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+                <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Ativos Patrimoniais</h3></div>
+                <div className="px-6 pb-6">
+                  <Table>
+                    <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor Total</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {topPatrimonioData.map((item) => (
+                        <TableRow key={item.codigo}>
+                          <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
+                          <TableCell className="text-sm">{item.item}</TableCell>
+                          <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </FadeIn>
           </div>
-        </FadeIn>
+        </>
       )}
 
-      {/* Portfolio Chart — Hero Dark Accent */}
-      {(tipo === "todos" || tipo === "financeiro") && <FadeIn delay={4}><PortfolioChart /></FadeIn>}
-
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Evolução Financeira no Tempo" delay={5}>
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={evolutionData}>
-              <defs>
-                <linearGradient id="gradEntradas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(72 100% 50%)" stopOpacity={0.2} />
-                  <stop offset="100%" stopColor="hsl(72 100% 50%)" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="gradSaidas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="gradSaldo" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-3))" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="hsl(var(--chart-3))" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Area type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" fill="url(#gradEntradas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(72 100% 50%)", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
-              <Area type="monotone" dataKey="saidas" name="Saídas" stroke="hsl(var(--destructive))" fill="url(#gradSaidas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
-              <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--chart-3))" fill="url(#gradSaldo)" strokeWidth={2.5} dot={false} activeDot={{ r: 5 }} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
-        <ChartCard title="Entradas vs Saídas por Período" delay={6}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={evolutionData} barGap={8}>
-              <defs>
-                <linearGradient id="barGradEntradas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(72 100% 55%)" />
-                  <stop offset="100%" stopColor="hsl(72 100% 40%)" />
-                </linearGradient>
-                <linearGradient id="barGradSaidas" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.9} />
-                  <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.5} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[4, 4, 4, 4]} />
-              <Bar dataKey="saidas" name="Saídas" fill="url(#barGradSaidas)" radius={[4, 4, 4, 4]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
-        <ChartCard title="Consumo de Estoque por Setor" delay={7}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={consumoSetorData} layout="vertical" barSize={20}>
-              <defs>
-                <linearGradient id="barHorizGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
-                </linearGradient>
-              </defs>
-              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[4, 4, 4, 4]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
-        <ChartCard title="Distribuição do Patrimônio por Tipo" delay={8}>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={patrimonioTipoData} cx="50%" cy="50%" innerRadius={65} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={6}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
-                {patrimonioTipoData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-              </Pie>
-              {renderDonutCenter(formatCurrency(patrimonioTotal), "Total")}
-              <Tooltip content={<ChartTooltip />} cursor={false} />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
-
-      {/* Alerts */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" delay={9} />
-        <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" delay={10} />
-        <AlertCard title="Itens de Estoque Críticos" count={5} type="info" delay={11} />
-      </div>
-
-      {/* Tables */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <FadeIn delay={12}>
-          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-            <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Maiores Custos</h3></div>
-            <div className="px-6 pb-6">
-              <Table>
-                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor</TableHead></TableRow></TableHeader>
-                <TableBody>
-                  {topCustosData.map((item) => (
-                    <TableRow key={item.codigo}>
-                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                      <TableCell className="text-sm">{item.item}</TableCell>
-                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={13}>
-          <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
-            <div className="p-6 pb-2"><h3 className="text-sm font-semibold text-foreground">Top 5 Ativos Patrimoniais</h3></div>
-            <div className="px-6 pb-6">
-              <Table>
-                <TableHeader><TableRow><TableHead>Código</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Valor Total</TableHead></TableRow></TableHeader>
-                <TableBody>
-                  {topPatrimonioData.map((item) => (
-                    <TableRow key={item.codigo}>
-                      <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
-                      <TableCell className="text-sm">{item.item}</TableCell>
-                      <TableCell className="text-right font-semibold text-sm">{item.valor}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-
-      {/* Recent Activity */}
+      {/* Recent Activity (Global) */}
       <FadeIn delay={14}>
         <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
           <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Movimentações Relevantes</h3>

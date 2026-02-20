@@ -218,7 +218,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             src={theme === "dark" ? logoSerpDark : logoSerpLight}
             alt="SERP"
             className={cn(
-              "absolute object-contain transition-all duration-300 ease-in-out h-16",
+              "absolute object-contain transition-all duration-300 ease-in-out h-20",
               collapsed ? "opacity-0 scale-75" : "opacity-100 scale-100"
             )}
           />
@@ -229,7 +229,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
           onClick={onToggle}
           className="absolute -right-4 bottom-0 translate-y-1/2 grid place-items-center h-8 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform z-10"
         >
-          <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
+          <ChevronLeft className={cn("h-4 w-4 transition-transform", !collapsed && "rotate-180")} />
         </button>
       </div>
 
