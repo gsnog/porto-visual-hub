@@ -13,6 +13,7 @@ import NFe from "./pages/NFe";
 import RelatorioNFe from "./pages/financeiro/RelatorioNFe";
 import Patrimonio from "./pages/Patrimonio";
 import Relatorio from "./pages/Relatorio";
+import Relatorios from "./pages/Relatorios";
 import ContasPagar from "./pages/ContasPagar";
 import NovaContaPagar from "./pages/financeiro/NovaContaPagar";
 import RelatorioContasPagar from "./pages/financeiro/RelatorioContasPagar";
@@ -163,6 +164,7 @@ const App = () => (
             <Route path="/estoque/xml" element={<NFe />} />
             <Route path="/patrimonio" element={<Patrimonio />} />
             <Route path="/relatorio" element={<Relatorio />} />
+            <Route path="/relatorios" element={<Relatorios />} />
             <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
             <Route path="/estoque/entradas/nova" element={<NovaEntrada />} />
             <Route path="/estoque/entradas/upload-nfe" element={<UploadNFe />} />
