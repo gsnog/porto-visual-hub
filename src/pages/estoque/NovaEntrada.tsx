@@ -11,6 +11,7 @@ import { PackagePlus, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 
 interface ItemEntrada {
@@ -36,28 +37,19 @@ export default function NovaEntrada() {
   const [itemForm, setItemForm] = useState({ item: "", marca: "", quantidade: "", custoUnitario: "", especificacoes: "" });
 
   const [estoqueOrigem, setEstoqueOrigem] = useState("");
-  const [estoqueOrigemOptions, setEstoqueOrigemOptions] = useState([
-    { value: "origem1", label: "Estoque 1" },
-    { value: "origem2", label: "Estoque 2" },
-  ]);
+  const unidadeOptions = [
+    { value: "almoxarifado-sp", label: "Almoxarifado SP" },
+    { value: "ti-central", label: "TI Central" },
+    { value: "deposito-rj", label: "Depósito RJ" },
+  ];
 
   const [estoqueDestino, setEstoqueDestino] = useState("");
-  const [estoqueDestinoOptions, setEstoqueDestinoOptions] = useState([
-    { value: "destino1", label: "Estoque 1" },
-    { value: "destino2", label: "Estoque 2" },
-  ]);
 
   const [operacao, setOperacao] = useState("");
   const operacaoOptions = [
     { value: "compra", label: "Compra" },
     { value: "transferencia", label: "Transferência" },
   ];
-
-  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, valueSetter: React.Dispatch<React.SetStateAction<string>>) => (name: string) => {
-    const newValue = name.toLowerCase().replace(/\s+/g, "-");
-    setter(prev => [...prev, { value: newValue, label: name }]);
-    valueSetter(newValue);
-  };
 
   const handleAddItem = () => {
     if (!itemForm.item || !itemForm.quantidade) {
@@ -98,19 +90,31 @@ export default function NovaEntrada() {
                 <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
                 <Input type="date" className="form-input" />
               </div>
-              <DropdownWithAdd label="Operação" value={operacao} onChange={setOperacao} options={operacaoOptions} onAddNew={() => {}} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Operação <span className="text-destructive">*</span></Label>
+                <Select value={operacao} onValueChange={setOperacao}>
+                  <SelectTrigger className="form-input">
+                    <SelectValue placeholder="Selecione a operação" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {operacaoOptions.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {operacao === "transferencia" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DropdownWithAdd label="Estoque de Origem" value={estoqueOrigem} onChange={setEstoqueOrigem} options={estoqueOrigemOptions} onAddNew={addOption(setEstoqueOrigemOptions, setEstoqueOrigem)} />
-                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
+                <DropdownWithAdd label="Estoque de Origem" value={estoqueOrigem} onChange={setEstoqueOrigem} options={unidadeOptions} onAddNew={(name) => { setEstoqueOrigem(name.toLowerCase().replace(/\s+/g, "-")); }} />
+                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={unidadeOptions} onAddNew={(name) => { setEstoqueDestino(name.toLowerCase().replace(/\s+/g, "-")); }} />
               </div>
             )}
 
             {operacao === "compra" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
+                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={unidadeOptions} onAddNew={(name) => { setEstoqueDestino(name.toLowerCase().replace(/\s+/g, "-")); }} />
               </div>
             )}
 
@@ -139,11 +143,11 @@ export default function NovaEntrada() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">PDF da Nota Fiscal</Label>
-                <Input type="file" accept=".pdf" className="form-input" />
+                <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm font-medium">PDF do Boleto</Label>
-                <Input type="file" accept=".pdf" className="form-input" />
+                <Input type="file" accept=".pdf" className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
               </div>
             </div>
 
