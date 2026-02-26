@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { CreditCard } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
-import { ValidatedSelect } from "@/components/ui/validated-select";
 import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const validationFields = [
   { name: "beneficiario", label: "Beneficiário", required: true },
@@ -17,6 +17,13 @@ const validationFields = [
   { name: "valor", label: "Valor do Título", required: true },
   { name: "dataFaturamento", label: "Data de Faturamento", required: true },
   { name: "dataVencimento", label: "Data de Vencimento", required: true },
+];
+
+const beneficiarioOptions = [
+  { value: "beneficiario1", label: "Beneficiário 1" }, { value: "beneficiario2", label: "Beneficiário 2" }
+];
+const centroCustoOptions = [
+  { value: "centro1", label: "Centro 1" }, { value: "centro2", label: "Centro 2" }
 ];
 
 export default function NovaContaPagar() {
@@ -27,13 +34,6 @@ export default function NovaContaPagar() {
     { beneficiario: "", centroCusto: "", documento: "", valor: "", dataFaturamento: "", dataVencimento: "", descricao: "" },
     validationFields
   );
-
-  const [beneficiarioOptions, setBeneficiarioOptions] = useState([
-    { value: "beneficiario1", label: "Beneficiário 1" }, { value: "beneficiario2", label: "Beneficiário 2" }
-  ]);
-  const [centroCustoOptions, setCentroCustoOptions] = useState([
-    { value: "centro1", label: "Centro 1" }, { value: "centro2", label: "Centro 2" }
-  ]);
 
   const handleSalvar = async () => {
     if (validateAll()) {
@@ -57,10 +57,24 @@ export default function NovaContaPagar() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Beneficiário" required value={formData.beneficiario} onChange={(v) => setFieldValue("beneficiario", v)}
-                options={beneficiarioOptions} onAddNew={(item) => setBeneficiarioOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
-              <DropdownWithAdd label="Centro de Custo" value={formData.centroCusto} onChange={(v) => setFieldValue("centroCusto", v)}
-                options={centroCustoOptions} onAddNew={(item) => setCentroCustoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Beneficiário <span className="text-destructive">*</span></Label>
+                <Select value={formData.beneficiario} onValueChange={(v) => setFieldValue("beneficiario", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o beneficiário" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {beneficiarioOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Centro de Custo</Label>
+                <Select value={formData.centroCusto} onValueChange={(v) => setFieldValue("centroCusto", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o centro de custo" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {centroCustoOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

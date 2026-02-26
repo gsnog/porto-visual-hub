@@ -12,9 +12,11 @@ import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
 import { ValidatedSelect } from "@/components/ui/validated-select";
 import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const validationFields = [
   { name: "nome", label: "Nome", required: true, minLength: 2 },
+  { name: "data", label: "Data", required: true },
 ];
 
 const NovoItem = () => {
@@ -22,22 +24,20 @@ const NovoItem = () => {
   const { handleSave, isSaving } = useSaveWithDelay();
 
   const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
-    { nome: "", nomenclatura: "", apresentacao: "", fornecedor: "", setor: "", frequenciaCompra: "", frequenciaSaida: "", descricao: "" },
+    { nome: "", data: "", nomenclatura: "", apresentacao: "", fornecedor: "", setor: "", frequenciaCompra: "", frequenciaSaida: "", descricao: "" },
     validationFields
   );
 
   const [nomenclaturaOptions, setNomenclaturaOptions] = useState([
     { value: "nom1", label: "Nomenclatura 1" }, { value: "nom2", label: "Nomenclatura 2" }
   ]);
-  const [apresentacaoOptions, setApresentacaoOptions] = useState([
-    { value: "ap1", label: "Apresentação 1" }, { value: "ap2", label: "Apresentação 2" }
-  ]);
-  const [fornecedorOptions, setFornecedorOptions] = useState([
+
+  const fornecedorOptions = [
     { value: "forn1", label: "Fornecedor 1" }, { value: "forn2", label: "Fornecedor 2" }
-  ]);
-  const [setorOptions, setSetorOptions] = useState([
+  ];
+  const setorOptions = [
     { value: "setor1", label: "Setor 1" }, { value: "setor2", label: "Setor 2" }
-  ]);
+  ];
 
   const handleSalvar = async () => {
     if (validateAll()) {
@@ -63,20 +63,34 @@ const NovoItem = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ValidatedInput label="Nome" required value={formData.nome} onChange={(e) => setFieldValue("nome", e.target.value)}
                 onBlur={() => setFieldTouched("nome")} error={getFieldError("nome")} touched={touched.nome} />
+              <ValidatedInput label="Data" required type="date" value={formData.data} onChange={(e) => setFieldValue("data", e.target.value)}
+                onBlur={() => setFieldTouched("data")} error={getFieldError("data")} touched={touched.data} />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <DropdownWithAdd label="Nomenclaturas" value={formData.nomenclatura} onChange={(v) => setFieldValue("nomenclatura", v)}
                 options={nomenclaturaOptions} onAddNew={(item) => setNomenclaturaOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Fornecedores</Label>
+                <Select value={formData.fornecedor} onValueChange={(v) => setFieldValue("fornecedor", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {fornecedorOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Apresentação" value={formData.apresentacao} onChange={(v) => setFieldValue("apresentacao", v)}
-                options={apresentacaoOptions} onAddNew={(item) => setApresentacaoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
-              <DropdownWithAdd label="Fornecedores" required value={formData.fornecedor} onChange={(v) => setFieldValue("fornecedor", v)}
-                options={fornecedorOptions} onAddNew={(item) => setFornecedorOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Setor" value={formData.setor} onChange={(v) => setFieldValue("setor", v)}
-                options={setorOptions} onAddNew={(item) => setSetorOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Setor</Label>
+                <Select value={formData.setor} onValueChange={(v) => setFieldValue("setor", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {setorOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
               <ValidatedSelect label="Frequência de Compra" required value={formData.frequenciaCompra} onChange={(v) => setFieldValue("frequenciaCompra", v)}
                 onBlur={() => setFieldTouched("frequenciaCompra")} error={getFieldError("frequenciaCompra")} touched={touched.frequenciaCompra}
                 options={[

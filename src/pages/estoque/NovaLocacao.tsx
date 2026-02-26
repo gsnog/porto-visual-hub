@@ -10,7 +10,7 @@ import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { MapPin, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
-import { DropdownWithAdd } from "@/components/DropdownWithAdd";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 
 interface ItemLocacao {
@@ -31,26 +31,23 @@ export default function NovaLocacao() {
 
   const handleCancelar = () => navigate("/estoque/locacoes");
 
-  const [supplier, setSupplier] = useState("");
-  const [supplierOptions, setSupplierOptions] = useState([
-    { value: "supplier1", label: "Supplier 1" },
-    { value: "supplier2", label: "Supplier 2" },
-  ]);
+  const [locador, setLocador] = useState("");
+  const fornecedorOptions = [
+    { value: "forn1", label: "Fornecedor 1" },
+    { value: "forn2", label: "Fornecedor 2" },
+    { value: "forn3", label: "João Silva" },
+    { value: "forn4", label: "Maria Santos" },
+  ];
 
   const [unidade, setUnidade] = useState("");
-  const [unidadeOptions, setUnidadeOptions] = useState([
-    { value: "unidade1", label: "Unidade 1" },
-    { value: "unidade2", label: "Unidade 2" },
-  ]);
+  const unidadeOptions = [
+    { value: "almoxarifado-sp", label: "Almoxarifado SP" },
+    { value: "ti-central", label: "TI Central" },
+    { value: "deposito-rj", label: "Depósito RJ" },
+  ];
 
   const [itens, setItens] = useState<ItemLocacao[]>([]);
   const [itemForm, setItemForm] = useState({ item: "", marca: "", quantidade: "", especificacoes: "" });
-
-  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, valueSetter: React.Dispatch<React.SetStateAction<string>>) => (name: string) => {
-    const newValue = name.toLowerCase().replace(/\s+/g, "-");
-    setter(prev => [...prev, { value: newValue, label: name }]);
-    valueSetter(newValue);
-  };
 
   const handleAddItem = () => {
     if (!itemForm.item || !itemForm.quantidade) {
@@ -79,8 +76,24 @@ export default function NovaLocacao() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Supplier" value={supplier} onChange={setSupplier} options={supplierOptions} onAddNew={addOption(setSupplierOptions, setSupplier)} />
-              <DropdownWithAdd label="Unidade" required value={unidade} onChange={setUnidade} options={unidadeOptions} onAddNew={addOption(setUnidadeOptions, setUnidade)} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Locador <span className="text-destructive">*</span></Label>
+                <Select value={locador} onValueChange={setLocador}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o locador" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {fornecedorOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Unidade <span className="text-destructive">*</span></Label>
+                <Select value={unidade} onValueChange={setUnidade}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a unidade" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {unidadeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

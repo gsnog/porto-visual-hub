@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
-import { Plus, FileText } from "lucide-react"
+import { Plus, FileText, ChevronDown, ChevronRight } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 import { StatusBadge } from "@/components/StatusBadge"
 import { ExportButton } from "@/components/ExportButton"
@@ -14,9 +14,27 @@ import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 
 const mockLocacoes = [
-  { id: 1, unidade: "Unidade A", inicio: "02/06/2025", fimPrevisto: "02/07/2025", locador: "João Silva", contrato: "CONTR-001", status: "Em Andamento" },
-  { id: 2, unidade: "Unidade B", inicio: "15/05/2025", fimPrevisto: "15/08/2025", locador: "Maria Santos", contrato: "CONTR-002", status: "Em Andamento" },
-  { id: 3, unidade: "Unidade C", inicio: "01/04/2025", fimPrevisto: "01/06/2025", locador: "Carlos Pereira", contrato: "CONTR-003", status: "Finalizado" },
+  {
+    id: 1, unidade: "Almoxarifado SP", dataInicio: "02/06/2025", previsaoEntrega: "02/07/2025", dataFim: "-", locador: "João Silva", contrato: "CONTR-001", valor: "R$ 3.500,00", status: "Em Andamento",
+    itens: [
+      { item: "Guindaste 20t", marca: "Liebherr", quantidade: "1", especificacoes: "Capacidade 20 toneladas" },
+      { item: "Andaime tubular", marca: "Mills", quantidade: "10", especificacoes: "6m altura" },
+    ]
+  },
+  {
+    id: 2, unidade: "Depósito RJ", dataInicio: "15/05/2025", previsaoEntrega: "15/08/2025", dataFim: "-", locador: "Maria Santos", contrato: "CONTR-002", valor: "R$ 8.200,00", status: "Em Andamento",
+    itens: [
+      { item: "Compressor de ar", marca: "Atlas Copco", quantidade: "2", especificacoes: "150 PSI" },
+    ]
+  },
+  {
+    id: 3, unidade: "TI Central", dataInicio: "01/04/2025", previsaoEntrega: "01/06/2025", dataFim: "30/05/2025", locador: "Carlos Pereira", contrato: "CONTR-003", valor: "R$ 1.800,00", status: "Finalizado",
+    itens: [
+      { item: "Servidor rack", marca: "Dell", quantidade: "1", especificacoes: "PowerEdge R740" },
+      { item: "Switch 48p", marca: "Cisco", quantidade: "2", especificacoes: "Catalyst 9300" },
+      { item: "UPS 3kVA", marca: "APC", quantidade: "1", especificacoes: "Smart-UPS" },
+    ]
+  },
 ]
 
 type Locacao = typeof mockLocacoes[0];
@@ -31,21 +49,33 @@ export default function EstoqueLocacoes() {
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [editItem, setEditItem] = useState<Locacao | null>(null)
   const [editData, setEditData] = useState({ unidade: "", locador: "", contrato: "" })
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
 
   const filtered = useMemo(() => {
     return items.filter(loc => {
       const matchLocador = loc.locador.toLowerCase().includes(filterLocador.toLowerCase())
-      const matchDataInicio = filterDataInicio ? loc.inicio >= filterDataInicio.split("-").reverse().join("/") : true
-      const matchDataFim = filterDataFim ? loc.fimPrevisto <= filterDataFim.split("-").reverse().join("/") : true
+      const matchDataInicio = filterDataInicio ? loc.dataInicio >= filterDataInicio.split("-").reverse().join("/") : true
+      const matchDataFim = filterDataFim ? loc.previsaoEntrega <= filterDataFim.split("-").reverse().join("/") : true
       return matchLocador && matchDataInicio && matchDataFim
     })
   }, [items, filterLocador, filterDataInicio, filterDataFim])
 
-  const getExportData = () => filtered.map(l => ({ Unidade: l.unidade, Início: l.inicio, "Fim Previsto": l.fimPrevisto, Locador: l.locador, Contrato: l.contrato, Status: l.status }));
+  const toggleRow = (id: number) => {
+    setExpandedRows(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const getExportData = () => filtered.map(l => ({ Unidade: l.unidade, "Data Início": l.dataInicio, "Previsão Entrega": l.previsaoEntrega, "Data Fim": l.dataFim, Locador: l.locador, Contrato: l.contrato, Valor: l.valor, Status: l.status }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Locação excluída." }); } };
   const openEdit = (l: Locacao) => { setEditItem(l); setEditData({ unidade: l.unidade, locador: l.locador, contrato: l.contrato }); };
   const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Locação atualizada." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
+
+  const getItensCount = (loc: Locacao) => loc.itens.length;
+  const getQuantidadeTotal = (loc: Locacao) => loc.itens.reduce((acc, i) => acc + (parseInt(i.quantidade) || 0), 0);
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -66,15 +96,74 @@ export default function EstoqueLocacoes() {
         />
 
         <Table>
-          <TableHeader><TableRow><TableHead className="text-center">Unidade</TableHead><TableHead className="text-center">Início</TableHead><TableHead className="text-center">Fim (Previsto)</TableHead><TableHead className="text-center">Locador</TableHead><TableHead className="text-center">Contrato</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center w-[50px]"></TableHead>
+              <TableHead className="text-center">Unidade</TableHead>
+              <TableHead className="text-center">Data de Início</TableHead>
+              <TableHead className="text-center">Previsão de Entrega</TableHead>
+              <TableHead className="text-center">Data Fim</TableHead>
+              <TableHead className="text-center">Locador</TableHead>
+              <TableHead className="text-center">Contrato</TableHead>
+              <TableHead className="text-center">Valor</TableHead>
+              <TableHead className="text-center">Itens</TableHead>
+              <TableHead className="text-center">Quantidades</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
           <TableBody>
-            {filtered.length === 0 ? (<TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nenhuma locação encontrada.</TableCell></TableRow>) : (
+            {filtered.length === 0 ? (<TableRow><TableCell colSpan={12} className="text-center py-8 text-muted-foreground">Nenhuma locação encontrada.</TableCell></TableRow>) : (
               filtered.map((loc) => (
-                <TableRow key={loc.id}>
-                  <TableCell className="text-center">{loc.unidade}</TableCell><TableCell className="text-center">{loc.inicio}</TableCell><TableCell className="text-center">{loc.fimPrevisto}</TableCell><TableCell className="text-center">{loc.locador}</TableCell><TableCell className="text-center">{loc.contrato}</TableCell>
-                  <TableCell className="text-center"><StatusBadge status={loc.status} /></TableCell>
-                  <TableCell className="text-center"><TableActions onView={() => setViewItem(loc)} onEdit={() => openEdit(loc)} onDelete={() => setDeleteId(loc.id)} /></TableCell>
-                </TableRow>
+                <>
+                  <TableRow key={loc.id}>
+                    <TableCell className="text-center">
+                      <Button variant="ghost" size="sm" onClick={() => toggleRow(loc.id)} className="h-7 w-7 p-0">
+                        {expandedRows.has(loc.id) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                      </Button>
+                    </TableCell>
+                    <TableCell className="text-center">{loc.unidade}</TableCell>
+                    <TableCell className="text-center">{loc.dataInicio}</TableCell>
+                    <TableCell className="text-center">{loc.previsaoEntrega}</TableCell>
+                    <TableCell className="text-center">{loc.dataFim}</TableCell>
+                    <TableCell className="text-center">{loc.locador}</TableCell>
+                    <TableCell className="text-center">{loc.contrato}</TableCell>
+                    <TableCell className="text-center font-semibold">{loc.valor}</TableCell>
+                    <TableCell className="text-center">{getItensCount(loc)}</TableCell>
+                    <TableCell className="text-center">{getQuantidadeTotal(loc)}</TableCell>
+                    <TableCell className="text-center"><StatusBadge status={loc.status} /></TableCell>
+                    <TableCell className="text-center"><TableActions onView={() => setViewItem(loc)} onEdit={() => openEdit(loc)} onDelete={() => setDeleteId(loc.id)} /></TableCell>
+                  </TableRow>
+                  {expandedRows.has(loc.id) && (
+                    <TableRow key={`${loc.id}-details`} className="bg-muted/30">
+                      <TableCell colSpan={12} className="p-4">
+                        <div className="ml-8">
+                          <h4 className="text-sm font-semibold mb-2 text-foreground">Itens da Locação</h4>
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead className="text-center">Item</TableHead>
+                                <TableHead className="text-center">Marca</TableHead>
+                                <TableHead className="text-center">Quantidade</TableHead>
+                                <TableHead className="text-center">Especificações</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {loc.itens.map((item, idx) => (
+                                <TableRow key={idx}>
+                                  <TableCell className="text-center">{item.item}</TableCell>
+                                  <TableCell className="text-center">{item.marca}</TableCell>
+                                  <TableCell className="text-center">{item.quantidade}</TableCell>
+                                  <TableCell className="text-center">{item.especificacoes}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
               ))
             )}
           </TableBody>
@@ -83,7 +172,22 @@ export default function EstoqueLocacoes() {
 
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Detalhes da Locação</DialogTitle></DialogHeader>
-          {viewItem && <div className="space-y-2">{Object.entries({ Unidade: viewItem.unidade, Início: viewItem.inicio, "Fim Previsto": viewItem.fimPrevisto, Locador: viewItem.locador, Contrato: viewItem.contrato, Status: viewItem.status }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>))}</div>}
+          {viewItem && (
+            <div className="space-y-2">
+              {Object.entries({ Unidade: viewItem.unidade, "Data Início": viewItem.dataInicio, "Previsão Entrega": viewItem.previsaoEntrega, "Data Fim": viewItem.dataFim, Locador: viewItem.locador, Contrato: viewItem.contrato, Valor: viewItem.valor, Status: viewItem.status }).map(([k, v]) => (
+                <div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>
+              ))}
+              <div className="pt-3">
+                <h4 className="text-sm font-semibold mb-2">Itens</h4>
+                {viewItem.itens.map((item, idx) => (
+                  <div key={idx} className="flex justify-between py-1 border-b border-border last:border-0 text-sm">
+                    <span>{item.item} ({item.marca})</span>
+                    <span>Qtd: {item.quantidade}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 

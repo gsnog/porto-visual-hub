@@ -5,12 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Receipt } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
 import { ValidatedTextarea } from "@/components/ui/validated-textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const validationFields = [
   { name: "cliente", label: "Cliente", required: true },
@@ -18,6 +18,16 @@ const validationFields = [
   { name: "valor", label: "Valor do Título", required: true },
   { name: "dataFaturamento", label: "Data de Faturamento", required: true },
   { name: "dataVencimento", label: "Data de Vencimento", required: true },
+];
+
+const clienteOptions = [
+  { value: "cliente1", label: "Cliente 1" }, { value: "cliente2", label: "Cliente 2" }
+];
+const centroReceitaOptions = [
+  { value: "centro1", label: "Centro 1" }, { value: "centro2", label: "Centro 2" }
+];
+const planoContasOptions = [
+  { value: "plano1", label: "Plano 1" }, { value: "plano2", label: "Plano 2" }
 ];
 
 export default function NovaContaReceber() {
@@ -28,16 +38,6 @@ export default function NovaContaReceber() {
     { cliente: "", centroReceita: "", planoContas: "", documento: "", valor: "", multa: "0", encargos: "0", juros: "0", desconto: "0", valorTotal: "", dataFaturamento: "", dataVencimento: "", parcelas: "1", descricao: "" },
     validationFields
   );
-
-  const [clienteOptions, setClienteOptions] = useState([
-    { value: "cliente1", label: "Cliente 1" }, { value: "cliente2", label: "Cliente 2" }
-  ]);
-  const [centroReceitaOptions, setCentroReceitaOptions] = useState([
-    { value: "centro1", label: "Centro 1" }, { value: "centro2", label: "Centro 2" }
-  ]);
-  const [planoContasOptions, setPlanoContasOptions] = useState([
-    { value: "plano1", label: "Plano 1" }, { value: "plano2", label: "Plano 2" }
-  ]);
 
   const handleSalvar = async () => {
     if (validateAll()) {
@@ -61,15 +61,36 @@ export default function NovaContaReceber() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Cliente" required value={formData.cliente} onChange={(v) => setFieldValue("cliente", v)}
-                options={clienteOptions} onAddNew={(item) => setClienteOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
-              <DropdownWithAdd label="Centro de Receita" value={formData.centroReceita} onChange={(v) => setFieldValue("centroReceita", v)}
-                options={centroReceitaOptions} onAddNew={(item) => setCentroReceitaOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Cliente <span className="text-destructive">*</span></Label>
+                <Select value={formData.cliente} onValueChange={(v) => setFieldValue("cliente", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o cliente" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {clienteOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Centro de Receita</Label>
+                <Select value={formData.centroReceita} onValueChange={(v) => setFieldValue("centroReceita", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o centro de receita" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {centroReceitaOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Plano de Contas" value={formData.planoContas} onChange={(v) => setFieldValue("planoContas", v)}
-                options={planoContasOptions} onAddNew={(item) => setPlanoContasOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Plano de Contas</Label>
+                <Select value={formData.planoContas} onValueChange={(v) => setFieldValue("planoContas", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o plano de contas" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {planoContasOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
               <ValidatedInput label="Documento" required value={formData.documento}
                 onChange={(e) => setFieldValue("documento", e.target.value)} onBlur={() => setFieldTouched("documento")}
                 error={getFieldError("documento")} touched={touched.documento} />

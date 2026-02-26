@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Plus, Landmark } from "lucide-react"
-import { DropdownWithAdd } from "@/components/DropdownWithAdd"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
 import { ExportButton } from "@/components/ExportButton"
@@ -14,6 +14,7 @@ import { FormActionBar } from "@/components/FormActionBar"
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/hooks/use-toast"
 
 type Asset = { id: string; codigo: string; item: string; dataAquisicao: string; valor: string; quantidade: string }
@@ -24,6 +25,19 @@ const initialAssets: Asset[] = [
   { id: "3", codigo: "0003", item: "Mobiliário", dataAquisicao: "10/03/2025", valor: "R$ 250,00", quantidade: "20" },
   { id: "4", codigo: "0004", item: "Software", dataAquisicao: "01/04/2025", valor: "R$ 15.000,00", quantidade: "1" },
   { id: "5", codigo: "0005", item: "Automóvel", dataAquisicao: "05/05/2025", valor: "R$ 45.000,00", quantidade: "1" }
+]
+
+const itemOptions = [
+  { value: "automovel", label: "Automóvel" },
+  { value: "equipamento", label: "Equipamento" },
+  { value: "mobiliario", label: "Mobiliário" },
+  { value: "software", label: "Software" },
+]
+
+const unidadeOptions = [
+  { value: "almoxarifado-sp", label: "Almoxarifado SP" },
+  { value: "ti-central", label: "TI Central" },
+  { value: "deposito-rj", label: "Depósito RJ" },
 ]
 
 type ViewState = 'list' | 'add'
@@ -37,14 +51,7 @@ const Patrimonio = () => {
   const [editItem, setEditItem] = useState<Asset | null>(null)
   const [editData, setEditData] = useState({ codigo: "", item: "", dataAquisicao: "", valor: "", quantidade: "" })
   const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
-
-  const [itemOptions, setItemOptions] = useState([
-    { value: "automovel", label: "Automóvel" },
-    { value: "equipamento", label: "Equipamento" },
-    { value: "mobiliario", label: "Mobiliário" },
-    { value: "software", label: "Software" },
-  ])
+  const [formData, setFormData] = useState({ item: '', dataAquisicao: '', valor: '', quantidade: '', descricao: '', unidade: '' })
 
   const filteredAssets = useMemo(() => {
     return assets.filter(asset => {
@@ -61,12 +68,12 @@ const Patrimonio = () => {
   const deleteItemData = assets.find(i => i.id === deleteId)
 
   const handleAddNew = () => { setCurrentView('add') }
-  const handleCancelAdd = () => { setCurrentView('list'); setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' }) }
+  const handleCancelAdd = () => { setCurrentView('list'); setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '', descricao: '', unidade: '' }) }
 
   const { handleSave, isSaving } = useSaveWithDelay()
   const handleSubmitAdd = async () => {
     await handleSave("/patrimonio", "Patrimônio salvo com sucesso!", "O registro foi adicionado ao sistema.")
-    setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '' })
+    setFormData({ item: '', dataAquisicao: '', valor: '', quantidade: '', descricao: '', unidade: '' })
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +128,6 @@ const Patrimonio = () => {
           </div>
         </div>
 
-        {/* View Dialog */}
         <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
           <DialogContent>
             <DialogHeader><DialogTitle>{viewItem?.item} ({viewItem?.codigo})</DialogTitle></DialogHeader>
@@ -137,7 +143,6 @@ const Patrimonio = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Edit Dialog */}
         <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>Editar Patrimônio</DialogTitle></DialogHeader>
@@ -155,7 +160,6 @@ const Patrimonio = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Delete Dialog */}
         <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -183,12 +187,37 @@ const Patrimonio = () => {
                 <div><h2 className="text-xl font-semibold text-foreground">Dados do Patrimônio</h2><p className="text-sm text-muted-foreground">Preencha as informações abaixo</p></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DropdownWithAdd label="Item" required value={formData.item} onChange={(value) => setFormData(prev => ({...prev, item: value}))} options={itemOptions} onAddNew={(name) => { const newValue = name.toLowerCase().replace(/\s+/g, "-"); setItemOptions(prev => [...prev, { value: newValue, label: name }]); setFormData(prev => ({ ...prev, item: newValue })); }} />
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Item <span className="text-destructive">*</span></Label>
+                  <Select value={formData.item} onValueChange={(v) => setFormData(prev => ({ ...prev, item: v }))}>
+                    <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o item" /></SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {itemOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="space-y-2"><Label className="text-sm font-medium">Data de Aquisição <span className="text-destructive">*</span></Label><Input id="dataAquisicao" type="date" value={formData.dataAquisicao} onChange={handleInputChange} className="form-input" /></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2"><Label className="text-sm font-medium">Valor Unitário <span className="text-destructive">*</span></Label><Input id="valor" type="text" placeholder="Ex: 1500.00" value={formData.valor} onChange={handleInputChange} className="form-input" /></div>
                 <div className="space-y-2"><Label className="text-sm font-medium">Quantidade</Label><Input id="quantidade" type="number" value={formData.quantidade} onChange={handleInputChange} className="form-input" /></div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Unidade</Label>
+                  <Select value={formData.unidade} onValueChange={(v) => setFormData(prev => ({ ...prev, unidade: v }))}>
+                    <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a unidade" /></SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {unidadeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Descrição</Label>
+                  <Textarea value={formData.descricao} onChange={(e) => setFormData(prev => ({ ...prev, descricao: e.target.value }))} placeholder="Descrição do patrimônio" className="form-input min-h-[80px]" />
+                </div>
               </div>
               <FormActionBar onSave={handleSubmitAdd} onCancel={handleCancelAdd} isSaving={isSaving} />
             </div>

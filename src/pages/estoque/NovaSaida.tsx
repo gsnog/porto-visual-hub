@@ -9,7 +9,6 @@ import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { PackageMinus, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
-import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
@@ -22,6 +21,17 @@ interface ItemSaida {
   especificacoes: string;
 }
 
+const unidadeOptions = [
+  { value: "almoxarifado-sp", label: "Almoxarifado SP" },
+  { value: "ti-central", label: "TI Central" },
+  { value: "deposito-rj", label: "Depósito RJ" },
+];
+
+const operacaoOptions = [
+  { value: "consumo", label: "Consumo" },
+  { value: "transferencia", label: "Transferência" },
+];
+
 export default function NovaSaida() {
   const navigate = useNavigate();
   const { handleSalvar, isSaving } = useSaveWithDelay({
@@ -31,18 +41,7 @@ export default function NovaSaida() {
   });
 
   const [operacao, setOperacao] = useState("");
-  const operacaoOptions = [
-    { value: "consumo", label: "Consumo" },
-    { value: "transferencia", label: "Transferência" },
-  ];
-
   const [estoqueOrigem, setEstoqueOrigem] = useState("");
-  const unidadeOptions = [
-    { value: "almoxarifado-sp", label: "Almoxarifado SP" },
-    { value: "ti-central", label: "TI Central" },
-    { value: "deposito-rj", label: "Depósito RJ" },
-  ];
-
   const [estoqueDestino, setEstoqueDestino] = useState("");
 
   const [itens, setItens] = useState<ItemSaida[]>([]);
@@ -82,13 +81,9 @@ export default function NovaSaida() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Operação <span className="text-destructive">*</span></Label>
                 <Select value={operacao} onValueChange={setOperacao}>
-                  <SelectTrigger className="form-input">
-                    <SelectValue placeholder="Selecione a operação" />
-                  </SelectTrigger>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a operação" /></SelectTrigger>
                   <SelectContent className="bg-popover">
-                    {operacaoOptions.map(opt => (
-                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                    ))}
+                    {operacaoOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -96,14 +91,38 @@ export default function NovaSaida() {
 
             {operacao === "consumo" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={unidadeOptions} onAddNew={(name) => { setEstoqueDestino(name.toLowerCase().replace(/\s+/g, "-")); }} />
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Estoque de Destino <span className="text-destructive">*</span></Label>
+                  <Select value={estoqueDestino} onValueChange={setEstoqueDestino}>
+                    <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a unidade" /></SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {unidadeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
 
             {operacao === "transferencia" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DropdownWithAdd label="Estoque de Origem" required value={estoqueOrigem} onChange={setEstoqueOrigem} options={unidadeOptions} onAddNew={(name) => { setEstoqueOrigem(name.toLowerCase().replace(/\s+/g, "-")); }} />
-                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={unidadeOptions} onAddNew={(name) => { setEstoqueDestino(name.toLowerCase().replace(/\s+/g, "-")); }} />
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Estoque de Origem <span className="text-destructive">*</span></Label>
+                  <Select value={estoqueOrigem} onValueChange={setEstoqueOrigem}>
+                    <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a unidade" /></SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {unidadeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Estoque de Destino <span className="text-destructive">*</span></Label>
+                  <Select value={estoqueDestino} onValueChange={setEstoqueDestino}>
+                    <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a unidade" /></SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {unidadeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
 
@@ -121,7 +140,6 @@ export default function NovaSaida() {
               </div>
             </div>
 
-            {/* Lista de Itens */}
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Itens da Nota Fiscal</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

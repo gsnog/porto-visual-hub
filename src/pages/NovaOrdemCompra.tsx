@@ -10,6 +10,7 @@ import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { Trash2, ShoppingCart } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ItemOrdem {
   id: number;
@@ -18,6 +19,19 @@ interface ItemOrdem {
   quantidade: string;
   especificacoes: string;
 }
+
+const unidadeOptions = [
+  { value: "almoxarifado-sp", label: "Almoxarifado SP" },
+  { value: "ti-central", label: "TI Central" },
+  { value: "deposito-rj", label: "Depósito RJ" },
+];
+
+const setorOptions = [
+  { value: "setor1", label: "Setor 1" },
+  { value: "setor2", label: "Setor 2" },
+  { value: "administrativo", label: "Administrativo" },
+  { value: "operacional", label: "Operacional" },
+];
 
 export default function NovaOrdemCompra() {
   const navigate = useNavigate();
@@ -56,22 +70,22 @@ export default function NovaOrdemCompra() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Unidade</Label>
-                <Input 
-                  value={formData.unidade} 
-                  onChange={(e) => setFormData({ ...formData, unidade: e.target.value })} 
-                  placeholder="Digite a unidade" 
-                  className="form-input" 
-                />
+                <Select value={formData.unidade} onValueChange={(v) => setFormData({ ...formData, unidade: v })}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a unidade" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {unidadeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Setor</Label>
-                <Input 
-                  value={formData.setor} 
-                  onChange={(e) => setFormData({ ...formData, setor: e.target.value })} 
-                  placeholder="Digite o setor" 
-                  className="form-input" 
-                />
+                <Select value={formData.setor} onValueChange={(v) => setFormData({ ...formData, setor: v })}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o setor" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {setorOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -87,56 +101,43 @@ export default function NovaOrdemCompra() {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Justificativa</Label>
+                <Textarea 
+                  value={formData.justificativa} 
+                  onChange={(e) => setFormData({ ...formData, justificativa: e.target.value })} 
+                  placeholder="Digite a justificativa da ordem de compra" 
+                  className="form-input min-h-[100px]" 
+                />
+              </div>
+            </div>
+
             <div className="border-t pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Item</Label>
-                  <Input 
-                    value={formData.item} 
-                    onChange={(e) => setFormData({ ...formData, item: e.target.value })} 
-                    placeholder="Nome do item" 
-                    className="form-input" 
-                  />
+                  <Input value={formData.item} onChange={(e) => setFormData({ ...formData, item: e.target.value })} placeholder="Nome do item" className="form-input" />
                 </div>
-
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Marca</Label>
-                  <Input 
-                    value={formData.marca} 
-                    onChange={(e) => setFormData({ ...formData, marca: e.target.value })} 
-                    placeholder="Marca" 
-                    className="form-input" 
-                  />
+                  <Input value={formData.marca} onChange={(e) => setFormData({ ...formData, marca: e.target.value })} placeholder="Marca" className="form-input" />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Quantidade</Label>
-                  <Input 
-                    type="number" 
-                    value={formData.quantidade} 
-                    onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })} 
-                    placeholder="Qtd" 
-                    className="form-input" 
-                  />
+                  <Input type="number" value={formData.quantidade} onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })} placeholder="Qtd" className="form-input" />
                 </div>
-
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Especificações</Label>
-                  <Input 
-                    value={formData.especificacoes} 
-                    onChange={(e) => setFormData({ ...formData, especificacoes: e.target.value })} 
-                    placeholder="Specs" 
-                    className="form-input" 
-                  />
+                  <Input value={formData.especificacoes} onChange={(e) => setFormData({ ...formData, especificacoes: e.target.value })} placeholder="Specs" className="form-input" />
                 </div>
               </div>
 
               <div className="flex gap-3 mt-4">
-                <Button type="button" onClick={handleAddItem} className="btn-action">
-                  Adicionar Item
-                </Button>
+                <Button type="button" onClick={handleAddItem} className="btn-action">Adicionar Item</Button>
               </div>
             </div>
 
@@ -169,11 +170,7 @@ export default function NovaOrdemCompra() {
               </TableBody>
             </Table>
 
-            <FormActionBar
-              onSave={handleSalvar}
-              onCancel={handleCancelar}
-              isSaving={isSaving}
-            />
+            <FormActionBar onSave={handleSalvar} onCancel={handleCancelar} isSaving={isSaving} />
           </div>
         </CardContent>
       </Card>

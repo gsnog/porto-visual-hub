@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
@@ -7,7 +8,7 @@ import { FileText } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
-import { DropdownWithAdd } from "@/components/DropdownWithAdd";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const validationFields = [
   { name: "categoria", label: "Categoria", required: false },
@@ -16,21 +17,22 @@ const validationFields = [
   { name: "id", label: "ID", required: true },
 ];
 
+const categoriaOptions = [
+  { value: "cat1", label: "Categoria 1" },
+  { value: "cat2", label: "Categoria 2" },
+];
+const subcategoriaOptions = [
+  { value: "sub1", label: "Subcategoria 1" },
+  { value: "sub2", label: "Subcategoria 2" },
+];
+const contabilOptions = [
+  { value: "cont1", label: "Contábil 1" },
+  { value: "cont2", label: "Contábil 2" },
+];
+
 const NovoPlanoContas = () => {
   const navigate = useNavigate();
   const { handleSave, isSaving } = useSaveWithDelay();
-  const [categorias, setCategorias] = useState([
-    { value: "cat1", label: "Categoria 1" },
-    { value: "cat2", label: "Categoria 2" },
-  ]);
-  const [subcategorias, setSubcategorias] = useState([
-    { value: "sub1", label: "Subcategoria 1" },
-    { value: "sub2", label: "Subcategoria 2" },
-  ]);
-  const [contabeis, setContabeis] = useState([
-    { value: "cont1", label: "Contábil 1" },
-    { value: "cont2", label: "Contábil 2" },
-  ]);
 
   const {
     formData,
@@ -51,12 +53,6 @@ const NovoPlanoContas = () => {
     navigate("/cadastro/financeiro/plano-contas");
   };
 
-  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, fieldName: "categoria" | "subcategoria" | "contabil" | "id") => (name: string) => {
-    const newVal = name.toLowerCase().replace(/\s/g, "-");
-    setter(prev => [...prev, { value: newVal, label: name }]);
-    setFieldValue(fieldName, newVal);
-  };
-
   return (
     <SimpleFormWizard title="Novo Plano de Contas">
       <Card className="border-border shadow-lg">
@@ -73,33 +69,37 @@ const NovoPlanoContas = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd
-                label="Categoria"
-                value={formData.categoria}
-                onChange={(value) => setFieldValue("categoria", value)}
-                options={categorias}
-                onAddNew={addOption(setCategorias, "categoria")}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Categoria</Label>
+                <Select value={formData.categoria} onValueChange={(v) => setFieldValue("categoria", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a categoria" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {categoriaOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <DropdownWithAdd
-                label="Subcategoria"
-                required
-                value={formData.subcategoria}
-                onChange={(value) => setFieldValue("subcategoria", value)}
-                options={subcategorias}
-                onAddNew={addOption(setSubcategorias, "subcategoria")}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Subcategoria <span className="text-destructive">*</span></Label>
+                <Select value={formData.subcategoria} onValueChange={(v) => setFieldValue("subcategoria", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a subcategoria" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {subcategoriaOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd
-                label="Contábil"
-                required
-                value={formData.contabil}
-                onChange={(value) => setFieldValue("contabil", value)}
-                options={contabeis}
-                onAddNew={addOption(setContabeis, "contabil")}
-              />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Contábil <span className="text-destructive">*</span></Label>
+                <Select value={formData.contabil} onValueChange={(v) => setFieldValue("contabil", v)}>
+                  <SelectTrigger className="form-input"><SelectValue placeholder="Selecione o contábil" /></SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {contabilOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
 
               <ValidatedInput
                 label="ID"
