@@ -26,7 +26,6 @@ import logoIcone from "@/assets/Logo_Serp_27.png"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid, help: "Visão geral com indicadores e métricas do sistema." },
-  { title: "Relatórios", url: "/relatorios", icon: BarChart3, help: "Geração de relatórios financeiros e operacionais." },
   { 
     title: "Cadastro", 
     icon: ClipboardList,
@@ -129,6 +128,7 @@ const menuItems = [
       { title: "Auditoria", url: "/gestao-pessoas/auditoria" },
     ]
   },
+  { title: "Relatórios", url: "/relatorios", icon: BarChart3, help: "Geração de relatórios financeiros e operacionais." },
 ]
 
 interface SidebarProps {

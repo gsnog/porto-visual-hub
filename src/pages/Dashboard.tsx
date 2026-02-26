@@ -12,7 +12,7 @@ import { motion } from "framer-motion"
 import { 
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
   ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter,
-  LayoutGrid, UserRoundPlus
+  LayoutGrid, UserRoundPlus, UserCircle
 } from "lucide-react"
 import { 
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -1268,7 +1268,7 @@ const DashboardMeuPerfil = () => {
         </FadeIn>
 
         <FadeIn delay={2} className="lg:col-span-2">
-          <div className="space-y-4">
+          <div className="flex flex-col h-full space-y-4">
             <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
               <h3 className="text-sm font-semibold text-foreground mb-4">Resumo de Acesso</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -1284,13 +1284,13 @@ const DashboardMeuPerfil = () => {
                 ))}
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+              <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20 flex flex-col justify-center">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Tempo no Sistema</p>
                 <p className="text-2xl font-bold text-foreground">3 anos 11 meses</p>
                 <p className="text-xs text-muted-foreground mt-1">Desde 15/03/2022</p>
               </div>
-              <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+              <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20 flex flex-col justify-center">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Aprovações Pendentes</p>
                 <p className="text-2xl font-bold text-amber-500">3</p>
                 <p className="text-xs text-muted-foreground mt-1">Requisições aguardando</p>
@@ -1452,7 +1452,7 @@ const Dashboard = () => {
   const [activeDashboard, setActiveDashboard] = useState<DashboardType>("meu-perfil")
 
   const tabs: { key: DashboardType; label: string; icon: typeof LayoutGrid }[] = [
-    { key: "meu-perfil", label: "Meu Perfil", icon: UserRoundPlus },
+    { key: "meu-perfil", label: "Meu Perfil", icon: UserCircle },
     { key: "geral", label: "Geral", icon: LayoutGrid },
     { key: "financeiro", label: "Financeiro", icon: DollarSign },
     { key: "estoque", label: "Estoque", icon: Package },
