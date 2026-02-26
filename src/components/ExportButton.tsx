@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FileText, FileSpreadsheet, ChevronDown } from "lucide-react";
+import { FileText, FileSpreadsheet, ChevronDown, FileDown } from "lucide-react";
 import { exportData, type ExportFormat } from "@/lib/exportData";
 
 interface ExportButtonProps {
@@ -33,6 +33,10 @@ export function ExportButton({ getData, fileName, sheetName }: ExportButtonProps
           <DropdownMenuItem onClick={() => handleExport('excel')} className="gap-2 cursor-pointer">
             <FileSpreadsheet className="h-4 w-4 text-green-600" />
             Exportar Excel (.xlsx)
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleExport('csv')} className="gap-2 cursor-pointer">
+            <FileDown className="h-4 w-4 text-blue-600" />
+            Exportar CSV (.csv)
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleExport('pdf')} className="gap-2 cursor-pointer">
             <FileText className="h-4 w-4 text-red-600" />

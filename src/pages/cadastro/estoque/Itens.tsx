@@ -13,8 +13,8 @@ import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
 const mockItens = [
-  { id: 1, dataCadastro: "10/01/2026", item: "Parafuso M8", formaApresentacao: "Caixa", setores: "Produção" },
-  { id: 2, dataCadastro: "12/01/2026", item: "Cabo HDMI", formaApresentacao: "Unidade", setores: "TI" },
+  { id: 1, codigo: "EST001", dataCadastro: "10/01/2026", item: "Parafuso M8", formaApresentacao: "Caixa", setores: "Produção" },
+  { id: 2, codigo: "EST002", dataCadastro: "12/01/2026", item: "Cabo HDMI", formaApresentacao: "Unidade", setores: "TI" },
 ];
 
 type Item = typeof mockItens[0];
@@ -34,7 +34,7 @@ const Itens = () => {
     { type: "date" as const, label: "Data de Cadastro", value: searchData, onChange: setSearchData, width: "min-w-[160px]" }
   ];
   const filtered = items.filter(item => item.item.toLowerCase().includes(searchNome.toLowerCase()));
-  const getExportData = () => filtered.map(i => ({ ID: i.id, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores }));
+  const getExportData = () => filtered.map(i => ({ Código: i.codigo, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Item excluído." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (i: Item) => { setEditItem(i); setEditData({ item: i.item, formaApresentacao: i.formaApresentacao, setores: i.setores }); };
@@ -50,7 +50,7 @@ const Itens = () => {
         <div className="rounded border border-border overflow-hidden">
           <Table>
             <TableHeader><TableRow className="bg-table-header">
-              <TableHead className="text-center font-semibold">Id Item</TableHead>
+              <TableHead className="text-center font-semibold">Código</TableHead>
               <TableHead className="text-center font-semibold">Data de Cadastro</TableHead>
               <TableHead className="text-center font-semibold">Item</TableHead>
               <TableHead className="text-center font-semibold">Forma de Apresentação</TableHead>
@@ -61,7 +61,7 @@ const Itens = () => {
               {filtered.length === 0 ? (<TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhum item encontrado.</TableCell></TableRow>) : (
                 filtered.map((item) => (
                   <TableRow key={item.id} className="hover:bg-table-hover transition-colors">
-                    <TableCell className="text-center font-medium">{item.id}</TableCell>
+                    <TableCell className="text-center font-medium">{item.codigo}</TableCell>
                     <TableCell className="text-center">{item.dataCadastro}</TableCell>
                     <TableCell className="text-center font-medium">{item.item}</TableCell>
                     <TableCell className="text-center">{item.formaApresentacao}</TableCell>

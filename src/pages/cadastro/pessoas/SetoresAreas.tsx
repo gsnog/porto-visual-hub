@@ -83,12 +83,12 @@ export default function SetoresAreas() {
         <Table>
           <TableHeader>
             <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-              <TableHead className="text-white font-semibold">Nome</TableHead>
-              <TableHead className="text-white font-semibold">Área Pai</TableHead>
-              <TableHead className="text-white font-semibold">Responsável</TableHead>
-              <TableHead className="text-white font-semibold text-center">Qtde Pessoas</TableHead>
-              <TableHead className="text-white font-semibold">Status</TableHead>
-              <TableHead className="text-white font-semibold text-center">Ações</TableHead>
+              <TableHead className="text-foreground font-semibold">Nome</TableHead>
+              <TableHead className="text-foreground font-semibold">Área Pai</TableHead>
+              <TableHead className="text-foreground font-semibold">Responsável</TableHead>
+              <TableHead className="text-foreground font-semibold text-center">Qtde Pessoas</TableHead>
+              <TableHead className="text-foreground font-semibold">Status</TableHead>
+              <TableHead className="text-foreground font-semibold text-center">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -15,6 +15,7 @@ const NovaContaBancaria = () => {
     { value: "corrente", label: "Corrente" },
     { value: "poupanca", label: "Poupança" },
     { value: "investimento", label: "Investimento" },
+    { value: "caixa-pequeno", label: "Caixa Pequeno" },
   ]);
 
   const handleSalvar = () => {
@@ -79,8 +80,9 @@ const NovaContaBancaria = () => {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Saldo <span className="text-destructive">*</span></Label>
+                <Label className="text-sm font-medium">Saldo Inicial</Label>
                 <Input placeholder="0,00" className="form-input" />
+                <p className="text-xs text-muted-foreground">Após criação, o saldo só pode ser alterado pelo sistema</p>
               </div>
             </div>
 

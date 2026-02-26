@@ -710,6 +710,7 @@ export default function NovaPessoa() {
                     onValueChange={(v) => updateField("banco", v)}
                     placeholder="Selecionar banco"
                     options={bancosBrasil.map(banco => ({ value: banco.codigo, label: `${banco.codigo} - ${banco.nome}` }))}
+                    searchable
                     searchPlaceholder="Buscar banco..."
                   />
                   <ValidatedSelect

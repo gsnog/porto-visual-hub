@@ -21,7 +21,7 @@ import {
 import VisaoGeralComercial from "@/pages/comercial/VisaoGeral"
 import VisaoGeralRH from "@/pages/gestao-pessoas/VisaoGeralRH"
 
-type DashboardType = "geral" | "financeiro" | "estoque" | "patrimonio" | "comercial" | "rh"
+type DashboardType = "geral" | "meu-perfil" | "financeiro" | "estoque" | "patrimonio" | "operacional" | "comercial" | "rh"
 type PeriodoType = "1h" | "24h" | "7d" | "30d" | "90d" | "1y"
 type TipoType = "todos" | "financeiro" | "estoque" | "patrimonio"
 
@@ -1203,15 +1203,169 @@ const DashboardPatrimonio = () => {
   )
 }
 
+// ===== DASHBOARD MEU PERFIL =====
+const DashboardMeuPerfil = () => {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <FadeIn delay={1}>
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20 lg:col-span-1">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">PP</div>
+              <h3 className="text-lg font-bold text-foreground">Pedro Piaes</h3>
+              <p className="text-sm text-muted-foreground">Gerente de Operações</p>
+              <p className="text-xs text-muted-foreground mt-1">pedro.piaes@empresa.com</p>
+              <div className="mt-4 w-full space-y-2">
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Setor</span><span className="font-medium">Operacional</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Vínculo</span><span className="font-medium">CLT</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Admissão</span><span className="font-medium">15/03/2022</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Status</span><span className="font-medium text-lime-600">Ativo</span></div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={2} className="lg:col-span-2">
+          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Resumo de Acesso</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-3 rounded-xl bg-primary/5">
+                <p className="text-2xl font-bold text-primary">3</p>
+                <p className="text-xs text-muted-foreground">Setores</p>
+              </div>
+              <div className="text-center p-3 rounded-xl bg-primary/5">
+                <p className="text-2xl font-bold text-primary">12</p>
+                <p className="text-xs text-muted-foreground">Módulos</p>
+              </div>
+              <div className="text-center p-3 rounded-xl bg-primary/5">
+                <p className="text-2xl font-bold text-primary">8</p>
+                <p className="text-xs text-muted-foreground">Equipe</p>
+              </div>
+              <div className="text-center p-3 rounded-xl bg-primary/5">
+                <p className="text-2xl font-bold text-primary">Gestor</p>
+                <p className="text-xs text-muted-foreground">Perfil</p>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+
+      <FadeIn delay={3}>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Atividades</h3>
+          <div className="space-y-1">
+            {[
+              { acao: "Criou Ordem de Compra #OC-2026-045", data: "há 2 horas", modulo: "Estoque" },
+              { acao: "Editou cadastro de Fornecedor ABC", data: "há 4 horas", modulo: "Cadastro" },
+              { acao: "Aprovou requisição #REQ-0089", data: "ontem", modulo: "Estoque" },
+              { acao: "Criou nova conta a pagar", data: "ontem", modulo: "Financeiro" },
+              { acao: "Atualizou dados da embarcação Alfa", data: "2 dias atrás", modulo: "Operacional" },
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
+                <div>
+                  <p className="font-medium text-sm">{item.acao}</p>
+                  <p className="text-xs text-muted-foreground">{item.modulo}</p>
+                </div>
+                <span className="text-xs text-muted-foreground">{item.data}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </FadeIn>
+    </div>
+  )
+}
+
+// ===== DASHBOARD OPERACIONAL =====
+const DashboardOperacional = () => {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <GradientCard title="Operações Ativas" value="12" icon={BarChart3} variant="info" delay={1} />
+        <GradientCard title="Embarcações em Serviço" value="8" icon={Package} variant="success" delay={2} />
+        <GradientCard title="Serviços em Andamento" value="15" icon={TrendingUp} variant="warning" delay={3} />
+        <GradientCard title="Setores Operacionais" value="4" icon={Building2} variant="neutral" delay={4} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChartCard title="Operações por Setor" delay={5}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={[
+              { setor: "Porto", operacoes: 5 },
+              { setor: "Offshore", operacoes: 3 },
+              { setor: "Manutenção", operacoes: 4 },
+              { setor: "Logística", operacoes: 2 },
+            ]}>
+              <XAxis dataKey="setor" tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="operacoes" name="Operações" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard title="Embarcações por Status" delay={6}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={[
+                { name: "Em Operação", value: 8, color: "hsl(var(--primary))" },
+                { name: "Em Manutenção", value: 2, color: "hsl(var(--chart-3))" },
+                { name: "Disponível", value: 3, color: "hsl(72 80% 60%)" },
+              ]} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value" cornerRadius={6}
+                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                {[
+                  { name: "Em Operação", value: 8, color: "hsl(var(--primary))" },
+                  { name: "Em Manutenção", value: 2, color: "hsl(var(--chart-3))" },
+                  { name: "Disponível", value: 3, color: "hsl(72 80% 60%)" },
+                ].map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+              </Pie>
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      </div>
+
+      <FadeIn delay={7}>
+        <div className="bg-card rounded-2xl shadow-sm shadow-black/[0.04] dark:shadow-black/20 overflow-hidden">
+          <div className="p-6 pb-2"><h3 className="text-sm font-semibold">Últimas Operações</h3></div>
+          <div className="px-6 pb-6">
+            <Table>
+              <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Operação</TableHead><TableHead>Embarcação</TableHead><TableHead>Setor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
+              <TableBody>
+                {[
+                  { data: "16/01/2026", operacao: "Carga Porto Santos", embarcacao: "MV Alfa", setor: "Porto", status: "Em Andamento" },
+                  { data: "15/01/2026", operacao: "Manutenção Preventiva", embarcacao: "MV Beta", setor: "Manutenção", status: "Concluída" },
+                  { data: "14/01/2026", operacao: "Transporte Offshore", embarcacao: "MV Gama", setor: "Offshore", status: "Em Andamento" },
+                  { data: "13/01/2026", operacao: "Descarga Terminal", embarcacao: "MV Delta", setor: "Porto", status: "Concluída" },
+                ].map((item, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell className="text-sm">{item.data}</TableCell>
+                    <TableCell className="font-medium text-sm">{item.operacao}</TableCell>
+                    <TableCell className="text-sm">{item.embarcacao}</TableCell>
+                    <TableCell className="text-sm">{item.setor}</TableCell>
+                    <TableCell><StatusBadge status={item.status} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </FadeIn>
+    </div>
+  )
+}
+
 // ===== MAIN DASHBOARD =====
 const Dashboard = () => {
   const [activeDashboard, setActiveDashboard] = useState<DashboardType>("geral")
 
   const tabs: { key: DashboardType; label: string; icon: typeof LayoutGrid }[] = [
     { key: "geral", label: "Geral", icon: LayoutGrid },
+    { key: "meu-perfil", label: "Meu Perfil", icon: UserRoundPlus },
     { key: "financeiro", label: "Financeiro", icon: DollarSign },
     { key: "estoque", label: "Estoque", icon: Package },
     { key: "patrimonio", label: "Patrimônio", icon: Building2 },
+    { key: "operacional", label: "Operacional", icon: BarChart3 },
     { key: "comercial", label: "Comercial", icon: TrendingUp },
     { key: "rh", label: "Gestão de Pessoas", icon: UserRoundPlus },
   ]
@@ -1232,9 +1386,11 @@ const Dashboard = () => {
         </Tabs>
 
         {activeDashboard === "geral" && <DashboardGeral />}
+        {activeDashboard === "meu-perfil" && <DashboardMeuPerfil />}
         {activeDashboard === "financeiro" && <DashboardFinanceiro />}
         {activeDashboard === "estoque" && <DashboardEstoque />}
         {activeDashboard === "patrimonio" && <DashboardPatrimonio />}
+        {activeDashboard === "operacional" && <DashboardOperacional />}
         {activeDashboard === "comercial" && <VisaoGeralComercial />}
         {activeDashboard === "rh" && <VisaoGeralRH />}
       </div>

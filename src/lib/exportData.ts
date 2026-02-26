@@ -3,10 +3,10 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from '@/hooks/use-toast';
 
-export type ExportFormat = 'excel' | 'pdf';
+export type ExportFormat = 'excel' | 'csv' | 'pdf';
 
 /**
- * Exporta dados para Excel (.xlsx) ou PDF
+ * Exporta dados para Excel (.xlsx), CSV (.csv) ou PDF
  */
 export function exportData(
   data: Record<string, unknown>[],
@@ -31,6 +31,20 @@ export function exportData(
     toast({
       title: 'Exportado com sucesso!',
       description: `Arquivo "${fileName}.xlsx" gerado com ${data.length} registro(s).`,
+    });
+  } else if (format === 'csv') {
+    const ws = XLSX.utils.json_to_sheet(data);
+    const csv = XLSX.utils.sheet_to_csv(ws);
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast({
+      title: 'Exportado com sucesso!',
+      description: `Arquivo "${fileName}.csv" gerado com ${data.length} registro(s).`,
     });
   } else {
     const doc = new jsPDF({ orientation: data.length > 0 && Object.keys(data[0]).length > 5 ? 'landscape' : 'portrait' });

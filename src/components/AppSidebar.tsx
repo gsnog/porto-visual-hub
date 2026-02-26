@@ -3,8 +3,8 @@ import {
   LayoutGrid, 
   ClipboardList, 
   Package, 
-   TrendingUp,
-   DollarSign,
+  TrendingUp,
+  DollarSign,
   Building2,
   UserRoundPlus,
   LogOut,
@@ -14,11 +14,11 @@ import {
   BarChart3,
   Sun,
   Moon,
-  Receipt
 } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
+import { Badge } from "@/components/ui/badge"
 import logoSerpLight from "@/assets/logo-serp-light.png"
 import logoSerpDark from "@/assets/logo-serp-dark.png"
 import logoIcone from "@/assets/Logo_Serp_27.png"
@@ -33,7 +33,6 @@ const menuItems = [
     help: "Cadastro de dados mestres: itens, fornecedores, clientes, setores e contas.",
     subItems: [
       { title: "Estoque", help: "Cadastros relacionados ao controle de estoque.", subItems: [
-        { title: "Formas de Apresentação", url: "/cadastro/estoque/formas-apresentacao" },
         { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
         { title: "Itens", url: "/cadastro/estoque/itens" },
         { title: "Setores", url: "/cadastro/estoque/setores" },
@@ -41,6 +40,8 @@ const menuItems = [
       ]},
       { title: "Financeiro", help: "Cadastros financeiros: contas, centros de custo e planos de contas.", subItems: [
         { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
+        { title: "Conciliação Bancária", url: "/cadastro/financeiro/conciliacao-bancaria" },
+        { title: "Transferências", url: "/cadastro/financeiro/transferencias" },
         { title: "Clientes", url: "/cadastro/financeiro/clientes" },
         { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
         { title: "Centro de Receita", url: "/cadastro/financeiro/centro-receita" },
@@ -55,19 +56,14 @@ const menuItems = [
         { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
         { title: "Cargos", url: "/cadastro/pessoas/cargos" },
       ]},
-      { title: "Fiscal", help: "Parâmetros fiscais: empresa, séries, regras e impostos.", subItems: [
-        { title: "Empresa (Dados Fiscais)", url: "/cadastro/fiscal/empresa" },
-        { title: "Séries e Numeração", url: "/cadastro/fiscal/series" },
-        { title: "Regras Fiscais", url: "/cadastro/fiscal/regras-fiscais" },
-        { title: "Impostos e Alíquotas", url: "/cadastro/fiscal/impostos" },
-      ]},
     ]
   },
   { 
     title: "Comercial", 
     icon: TrendingUp,
     basePath: "/comercial",
-    help: "Gestão comercial: leads, oportunidades, propostas, metas e comissões.",
+    badge: "BETA",
+    help: "Gestão comercial: leads, oportunidades e propostas.",
     subItems: [
       { title: "Leads", url: "/comercial/leads" },
       { title: "Contas", url: "/comercial/contas" },
@@ -75,19 +71,6 @@ const menuItems = [
       { title: "Oportunidades", url: "/comercial/oportunidades" },
       { title: "Propostas", url: "/comercial/propostas" },
       { title: "Atividades", url: "/comercial/atividades" },
-      { title: "Metas e Forecast", url: "/comercial/metas" },
-      { title: "Comissões", url: "/comercial/comissoes" },
-    ]
-  },
-  { 
-    title: "Fiscal", 
-    icon: Receipt,
-    basePath: "/fiscal",
-    help: "Módulo fiscal: emissão de notas, monitor de emissão e relatórios.",
-    subItems: [
-      { title: "Notas Fiscais", url: "/fiscal/notas" },
-      { title: "Monitor de Emissão", url: "/fiscal/monitor" },
-      { title: "Exportações / Relatórios", url: "/fiscal/exportacoes" },
     ]
   },
   { 
@@ -135,11 +118,12 @@ const menuItems = [
     title: "Gestão de Pessoas", 
     icon: UserRoundPlus,
     basePath: "/gestao-pessoas",
-    help: "RH e gestão de pessoas: visão 360º, hierarquia, acessos e auditoria.",
+    badge: "BETA",
+    help: "RH e gestão de pessoas: visão 360º, hierarquia, permissões e auditoria.",
     subItems: [
       { title: "Pessoas (360º)", url: "/gestao-pessoas/pessoas" },
       { title: "Hierarquia", url: "/gestao-pessoas/hierarquia" },
-      { title: "Acessos", url: "/gestao-pessoas/acessos" },
+      { title: "Permissões", url: "/gestao-pessoas/acessos" },
       { title: "Dashboards", url: "/gestao-pessoas/dashboards" },
       { title: "Auditoria", url: "/gestao-pessoas/auditoria" },
     ]
@@ -159,17 +143,14 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
 
   const toggleMenu = (label: string, isSubMenu = false) => {
     setOpenMenus((prev) => {
-      // Se está fechando o menu, apenas remove
       if (prev.includes(label)) {
         return prev.filter((item) => item !== label)
       }
       
-      // Se é um submenu (ex: Cadastro-Estoque), permite múltiplos
       if (isSubMenu) {
         return [...prev, label]
       }
       
-      // Se é um menu principal, fecha os outros menus principais e abre apenas este
       const mainMenuTitles = menuItems.filter(item => item.subItems).map(item => item.title)
       const filteredMenus = prev.filter(item => !mainMenuTitles.includes(item))
       return [...filteredMenus, label]
@@ -218,18 +199,18 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             src={theme === "dark" ? logoSerpDark : logoSerpLight}
             alt="SERP"
             className={cn(
-              "absolute object-contain transition-all duration-300 ease-in-out h-20",
+              "absolute object-contain transition-all duration-300 ease-in-out h-24",
               collapsed ? "opacity-0 scale-75" : "opacity-100 scale-100"
             )}
           />
         </div>
         
-        {/* Toggle button - aligned with logo divider */}
+        {/* Toggle button */}
         <button
           onClick={onToggle}
           className="absolute -right-4 bottom-0 translate-y-1/2 grid place-items-center h-8 w-8 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform z-10"
         >
-          <ChevronLeft className={cn("h-4 w-4 transition-transform", !collapsed && "rotate-180")} />
+          <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
         </button>
       </div>
 
@@ -250,8 +231,13 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                     <item.icon className="h-5 w-5 shrink-0 text-[hsl(var(--sidebar-foreground))]" />
                     {!collapsed && (
                       <>
-                        <span className="flex-1 text-left text-sm text-[hsl(var(--sidebar-foreground))]">
+                        <span className="flex-1 text-left text-sm text-[hsl(var(--sidebar-foreground))] flex items-center gap-2">
                           {item.title}
+                          {'badge' in item && item.badge && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-primary/50 text-primary font-semibold">
+                              {item.badge}
+                            </Badge>
+                          )}
                         </span>
                         {openMenus.includes(item.title) ? (
                           <ChevronDown className="h-4 w-4 text-[hsl(var(--sidebar-foreground))]" />
