@@ -115,13 +115,13 @@ export default function Pessoas() {
         <Table>
           <TableHeader>
             <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
-              <TableHead className="text-white font-semibold">Nome</TableHead>
-              <TableHead className="text-white font-semibold">Status</TableHead>
-              <TableHead className="text-white font-semibold">Setor/Área</TableHead>
-              <TableHead className="text-white font-semibold">Cargo</TableHead>
-              <TableHead className="text-white font-semibold">Gestor Direto</TableHead>
-              <TableHead className="text-white font-semibold">Vínculo</TableHead>
-              <TableHead className="text-white font-semibold text-center">Ações</TableHead>
+              <TableHead className="text-foreground font-semibold">Nome</TableHead>
+              <TableHead className="text-foreground font-semibold">Status</TableHead>
+              <TableHead className="text-foreground font-semibold">Setor/Área</TableHead>
+              <TableHead className="text-foreground font-semibold">Cargo</TableHead>
+              <TableHead className="text-foreground font-semibold">Gestor Direto</TableHead>
+              <TableHead className="text-foreground font-semibold">Vínculo</TableHead>
+              <TableHead className="text-foreground font-semibold text-center">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

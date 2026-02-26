@@ -46,8 +46,6 @@ import Cadastro from "./pages/Cadastro";
 import NotFound from "./pages/NotFound";
 
 // Cadastro - Estoque
-import FormasApresentacao from "./pages/cadastro/estoque/FormasApresentacao";
-import NovaFormaApresentacao from "./pages/cadastro/estoque/NovaFormaApresentacao";
 import FornecedoresEstoque from "./pages/cadastro/estoque/Fornecedores";
 import NovoFornecedor from "./pages/cadastro/estoque/NovoFornecedor";
 import Itens from "./pages/cadastro/estoque/Itens";
@@ -104,7 +102,6 @@ import Cargos from "./pages/cadastro/pessoas/Cargos";
 import NovoCargo from "./pages/cadastro/pessoas/NovoCargo";
 
 // Gestão de Pessoas
-import VisaoGeralRH from "./pages/gestao-pessoas/VisaoGeralRH";
 import PessoasVisao360 from "./pages/gestao-pessoas/PessoasVisao360";
 import PessoaDetalhe from "./pages/gestao-pessoas/PessoaDetalhe";
 import Hierarquia from "./pages/gestao-pessoas/Hierarquia";
@@ -118,41 +115,21 @@ import Chat from "./pages/Chat";
 import Kanban from "./pages/Kanban";
 
 // Comercial
-import VisaoGeralComercial from "./pages/comercial/VisaoGeral";
 import LeadsComercial from "./pages/comercial/Leads";
 import ContasComercial from "./pages/comercial/Contas";
 import ContatosComercial from "./pages/comercial/Contatos";
 import OportunidadesComercial from "./pages/comercial/Oportunidades";
 import PropostasComercial from "./pages/comercial/Propostas";
 import AtividadesComercial from "./pages/comercial/Atividades";
-import MetasForecast from "./pages/comercial/MetasForecast";
-import ComissoesComercial from "./pages/comercial/Comissoes";
 import NovoLead from "./pages/comercial/NovoLead";
 import NovaContaComercial from "./pages/comercial/NovaConta";
 import NovoContato from "./pages/comercial/NovoContato";
 import NovaOportunidade from "./pages/comercial/NovaOportunidade";
 import NovaProposta from "./pages/comercial/NovaProposta";
 import NovaAtividade from "./pages/comercial/NovaAtividade";
-import NovaRegra from "./pages/comercial/NovaRegra";
-import NovaMeta from "./pages/comercial/NovaMeta";
 
 // Dashboards
 import DashboardComercial from "./pages/dashboards/DashboardComercial";
-
-// Cadastro - Fiscal
-import EmpresaFiscal from "./pages/cadastro/fiscal/EmpresaFiscal";
-import SeriesNumeracao from "./pages/cadastro/fiscal/SeriesNumeracao";
-import NovaSerie from "./pages/cadastro/fiscal/NovaSerie";
-import RegrasFiscais from "./pages/cadastro/fiscal/RegrasFiscais";
-import NovaRegraFiscal from "./pages/cadastro/fiscal/NovaRegraFiscal";
-import ImpostosAliquotas from "./pages/cadastro/fiscal/ImpostosAliquotas";
-
-// Fiscal
-import NotasFiscais from "./pages/fiscal/NotasFiscais";
-import NovaNotaFiscal from "./pages/fiscal/NovaNotaFiscal";
-import NotaFiscalDetalhe from "./pages/fiscal/NotaFiscalDetalhe";
-import MonitorEmissao from "./pages/fiscal/MonitorEmissao";
-import ExportacoesRelatorios from "./pages/fiscal/ExportacoesRelatorios";
 
 const queryClient = new QueryClient();
 
@@ -208,8 +185,6 @@ const App = () => (
             <Route path="/estoque/ordem-servico/nova" element={<NovaOrdemServico />} />
             
             {/* Cadastro - Estoque */}
-            <Route path="/cadastro/estoque/formas-apresentacao" element={<FormasApresentacao />} />
-            <Route path="/cadastro/estoque/formas-apresentacao/nova" element={<NovaFormaApresentacao />} />
             <Route path="/cadastro/estoque/fornecedores" element={<FornecedoresEstoque />} />
             <Route path="/cadastro/estoque/fornecedores/novo" element={<NovoFornecedor />} />
             <Route path="/cadastro/estoque/itens" element={<Itens />} />
@@ -264,7 +239,6 @@ const App = () => (
             <Route path="/cadastro/pessoas/cargos/novo" element={<NovoCargo />} />
             
             {/* Gestão de Pessoas */}
-            {/* Gestão de Pessoas */}
             <Route path="/gestao-pessoas/pessoas" element={<PessoasVisao360 />} />
             <Route path="/gestao-pessoas/pessoas/:id" element={<PessoaDetalhe />} />
             <Route path="/gestao-pessoas/hierarquia" element={<Hierarquia />} />
@@ -282,7 +256,6 @@ const App = () => (
             <Route path="/kanban" element={<Kanban />} />
             
             {/* Comercial */}
-            {/* Comercial */}
             <Route path="/comercial/leads" element={<LeadsComercial />} />
             <Route path="/comercial/leads/novo" element={<NovoLead />} />
             <Route path="/comercial/contas" element={<ContasComercial />} />
@@ -295,28 +268,9 @@ const App = () => (
             <Route path="/comercial/propostas/nova" element={<NovaProposta />} />
             <Route path="/comercial/atividades" element={<AtividadesComercial />} />
             <Route path="/comercial/atividades/nova" element={<NovaAtividade />} />
-            <Route path="/comercial/metas" element={<MetasForecast />} />
-            <Route path="/comercial/metas/nova" element={<NovaMeta />} />
-            <Route path="/comercial/comissoes" element={<ComissoesComercial />} />
-            <Route path="/comercial/comissoes/nova-regra" element={<NovaRegra />} />
             
             {/* Dashboards Globais */}
             <Route path="/dashboards/comercial" element={<DashboardComercial />} />
-            
-            {/* Cadastro - Fiscal */}
-            <Route path="/cadastro/fiscal/empresa" element={<EmpresaFiscal />} />
-            <Route path="/cadastro/fiscal/series" element={<SeriesNumeracao />} />
-            <Route path="/cadastro/fiscal/series/nova" element={<NovaSerie />} />
-            <Route path="/cadastro/fiscal/regras-fiscais" element={<RegrasFiscais />} />
-            <Route path="/cadastro/fiscal/regras-fiscais/nova" element={<NovaRegraFiscal />} />
-            <Route path="/cadastro/fiscal/impostos" element={<ImpostosAliquotas />} />
-            
-            {/* Fiscal */}
-            <Route path="/fiscal/notas" element={<NotasFiscais />} />
-            <Route path="/fiscal/notas/nova" element={<NovaNotaFiscal />} />
-            <Route path="/fiscal/notas/:id" element={<NotaFiscalDetalhe />} />
-            <Route path="/fiscal/monitor" element={<MonitorEmissao />} />
-            <Route path="/fiscal/exportacoes" element={<ExportacoesRelatorios />} />
           </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

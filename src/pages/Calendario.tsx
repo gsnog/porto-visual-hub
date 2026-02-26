@@ -325,7 +325,7 @@ export default function Calendario() {
                     onCheckedChange={setFilterEquipe}
                   />
                   <Label htmlFor="filter-equipe" className="text-sm">
-                    Pessoas abaixo de mim
+                    Minha equipe
                   </Label>
                 </div>
               </div>

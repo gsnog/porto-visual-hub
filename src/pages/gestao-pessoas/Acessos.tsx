@@ -115,7 +115,7 @@ const modulosSistema = [
       
       { id: 'gp_pessoas', nome: 'Pessoas (360º)', acoes: ['view', 'create', 'edit', 'delete', 'edit_360'] },
       { id: 'gp_hierarquia', nome: 'Hierarquia', acoes: ['view'] },
-      { id: 'gp_acessos', nome: 'Acessos', acoes: ['view', 'create', 'edit', 'delete'] },
+      { id: 'gp_permissoes', nome: 'Permissões', acoes: ['view', 'create', 'edit', 'delete'] },
       { id: 'gp_dashboards', nome: 'Dashboards', acoes: ['view', 'edit'] },
       { id: 'gp_auditoria', nome: 'Auditoria', acoes: ['view'] },
     ]

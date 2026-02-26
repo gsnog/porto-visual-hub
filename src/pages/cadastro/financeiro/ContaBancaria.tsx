@@ -45,14 +45,6 @@ const ContaBancaria = () => {
         <div className="flex flex-wrap gap-3 items-center">
           <Button onClick={() => navigate("/cadastro/financeiro/conta-bancaria/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Conta</Button>
           <ExportButton getData={getExportData} fileName="contas-bancarias" />
-          <Button onClick={() => navigate("/cadastro/financeiro/conciliacao-bancaria")} variant="outline" className="gap-2 border-border">Conciliação Bancária</Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild><Button variant="outline" className="gap-2 border-border">Transferências<ChevronDown className="w-4 h-4" /></Button></DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-popover border border-border z-50">
-              <DropdownMenuItem onClick={() => navigate("/cadastro/financeiro/transferencias")}>Ver Transferências</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/cadastro/financeiro/transferencias/nova")}>Nova Transferência</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
         <FilterSection fields={filterFields} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">
@@ -90,13 +82,13 @@ const ContaBancaria = () => {
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Editar Conta Bancária</DialogTitle></DialogHeader>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <div className="space-y-2"><Label>Código do Banco</Label><Input value={editData.codigoBanco} onChange={e => setEditData(p => ({ ...p, codigoBanco: e.target.value }))} /></div>
             <div className="space-y-2"><Label>Banco</Label><Input value={editData.banco} onChange={e => setEditData(p => ({ ...p, banco: e.target.value }))} /></div>
             <div className="space-y-2"><Label>Agência</Label><Input value={editData.agencia} onChange={e => setEditData(p => ({ ...p, agencia: e.target.value }))} /></div>
             <div className="space-y-2"><Label>Número da Conta</Label><Input value={editData.numeroConta} onChange={e => setEditData(p => ({ ...p, numeroConta: e.target.value }))} /></div>
             <div className="space-y-2"><Label>Tipo</Label><Input value={editData.tipo} onChange={e => setEditData(p => ({ ...p, tipo: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Saldo</Label><Input value={editData.saldo} onChange={e => setEditData(p => ({ ...p, saldo: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Saldo</Label><Input value={editData.saldo} disabled className="opacity-60 cursor-not-allowed" /><p className="text-xs text-muted-foreground">Saldo só pode ser alterado pelo sistema</p></div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
