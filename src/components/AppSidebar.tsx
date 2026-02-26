@@ -200,7 +200,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             src={theme === "dark" ? logoSerpDark : logoSerpLight}
             alt="SERP"
             className={cn(
-              "absolute object-contain transition-all duration-300 ease-in-out h-24",
+              "absolute object-contain transition-all duration-300 ease-in-out h-32",
               collapsed ? "opacity-0 scale-75" : "opacity-100 scale-100"
             )}
           />

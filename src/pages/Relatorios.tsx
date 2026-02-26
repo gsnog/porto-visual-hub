@@ -178,9 +178,7 @@ export default function Relatorios() {
 
             {/* Relacionados */}
             <div className="border-t border-border pt-4">
-              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                <span>👥</span> Relacionados
-              </h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Relacionados</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <SelectFilter label="Cliente:" value={cliente} onChange={setCliente} options={[

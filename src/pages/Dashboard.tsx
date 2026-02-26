@@ -1253,7 +1253,7 @@ const DashboardMeuPerfil = () => {
         <FadeIn delay={1}>
           <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20 lg:col-span-1">
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">PP</div>
+              <div className="w-20 h-20 rounded bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">PP</div>
               <h3 className="text-lg font-bold text-foreground">Pedro Piaes</h3>
               <p className="text-sm text-muted-foreground">Gerente de Operações</p>
               <p className="text-xs text-muted-foreground mt-1">pedro.piaes@empresa.com</p>
@@ -1285,6 +1285,27 @@ const DashboardMeuPerfil = () => {
           </div>
         </FadeIn>
       </div>
+
+      {/* Indicadores Rápidos */}
+      <FadeIn delay={2.3}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Tempo no Sistema</p>
+            <p className="text-2xl font-bold text-foreground">3 anos 11 meses</p>
+            <p className="text-xs text-muted-foreground mt-1">Desde 15/03/2022</p>
+          </div>
+          <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Ações este Mês</p>
+            <p className="text-2xl font-bold text-primary">47</p>
+            <p className="text-xs text-muted-foreground mt-1">+12% vs mês anterior</p>
+          </div>
+          <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Aprovações Pendentes</p>
+            <p className="text-2xl font-bold text-amber-500">3</p>
+            <p className="text-xs text-muted-foreground mt-1">Requisições aguardando</p>
+          </div>
+        </div>
+      </FadeIn>
 
       {/* Meu Time */}
       <FadeIn delay={2.5}>
