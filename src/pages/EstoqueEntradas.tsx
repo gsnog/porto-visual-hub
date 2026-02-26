@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Upload, ChevronDown } from "lucide-react"
+import { Plus, Upload, ChevronDown, ChevronRight } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
@@ -12,14 +12,53 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 
-const mockEntradas = [
-  { id: 1, data: "02/06/2025", item: "Parafuso M8", validade: "05/06/2025", notaFiscal: "123456", estoqueDestinado: "Almoxarifado SP", custoUnitario: "R$ 0,50", quantidade: 100, custoTotal: "R$ 50,00" },
-  { id: 2, data: "01/06/2025", item: "Cabo HDMI", validade: "01/06/2027", notaFiscal: "789012", estoqueDestinado: "TI Central", custoUnitario: "R$ 25,00", quantidade: 10, custoTotal: "R$ 250,00" },
-  { id: 3, data: "30/05/2025", item: "Óleo Lubrificante", validade: "30/05/2026", notaFiscal: "345678", estoqueDestinado: "Manutenção", custoUnitario: "R$ 45,00", quantidade: 5, custoTotal: "R$ 225,00" },
-  { id: 4, data: "28/05/2025", item: "Parafuso M8", validade: "28/05/2026", notaFiscal: "901234", estoqueDestinado: "Almoxarifado RJ", custoUnitario: "R$ 0,55", quantidade: 200, custoTotal: "R$ 110,00" },
-]
+interface ItemNF {
+  id: number;
+  item: string;
+  marca: string;
+  quantidade: number;
+  custoUnitario: string;
+  especificacoes: string;
+}
 
-type Entrada = typeof mockEntradas[0];
+interface EntradaNF {
+  id: number;
+  data: string;
+  responsavel: string;
+  notaFiscal: string;
+  fornecedor: string;
+  unidade: string;
+  custoTotal: string;
+  itens: ItemNF[];
+}
+
+const mockEntradas: EntradaNF[] = [
+  {
+    id: 1, data: "02/06/2025", responsavel: "Lucas V.", notaFiscal: "NF-123456", fornecedor: "ABC Distribuidora", unidade: "Almoxarifado SP", custoTotal: "R$ 300,00",
+    itens: [
+      { id: 1, item: "Parafuso M8", marca: "Fischer", quantidade: 100, custoUnitario: "R$ 0,50", especificacoes: "Aço inox" },
+      { id: 2, item: "Parafuso M10", marca: "Fischer", quantidade: 200, custoUnitario: "R$ 1,25", especificacoes: "Aço carbono" },
+    ]
+  },
+  {
+    id: 2, data: "01/06/2025", responsavel: "Ana F.", notaFiscal: "NF-789012", fornecedor: "TechParts Ltda", unidade: "TI Central", custoTotal: "R$ 250,00",
+    itens: [
+      { id: 3, item: "Cabo HDMI", marca: "StarTech", quantidade: 10, custoUnitario: "R$ 25,00", especificacoes: "2m 4K" },
+    ]
+  },
+  {
+    id: 3, data: "30/05/2025", responsavel: "Pedro S.", notaFiscal: "NF-345678", fornecedor: "Lubrificantes SA", unidade: "Manutenção", custoTotal: "R$ 225,00",
+    itens: [
+      { id: 4, item: "Óleo Lubrificante", marca: "Shell", quantidade: 5, custoUnitario: "R$ 45,00", especificacoes: "10W40" },
+    ]
+  },
+  {
+    id: 4, data: "28/05/2025", responsavel: "Maria C.", notaFiscal: "NF-901234", fornecedor: "ABC Distribuidora", unidade: "Almoxarifado RJ", custoTotal: "R$ 110,00",
+    itens: [
+      { id: 5, item: "Parafuso M8", marca: "Fischer", quantidade: 200, custoUnitario: "R$ 0,55", especificacoes: "Aço inox" },
+    ]
+  },
+]
 
 export default function EstoqueEntradas() {
   const navigate = useNavigate()
@@ -28,14 +67,24 @@ export default function EstoqueEntradas() {
   const [filterNFe, setFilterNFe] = useState("")
   const [filterDataInicio, setFilterDataInicio] = useState("")
   const [filterDataFim, setFilterDataFim] = useState("")
-  const [viewItem, setViewItem] = useState<Entrada | null>(null)
+  const [viewItem, setViewItem] = useState<EntradaNF | null>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
-  const [editItem, setEditItem] = useState<Entrada | null>(null)
-  const [editData, setEditData] = useState({ item: "", notaFiscal: "", estoqueDestinado: "", custoUnitario: "", quantidade: "" })
+  const [editItem, setEditItem] = useState<EntradaNF | null>(null)
+  const [editData, setEditData] = useState({ notaFiscal: "", fornecedor: "", unidade: "", responsavel: "" })
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
+
+  const toggleRow = (id: number) => {
+    setExpandedRows(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
 
   const filtered = useMemo(() => {
     return items.filter(entrada => {
-      const matchNome = entrada.item.toLowerCase().includes(filterNome.toLowerCase())
+      const matchNome = entrada.notaFiscal.toLowerCase().includes(filterNome.toLowerCase()) || entrada.fornecedor.toLowerCase().includes(filterNome.toLowerCase())
       const matchNFe = entrada.notaFiscal.toLowerCase().includes(filterNFe.toLowerCase())
       const matchDataInicio = filterDataInicio ? entrada.data >= filterDataInicio.split("-").reverse().join("/") : true
       const matchDataFim = filterDataFim ? entrada.data <= filterDataFim.split("-").reverse().join("/") : true
@@ -43,24 +92,24 @@ export default function EstoqueEntradas() {
     })
   }, [items, filterNome, filterNFe, filterDataInicio, filterDataFim])
 
-  const getExportData = () => filtered.map(e => ({ Data: e.data, Item: e.item, Validade: e.validade, "Nota Fiscal": e.notaFiscal, "Estoque Destinado": e.estoqueDestinado, "Custo Unitário": e.custoUnitario, Quantidade: e.quantidade, "Custo Total": e.custoTotal }));
+  const getExportData = () => filtered.map(e => ({ Data: e.data, Responsável: e.responsavel, "Nota Fiscal": e.notaFiscal, Fornecedor: e.fornecedor, Unidade: e.unidade, "Custo Total": e.custoTotal }));
   const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Entrada excluída." }); } };
-  const openEdit = (e: Entrada) => { setEditItem(e); setEditData({ item: e.item, notaFiscal: e.notaFiscal, estoqueDestinado: e.estoqueDestinado, custoUnitario: e.custoUnitario, quantidade: String(e.quantidade) }); };
-  const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData, quantidade: Number(editData.quantidade) } : i)); setEditItem(null); toast({ title: "Salvo", description: "Entrada atualizada." }); } };
+  const openEdit = (e: EntradaNF) => { setEditItem(e); setEditData({ notaFiscal: e.notaFiscal, fornecedor: e.fornecedor, unidade: e.unidade, responsavel: e.responsavel }); };
+  const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Entrada atualizada." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
-          <Button onClick={() => navigate("/estoque/entradas/nova")} className="gap-2"><Plus className="w-4 h-4" />Novo Item</Button>
+          <Button onClick={() => navigate("/estoque/entradas/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Entrada</Button>
           <Button onClick={() => navigate("/estoque/entradas/upload-nfe")} variant="outline" className="gap-2 border-border"><Upload className="w-4 h-4" />Upload NF-e<ChevronDown className="w-4 h-4" /></Button>
           <ExportButton getData={getExportData} fileName="estoque-entradas" />
         </div>
 
         <FilterSection
           fields={[
-            { type: "text", label: "Nome do Item", placeholder: "Buscar item...", value: filterNome, onChange: setFilterNome, width: "flex-1 min-w-[200px]" },
+            { type: "text", label: "Buscar", placeholder: "NF ou fornecedor...", value: filterNome, onChange: setFilterNome, width: "flex-1 min-w-[200px]" },
             { type: "text", label: "NF-e", placeholder: "Número da NF-e...", value: filterNFe, onChange: setFilterNFe, width: "min-w-[160px]" },
             { type: "date", label: "Data Início", value: filterDataInicio, onChange: setFilterDataInicio, width: "min-w-[160px]" },
             { type: "date", label: "Data Fim", value: filterDataFim, onChange: setFilterDataFim, width: "min-w-[160px]" }
@@ -72,20 +121,70 @@ export default function EstoqueEntradas() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-center">Data</TableHead><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Validade</TableHead><TableHead className="text-center">Nota Fiscal</TableHead><TableHead className="text-center">Estoque Destinado</TableHead><TableHead className="text-center">Custo Unitário</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead className="text-center">Custo Total</TableHead><TableHead className="text-center">Ações</TableHead>
+                <TableHead className="text-center w-12"></TableHead>
+                <TableHead className="text-center">Data</TableHead>
+                <TableHead className="text-center">Responsável</TableHead>
+                <TableHead className="text-center">Nota Fiscal</TableHead>
+                <TableHead className="text-center">Fornecedor</TableHead>
+                <TableHead className="text-center">Unidade</TableHead>
+                <TableHead className="text-center">Custo Total</TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Nenhuma entrada encontrada.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Nenhuma entrada encontrada.</TableCell></TableRow>
               ) : (
                 filtered.map((entrada) => (
-                  <TableRow key={entrada.id}>
-                    <TableCell className="text-center">{entrada.data}</TableCell><TableCell className="text-center">{entrada.item}</TableCell><TableCell className="text-center">{entrada.validade}</TableCell><TableCell className="text-center">{entrada.notaFiscal}</TableCell><TableCell className="text-center">{entrada.estoqueDestinado}</TableCell><TableCell className="text-center">{entrada.custoUnitario}</TableCell><TableCell className="text-center">{entrada.quantidade}</TableCell><TableCell className="text-center">{entrada.custoTotal}</TableCell>
-                    <TableCell className="text-center">
-                      <TableActions onView={() => setViewItem(entrada)} onEdit={() => openEdit(entrada)} onDelete={() => setDeleteId(entrada.id)} />
-                    </TableCell>
-                  </TableRow>
+                  <>
+                    <TableRow key={entrada.id}>
+                      <TableCell className="text-center">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => toggleRow(entrada.id)}>
+                          {expandedRows.has(entrada.id) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                        </Button>
+                      </TableCell>
+                      <TableCell className="text-center">{entrada.data}</TableCell>
+                      <TableCell className="text-center">{entrada.responsavel}</TableCell>
+                      <TableCell className="text-center">{entrada.notaFiscal}</TableCell>
+                      <TableCell className="text-center">{entrada.fornecedor}</TableCell>
+                      <TableCell className="text-center">{entrada.unidade}</TableCell>
+                      <TableCell className="text-center">{entrada.custoTotal}</TableCell>
+                      <TableCell className="text-center">
+                        <TableActions onView={() => setViewItem(entrada)} onEdit={() => openEdit(entrada)} onDelete={() => setDeleteId(entrada.id)} />
+                      </TableCell>
+                    </TableRow>
+                    {expandedRows.has(entrada.id) && (
+                      <TableRow key={`${entrada.id}-items`}>
+                        <TableCell colSpan={8} className="p-0">
+                          <div className="bg-muted/30 p-4">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Itens da Nota Fiscal</p>
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="text-center">Item</TableHead>
+                                  <TableHead className="text-center">Marca</TableHead>
+                                  <TableHead className="text-center">Quantidade</TableHead>
+                                  <TableHead className="text-center">Custo Unitário</TableHead>
+                                  <TableHead className="text-center">Especificações</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {entrada.itens.map(item => (
+                                  <TableRow key={item.id}>
+                                    <TableCell className="text-center">{item.item}</TableCell>
+                                    <TableCell className="text-center">{item.marca}</TableCell>
+                                    <TableCell className="text-center">{item.quantidade}</TableCell>
+                                    <TableCell className="text-center">{item.custoUnitario}</TableCell>
+                                    <TableCell className="text-center">{item.especificacoes}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
                 ))
               )}
             </TableBody>
@@ -93,27 +192,49 @@ export default function EstoqueEntradas() {
         </div>
       </div>
 
+      {/* View Dialog */}
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
-        <DialogContent><DialogHeader><DialogTitle>Detalhes da Entrada</DialogTitle></DialogHeader>
-          {viewItem && <div className="space-y-2">{Object.entries({ Data: viewItem.data, Item: viewItem.item, Validade: viewItem.validade, "Nota Fiscal": viewItem.notaFiscal, "Estoque Destinado": viewItem.estoqueDestinado, "Custo Unitário": viewItem.custoUnitario, Quantidade: viewItem.quantidade, "Custo Total": viewItem.custoTotal }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>))}</div>}
+        <DialogContent className="max-w-2xl">
+          <DialogHeader><DialogTitle>Detalhes da Entrada</DialogTitle></DialogHeader>
+          {viewItem && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                {Object.entries({ Data: viewItem.data, Responsável: viewItem.responsavel, "Nota Fiscal": viewItem.notaFiscal, Fornecedor: viewItem.fornecedor, Unidade: viewItem.unidade, "Custo Total": viewItem.custoTotal }).map(([k, v]) => (
+                  <div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>
+                ))}
+              </div>
+              <div>
+                <p className="text-sm font-semibold mb-2">Itens</p>
+                <Table>
+                  <TableHeader><TableRow><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Marca</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-center">Custo Unit.</TableHead><TableHead className="text-center">Especificações</TableHead></TableRow></TableHeader>
+                  <TableBody>
+                    {viewItem.itens.map(item => (
+                      <TableRow key={item.id}><TableCell className="text-center">{item.item}</TableCell><TableCell className="text-center">{item.marca}</TableCell><TableCell className="text-center">{item.quantidade}</TableCell><TableCell className="text-center">{item.custoUnitario}</TableCell><TableCell className="text-center">{item.especificacoes}</TableCell></TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
+      {/* Edit Dialog */}
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Editar Entrada</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><Label>Item</Label><Input value={editData.item} onChange={e => setEditData({ ...editData, item: e.target.value })} /></div>
             <div><Label>Nota Fiscal</Label><Input value={editData.notaFiscal} onChange={e => setEditData({ ...editData, notaFiscal: e.target.value })} /></div>
-            <div><Label>Estoque Destinado</Label><Input value={editData.estoqueDestinado} onChange={e => setEditData({ ...editData, estoqueDestinado: e.target.value })} /></div>
-            <div><Label>Custo Unitário</Label><Input value={editData.custoUnitario} onChange={e => setEditData({ ...editData, custoUnitario: e.target.value })} /></div>
-            <div><Label>Quantidade</Label><Input type="number" value={editData.quantidade} onChange={e => setEditData({ ...editData, quantidade: e.target.value })} /></div>
+            <div><Label>Fornecedor</Label><Input value={editData.fornecedor} onChange={e => setEditData({ ...editData, fornecedor: e.target.value })} /></div>
+            <div><Label>Unidade</Label><Input value={editData.unidade} onChange={e => setEditData({ ...editData, unidade: e.target.value })} /></div>
+            <div><Label>Responsável</Label><Input value={editData.responsavel} onChange={e => setEditData({ ...editData, responsavel: e.target.value })} /></div>
           </div>
           <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Delete Dialog */}
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir entrada?</AlertDialogTitle><AlertDialogDescription>Deseja excluir a entrada "{deleteItem?.item}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir entrada?</AlertDialogTitle><AlertDialogDescription>Deseja excluir a NF "{deleteItem?.notaFiscal}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
           <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

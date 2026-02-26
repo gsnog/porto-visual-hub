@@ -57,7 +57,7 @@ export default function EstoqueInventario() {
         <FilterSection
           fields={[
             { type: "text", label: "Nome do Item", placeholder: "Buscar item...", value: filterNome, onChange: setFilterNome, width: "flex-1 min-w-[200px]" },
-            { type: "select", label: "Cidade", placeholder: "Selecione...", value: filterCidade, onChange: setFilterCidade, options: [{ value: "todos", label: "Todos" }, { value: "sp", label: "São Paulo" }, { value: "rj", label: "Rio de Janeiro" }, { value: "central", label: "Central" }], width: "min-w-[180px]" }
+            { type: "select", label: "Unidade", placeholder: "Selecione...", value: filterCidade, onChange: setFilterCidade, options: [{ value: "todos", label: "Todos" }, { value: "almoxarifado-sp", label: "Almoxarifado SP" }, { value: "ti-central", label: "TI Central" }, { value: "manutencao", label: "Manutenção" }], width: "min-w-[180px]" }
           ]}
           resultsCount={filtered.length}
         />
