@@ -1268,44 +1268,37 @@ const DashboardMeuPerfil = () => {
         </FadeIn>
 
         <FadeIn delay={2} className="lg:col-span-2">
-          <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Resumo de Acesso</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {accessCards.map((card) => (
-                <button
-                  key={card.label}
-                  onClick={() => openPopup(card.label, card.content)}
-                  className="text-center p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer"
-                >
-                  <p className="text-2xl font-bold text-primary">{card.value}</p>
-                  <p className="text-xs text-muted-foreground">{card.label}</p>
-                </button>
-              ))}
+          <div className="space-y-4">
+            <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+              <h3 className="text-sm font-semibold text-foreground mb-4">Resumo de Acesso</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {accessCards.map((card) => (
+                  <button
+                    key={card.label}
+                    onClick={() => openPopup(card.label, card.content)}
+                    className="text-center p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer"
+                  >
+                    <p className="text-2xl font-bold text-primary">{card.value}</p>
+                    <p className="text-xs text-muted-foreground">{card.label}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Tempo no Sistema</p>
+                <p className="text-2xl font-bold text-foreground">3 anos 11 meses</p>
+                <p className="text-xs text-muted-foreground mt-1">Desde 15/03/2022</p>
+              </div>
+              <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Aprovações Pendentes</p>
+                <p className="text-2xl font-bold text-amber-500">3</p>
+                <p className="text-xs text-muted-foreground mt-1">Requisições aguardando</p>
+              </div>
             </div>
           </div>
         </FadeIn>
       </div>
-
-      {/* Indicadores Rápidos */}
-      <FadeIn delay={2.3}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Tempo no Sistema</p>
-            <p className="text-2xl font-bold text-foreground">3 anos 11 meses</p>
-            <p className="text-xs text-muted-foreground mt-1">Desde 15/03/2022</p>
-          </div>
-          <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Ações este Mês</p>
-            <p className="text-2xl font-bold text-primary">47</p>
-            <p className="text-xs text-muted-foreground mt-1">+12% vs mês anterior</p>
-          </div>
-          <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Aprovações Pendentes</p>
-            <p className="text-2xl font-bold text-amber-500">3</p>
-            <p className="text-xs text-muted-foreground mt-1">Requisições aguardando</p>
-          </div>
-        </div>
-      </FadeIn>
 
       {/* Meu Time */}
       <FadeIn delay={2.5}>
