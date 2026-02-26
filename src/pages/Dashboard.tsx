@@ -1205,6 +1205,48 @@ const DashboardPatrimonio = () => {
 
 // ===== DASHBOARD MEU PERFIL =====
 const DashboardMeuPerfil = () => {
+  const [popupOpen, setPopupOpen] = useState(false)
+  const [popupTitle, setPopupTitle] = useState("")
+  const [popupContent, setPopupContent] = useState<React.ReactNode>(null)
+
+  const openPopup = (title: string, content: React.ReactNode) => {
+    setPopupTitle(title)
+    setPopupContent(content)
+    setPopupOpen(true)
+  }
+
+  const accessCards = [
+    { label: "Setores", value: "3", content: (
+      <ul className="space-y-2">
+        <li className="flex justify-between py-2 border-b border-border/30"><span>Operacional</span><span className="text-xs text-muted-foreground">Admin</span></li>
+        <li className="flex justify-between py-2 border-b border-border/30"><span>Estoque</span><span className="text-xs text-muted-foreground">Editor</span></li>
+        <li className="flex justify-between py-2"><span>Financeiro</span><span className="text-xs text-muted-foreground">Visualizador</span></li>
+      </ul>
+    )},
+    { label: "Módulos", value: "12", content: (
+      <div className="grid grid-cols-2 gap-2">{["Dashboard","Estoque","Financeiro","Operacional","Cadastro","Comercial","Patrimônio","Kanban","Chat","Agenda","Relatórios","Gestão de Pessoas"].map(m => (
+        <span key={m} className="text-sm py-1.5 px-3 rounded-lg bg-muted/50">{m}</span>
+      ))}</div>
+    )},
+    { label: "Equipe", value: "8", content: (
+      <ul className="space-y-2">
+        {["Ana Costa - Analista","Carlos Lima - Técnico","Maria Santos - Coordenadora","José Alves - Operador","Fernanda Souza - Assistente","Ricardo Mendes - Engenheiro","Paula Oliveira - Analista","Bruno Silva - Auxiliar"].map(p => (
+          <li key={p} className="flex items-center gap-2 py-1.5 border-b border-border/20 last:border-0">
+            <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">{p.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
+            <span className="text-sm">{p}</span>
+          </li>
+        ))}
+      </ul>
+    )},
+    { label: "Perfil", value: "Gestor", content: (
+      <div className="space-y-3">
+        <div className="flex justify-between py-2 border-b border-border/30"><span className="text-muted-foreground">Tipo</span><span className="font-medium">Gestor</span></div>
+        <div className="flex justify-between py-2 border-b border-border/30"><span className="text-muted-foreground">Permissão</span><span className="font-medium">Leitura e Escrita</span></div>
+        <div className="flex justify-between py-2"><span className="text-muted-foreground">Aprovação</span><span className="font-medium">Sim</span></div>
+      </div>
+    )},
+  ]
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1229,26 +1271,49 @@ const DashboardMeuPerfil = () => {
           <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
             <h3 className="text-sm font-semibold text-foreground mb-4">Resumo de Acesso</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-3 rounded-xl bg-primary/5">
-                <p className="text-2xl font-bold text-primary">3</p>
-                <p className="text-xs text-muted-foreground">Setores</p>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-primary/5">
-                <p className="text-2xl font-bold text-primary">12</p>
-                <p className="text-xs text-muted-foreground">Módulos</p>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-primary/5">
-                <p className="text-2xl font-bold text-primary">8</p>
-                <p className="text-xs text-muted-foreground">Equipe</p>
-              </div>
-              <div className="text-center p-3 rounded-xl bg-primary/5">
-                <p className="text-2xl font-bold text-primary">Gestor</p>
-                <p className="text-xs text-muted-foreground">Perfil</p>
-              </div>
+              {accessCards.map((card) => (
+                <button
+                  key={card.label}
+                  onClick={() => openPopup(card.label, card.content)}
+                  className="text-center p-3 rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer"
+                >
+                  <p className="text-2xl font-bold text-primary">{card.value}</p>
+                  <p className="text-xs text-muted-foreground">{card.label}</p>
+                </button>
+              ))}
             </div>
           </div>
         </FadeIn>
       </div>
+
+      {/* Meu Time */}
+      <FadeIn delay={2.5}>
+        <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
+          <h3 className="text-sm font-semibold text-foreground mb-4">Meu Time</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { nome: "Ana Costa", cargo: "Analista", status: "Ativo" },
+              { nome: "Carlos Lima", cargo: "Técnico", status: "Ativo" },
+              { nome: "Maria Santos", cargo: "Coordenadora", status: "Ativo" },
+              { nome: "José Alves", cargo: "Operador", status: "Afastado" },
+              { nome: "Fernanda Souza", cargo: "Assistente", status: "Ativo" },
+              { nome: "Ricardo Mendes", cargo: "Engenheiro", status: "Ativo" },
+              { nome: "Paula Oliveira", cargo: "Analista", status: "Ativo" },
+              { nome: "Bruno Silva", cargo: "Auxiliar", status: "Ativo" },
+            ].map((membro) => (
+              <div key={membro.nome} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
+                  {membro.nome.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                </div>
+                <div>
+                  <p className="text-sm font-medium">{membro.nome}</p>
+                  <p className="text-xs text-muted-foreground">{membro.cargo} · <span className={membro.status === "Ativo" ? "text-lime-600" : "text-amber-500"}>{membro.status}</span></p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </FadeIn>
 
       <FadeIn delay={3}>
         <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
@@ -1272,6 +1337,19 @@ const DashboardMeuPerfil = () => {
           </div>
         </div>
       </FadeIn>
+
+      {/* Popup for access details */}
+      {popupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setPopupOpen(false)}>
+          <div className="bg-card rounded-2xl p-6 shadow-2xl w-full max-w-md mx-4 border border-border" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-foreground">{popupTitle}</h3>
+              <button onClick={() => setPopupOpen(false)} className="text-muted-foreground hover:text-foreground text-xl leading-none">&times;</button>
+            </div>
+            {popupContent}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1357,11 +1435,11 @@ const DashboardOperacional = () => {
 
 // ===== MAIN DASHBOARD =====
 const Dashboard = () => {
-  const [activeDashboard, setActiveDashboard] = useState<DashboardType>("geral")
+  const [activeDashboard, setActiveDashboard] = useState<DashboardType>("meu-perfil")
 
   const tabs: { key: DashboardType; label: string; icon: typeof LayoutGrid }[] = [
-    { key: "geral", label: "Geral", icon: LayoutGrid },
     { key: "meu-perfil", label: "Meu Perfil", icon: UserRoundPlus },
+    { key: "geral", label: "Geral", icon: LayoutGrid },
     { key: "financeiro", label: "Financeiro", icon: DollarSign },
     { key: "estoque", label: "Estoque", icon: Package },
     { key: "patrimonio", label: "Patrimônio", icon: Building2 },

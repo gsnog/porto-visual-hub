@@ -51,18 +51,29 @@ export function exportData(
     const columns = Object.keys(data[0]);
     const rows = data.map(row => columns.map(col => String(row[col] ?? '')));
 
-    doc.setFontSize(14);
-    doc.text(fileName, 14, 15);
+    // Brand identity: Preto Grafite #0B0D0F and Verde Lima #C6F000
+    const primaryColor: [number, number, number] = [198, 240, 0]; // Verde Lima
+    const darkColor: [number, number, number] = [11, 13, 15]; // Preto Grafite
+
+    // Header bar
+    doc.setFillColor(...darkColor);
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), 30, 'F');
+    doc.setFontSize(16);
+    doc.setTextColor(...primaryColor);
+    doc.text(fileName, 14, 18);
     doc.setFontSize(9);
-    doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 14, 22);
+    doc.setTextColor(180, 180, 180);
+    doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`, 14, 26);
+
+    doc.setTextColor(0, 0, 0);
 
     autoTable(doc, {
       head: [columns],
       body: rows,
-      startY: 28,
-      styles: { fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [41, 65, 122], textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [245, 245, 245] },
+      startY: 36,
+      styles: { fontSize: 8, cellPadding: 3, textColor: [30, 30, 30] },
+      headStyles: { fillColor: darkColor, textColor: primaryColor, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [245, 245, 240] },
     });
 
     doc.save(`${fileName}.pdf`);

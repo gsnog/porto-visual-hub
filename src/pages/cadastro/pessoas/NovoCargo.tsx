@@ -7,12 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import SimpleFormWizard from "@/components/SimpleFormWizard";
+import { ValidatedSelect } from "@/components/ui/validated-select";
 
 export default function NovoCargo() {
   const navigate = useNavigate();
   const { isSaving, handleSave } = useSaveWithDelay();
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [nivelHierarquico, setNivelHierarquico] = useState("");
+  const [cargoSuperior, setCargoSuperior] = useState("");
 
   const handleSubmit = () => {
     if (!nome.trim()) {
@@ -40,6 +43,36 @@ export default function NovoCargo() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Descrição</label>
             <Textarea placeholder="Descreva as responsabilidades do cargo..." value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={3} />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ValidatedSelect
+              label="Nível Hierárquico"
+              value={nivelHierarquico}
+              onValueChange={setNivelHierarquico}
+              placeholder="Selecionar nível"
+              searchable={false}
+              options={[
+                { value: "Estratégico", label: "Estratégico" },
+                { value: "Tático", label: "Tático" },
+                { value: "Operacional", label: "Operacional" },
+                { value: "Estagiário", label: "Estagiário" },
+              ]}
+            />
+            <ValidatedSelect
+              label="Cargo Superior"
+              value={cargoSuperior}
+              onValueChange={setCargoSuperior}
+              placeholder="Selecionar cargo superior"
+              searchable={false}
+              options={[
+                { value: "none", label: "Nenhum (cargo de topo)" },
+                { value: "Diretor", label: "Diretor" },
+                { value: "Gerente", label: "Gerente" },
+                { value: "Coordenador", label: "Coordenador" },
+                { value: "Supervisor", label: "Supervisor" },
+              ]}
+            />
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-border">

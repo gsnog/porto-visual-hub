@@ -80,7 +80,7 @@ const ValidatedSelect = React.forwardRef<HTMLButtonElement, ValidatedSelectProps
           >
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
-          <SelectContent className="bg-popover">
+          <SelectContent className="bg-popover" position="popper" side="bottom" sideOffset={4}>
             {searchable && (
               <div className="p-2">
                 <Input

@@ -45,14 +45,6 @@ const ConciliacaoBancaria = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
-          <Button 
-            onClick={() => navigate("/cadastro/financeiro/conta-bancaria")}
-            variant="outline"
-            className="gap-2 border-border"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Button>
           <div className="ml-auto">
             <span className="px-4 py-2 rounded bg-warning/20 text-warning font-medium text-sm">
               Conciliações Pendentes: {pendingCount}
