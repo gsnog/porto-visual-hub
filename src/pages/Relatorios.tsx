@@ -104,10 +104,6 @@ export default function Relatorios() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        <div className="flex items-center gap-3">
-          <FileText className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-bold text-foreground">Relatórios</h1>
-        </div>
 
         <Card className="border-border">
           <CardContent className="p-6 space-y-6">

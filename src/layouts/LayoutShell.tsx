@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 const pageTitles: Record<string, { title: string; description?: string }> = {
   "/": { title: "Dashboard", description: "Visão geral do sistema" },
+  "/relatorios": { title: "Relatórios", description: "Gere e exporte relatórios financeiros e operacionais" },
   "/cadastro": { title: "Cadastro", description: "Gerenciamento de cadastros" },
   "/novo-usuario": { title: "Novo Usuário", description: "Cadastro de novo usuário" },
   
