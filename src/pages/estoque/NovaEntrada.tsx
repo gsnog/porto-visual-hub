@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ interface ItemEntrada {
   item: string;
   marca: string;
   quantidade: string;
+  custoUnitario: string;
   especificacoes: string;
 }
 
@@ -32,7 +33,7 @@ export default function NovaEntrada() {
   const handleCancelar = () => navigate("/estoque/entradas");
 
   const [itens, setItens] = useState<ItemEntrada[]>([]);
-  const [itemForm, setItemForm] = useState({ item: "", marca: "", quantidade: "", especificacoes: "" });
+  const [itemForm, setItemForm] = useState({ item: "", marca: "", quantidade: "", custoUnitario: "", especificacoes: "" });
 
   const [estoqueOrigem, setEstoqueOrigem] = useState("");
   const [estoqueOrigemOptions, setEstoqueOrigemOptions] = useState([
@@ -47,10 +48,10 @@ export default function NovaEntrada() {
   ]);
 
   const [operacao, setOperacao] = useState("");
-  const [operacaoOptions, setOperacaoOptions] = useState([
+  const operacaoOptions = [
     { value: "compra", label: "Compra" },
     { value: "transferencia", label: "Transferência" },
-  ]);
+  ];
 
   const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, valueSetter: React.Dispatch<React.SetStateAction<string>>) => (name: string) => {
     const newValue = name.toLowerCase().replace(/\s+/g, "-");
@@ -64,10 +65,18 @@ export default function NovaEntrada() {
       return;
     }
     setItens([...itens, { id: Date.now(), ...itemForm }]);
-    setItemForm({ item: "", marca: "", quantidade: "", especificacoes: "" });
+    setItemForm({ item: "", marca: "", quantidade: "", custoUnitario: "", especificacoes: "" });
   };
 
   const handleRemoveItem = (id: number) => setItens(itens.filter(i => i.id !== id));
+
+  const valorTotal = useMemo(() => {
+    return itens.reduce((acc, item) => {
+      const qty = parseFloat(item.quantidade) || 0;
+      const cost = parseFloat(item.custoUnitario.replace("R$", "").replace(",", ".").trim()) || 0;
+      return acc + qty * cost;
+    }, 0);
+  }, [itens]);
 
   return (
     <SimpleFormWizard title="Nova Entrada">
@@ -86,39 +95,69 @@ export default function NovaEntrada() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Data</Label>
+                <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
                 <Input type="date" className="form-input" />
               </div>
-              <DropdownWithAdd label="Operação" value={operacao} onChange={setOperacao} options={operacaoOptions} onAddNew={addOption(setOperacaoOptions, setOperacao)} />
+              <DropdownWithAdd label="Operação" value={operacao} onChange={setOperacao} options={operacaoOptions} onAddNew={() => {}} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Estoque de Origem" value={estoqueOrigem} onChange={setEstoqueOrigem} options={estoqueOrigemOptions} onAddNew={addOption(setEstoqueOrigemOptions, setEstoqueOrigem)} />
-              <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
-            </div>
+            {operacao === "transferencia" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DropdownWithAdd label="Estoque de Origem" value={estoqueOrigem} onChange={setEstoqueOrigem} options={estoqueOrigemOptions} onAddNew={addOption(setEstoqueOrigemOptions, setEstoqueOrigem)} />
+                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
+              </div>
+            )}
+
+            {operacao === "compra" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Nota Fiscal <span className="text-destructive">*</span></Label>
-                <Input type="text" className="form-input" />
+                <Input type="text" placeholder="Número da NF" className="form-input" />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Validade</Label>
+                <Label className="text-sm font-medium">Data de Emissão</Label>
                 <Input type="date" className="form-input" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Data de Vencimento</Label>
+                <Input type="date" className="form-input" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Valor Total</Label>
+                <Input type="text" value={valorTotal > 0 ? `R$ ${valorTotal.toFixed(2).replace(".", ",")}` : ""} placeholder="Calculado automaticamente a partir dos itens" className="form-input" readOnly disabled />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">PDF da Nota Fiscal</Label>
+                <Input type="file" accept=".pdf" className="form-input" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">PDF do Boleto</Label>
+                <Input type="file" accept=".pdf" className="form-input" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Observação</Label>
-                <Textarea className="form-input min-h-[80px]" />
+                <Textarea className="form-input min-h-[80px]" placeholder="Observações sobre a entrada..." />
               </div>
             </div>
 
             {/* Lista de Itens */}
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Itens</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Itens da Nota Fiscal</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Item</Label>
                   <Input value={itemForm.item} onChange={(e) => setItemForm(p => ({ ...p, item: e.target.value }))} placeholder="Nome do item" className="form-input" />
@@ -126,6 +165,10 @@ export default function NovaEntrada() {
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Marca</Label>
                   <Input value={itemForm.marca} onChange={(e) => setItemForm(p => ({ ...p, marca: e.target.value }))} placeholder="Marca" className="form-input" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Custo Unitário</Label>
+                  <Input value={itemForm.custoUnitario} onChange={(e) => setItemForm(p => ({ ...p, custoUnitario: e.target.value }))} placeholder="R$ 0,00" className="form-input" />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -149,19 +192,21 @@ export default function NovaEntrada() {
                   <TableHead className="text-center">Item</TableHead>
                   <TableHead className="text-center">Marca</TableHead>
                   <TableHead className="text-center">Quantidade</TableHead>
+                  <TableHead className="text-center">Custo Unitário</TableHead>
                   <TableHead className="text-center">Especificações</TableHead>
                   <TableHead className="text-center">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {itens.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
                 ) : (
                   itens.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="text-center">{item.item}</TableCell>
                       <TableCell className="text-center">{item.marca}</TableCell>
                       <TableCell className="text-center">{item.quantidade}</TableCell>
+                      <TableCell className="text-center">{item.custoUnitario}</TableCell>
                       <TableCell className="text-center">{item.especificacoes}</TableCell>
                       <TableCell className="text-center">
                         <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>

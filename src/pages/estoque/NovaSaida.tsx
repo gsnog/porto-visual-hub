@@ -10,7 +10,7 @@ import { FormActionBar } from "@/components/FormActionBar";
 import { PackageMinus, Trash2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { DropdownWithAdd } from "@/components/DropdownWithAdd";
-import { ValidatedSelect } from "@/components/ui/validated-select";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 
 interface ItemSaida {
@@ -29,19 +29,32 @@ export default function NovaSaida() {
     successDescription: "O registro foi salvo com sucesso.",
   });
 
+  const [operacao, setOperacao] = useState("");
+  const operacaoOptions = [
+    { value: "consumo", label: "Consumo" },
+    { value: "transferencia", label: "Transferência" },
+  ];
+
   const [estoqueOrigem, setEstoqueOrigem] = useState("");
-  const [setor, setSetor] = useState("");
-  const [origens, setOrigens] = useState([
+  const [estoqueOrigemOptions, setEstoqueOrigemOptions] = useState([
     { value: "origem1", label: "Estoque 1" },
     { value: "origem2", label: "Estoque 2" },
   ]);
-  const [setores, setSetores] = useState([
-    { value: "setor1", label: "Setor 1" },
-    { value: "setor2", label: "Setor 2" },
+
+  const [estoqueDestino, setEstoqueDestino] = useState("");
+  const [estoqueDestinoOptions, setEstoqueDestinoOptions] = useState([
+    { value: "destino1", label: "Estoque 1" },
+    { value: "destino2", label: "Estoque 2" },
   ]);
 
   const [itens, setItens] = useState<ItemSaida[]>([]);
   const [itemForm, setItemForm] = useState({ item: "", marca: "", quantidade: "", especificacoes: "" });
+
+  const addOption = (setter: React.Dispatch<React.SetStateAction<{value:string;label:string}[]>>, valueSetter: React.Dispatch<React.SetStateAction<string>>) => (name: string) => {
+    const v = name.toLowerCase().replace(/\s+/g, "-");
+    setter(prev => [...prev, { value: v, label: name }]);
+    valueSetter(v);
+  };
 
   const handleAddItem = () => {
     if (!itemForm.item || !itemForm.quantidade) {
@@ -71,32 +84,42 @@ export default function NovaSaida() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Data</Label>
+                <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
                 <Input type="date" className="form-input" />
               </div>
-              <DropdownWithAdd label="Estoque de Origem" required value={estoqueOrigem} onChange={setEstoqueOrigem} options={origens}
-                onAddNew={(name) => { const v = name.toLowerCase().replace(/\s/g, "-"); setOrigens(p => [...p, { value: v, label: name }]); setEstoqueOrigem(v); }} />
+              <DropdownWithAdd label="Operação" value={operacao} onChange={setOperacao} options={operacaoOptions} onAddNew={() => {}} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <DropdownWithAdd label="Setor" required value={setor} onChange={setSetor} options={setores}
-                onAddNew={(name) => { const v = name.toLowerCase().replace(/\s/g, "-"); setSetores(p => [...p, { value: v, label: name }]); setSetor(v); }} />
-              <ValidatedSelect label="Operação" options={[
-                { value: "consumo", label: "Consumo" },
-                { value: "transferencia", label: "Transferência" },
-              ]} />
-            </div>
+            {operacao === "consumo" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
+              </div>
+            )}
+
+            {operacao === "transferencia" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DropdownWithAdd label="Estoque de Origem" required value={estoqueOrigem} onChange={setEstoqueOrigem} options={estoqueOrigemOptions} onAddNew={addOption(setEstoqueOrigemOptions, setEstoqueOrigem)} />
+                <DropdownWithAdd label="Estoque de Destino" required value={estoqueDestino} onChange={setEstoqueDestino} options={estoqueDestinoOptions} onAddNew={addOption(setEstoqueDestinoOptions, setEstoqueDestino)} />
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ValidatedSelect label="Estoque de Destino" required options={[
-                { value: "destino1", label: "Estoque 1" },
-                { value: "destino2", label: "Estoque 2" },
-              ]} />
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Nota Fiscal</Label>
+                <Input type="text" placeholder="Número da NF" className="form-input" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Observação</Label>
+                <Textarea className="form-input min-h-[80px]" placeholder="Observações sobre a saída..." />
+              </div>
             </div>
 
             {/* Lista de Itens */}
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Itens</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">Itens da Nota Fiscal</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Item</Label>
