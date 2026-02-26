@@ -235,7 +235,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                         <span className="flex-1 text-left text-sm text-[hsl(var(--sidebar-foreground))] flex items-center gap-2">
                           {item.title}
                           {'badge' in item && item.badge && (
-                             <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-primary/50 bg-primary/15 text-primary font-semibold">
+                             <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-primary bg-primary text-primary-foreground font-semibold">
                                {item.badge}
                              </Badge>
                           )}
