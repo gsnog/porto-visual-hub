@@ -32,6 +32,10 @@ const NovoItem = () => {
     { value: "nom1", label: "Nomenclatura 1" }, { value: "nom2", label: "Nomenclatura 2" }
   ]);
 
+  const [apresentacaoOptions, setApresentacaoOptions] = useState([
+    { value: "caixa", label: "Caixa" }, { value: "unidade", label: "Unidade" }, { value: "pacote", label: "Pacote" }, { value: "litro", label: "Litro" }, { value: "kg", label: "Kg" }
+  ]);
+
   const fornecedorOptions = [
     { value: "forn1", label: "Fornecedor 1" }, { value: "forn2", label: "Fornecedor 2" }
   ];
@@ -82,6 +86,8 @@ const NovoItem = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <DropdownWithAdd label="Forma de Apresentação" value={formData.apresentacao} onChange={(v) => setFieldValue("apresentacao", v)}
+                options={apresentacaoOptions} onAddNew={(item) => setApresentacaoOptions(prev => [...prev, { value: item.toLowerCase().replace(/\s+/g, '_'), label: item }])} />
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Setor</Label>
                 <Select value={formData.setor} onValueChange={(v) => setFieldValue("setor", v)}>
@@ -91,6 +97,9 @@ const NovoItem = () => {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ValidatedSelect label="Frequência de Compra" required value={formData.frequenciaCompra} onChange={(v) => setFieldValue("frequenciaCompra", v)}
                 onBlur={() => setFieldTouched("frequenciaCompra")} error={getFieldError("frequenciaCompra")} touched={touched.frequenciaCompra}
                 options={[
