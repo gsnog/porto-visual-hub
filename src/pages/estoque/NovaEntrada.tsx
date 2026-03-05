@@ -62,6 +62,13 @@ export default function NovaEntrada() {
   const [estoqueOrigem, setEstoqueOrigem] = useState("");
   const [estoqueDestino, setEstoqueDestino] = useState("");
   const [operacao, setOperacao] = useState("");
+  const [nfNumero, setNfNumero] = useState("");
+  const [dataEntrada, setDataEntrada] = useState("");
+  const [dataEmissao, setDataEmissao] = useState("");
+  const [dataVencimento, setDataVencimento] = useState("");
+  const [observacao, setObservacao] = useState("");
+  const [xmlFile, setXmlFile] = useState<File | null>(null);
+  const [fornecedorXml, setFornecedorXml] = useState("");
 
   const handleAddItem = () => {
     if (!itemForm.item || !itemForm.quantidade) {
@@ -99,13 +106,108 @@ export default function NovaEntrada() {
   };
 
   const handleXmlUpload = () => {
-    // Simula importação de XML
-    const mockXmlItens: ItemEntrada[] = [
-      { id: Date.now(), item: "Produto XML 1", marca: "Marca A", quantidade: "50", custoUnitario: "R$ 10,00", especificacoes: "Importado via XML", tipoItem: "novo" },
-      { id: Date.now() + 1, item: "Produto XML 2", marca: "Marca B", quantidade: "30", custoUnitario: "R$ 25,00", especificacoes: "Importado via XML", tipoItem: "novo" },
-    ];
-    setItens(prev => [...prev, ...mockXmlItens]);
-    toast({ title: "XML importado", description: "2 itens importados do arquivo XML." });
+    if (!xmlFile) {
+      toast({ title: "Selecione um arquivo", description: "Escolha um arquivo XML para importar.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "text/xml");
+
+        const parseError = xmlDoc.querySelector("parsererror");
+        if (parseError) {
+          toast({ title: "Erro no XML", description: "O arquivo XML não é válido.", variant: "destructive" });
+          return;
+        }
+
+        // Try NFe standard (nfeProc/NFe/infNFe or NFe/infNFe)
+        const ns = "http://www.portalfiscal.inf.br/nfe";
+        let infNFe = xmlDoc.getElementsByTagNameNS(ns, "infNFe")[0];
+        if (!infNFe) infNFe = xmlDoc.querySelector("infNFe");
+
+        if (!infNFe) {
+          toast({ title: "XML não reconhecido", description: "Não foi possível encontrar dados de NF-e no arquivo.", variant: "destructive" });
+          return;
+        }
+
+        // Extract header info
+        const ide = infNFe.getElementsByTagNameNS(ns, "ide")[0] || infNFe.querySelector("ide");
+        const emit = infNFe.getElementsByTagNameNS(ns, "emit")[0] || infNFe.querySelector("emit");
+        const cobr = infNFe.getElementsByTagNameNS(ns, "cobr")[0] || infNFe.querySelector("cobr");
+        const infAdic = infNFe.getElementsByTagNameNS(ns, "infAdFisco")[0] || infNFe.querySelector("infAdFisco");
+
+        if (ide) {
+          const nNF = (ide.getElementsByTagNameNS(ns, "nNF")[0] || ide.querySelector("nNF"))?.textContent || "";
+          const dhEmi = (ide.getElementsByTagNameNS(ns, "dhEmi")[0] || ide.querySelector("dhEmi"))?.textContent || "";
+          if (nNF) setNfNumero(nNF);
+          if (dhEmi) {
+            const dateStr = dhEmi.substring(0, 10); // YYYY-MM-DD
+            setDataEmissao(dateStr);
+            setDataEntrada(dateStr);
+          }
+        }
+
+        if (emit) {
+          const xNome = (emit.getElementsByTagNameNS(ns, "xNome")[0] || emit.querySelector("xNome"))?.textContent || "";
+          if (xNome) setFornecedorXml(xNome);
+        }
+
+        // Vencimento from cobr/dup
+        if (cobr) {
+          const dup = cobr.getElementsByTagNameNS(ns, "dup")[0] || cobr.querySelector("dup");
+          if (dup) {
+            const dVenc = (dup.getElementsByTagNameNS(ns, "dVenc")[0] || dup.querySelector("dVenc"))?.textContent || "";
+            if (dVenc) setDataVencimento(dVenc);
+          }
+        }
+
+        // Set operação to compra by default for XML imports
+        setOperacao("compra");
+
+        // Extract items (det elements)
+        const detElements = infNFe.getElementsByTagNameNS(ns, "det");
+        const detFallback = detElements.length > 0 ? detElements : infNFe.querySelectorAll("det");
+        const parsedItens: ItemEntrada[] = [];
+
+        for (let i = 0; i < detFallback.length; i++) {
+          const det = detFallback[i];
+          const prod = det.getElementsByTagNameNS(ns, "prod")[0] || det.querySelector("prod");
+          if (!prod) continue;
+
+          const getVal = (tag: string) => (prod.getElementsByTagNameNS(ns, tag)[0] || prod.querySelector(tag))?.textContent || "";
+
+          const xProd = getVal("xProd");
+          const qCom = getVal("qCom");
+          const vUnCom = getVal("vUnCom");
+          const cProd = getVal("cProd");
+          const uCom = getVal("uCom");
+
+          parsedItens.push({
+            id: Date.now() + i,
+            item: xProd,
+            marca: "",
+            quantidade: qCom ? parseFloat(qCom).toString() : "0",
+            custoUnitario: vUnCom ? `R$ ${parseFloat(vUnCom).toFixed(2).replace(".", ",")}` : "R$ 0,00",
+            especificacoes: [cProd ? `Cód: ${cProd}` : "", uCom ? `Un: ${uCom}` : ""].filter(Boolean).join(" • "),
+            tipoItem: "novo",
+          });
+        }
+
+        if (parsedItens.length > 0) {
+          setItens(parsedItens);
+          toast({ title: "XML importado com sucesso", description: `${parsedItens.length} iten(s) e dados da nota preenchidos automaticamente.` });
+        } else {
+          toast({ title: "Nenhum item encontrado", description: "O XML foi lido mas não contém itens (det/prod).", variant: "destructive" });
+        }
+      } catch (err) {
+        console.error("Erro ao parsear XML:", err);
+        toast({ title: "Erro ao processar XML", description: "Não foi possível ler o arquivo.", variant: "destructive" });
+      }
+    };
+    reader.readAsText(xmlFile);
   };
 
   return (
@@ -163,19 +265,22 @@ export default function NovaEntrada() {
                   <div className="space-y-3 p-4 border border-dashed border-border rounded bg-muted/30">
                     <Label className="text-sm font-medium">Arquivo XML da Nota Fiscal</Label>
                     <div className="flex gap-3 items-end">
-                      <Input type="file" accept=".xml" className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+                      <Input type="file" accept=".xml" onChange={(e) => setXmlFile(e.target.files?.[0] || null)} className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
                       <Button type="button" onClick={handleXmlUpload} className="gap-2">
                         <Upload className="w-4 h-4" /> Importar
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">Os itens serão extraídos automaticamente do XML</p>
+                    <p className="text-xs text-muted-foreground">Os campos e itens serão preenchidos automaticamente a partir do XML</p>
+                    {fornecedorXml && (
+                      <p className="text-sm text-foreground mt-2">Fornecedor: <strong>{fornecedorXml}</strong></p>
+                    )}
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
-                    <Input type="date" className="form-input" />
+                    <Input type="date" value={dataEntrada} onChange={(e) => setDataEntrada(e.target.value)} className="form-input" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Operação <span className="text-destructive">*</span></Label>
@@ -228,18 +333,18 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nota Fiscal <span className="text-destructive">*</span></Label>
-                    <Input type="text" placeholder="Número da NF" className="form-input" />
+                    <Input type="text" value={nfNumero} onChange={(e) => setNfNumero(e.target.value)} placeholder="Número da NF" className="form-input" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Emissão</Label>
-                    <Input type="date" className="form-input" />
+                    <Input type="date" value={dataEmissao} onChange={(e) => setDataEmissao(e.target.value)} className="form-input" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Vencimento</Label>
-                    <Input type="date" className="form-input" />
+                    <Input type="date" value={dataVencimento} onChange={(e) => setDataVencimento(e.target.value)} className="form-input" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Valor Total</Label>
@@ -261,7 +366,7 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Observação</Label>
-                    <Textarea className="form-input min-h-[80px]" placeholder="Observações sobre a entrada..." />
+                    <Textarea value={observacao} onChange={(e) => setObservacao(e.target.value)} className="form-input min-h-[80px]" placeholder="Observações sobre a entrada..." />
                   </div>
                 </div>
 
