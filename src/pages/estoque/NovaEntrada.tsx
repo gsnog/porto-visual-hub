@@ -344,7 +344,7 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Vencimento</Label>
-                    <Input type="date" className="form-input" />
+                    <Input type="date" value={dataVencimento} onChange={(e) => setDataVencimento(e.target.value)} className="form-input" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Valor Total</Label>
