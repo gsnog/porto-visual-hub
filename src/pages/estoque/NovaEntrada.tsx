@@ -265,12 +265,15 @@ export default function NovaEntrada() {
                   <div className="space-y-3 p-4 border border-dashed border-border rounded bg-muted/30">
                     <Label className="text-sm font-medium">Arquivo XML da Nota Fiscal</Label>
                     <div className="flex gap-3 items-end">
-                      <Input type="file" accept=".xml" className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
+                      <Input type="file" accept=".xml" onChange={(e) => setXmlFile(e.target.files?.[0] || null)} className="form-input file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90" />
                       <Button type="button" onClick={handleXmlUpload} className="gap-2">
                         <Upload className="w-4 h-4" /> Importar
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">Os itens serão extraídos automaticamente do XML</p>
+                    <p className="text-xs text-muted-foreground">Os campos e itens serão preenchidos automaticamente a partir do XML</p>
+                    {fornecedorXml && (
+                      <p className="text-sm text-foreground mt-2">Fornecedor: <strong>{fornecedorXml}</strong></p>
+                    )}
                   </div>
                 )}
 
