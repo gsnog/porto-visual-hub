@@ -280,7 +280,7 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
-                    <Input type="date" className="form-input" />
+                    <Input type="date" value={dataEntrada} onChange={(e) => setDataEntrada(e.target.value)} className="form-input" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Operação <span className="text-destructive">*</span></Label>
