@@ -62,6 +62,13 @@ export default function NovaEntrada() {
   const [estoqueOrigem, setEstoqueOrigem] = useState("");
   const [estoqueDestino, setEstoqueDestino] = useState("");
   const [operacao, setOperacao] = useState("");
+  const [nfNumero, setNfNumero] = useState("");
+  const [dataEntrada, setDataEntrada] = useState("");
+  const [dataEmissao, setDataEmissao] = useState("");
+  const [dataVencimento, setDataVencimento] = useState("");
+  const [observacao, setObservacao] = useState("");
+  const [xmlFile, setXmlFile] = useState<File | null>(null);
+  const [fornecedorXml, setFornecedorXml] = useState("");
 
   const handleAddItem = () => {
     if (!itemForm.item || !itemForm.quantidade) {
