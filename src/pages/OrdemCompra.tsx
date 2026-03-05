@@ -126,15 +126,29 @@ export default function OrdemCompra() {
         </div>
       </div>
 
-      {/* Approve Dialog */}
-      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Aprovar Ordem de Compra?</AlertDialogTitle>
-            <AlertDialogDescription>Deseja aprovar a ordem de compra de <strong>{approvalItem?.item}</strong> solicitada por {approvalItem?.requisitante}?</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Analysis / Approval Dialog */}
+      <Dialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Análise — Ordem de Compra</DialogTitle></DialogHeader>
+          {approvalItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Item:</span><p className="font-medium">{approvalItem.item}</p></div>
+                <div><span className="text-muted-foreground">Marca:</span><p className="font-medium">{approvalItem.marca}</p></div>
+                <div><span className="text-muted-foreground">Quantidade:</span><p className="font-medium">{approvalItem.quantidade}</p></div>
+                <div><span className="text-muted-foreground">Requisitante:</span><p className="font-medium">{approvalItem.requisitante}</p></div>
+                <div><span className="text-muted-foreground">Setor:</span><p className="font-medium">{approvalItem.setor}</p></div>
+                <div><span className="text-muted-foreground">Data:</span><p className="font-medium">{approvalItem.data}</p></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>Negar</Button>
+            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Dialog */}
       <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>

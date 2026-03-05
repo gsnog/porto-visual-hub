@@ -142,15 +142,27 @@ export default function OrdemServico() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Approve Dialog */}
-      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Aprovar Ordem de Serviço?</AlertDialogTitle>
-            <AlertDialogDescription>Deseja aprovar a ordem "{approvalItem?.descricao}" de {approvalItem?.responsavel}?</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Analysis / Approval Dialog */}
+      <Dialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Análise — Ordem de Serviço</DialogTitle></DialogHeader>
+          {approvalItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Tipo:</span><p className="font-medium">{approvalItem.tipo}</p></div>
+                <div><span className="text-muted-foreground">Descrição:</span><p className="font-medium">{approvalItem.descricao}</p></div>
+                <div><span className="text-muted-foreground">Responsável:</span><p className="font-medium">{approvalItem.responsavel}</p></div>
+                <div><span className="text-muted-foreground">Data:</span><p className="font-medium">{approvalItem.data}</p></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>Negar</Button>
+            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Dialog with justification */}
       <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>

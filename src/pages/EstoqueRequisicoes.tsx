@@ -135,15 +135,27 @@ export default function EstoqueRequisicoes() {
         </div>
       </div>
 
-      {/* Approve Dialog */}
-      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Aprovar Requisição?</AlertDialogTitle>
-            <AlertDialogDescription>Deseja aprovar a requisição de <strong>{approvalItem?.item}</strong> (Qtd: {approvalItem?.quantidade}) de {approvalItem?.requisitante}?</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Analysis / Approval Dialog */}
+      <Dialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Análise — Requisição</DialogTitle></DialogHeader>
+          {approvalItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Item:</span><p className="font-medium">{approvalItem.item}</p></div>
+                <div><span className="text-muted-foreground">Quantidade:</span><p className="font-medium">{approvalItem.quantidade}</p></div>
+                <div><span className="text-muted-foreground">Requisitante:</span><p className="font-medium">{approvalItem.requisitante}</p></div>
+                <div><span className="text-muted-foreground">Setor:</span><p className="font-medium">{approvalItem.setor}</p></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>Rejeitar</Button>
+            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Dialog */}
       <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
