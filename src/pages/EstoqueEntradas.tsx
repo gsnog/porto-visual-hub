@@ -274,21 +274,92 @@ export default function EstoqueEntradas() {
         </div>
       </div>
 
-      {/* Approval Dialog */}
-      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Aprovar Entrada?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Deseja aprovar a entrada <strong>{approvalItem?.notaFiscal}</strong> de {approvalItem?.responsavel}? Os itens em pré-cadastro serão incorporados ao estoque.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Analysis / Approval Dialog */}
+      <Dialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Análise de Entrada — {approvalItem?.notaFiscal}</DialogTitle>
+          </DialogHeader>
+          {approvalItem && (
+            <div className="space-y-5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Responsável:</span><p className="font-medium">{approvalItem.responsavel}</p></div>
+                <div><span className="text-muted-foreground">Fornecedor:</span><p className="font-medium">{approvalItem.fornecedor}</p></div>
+                <div><span className="text-muted-foreground">Unidade:</span><p className="font-medium">{approvalItem.unidade}</p></div>
+                <div><span className="text-muted-foreground">Custo Total:</span><p className="font-medium">{approvalItem.custoTotal}</p></div>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold mb-3">Itens para análise</p>
+                <div className="space-y-3">
+                  {approvalItem.itens.map(item => (
+                    <div key={item.id} className="border border-border rounded-lg p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-foreground">{item.item}</p>
+                          <p className="text-xs text-muted-foreground">{item.marca} • Qtd: {item.quantidade} • {item.custoUnitario} {item.especificacoes && `• ${item.especificacoes}`}</p>
+                        </div>
+                        <StatusBadge status={item.tipo === "novo" ? "Pré-Cadastro" : "Aprovada"} className="text-[10px] min-w-[70px]" />
+                      </div>
+                      {item.tipo === "novo" && (
+                        <div className="flex items-end gap-3 bg-muted/40 rounded p-3">
+                          <div className="flex-1 space-y-1">
+                            <Label className="text-xs">Conciliar com item existente (opcional)</Label>
+                            <Select
+                              value={conciliateItem?.itemNF.id === item.id ? conciliateWith : ""}
+                              onValueChange={(v) => {
+                                setConciliateItem({ entrada: approvalItem, itemNF: item });
+                                setConciliateWith(v);
+                              }}
+                            >
+                              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selecione se já existir no estoque" /></SelectTrigger>
+                              <SelectContent className="bg-popover">
+                                {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="gap-1 text-xs h-8"
+                            disabled={!(conciliateItem?.itemNF.id === item.id && conciliateWith)}
+                            onClick={() => {
+                              handleConciliate();
+                              // Refresh approvalItem with updated data
+                              setApprovalItem(prev => {
+                                if (!prev) return prev;
+                                return {
+                                  ...prev,
+                                  itens: prev.itens.map(it =>
+                                    it.id === item.id
+                                      ? { ...it, tipo: "existente" as const, item: itensEstoqueMock.find(i => i.value === conciliateWith)?.label || it.item }
+                                      : it
+                                  )
+                                };
+                              });
+                            }}
+                          >
+                            <Link2 className="w-3 h-3" /> Conciliar
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>
+              <XCircle className="w-4 h-4 mr-1" /> Reprovar
+            </Button>
+            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>
+              <ClipboardCheck className="w-4 h-4 mr-1" /> Aprovar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Dialog */}
       <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
