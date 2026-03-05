@@ -333,7 +333,7 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nota Fiscal <span className="text-destructive">*</span></Label>
-                    <Input type="text" placeholder="Número da NF" className="form-input" />
+                    <Input type="text" value={nfNumero} onChange={(e) => setNfNumero(e.target.value)} placeholder="Número da NF" className="form-input" />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Emissão</Label>
