@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
-import { Plus, CheckCircle, XCircle, Flag } from "lucide-react";
+import { Plus, ClipboardCheck, Flag } from "lucide-react";
 import { TableActions } from "@/components/TableActions";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ExportButton } from "@/components/ExportButton";
@@ -97,32 +97,33 @@ export default function OrdemServico() {
         />
 
         <Table>
-          <TableHeader><TableRow><TableHead className="text-center">ID</TableHead><TableHead className="text-center">Tipo</TableHead><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Descrição</TableHead><TableHead className="text-center">Responsável</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
+          <TableHeader><TableRow><TableHead className="text-center">ID</TableHead><TableHead className="text-center">Tipo</TableHead><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Descrição</TableHead><TableHead className="text-center">Responsável</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Finalizar</TableHead><TableHead className="text-center">Aprovação</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
           <TableBody>
-            {filtered.length === 0 ? (<TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nenhuma ordem encontrada.</TableCell></TableRow>) : (
+            {filtered.length === 0 ? (<TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Nenhuma ordem encontrada.</TableCell></TableRow>) : (
               filtered.map((ordem) => (
                 <TableRow key={ordem.id}>
                   <TableCell className="text-center">{ordem.id}</TableCell><TableCell className="text-center">{ordem.tipo}</TableCell><TableCell className="text-center">{ordem.data}</TableCell><TableCell className="text-center">{ordem.descricao}</TableCell><TableCell className="text-center">{ordem.responsavel}</TableCell>
                   <TableCell className="text-center"><StatusBadge status={ordem.status} /></TableCell>
                   <TableCell className="text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      {(ordem.status === "Em Andamento" || ordem.status === "Pendente") && (
-                        <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs text-blue-600 hover:text-blue-700" title="Finalizar" onClick={() => setFinalizarItem(ordem)}>
-                          <Flag className="w-3.5 h-3.5" /> Finalizar
-                        </Button>
-                      )}
-                      {ordem.status === "Aguardando Aprovação" && (
-                        <>
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" title="Aprovar" onClick={() => setApprovalItem(ordem)}>
-                            <CheckCircle className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" title="Negar" onClick={() => setRejectItem(ordem)}>
-                            <XCircle className="w-4 h-4" />
-                          </Button>
-                        </>
-                      )}
-                      <TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} />
-                    </div>
+                    {(ordem.status === "Em Andamento" || ordem.status === "Pendente") ? (
+                      <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setFinalizarItem(ordem)}>
+                        <Flag className="w-3.5 h-3.5" /> Finalizar
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {ordem.status === "Aguardando Aprovação" ? (
+                      <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setApprovalItem(ordem)}>
+                        <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} />
                   </TableCell>
                 </TableRow>
               ))
@@ -141,15 +142,27 @@ export default function OrdemServico() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Approve Dialog */}
-      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Aprovar Ordem de Serviço?</AlertDialogTitle>
-            <AlertDialogDescription>Deseja aprovar a ordem "{approvalItem?.descricao}" de {approvalItem?.responsavel}?</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Analysis / Approval Dialog */}
+      <Dialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Análise — Ordem de Serviço</DialogTitle></DialogHeader>
+          {approvalItem && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Tipo:</span><p className="font-medium">{approvalItem.tipo}</p></div>
+                <div><span className="text-muted-foreground">Descrição:</span><p className="font-medium">{approvalItem.descricao}</p></div>
+                <div><span className="text-muted-foreground">Responsável:</span><p className="font-medium">{approvalItem.responsavel}</p></div>
+                <div><span className="text-muted-foreground">Data:</span><p className="font-medium">{approvalItem.data}</p></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
+            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>Negar</Button>
+            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Dialog with justification */}
       <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
