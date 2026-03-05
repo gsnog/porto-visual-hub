@@ -209,19 +209,16 @@ export default function EstoqueEntradas() {
                       <TableCell className="text-center">{entrada.custoTotal}</TableCell>
                       <TableCell className="text-center"><StatusBadge status={entrada.status} /></TableCell>
                       <TableCell className="text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          {entrada.status === "Pré-Cadastro" && (
-                            <>
-                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" title="Aprovar" onClick={() => setApprovalItem(entrada)}>
-                                <CheckCircle className="w-4 h-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" title="Reprovar" onClick={() => setRejectItem(entrada)}>
-                                <XCircle className="w-4 h-4" />
-                              </Button>
-                            </>
-                          )}
-                          <TableActions onView={() => setViewItem(entrada)} onEdit={() => openEdit(entrada)} onDelete={() => setDeleteId(entrada.id)} />
-                        </div>
+                        {entrada.status === "Pré-Cadastro" ? (
+                          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setApprovalItem(entrada)}>
+                            <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <TableActions onView={() => setViewItem(entrada)} onEdit={() => openEdit(entrada)} onDelete={() => setDeleteId(entrada.id)} />
                       </TableCell>
                     </TableRow>
                     {expandedRows.has(entrada.id) && (
