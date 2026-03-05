@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
-import { Plus, FileText } from "lucide-react"
+import { Plus, FileText, CheckCircle, XCircle, PackageCheck } from "lucide-react"
 import { TableActions } from "@/components/TableActions"
 import { StatusBadge } from "@/components/StatusBadge"
 import { ExportButton } from "@/components/ExportButton"
@@ -11,12 +11,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/hooks/use-toast"
 
 const mockRequisicoes = [
   { id: 1, data: "12/05/2025", item: "Cabo HDMI", quantidade: 1, requisitante: "Ana F.", setor: "TI", status: "Aprovada" },
-  { id: 2, data: "10/05/2025", item: "Papel A4", quantidade: 5, requisitante: "Carlos M.", setor: "Administrativo", status: "Pendente" },
-  { id: 3, data: "08/05/2025", item: "Toner HP", quantidade: 2, requisitante: "Pedro S.", setor: "TI", status: "Aprovada" },
+  { id: 2, data: "10/05/2025", item: "Papel A4", quantidade: 5, requisitante: "Carlos M.", setor: "Administrativo", status: "Aguardando Aprovação" },
+  { id: 3, data: "08/05/2025", item: "Toner HP", quantidade: 2, requisitante: "Pedro S.", setor: "TI", status: "Entregue" },
   { id: 4, data: "05/05/2025", item: "Parafuso M8", quantidade: 50, requisitante: "Lucas V.", setor: "Produção", status: "Rejeitada" },
 ]
 
@@ -34,6 +35,12 @@ export default function EstoqueRequisicoes() {
   const [editItem, setEditItem] = useState<Requisicao | null>(null)
   const [editData, setEditData] = useState({ item: "", quantidade: "", requisitante: "", setor: "" })
 
+  // Approval
+  const [approvalItem, setApprovalItem] = useState<Requisicao | null>(null)
+  const [rejectItem, setRejectItem] = useState<Requisicao | null>(null)
+  const [rejectJustificativa, setRejectJustificativa] = useState("")
+  const [entregarItem, setEntregarItem] = useState<Requisicao | null>(null)
+
   const filtered = useMemo(() => {
     return items.filter(req => {
       const matchItem = req.item.toLowerCase().includes(filterItem.toLowerCase())
@@ -49,6 +56,27 @@ export default function EstoqueRequisicoes() {
   const openEdit = (r: Requisicao) => { setEditItem(r); setEditData({ item: r.item, quantidade: String(r.quantidade), requisitante: r.requisitante, setor: r.setor }); };
   const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, item: editData.item, quantidade: Number(editData.quantidade), requisitante: editData.requisitante, setor: editData.setor } : i)); setEditItem(null); toast({ title: "Salvo", description: "Requisição atualizada." }); } };
   const deleteItemData = items.find(i => i.id === deleteId);
+
+  const handleApprove = (req: Requisicao) => {
+    setItems(prev => prev.map(i => i.id === req.id ? { ...i, status: "Aprovada" } : i));
+    setApprovalItem(null);
+    toast({ title: "Aprovada", description: `Requisição de "${req.item}" aprovada. O botão "Entregar" está agora disponível.` });
+  };
+
+  const handleReject = () => {
+    if (rejectItem) {
+      setItems(prev => prev.map(i => i.id === rejectItem.id ? { ...i, status: "Rejeitada" } : i));
+      setRejectItem(null);
+      setRejectJustificativa("");
+      toast({ title: "Rejeitada", description: `Requisição de "${rejectItem.item}" foi rejeitada.` });
+    }
+  };
+
+  const handleEntregar = (req: Requisicao) => {
+    setItems(prev => prev.map(i => i.id === req.id ? { ...i, status: "Entregue" } : i));
+    setEntregarItem(null);
+    toast({ title: "Entregue", description: `Requisição de "${req.item}" entregue. Saída de estoque gerada automaticamente.` });
+  };
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -78,7 +106,26 @@ export default function EstoqueRequisicoes() {
                   <TableRow key={req.id}>
                     <TableCell className="text-center">{req.data}</TableCell><TableCell className="text-center">{req.item}</TableCell><TableCell className="text-center">{req.quantidade}</TableCell><TableCell className="text-center">{req.requisitante}</TableCell><TableCell className="text-center">{req.setor}</TableCell>
                     <TableCell className="text-center"><StatusBadge status={req.status} /></TableCell>
-                    <TableCell className="text-center"><TableActions onView={() => setViewItem(req)} onEdit={() => openEdit(req)} onDelete={() => setDeleteId(req.id)} /></TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        {req.status === "Aguardando Aprovação" && (
+                          <>
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" title="Aprovar" onClick={() => setApprovalItem(req)}>
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" title="Rejeitar" onClick={() => setRejectItem(req)}>
+                              <XCircle className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
+                        {req.status === "Aprovada" && (
+                          <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs text-primary hover:text-primary" title="Entregar Requisição" onClick={() => setEntregarItem(req)}>
+                            <PackageCheck className="w-3.5 h-3.5" /> Entregar
+                          </Button>
+                        )}
+                        <TableActions onView={() => setViewItem(req)} onEdit={() => openEdit(req)} onDelete={() => setDeleteId(req.id)} />
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -86,6 +133,44 @@ export default function EstoqueRequisicoes() {
           </Table>
         </div>
       </div>
+
+      {/* Approve Dialog */}
+      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Aprovar Requisição?</AlertDialogTitle>
+            <AlertDialogDescription>Deseja aprovar a requisição de <strong>{approvalItem?.item}</strong> (Qtd: {approvalItem?.quantidade}) de {approvalItem?.requisitante}?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reject Dialog */}
+      <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Rejeitar Requisição</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Informe a justificativa para rejeitar a requisição de <strong>{rejectItem?.item}</strong>.</p>
+            <div className="space-y-2">
+              <Label>Justificativa <span className="text-destructive">*</span></Label>
+              <Textarea value={rejectJustificativa} onChange={e => setRejectJustificativa(e.target.value)} placeholder="Motivo da rejeição..." className="min-h-[100px]" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setRejectItem(null); setRejectJustificativa(""); }}>Cancelar</Button>
+            <Button variant="destructive" onClick={handleReject} disabled={!rejectJustificativa.trim()}>Rejeitar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Entregar Dialog */}
+      <AlertDialog open={!!entregarItem} onOpenChange={() => setEntregarItem(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Entregar Requisição?</AlertDialogTitle>
+            <AlertDialogDescription>Ao entregar a requisição de <strong>{entregarItem?.item}</strong> (Qtd: {entregarItem?.quantidade}), uma <strong>saída de estoque automática</strong> será gerada. Deseja prosseguir?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => entregarItem && handleEntregar(entregarItem)}>Entregar</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Detalhes da Requisição</DialogTitle></DialogHeader>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState, useMemo } from "react";
 import { FilterSection } from "@/components/FilterSection";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { TableActions } from "@/components/TableActions";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ExportButton } from "@/components/ExportButton";
@@ -11,11 +11,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 
 const mockOrdens = [
   { id: 1, data: "19/12/2024", dataCompra: "20/12/2024", dataEntrega: "25/12/2024", item: "Papel A4", marca: "Chamex", quantidade: 100, requisitante: "João Silva", setor: "Administrativo", status: "Aprovado" },
-  { id: 2, data: "18/12/2024", dataCompra: "19/12/2024", dataEntrega: "24/12/2024", item: "Toner HP", marca: "HP Original", quantidade: 5, requisitante: "Maria Santos", setor: "TI", status: "Análise" },
+  { id: 2, data: "18/12/2024", dataCompra: "19/12/2024", dataEntrega: "24/12/2024", item: "Toner HP", marca: "HP Original", quantidade: 5, requisitante: "Maria Santos", setor: "TI", status: "Aguardando Aprovação" },
   { id: 3, data: "17/12/2024", dataCompra: "-", dataEntrega: "-", item: "Parafusos M8", marca: "Ciser", quantidade: 500, requisitante: "Carlos Pereira", setor: "Produção", status: "Negado" },
 ]
 
@@ -32,6 +33,11 @@ export default function OrdemCompra() {
   const [editItem, setEditItem] = useState<Ordem | null>(null);
   const [editData, setEditData] = useState({ item: "", marca: "", quantidade: "", requisitante: "", setor: "" });
 
+  // Approval
+  const [approvalItem, setApprovalItem] = useState<Ordem | null>(null);
+  const [rejectItem, setRejectItem] = useState<Ordem | null>(null);
+  const [rejectJustificativa, setRejectJustificativa] = useState("");
+
   const filtered = useMemo(() => {
     return items.filter(ordem => {
       const matchStatus = filterStatus && filterStatus !== "todos" ? ordem.status.toLowerCase() === filterStatus : true
@@ -47,6 +53,27 @@ export default function OrdemCompra() {
   const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData, quantidade: Number(editData.quantidade) } : i)); setEditItem(null); toast({ title: "Salvo", description: "Ordem atualizada." }); } };
   const deleteItemData = items.find(i => i.id === deleteId);
 
+  const handleApprove = (ordem: Ordem) => {
+    setItems(prev => prev.map(i => i.id === ordem.id ? { ...i, status: "Aprovado" } : i));
+    setApprovalItem(null);
+    toast({ title: "Aprovada", description: `Ordem de compra "${ordem.item}" aprovada.` });
+  };
+
+  const handleReject = () => {
+    if (rejectItem) {
+      setItems(prev => prev.map(i => i.id === rejectItem.id ? { ...i, status: "Negado" } : i));
+      setRejectItem(null);
+      setRejectJustificativa("");
+      toast({ title: "Negada", description: `Ordem de compra "${rejectItem.item}" foi negada.` });
+    }
+  };
+
+  const handlePedirNovamente = (ordem: Ordem) => {
+    const novaOrdem = { ...ordem, id: Date.now(), status: "Aguardando Aprovação", data: new Date().toLocaleDateString("pt-BR"), dataCompra: "-", dataEntrega: "-" };
+    setItems(prev => [...prev, novaOrdem]);
+    toast({ title: "Novo pedido criado", description: `Nova ordem baseada em "${ordem.item}" criada para aprovação.` });
+  };
+
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
@@ -59,7 +86,7 @@ export default function OrdemCompra() {
         <FilterSection
           fields={[
             { type: "text", label: "Item", placeholder: "Buscar item...", value: filterItem, onChange: setFilterItem, width: "flex-1 min-w-[200px]" },
-            { type: "select", label: "Status", placeholder: "Selecione...", value: filterStatus, onChange: setFilterStatus, options: [{ value: "todos", label: "Todos" }, { value: "análise", label: "Análise" }, { value: "aprovado", label: "Aprovado" }, { value: "negado", label: "Negado" }], width: "min-w-[180px]" },
+            { type: "select", label: "Status", placeholder: "Selecione...", value: filterStatus, onChange: setFilterStatus, options: [{ value: "todos", label: "Todos" }, { value: "aguardando aprovação", label: "Aguardando Aprovação" }, { value: "aprovado", label: "Aprovado" }, { value: "negado", label: "Negado" }], width: "min-w-[180px]" },
             { type: "date", label: "Data", value: filterData, onChange: setFilterData, width: "min-w-[160px]" }
           ]}
           resultsCount={filtered.length}
@@ -74,7 +101,24 @@ export default function OrdemCompra() {
                   <TableRow key={ordem.id}>
                     <TableCell className="text-center">{ordem.id}</TableCell><TableCell className="text-center">{ordem.data}</TableCell><TableCell className="text-center">{ordem.dataCompra}</TableCell><TableCell className="text-center">{ordem.dataEntrega}</TableCell><TableCell className="text-center">{ordem.item}</TableCell><TableCell className="text-center">{ordem.marca}</TableCell><TableCell className="text-center">{ordem.quantidade}</TableCell><TableCell className="text-center">{ordem.requisitante}</TableCell><TableCell className="text-center">{ordem.setor}</TableCell>
                     <TableCell className="text-center"><StatusBadge status={ordem.status} /></TableCell>
-                    <TableCell className="text-center"><TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} /></TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        {ordem.status === "Aguardando Aprovação" && (
+                          <>
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" title="Aprovar" onClick={() => setApprovalItem(ordem)}>
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" title="Negar" onClick={() => setRejectItem(ordem)}>
+                              <XCircle className="w-4 h-4" />
+                            </Button>
+                          </>
+                        )}
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-blue-600 hover:text-blue-700" title="Pedir Novamente" onClick={() => handlePedirNovamente(ordem)}>
+                          <RefreshCw className="w-4 h-4" />
+                        </Button>
+                        <TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} />
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -82,6 +126,34 @@ export default function OrdemCompra() {
           </Table>
         </div>
       </div>
+
+      {/* Approve Dialog */}
+      <AlertDialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader><AlertDialogTitle>Aprovar Ordem de Compra?</AlertDialogTitle>
+            <AlertDialogDescription>Deseja aprovar a ordem de compra de <strong>{approvalItem?.item}</strong> solicitada por {approvalItem?.requisitante}?</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reject Dialog */}
+      <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Negar Ordem de Compra</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">Informe a justificativa para negar a ordem de <strong>{rejectItem?.item}</strong>.</p>
+            <div className="space-y-2">
+              <Label>Justificativa <span className="text-destructive">*</span></Label>
+              <Textarea value={rejectJustificativa} onChange={e => setRejectJustificativa(e.target.value)} placeholder="Motivo da negação..." className="min-h-[100px]" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setRejectItem(null); setRejectJustificativa(""); }}>Cancelar</Button>
+            <Button variant="destructive" onClick={handleReject} disabled={!rejectJustificativa.trim()}>Negar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Detalhes da Ordem de Compra</DialogTitle></DialogHeader>
