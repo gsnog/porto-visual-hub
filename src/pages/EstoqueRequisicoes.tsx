@@ -99,32 +99,33 @@ export default function EstoqueRequisicoes() {
 
         <div className="rounded overflow-hidden">
           <Table>
-            <TableHeader><TableRow><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead className="text-center">Requisitante</TableHead><TableHead className="text-center">Setor</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Quantidade</TableHead><TableHead className="text-center">Requisitante</TableHead><TableHead className="text-center">Setor</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Aprovação</TableHead><TableHead className="text-center">Entrega</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (<TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nenhuma requisição encontrada.</TableCell></TableRow>) : (
+              {filtered.length === 0 ? (<TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Nenhuma requisição encontrada.</TableCell></TableRow>) : (
                 filtered.map((req) => (
                   <TableRow key={req.id}>
                     <TableCell className="text-center">{req.data}</TableCell><TableCell className="text-center">{req.item}</TableCell><TableCell className="text-center">{req.quantidade}</TableCell><TableCell className="text-center">{req.requisitante}</TableCell><TableCell className="text-center">{req.setor}</TableCell>
                     <TableCell className="text-center"><StatusBadge status={req.status} /></TableCell>
                     <TableCell className="text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        {req.status === "Aguardando Aprovação" && (
-                          <>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" title="Aprovar" onClick={() => setApprovalItem(req)}>
-                              <CheckCircle className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" title="Rejeitar" onClick={() => setRejectItem(req)}>
-                              <XCircle className="w-4 h-4" />
-                            </Button>
-                          </>
-                        )}
-                        {req.status === "Aprovada" && (
-                          <Button variant="ghost" size="sm" className="h-7 gap-1 text-xs text-primary hover:text-primary" title="Entregar Requisição" onClick={() => setEntregarItem(req)}>
-                            <PackageCheck className="w-3.5 h-3.5" /> Entregar
-                          </Button>
-                        )}
-                        <TableActions onView={() => setViewItem(req)} onEdit={() => openEdit(req)} onDelete={() => setDeleteId(req.id)} />
-                      </div>
+                      {req.status === "Aguardando Aprovação" ? (
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setApprovalItem(req)}>
+                          <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
+                        </Button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {req.status === "Aprovada" ? (
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setEntregarItem(req)}>
+                          <PackageCheck className="w-3.5 h-3.5" /> Entregar
+                        </Button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <TableActions onView={() => setViewItem(req)} onEdit={() => openEdit(req)} onDelete={() => setDeleteId(req.id)} />
                     </TableCell>
                   </TableRow>
                 ))
