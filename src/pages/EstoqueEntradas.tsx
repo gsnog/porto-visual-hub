@@ -223,7 +223,7 @@ export default function EstoqueEntradas() {
                     </TableRow>
                     {expandedRows.has(entrada.id) && (
                       <TableRow key={`${entrada.id}-items`}>
-                        <TableCell colSpan={9} className="p-0">
+                        <TableCell colSpan={10} className="p-0">
                           <div className="bg-muted/30 p-4">
                             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Itens da Nota Fiscal</p>
                             <Table>
