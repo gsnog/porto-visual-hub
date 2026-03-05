@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Upload, ChevronDown, ChevronRight, CheckCircle, XCircle, Link2 } from "lucide-react"
+import { Plus, Upload, ChevronDown, ChevronRight, XCircle, Link2, ClipboardCheck } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo } from "react"
 import { FilterSection } from "@/components/FilterSection"
