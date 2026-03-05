@@ -366,7 +366,7 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Observação</Label>
-                    <Textarea className="form-input min-h-[80px]" placeholder="Observações sobre a entrada..." />
+                    <Textarea value={observacao} onChange={(e) => setObservacao(e.target.value)} className="form-input min-h-[80px]" placeholder="Observações sobre a entrada..." />
                   </div>
                 </div>
 
