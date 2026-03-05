@@ -106,13 +106,108 @@ export default function NovaEntrada() {
   };
 
   const handleXmlUpload = () => {
-    // Simula importação de XML
-    const mockXmlItens: ItemEntrada[] = [
-      { id: Date.now(), item: "Produto XML 1", marca: "Marca A", quantidade: "50", custoUnitario: "R$ 10,00", especificacoes: "Importado via XML", tipoItem: "novo" },
-      { id: Date.now() + 1, item: "Produto XML 2", marca: "Marca B", quantidade: "30", custoUnitario: "R$ 25,00", especificacoes: "Importado via XML", tipoItem: "novo" },
-    ];
-    setItens(prev => [...prev, ...mockXmlItens]);
-    toast({ title: "XML importado", description: "2 itens importados do arquivo XML." });
+    if (!xmlFile) {
+      toast({ title: "Selecione um arquivo", description: "Escolha um arquivo XML para importar.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "text/xml");
+
+        const parseError = xmlDoc.querySelector("parsererror");
+        if (parseError) {
+          toast({ title: "Erro no XML", description: "O arquivo XML não é válido.", variant: "destructive" });
+          return;
+        }
+
+        // Try NFe standard (nfeProc/NFe/infNFe or NFe/infNFe)
+        const ns = "http://www.portalfiscal.inf.br/nfe";
+        let infNFe = xmlDoc.getElementsByTagNameNS(ns, "infNFe")[0];
+        if (!infNFe) infNFe = xmlDoc.querySelector("infNFe");
+
+        if (!infNFe) {
+          toast({ title: "XML não reconhecido", description: "Não foi possível encontrar dados de NF-e no arquivo.", variant: "destructive" });
+          return;
+        }
+
+        // Extract header info
+        const ide = infNFe.getElementsByTagNameNS(ns, "ide")[0] || infNFe.querySelector("ide");
+        const emit = infNFe.getElementsByTagNameNS(ns, "emit")[0] || infNFe.querySelector("emit");
+        const cobr = infNFe.getElementsByTagNameNS(ns, "cobr")[0] || infNFe.querySelector("cobr");
+        const infAdic = infNFe.getElementsByTagNameNS(ns, "infAdFisco")[0] || infNFe.querySelector("infAdFisco");
+
+        if (ide) {
+          const nNF = (ide.getElementsByTagNameNS(ns, "nNF")[0] || ide.querySelector("nNF"))?.textContent || "";
+          const dhEmi = (ide.getElementsByTagNameNS(ns, "dhEmi")[0] || ide.querySelector("dhEmi"))?.textContent || "";
+          if (nNF) setNfNumero(nNF);
+          if (dhEmi) {
+            const dateStr = dhEmi.substring(0, 10); // YYYY-MM-DD
+            setDataEmissao(dateStr);
+            setDataEntrada(dateStr);
+          }
+        }
+
+        if (emit) {
+          const xNome = (emit.getElementsByTagNameNS(ns, "xNome")[0] || emit.querySelector("xNome"))?.textContent || "";
+          if (xNome) setFornecedorXml(xNome);
+        }
+
+        // Vencimento from cobr/dup
+        if (cobr) {
+          const dup = cobr.getElementsByTagNameNS(ns, "dup")[0] || cobr.querySelector("dup");
+          if (dup) {
+            const dVenc = (dup.getElementsByTagNameNS(ns, "dVenc")[0] || dup.querySelector("dVenc"))?.textContent || "";
+            if (dVenc) setDataVencimento(dVenc);
+          }
+        }
+
+        // Set operação to compra by default for XML imports
+        setOperacao("compra");
+
+        // Extract items (det elements)
+        const detElements = infNFe.getElementsByTagNameNS(ns, "det");
+        const detFallback = detElements.length > 0 ? detElements : infNFe.querySelectorAll("det");
+        const parsedItens: ItemEntrada[] = [];
+
+        for (let i = 0; i < detFallback.length; i++) {
+          const det = detFallback[i];
+          const prod = det.getElementsByTagNameNS(ns, "prod")[0] || det.querySelector("prod");
+          if (!prod) continue;
+
+          const getVal = (tag: string) => (prod.getElementsByTagNameNS(ns, tag)[0] || prod.querySelector(tag))?.textContent || "";
+
+          const xProd = getVal("xProd");
+          const qCom = getVal("qCom");
+          const vUnCom = getVal("vUnCom");
+          const cProd = getVal("cProd");
+          const uCom = getVal("uCom");
+
+          parsedItens.push({
+            id: Date.now() + i,
+            item: xProd,
+            marca: "",
+            quantidade: qCom ? parseFloat(qCom).toString() : "0",
+            custoUnitario: vUnCom ? `R$ ${parseFloat(vUnCom).toFixed(2).replace(".", ",")}` : "R$ 0,00",
+            especificacoes: [cProd ? `Cód: ${cProd}` : "", uCom ? `Un: ${uCom}` : ""].filter(Boolean).join(" • "),
+            tipoItem: "novo",
+          });
+        }
+
+        if (parsedItens.length > 0) {
+          setItens(parsedItens);
+          toast({ title: "XML importado com sucesso", description: `${parsedItens.length} iten(s) e dados da nota preenchidos automaticamente.` });
+        } else {
+          toast({ title: "Nenhum item encontrado", description: "O XML foi lido mas não contém itens (det/prod).", variant: "destructive" });
+        }
+      } catch (err) {
+        console.error("Erro ao parsear XML:", err);
+        toast({ title: "Erro ao processar XML", description: "Não foi possível ler o arquivo.", variant: "destructive" });
+      }
+    };
+    reader.readAsText(xmlFile);
   };
 
   return (
