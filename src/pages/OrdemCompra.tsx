@@ -94,30 +94,29 @@ export default function OrdemCompra() {
 
         <div className="rounded overflow-hidden">
           <Table>
-            <TableHeader><TableRow><TableHead className="text-center">ID</TableHead><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Data Compra</TableHead><TableHead className="text-center">Data Entrega</TableHead><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Marca</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-center">Requisitante</TableHead><TableHead className="text-center">Setor</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead className="text-center">ID</TableHead><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Data Compra</TableHead><TableHead className="text-center">Data Entrega</TableHead><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Marca</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-center">Requisitante</TableHead><TableHead className="text-center">Setor</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Aprovação</TableHead><TableHead className="text-center">Repetir Pedido</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (<TableRow><TableCell colSpan={11} className="text-center py-8 text-muted-foreground">Nenhuma ordem encontrada.</TableCell></TableRow>) : (
+              {filtered.length === 0 ? (<TableRow><TableCell colSpan={13} className="text-center py-8 text-muted-foreground">Nenhuma ordem encontrada.</TableCell></TableRow>) : (
                 filtered.map((ordem) => (
                   <TableRow key={ordem.id}>
                     <TableCell className="text-center">{ordem.id}</TableCell><TableCell className="text-center">{ordem.data}</TableCell><TableCell className="text-center">{ordem.dataCompra}</TableCell><TableCell className="text-center">{ordem.dataEntrega}</TableCell><TableCell className="text-center">{ordem.item}</TableCell><TableCell className="text-center">{ordem.marca}</TableCell><TableCell className="text-center">{ordem.quantidade}</TableCell><TableCell className="text-center">{ordem.requisitante}</TableCell><TableCell className="text-center">{ordem.setor}</TableCell>
                     <TableCell className="text-center"><StatusBadge status={ordem.status} /></TableCell>
                     <TableCell className="text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        {ordem.status === "Aguardando Aprovação" && (
-                          <>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-primary hover:text-primary" title="Aprovar" onClick={() => setApprovalItem(ordem)}>
-                              <CheckCircle className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" title="Negar" onClick={() => setRejectItem(ordem)}>
-                              <XCircle className="w-4 h-4" />
-                            </Button>
-                          </>
-                        )}
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-blue-600 hover:text-blue-700" title="Pedir Novamente" onClick={() => handlePedirNovamente(ordem)}>
-                          <RefreshCw className="w-4 h-4" />
+                      {ordem.status === "Aguardando Aprovação" ? (
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setApprovalItem(ordem)}>
+                          <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
                         </Button>
-                        <TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} />
-                      </div>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => handlePedirNovamente(ordem)}>
+                        <RefreshCw className="w-3.5 h-3.5" /> Repetir
+                      </Button>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} />
                     </TableCell>
                   </TableRow>
                 ))
