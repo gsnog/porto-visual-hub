@@ -185,6 +185,7 @@ export default function EstoqueEntradas() {
                 <TableHead className="text-center">Unidade</TableHead>
                 <TableHead className="text-center">Custo Total</TableHead>
                 <TableHead className="text-center">Status</TableHead>
+                <TableHead className="text-center">Aprovação</TableHead>
                 <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
