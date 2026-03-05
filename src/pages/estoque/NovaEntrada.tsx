@@ -337,7 +337,7 @@ export default function NovaEntrada() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Emissão</Label>
-                    <Input type="date" className="form-input" />
+                    <Input type="date" value={dataEmissao} onChange={(e) => setDataEmissao(e.target.value)} className="form-input" />
                   </div>
                 </div>
 
