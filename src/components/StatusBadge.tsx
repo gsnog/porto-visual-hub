@@ -64,6 +64,10 @@ const statusStyles: Record<string, { bg: string; text: string }> = {
   "enviada": { bg: "bg-blue-500/20", text: "text-blue-600 dark:text-blue-500" },
   "sucesso": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
   "homologado": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
+  "pré-cadastro": { bg: "bg-purple-500/20", text: "text-purple-600 dark:text-purple-500" },
+  "pre-cadastro": { bg: "bg-purple-500/20", text: "text-purple-600 dark:text-purple-500" },
+  "aguardando aprovação": { bg: "bg-orange-500/20", text: "text-orange-600 dark:text-orange-500" },
+  "entregue": { bg: "bg-primary/20", text: "text-primary dark:text-primary" },
 }
 
 const defaultStyle = { bg: "bg-muted", text: "text-muted-foreground" }
