@@ -93,8 +93,8 @@ const NovoItem = () => {
         <Card className="border-border shadow-lg">
           <CardContent className="p-6 md:p-8">
             <div className="flex flex-col items-center justify-center py-16 space-y-6 animate-in fade-in duration-500">
-              <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
-                <CheckCircle className="h-8 w-8 text-green-500" />
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <CheckCircle className="h-8 w-8 text-primary" />
               </div>
               <div className="text-center space-y-2">
                 <h2 className="text-xl font-semibold text-foreground">Item cadastrado com sucesso!</h2>
