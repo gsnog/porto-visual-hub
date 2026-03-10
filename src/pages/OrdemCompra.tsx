@@ -33,7 +33,6 @@ export default function OrdemCompra() {
   const [editItem, setEditItem] = useState<Ordem | null>(null);
   const [editData, setEditData] = useState({ item: "", marca: "", quantidade: "", requisitante: "", setor: "" });
 
-  // Approval
   const [approvalItem, setApprovalItem] = useState<Ordem | null>(null);
   const [rejectItem, setRejectItem] = useState<Ordem | null>(null);
   const [rejectJustificativa, setRejectJustificativa] = useState("");
@@ -77,6 +76,12 @@ export default function OrdemCompra() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
+        <div className="bg-muted/30 border border-border rounded-lg p-4">
+          <p className="text-sm text-muted-foreground">
+            Abra ordens de compra para solicitar a aquisição de itens, materiais ou equipamentos necessários para a operação. Acompanhe o status de aprovação e entrega de cada pedido.
+          </p>
+        </div>
+
         <div className="flex flex-wrap gap-3 items-center">
           <Button className="gap-2" onClick={() => navigate("/estoque/ordem-compra/nova")}><Plus className="w-4 h-4" />Nova Ordem</Button>
           <Button variant="outline" className="gap-2 border-border" onClick={() => navigate("/estoque/ordem-compra/relatorio")}><FileText className="w-4 h-4" />Relatório</Button>
