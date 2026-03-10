@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface ItemOrdem {
   id: number;
   item: string;
+  itemSource: "cadastrado" | "manual";
   marca: string;
   quantidade: string;
   especificacoes: string;
@@ -33,19 +34,40 @@ const setorOptions = [
   { value: "operacional", label: "Operacional" },
 ];
 
+const itensCadastrados = [
+  { value: "parafuso-m8", label: "Parafuso M8" },
+  { value: "parafuso-m10", label: "Parafuso M10" },
+  { value: "cabo-hdmi", label: "Cabo HDMI" },
+  { value: "oleo-lubrificante", label: "Óleo Lubrificante" },
+  { value: "papel-a4", label: "Papel A4" },
+  { value: "toner-hp", label: "Toner HP" },
+];
+
 export default function NovaOrdemCompra() {
   const navigate = useNavigate();
   const { isSaving, handleSave } = useSaveWithDelay();
   const [itens, setItens] = useState<ItemOrdem[]>([]);
   const [formData, setFormData] = useState({
-    unidade: "", setor: "", descricao: "", justificativa: "", item: "", marca: "", quantidade: "", especificacoes: "",
+    unidade: "", setor: "", descricao: "", justificativa: "",
+    itemCadastrado: "", itemManual: "", marca: "", quantidade: "", especificacoes: "",
   });
+  const [itemMode, setItemMode] = useState<"cadastrado" | "manual">("cadastrado");
 
   const handleAddItem = () => {
-    if (!formData.item || !formData.quantidade) return;
-    const novoItem: ItemOrdem = { id: Date.now(), item: formData.item, marca: formData.marca, quantidade: formData.quantidade, especificacoes: formData.especificacoes };
+    const itemName = itemMode === "cadastrado"
+      ? itensCadastrados.find(i => i.value === formData.itemCadastrado)?.label || ""
+      : formData.itemManual;
+    if (!itemName || !formData.quantidade) return;
+    const novoItem: ItemOrdem = {
+      id: Date.now(),
+      item: itemName,
+      itemSource: itemMode,
+      marca: formData.marca,
+      quantidade: formData.quantidade,
+      especificacoes: formData.especificacoes,
+    };
     setItens([...itens, novoItem]);
-    setFormData({ ...formData, item: "", marca: "", quantidade: "", especificacoes: "" });
+    setFormData({ ...formData, itemCadastrado: "", itemManual: "", marca: "", quantidade: "", especificacoes: "" });
   };
 
   const handleRemoveItem = (id: number) => setItens(itens.filter((item) => item.id !== id));
@@ -114,10 +136,40 @@ export default function NovaOrdemCompra() {
             </div>
 
             <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Adicionar Item</h3>
+
+              <div className="flex gap-3 mb-4">
+                <Button
+                  type="button"
+                  variant={itemMode === "cadastrado" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setItemMode("cadastrado")}
+                >
+                  Item Cadastrado
+                </Button>
+                <Button
+                  type="button"
+                  variant={itemMode === "manual" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setItemMode("manual")}
+                >
+                  Digitar Manualmente
+                </Button>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Item</Label>
-                  <Input value={formData.item} onChange={(e) => setFormData({ ...formData, item: e.target.value })} placeholder="Nome do item" className="form-input" />
+                  {itemMode === "cadastrado" ? (
+                    <Select value={formData.itemCadastrado} onValueChange={(v) => setFormData({ ...formData, itemCadastrado: v })}>
+                      <SelectTrigger className="form-input"><SelectValue placeholder="Selecione um item cadastrado" /></SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        {itensCadastrados.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input value={formData.itemManual} onChange={(e) => setFormData({ ...formData, itemManual: e.target.value })} placeholder="Digite o nome do item" className="form-input" />
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Marca</Label>
@@ -145,6 +197,7 @@ export default function NovaOrdemCompra() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center">Item</TableHead>
+                  <TableHead className="text-center">Origem</TableHead>
                   <TableHead className="text-center">Marca</TableHead>
                   <TableHead className="text-center">Quantidade</TableHead>
                   <TableHead className="text-center">Especificações</TableHead>
@@ -153,11 +206,16 @@ export default function NovaOrdemCompra() {
               </TableHeader>
               <TableBody>
                 {itens.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
                 ) : (
                   itens.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="text-center">{item.item}</TableCell>
+                      <TableCell className="text-center">
+                        <span className={`text-xs px-2 py-0.5 rounded ${item.itemSource === "cadastrado" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                          {item.itemSource === "cadastrado" ? "Cadastrado" : "Manual"}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-center">{item.marca}</TableCell>
                       <TableCell className="text-center">{item.quantidade}</TableCell>
                       <TableCell className="text-center">{item.especificacoes}</TableCell>

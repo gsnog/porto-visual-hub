@@ -82,8 +82,8 @@ export default function EstoqueRequisicoes() {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="flex flex-wrap gap-3 items-center">
-          <Button onClick={() => navigate("/estoque/requisicoes/nova")} className="gap-2"><Plus className="w-4 h-4" />Adicionar</Button>
-          <Button onClick={() => navigate("/estoque/requisicoes/relatorio")} variant="outline" className="gap-2 border-border"><FileText className="w-4 h-4" />Relatório</Button>
+          <Button onClick={() => navigate("/estoque/pedidos-internos/nova")} className="gap-2"><Plus className="w-4 h-4" />Adicionar</Button>
+          <Button onClick={() => navigate("/estoque/pedidos-internos/relatorio")} variant="outline" className="gap-2 border-border"><FileText className="w-4 h-4" />Relatório</Button>
           <ExportButton getData={getExportData} fileName="estoque-requisicoes" />
         </div>
 

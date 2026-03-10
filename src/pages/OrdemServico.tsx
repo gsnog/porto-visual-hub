@@ -35,7 +35,6 @@ export default function OrdemServico() {
   const [editItem, setEditItem] = useState<Ordem | null>(null);
   const [editData, setEditData] = useState({ tipo: "", descricao: "", responsavel: "" });
 
-  // Approval + Finalizar
   const [approvalItem, setApprovalItem] = useState<Ordem | null>(null);
   const [rejectItem, setRejectItem] = useState<Ordem | null>(null);
   const [rejectJustificativa, setRejectJustificativa] = useState("");
@@ -81,6 +80,13 @@ export default function OrdemServico() {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
+        {/* Page description */}
+        <div className="bg-muted/30 border border-border rounded-lg p-4">
+          <p className="text-sm text-muted-foreground">
+            Abra ordens para solicitação de serviços como manutenção, suporte técnico, reparos e serviços gerais. Acompanhe a execução e aprovação de cada ordem.
+          </p>
+        </div>
+
         <div className="flex flex-wrap gap-3 items-center">
           <Button className="gap-2" onClick={() => navigate("/estoque/ordem-servico/nova")}><Plus className="w-4 h-4" />Nova Ordem</Button>
           <ExportButton getData={getExportData} fileName="ordem-servico" />

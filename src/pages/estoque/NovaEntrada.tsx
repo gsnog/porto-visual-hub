@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { PackagePlus, Trash2, Upload, FileText, ArrowLeft, ArrowRight } from "lucide-react";
+import { PackagePlus, Trash2, Upload, FileText, ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -44,6 +44,13 @@ const itensEstoqueMock = [
   { value: "papel-a4", label: "Papel A4" },
 ];
 
+// Mock fornecedores cadastrados
+const fornecedoresCadastrados = [
+  "Distribuidora ABC Ltda",
+  "Tech Solutions S.A.",
+  "Papelaria Express",
+];
+
 export default function NovaEntrada() {
   const navigate = useNavigate();
   const { handleSalvar, isSaving } = useSaveWithDelay({
@@ -54,7 +61,7 @@ export default function NovaEntrada() {
 
   const handleCancelar = () => navigate("/estoque/entradas");
 
-  const [step, setStep] = useState(1); // 1 = dados da entrada, 2 = classificar itens
+  const [step, setStep] = useState(1);
   const [modoEntrada, setModoEntrada] = useState<"manual" | "xml">("manual");
   const [itens, setItens] = useState<ItemEntrada[]>([]);
   const [itemForm, setItemForm] = useState({ item: "", marca: "", quantidade: "", custoUnitario: "", especificacoes: "" });
@@ -69,6 +76,7 @@ export default function NovaEntrada() {
   const [observacao, setObservacao] = useState("");
   const [xmlFile, setXmlFile] = useState<File | null>(null);
   const [fornecedorXml, setFornecedorXml] = useState("");
+  const [xmlImported, setXmlImported] = useState(false);
 
   const handleAddItem = () => {
     if (!itemForm.item || !itemForm.quantidade) {
@@ -123,7 +131,6 @@ export default function NovaEntrada() {
           return;
         }
 
-        // Try NFe standard (nfeProc/NFe/infNFe or NFe/infNFe)
         const ns = "http://www.portalfiscal.inf.br/nfe";
         let infNFe = xmlDoc.getElementsByTagNameNS(ns, "infNFe")[0];
         if (!infNFe) infNFe = xmlDoc.querySelector("infNFe");
@@ -133,18 +140,16 @@ export default function NovaEntrada() {
           return;
         }
 
-        // Extract header info
         const ide = infNFe.getElementsByTagNameNS(ns, "ide")[0] || infNFe.querySelector("ide");
         const emit = infNFe.getElementsByTagNameNS(ns, "emit")[0] || infNFe.querySelector("emit");
         const cobr = infNFe.getElementsByTagNameNS(ns, "cobr")[0] || infNFe.querySelector("cobr");
-        const infAdic = infNFe.getElementsByTagNameNS(ns, "infAdFisco")[0] || infNFe.querySelector("infAdFisco");
 
         if (ide) {
           const nNF = (ide.getElementsByTagNameNS(ns, "nNF")[0] || ide.querySelector("nNF"))?.textContent || "";
           const dhEmi = (ide.getElementsByTagNameNS(ns, "dhEmi")[0] || ide.querySelector("dhEmi"))?.textContent || "";
           if (nNF) setNfNumero(nNF);
           if (dhEmi) {
-            const dateStr = dhEmi.substring(0, 10); // YYYY-MM-DD
+            const dateStr = dhEmi.substring(0, 10);
             setDataEmissao(dateStr);
             setDataEntrada(dateStr);
           }
@@ -152,10 +157,19 @@ export default function NovaEntrada() {
 
         if (emit) {
           const xNome = (emit.getElementsByTagNameNS(ns, "xNome")[0] || emit.querySelector("xNome"))?.textContent || "";
-          if (xNome) setFornecedorXml(xNome);
+          if (xNome) {
+            setFornecedorXml(xNome);
+            // Auto-register supplier if not found
+            const found = fornecedoresCadastrados.some(
+              f => f.toLowerCase() === xNome.toLowerCase()
+            );
+            if (!found) {
+              fornecedoresCadastrados.push(xNome);
+              toast({ title: "Fornecedor cadastrado", description: `"${xNome}" foi adicionado automaticamente ao cadastro de fornecedores.` });
+            }
+          }
         }
 
-        // Vencimento from cobr/dup
         if (cobr) {
           const dup = cobr.getElementsByTagNameNS(ns, "dup")[0] || cobr.querySelector("dup");
           if (dup) {
@@ -164,10 +178,8 @@ export default function NovaEntrada() {
           }
         }
 
-        // Set operação to compra by default for XML imports
         setOperacao("compra");
 
-        // Extract items (det elements)
         const detElements = infNFe.getElementsByTagNameNS(ns, "det");
         const detFallback = detElements.length > 0 ? detElements : infNFe.querySelectorAll("det");
         const parsedItens: ItemEntrada[] = [];
@@ -198,6 +210,7 @@ export default function NovaEntrada() {
 
         if (parsedItens.length > 0) {
           setItens(parsedItens);
+          setXmlImported(true);
           toast({ title: "XML importado com sucesso", description: `${parsedItens.length} iten(s) e dados da nota preenchidos automaticamente.` });
         } else {
           toast({ title: "Nenhum item encontrado", description: "O XML foi lido mas não contém itens (det/prod).", variant: "destructive" });
@@ -209,6 +222,8 @@ export default function NovaEntrada() {
     };
     reader.readAsText(xmlFile);
   };
+
+  const isFieldLocked = xmlImported && modoEntrada === "xml";
 
   return (
     <SimpleFormWizard title="Nova Entrada">
@@ -274,17 +289,23 @@ export default function NovaEntrada() {
                     {fornecedorXml && (
                       <p className="text-sm text-foreground mt-2">Fornecedor: <strong>{fornecedorXml}</strong></p>
                     )}
+                    {isFieldLocked && (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded">
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>Campos preenchidos pelo XML estão bloqueados para edição</span>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data <span className="text-destructive">*</span></Label>
-                    <Input type="date" value={dataEntrada} onChange={(e) => setDataEntrada(e.target.value)} className="form-input" />
+                    <Input type="date" value={dataEntrada} onChange={(e) => setDataEntrada(e.target.value)} className="form-input" readOnly={isFieldLocked && !!dataEntrada} disabled={isFieldLocked && !!dataEntrada} />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Operação <span className="text-destructive">*</span></Label>
-                    <Select value={operacao} onValueChange={setOperacao}>
+                    <Select value={operacao} onValueChange={setOperacao} disabled={isFieldLocked && !!operacao}>
                       <SelectTrigger className="form-input"><SelectValue placeholder="Selecione a operação" /></SelectTrigger>
                       <SelectContent className="bg-popover">
                         {operacaoOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
@@ -333,18 +354,18 @@ export default function NovaEntrada() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nota Fiscal <span className="text-destructive">*</span></Label>
-                    <Input type="text" value={nfNumero} onChange={(e) => setNfNumero(e.target.value)} placeholder="Número da NF" className="form-input" />
+                    <Input type="text" value={nfNumero} onChange={(e) => setNfNumero(e.target.value)} placeholder="Número da NF" className="form-input" readOnly={isFieldLocked && !!nfNumero} disabled={isFieldLocked && !!nfNumero} />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Emissão</Label>
-                    <Input type="date" value={dataEmissao} onChange={(e) => setDataEmissao(e.target.value)} className="form-input" />
+                    <Input type="date" value={dataEmissao} onChange={(e) => setDataEmissao(e.target.value)} className="form-input" readOnly={isFieldLocked && !!dataEmissao} disabled={isFieldLocked && !!dataEmissao} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Vencimento</Label>
-                    <Input type="date" value={dataVencimento} onChange={(e) => setDataVencimento(e.target.value)} className="form-input" />
+                    <Input type="date" value={dataVencimento} onChange={(e) => setDataVencimento(e.target.value)} className="form-input" readOnly={isFieldLocked && !!dataVencimento} disabled={isFieldLocked && !!dataVencimento} />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Valor Total</Label>
@@ -411,12 +432,12 @@ export default function NovaEntrada() {
                       <TableHead className="text-center">Quantidade</TableHead>
                       <TableHead className="text-center">Custo Unitário</TableHead>
                       <TableHead className="text-center">Especificações</TableHead>
-                      <TableHead className="text-center">Ações</TableHead>
+                      {!isFieldLocked && <TableHead className="text-center">Ações</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {itens.length === 0 ? (
-                      <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={isFieldLocked ? 5 : 6} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
                     ) : (
                       itens.map((item) => (
                         <TableRow key={item.id}>
@@ -425,9 +446,11 @@ export default function NovaEntrada() {
                           <TableCell className="text-center">{item.quantidade}</TableCell>
                           <TableCell className="text-center">{item.custoUnitario}</TableCell>
                           <TableCell className="text-center">{item.especificacoes}</TableCell>
-                          <TableCell className="text-center">
-                            <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>
-                          </TableCell>
+                          {!isFieldLocked && (
+                            <TableCell className="text-center">
+                              <Button variant="ghost" size="sm" onClick={() => handleRemoveItem(item.id)} className="text-destructive hover:text-destructive"><Trash2 size={16} /></Button>
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))
                     )}
