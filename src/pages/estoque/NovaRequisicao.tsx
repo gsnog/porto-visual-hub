@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,7 +30,7 @@ const validationFields = [
   { name: "observacoes", label: "Observações", required: false },
 ];
 
-const itensCadastrados = [
+const itensCadastradosBase = [
   { value: "parafuso-m8", label: "Parafuso M8" },
   { value: "parafuso-m10", label: "Parafuso M10" },
   { value: "cabo-hdmi", label: "Cabo HDMI" },
@@ -39,10 +39,25 @@ const itensCadastrados = [
   { value: "toner-hp", label: "Toner HP" },
 ];
 
+function loadItensCadastrados() {
+  const novos = JSON.parse(sessionStorage.getItem("novos_itens_cadastrados") || "[]");
+  const extras = novos.map((n: any) => ({ value: n.value, label: n.label }));
+  const allValues = new Set(itensCadastradosBase.map(i => i.value));
+  const merged = [...itensCadastradosBase];
+  for (const e of extras) {
+    if (!allValues.has(e.value)) {
+      merged.push(e);
+      allValues.add(e.value);
+    }
+  }
+  return merged;
+}
+
 export default function NovaRequisicao() {
   const navigate = useNavigate();
   const { handleSave, isSaving } = useSaveWithDelay();
   const [itens, setItens] = useState<ItemRequisicao[]>([]);
+  const [itensCadastrados, setItensCadastrados] = useState(loadItensCadastrados);
   const [itemForm, setItemForm] = useState({ itemCadastrado: "", marca: "", quantidade: "", especificacoes: "" });
   const [showNoItemDialog, setShowNoItemDialog] = useState(false);
 
@@ -82,7 +97,6 @@ export default function NovaRequisicao() {
   };
 
   const handleGoToCadastroItem = () => {
-    // Store current form state in sessionStorage so we can restore it
     const stateToSave = {
       formData,
       itens,
@@ -117,6 +131,15 @@ export default function NovaRequisicao() {
       }
     }
   });
+
+  // Reload items list when window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      setItensCadastrados(loadItensCadastrados());
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
 
   return (
     <SimpleFormWizard title="Novo Pedido Interno">

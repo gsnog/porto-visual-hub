@@ -73,19 +73,21 @@ const itensEstoqueMock = [
   { value: "papel-a4", label: "Papel A4" },
 ]
 
+function loadSavedEntries(): EntradaNF[] {
+  const saved = sessionStorage.getItem("novas_entradas");
+  if (saved) {
+    try {
+      return JSON.parse(saved) as EntradaNF[];
+    } catch { /* ignore */ }
+  }
+  return [];
+}
+
 export default function EstoqueEntradas() {
   const navigate = useNavigate()
   const [items, setItems] = useState<EntradaNF[]>(() => {
-    // Load new entries from sessionStorage on mount
-    const saved = sessionStorage.getItem("novas_entradas");
-    if (saved) {
-      try {
-        const newEntries = JSON.parse(saved) as EntradaNF[];
-        sessionStorage.removeItem("novas_entradas");
-        return [...newEntries, ...mockEntradas];
-      } catch { /* ignore */ }
-    }
-    return mockEntradas;
+    const newEntries = loadSavedEntries();
+    return [...newEntries, ...mockEntradas];
   })
   const [filterNome, setFilterNome] = useState("")
   const [filterNFe, setFilterNFe] = useState("")
@@ -109,13 +111,17 @@ export default function EstoqueEntradas() {
   // Check for new entries on focus (when user returns from NovaEntrada)
   useEffect(() => {
     const handleFocus = () => {
-      const saved = sessionStorage.getItem("novas_entradas");
-      if (saved) {
-        try {
-          const newEntries = JSON.parse(saved) as EntradaNF[];
-          sessionStorage.removeItem("novas_entradas");
-          setItems(prev => [...newEntries, ...prev]);
-        } catch { /* ignore */ }
+      const newEntries = loadSavedEntries();
+      if (newEntries.length > 0) {
+        setItems(prev => {
+          const existingIds = new Set(prev.map(i => i.id));
+          const unique = newEntries.filter(e => !existingIds.has(e.id));
+          if (unique.length > 0) {
+            sessionStorage.removeItem("novas_entradas");
+            return [...unique, ...prev];
+          }
+          return prev;
+        });
       }
     };
     window.addEventListener("focus", handleFocus);
@@ -149,9 +155,39 @@ export default function EstoqueEntradas() {
   const deleteItem = items.find(i => i.id === deleteId);
 
   const handleApprove = (entrada: EntradaNF) => {
+    // Save "novo" items to cadastro>estoque>itens via sessionStorage
+    const novosItens = entrada.itens.filter(it => it.tipo === "novo");
+    if (novosItens.length > 0) {
+      const existing = JSON.parse(sessionStorage.getItem("novos_itens_entrada") || "[]");
+      for (const item of novosItens) {
+        existing.push({
+          id: Date.now() + item.id,
+          codigo: `EST${String(Date.now() + item.id).slice(-3)}`,
+          dataCadastro: new Date().toLocaleDateString("pt-BR"),
+          item: item.item,
+          formaApresentacao: "",
+          setores: "",
+        });
+      }
+      sessionStorage.setItem("novos_itens_entrada", JSON.stringify(existing));
+
+      // Also add to novos_itens_cadastrados so dropdowns pick them up
+      const existingCad = JSON.parse(sessionStorage.getItem("novos_itens_cadastrados") || "[]");
+      for (const item of novosItens) {
+        existingCad.push({
+          value: item.item.toLowerCase().replace(/\s+/g, "-"),
+          label: item.item,
+          id: Date.now() + item.id,
+          codigo: `EST${String(Date.now() + item.id).slice(-3)}`,
+          dataCadastro: new Date().toLocaleDateString("pt-BR"),
+        });
+      }
+      sessionStorage.setItem("novos_itens_cadastrados", JSON.stringify(existingCad));
+    }
+
     setItems(prev => prev.map(i => i.id === entrada.id ? { ...i, status: "Aprovada" } : i));
     setApprovalItem(null);
-    toast({ title: "Aprovada", description: `Entrada ${entrada.notaFiscal} aprovada com sucesso.` });
+    toast({ title: "Aprovada", description: `Entrada ${entrada.notaFiscal} aprovada com sucesso.${novosItens.length > 0 ? ` ${novosItens.length} novo(s) item(ns) cadastrado(s) no sistema.` : ""}` });
   };
 
   const handleReject = () => {
@@ -356,6 +392,10 @@ export default function EstoqueEntradas() {
                   ))}
                 </div>
               </div>
+
+              <p className="text-xs text-muted-foreground bg-muted/40 p-3 rounded">
+                <strong>Nota:</strong> Itens marcados como "Novo" serão automaticamente cadastrados em Cadastro → Estoque → Itens ao aprovar esta entrada.
+              </p>
 
               <DialogFooter className="gap-2 pt-4">
                 <Button variant="outline" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }} className="gap-1.5 text-destructive border-destructive/30 hover:bg-destructive/10">
