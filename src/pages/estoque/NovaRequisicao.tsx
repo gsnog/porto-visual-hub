@@ -110,9 +110,10 @@ export default function NovaRequisicao() {
         if (state.itemForm) setItemForm(state.itemForm);
         if (state.itemMode) setItemMode(state.itemMode);
         if (state.formData) {
-          Object.entries(state.formData).forEach(([key, value]) => {
-            setFieldValue(key, value as string);
-          });
+          const fd = state.formData as Record<string, string>;
+          if (fd.setor) setFieldValue("setor", fd.setor);
+          if (fd.projeto) setFieldValue("projeto", fd.projeto);
+          if (fd.observacoes) setFieldValue("observacoes", fd.observacoes);
         }
         if (state.setorOptions) setSetorOptions(state.setorOptions);
         if (state.projetoOptions) setProjetoOptions(state.projetoOptions);

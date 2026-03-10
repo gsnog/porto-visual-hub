@@ -84,7 +84,7 @@ const menuItems = [
       { title: "Locações", url: "/estoque/locacoes" },
       { title: "Ordem de Compra", url: "/estoque/ordem-compra" },
       { title: "Ordem de Serviço", url: "/estoque/ordem-servico" },
-      { title: "Requisições", url: "/estoque/requisicoes" },
+      { title: "Pedidos Internos", url: "/estoque/pedidos-internos" },
       { title: "Saídas", url: "/estoque/saidas" },
       { title: "Patrimônio", url: "/patrimonio" },
     ]
