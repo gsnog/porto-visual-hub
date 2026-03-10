@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { PackagePlus, Trash2, Upload, FileText, ArrowLeft, ArrowRight, Lock } from "lucide-react";
-import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -53,11 +52,7 @@ const fornecedoresCadastrados = [
 
 export default function NovaEntrada() {
   const navigate = useNavigate();
-  const { handleSalvar, isSaving } = useSaveWithDelay({
-    redirectTo: "/estoque/entradas",
-    successMessage: "Entrada enviada para aprovação!",
-    successDescription: "A entrada ficará em pré-cadastro até a aprovação do gerente.",
-  });
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleCancelar = () => navigate("/estoque/entradas");
 
@@ -155,16 +150,33 @@ export default function NovaEntrada() {
           }
         }
 
+        let xmlFornecedorName = "";
+        let xmlFornecedorCnpj = "";
         if (emit) {
           const xNome = (emit.getElementsByTagNameNS(ns, "xNome")[0] || emit.querySelector("xNome"))?.textContent || "";
+          const cnpj = (emit.getElementsByTagNameNS(ns, "CNPJ")[0] || emit.querySelector("CNPJ"))?.textContent || "";
+          xmlFornecedorName = xNome;
+          xmlFornecedorCnpj = cnpj;
           if (xNome) {
             setFornecedorXml(xNome);
-            // Auto-register supplier if not found
+            // Auto-register supplier if not found - persist via sessionStorage
             const found = fornecedoresCadastrados.some(
               f => f.toLowerCase() === xNome.toLowerCase()
             );
             if (!found) {
               fornecedoresCadastrados.push(xNome);
+              // Save to sessionStorage so Fornecedores page picks it up
+              const existing = JSON.parse(sessionStorage.getItem("novos_fornecedores") || "[]");
+              existing.push({
+                id: Date.now(),
+                fornecedor: xNome,
+                cnpj: cnpj ? cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5") : "",
+                razaoSocial: xNome,
+                vendedor: "",
+                email: "",
+                telefone: "",
+              });
+              sessionStorage.setItem("novos_fornecedores", JSON.stringify(existing));
               toast({ title: "Fornecedor cadastrado", description: `"${xNome}" foi adicionado automaticamente ao cadastro de fornecedores.` });
             }
           }
@@ -224,6 +236,50 @@ export default function NovaEntrada() {
   };
 
   const isFieldLocked = xmlImported && modoEntrada === "xml";
+
+  const handleSalvar = async () => {
+    setIsSaving(true);
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // Build new entry and store in sessionStorage so EstoqueEntradas picks it up
+    const totalFormatted = `R$ ${valorTotal.toFixed(2).replace(".", ",")}`;
+    const today = new Date();
+    const dataFormatted = dataEntrada
+      ? dataEntrada.split("-").reverse().join("/")
+      : `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+
+    const newEntry = {
+      id: Date.now(),
+      data: dataFormatted,
+      responsavel: "Usuário Atual",
+      notaFiscal: nfNumero || `NF-${Date.now().toString().slice(-6)}`,
+      fornecedor: fornecedorXml || "—",
+      unidade: unidadeOptions.find(u => u.value === estoqueDestino)?.label || "—",
+      custoTotal: totalFormatted,
+      status: "Pré-Cadastro",
+      itens: itens.map(item => ({
+        id: item.id,
+        item: item.item,
+        marca: item.marca,
+        quantidade: parseFloat(item.quantidade) || 0,
+        custoUnitario: item.custoUnitario,
+        especificacoes: item.especificacoes,
+        tipo: item.tipoItem,
+      })),
+    };
+
+    const existing = JSON.parse(sessionStorage.getItem("novas_entradas") || "[]");
+    existing.push(newEntry);
+    sessionStorage.setItem("novas_entradas", JSON.stringify(existing));
+
+    toast({
+      title: "Entrada enviada para aprovação!",
+      description: "A entrada ficará em pré-cadastro até a aprovação do gerente.",
+    });
+
+    setIsSaving(false);
+    navigate("/estoque/entradas");
+  };
 
   return (
     <SimpleFormWizard title="Nova Entrada">

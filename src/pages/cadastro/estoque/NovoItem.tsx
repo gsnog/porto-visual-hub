@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { DropdownWithAdd } from "@/components/DropdownWithAdd";
@@ -21,6 +21,8 @@ const validationFields = [
 
 const NovoItem = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const { handleSave, isSaving } = useSaveWithDelay();
 
   const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
@@ -45,7 +47,8 @@ const NovoItem = () => {
 
   const handleSalvar = async () => {
     if (validateAll()) {
-      await handleSave("/cadastro/estoque/itens", "Item salvo com sucesso!");
+      const redirectTo = returnTo || "/cadastro/estoque/itens";
+      await handleSave(redirectTo, "Item salvo com sucesso!");
     }
   };
 

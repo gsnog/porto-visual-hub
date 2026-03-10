@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Plus, Upload, ChevronDown, ChevronRight, XCircle, Link2, ClipboardCheck } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { FilterSection } from "@/components/FilterSection"
 import { TableActions } from "@/components/TableActions"
 import { ExportButton } from "@/components/ExportButton"
@@ -75,7 +75,18 @@ const itensEstoqueMock = [
 
 export default function EstoqueEntradas() {
   const navigate = useNavigate()
-  const [items, setItems] = useState(mockEntradas)
+  const [items, setItems] = useState<EntradaNF[]>(() => {
+    // Load new entries from sessionStorage on mount
+    const saved = sessionStorage.getItem("novas_entradas");
+    if (saved) {
+      try {
+        const newEntries = JSON.parse(saved) as EntradaNF[];
+        sessionStorage.removeItem("novas_entradas");
+        return [...newEntries, ...mockEntradas];
+      } catch { /* ignore */ }
+    }
+    return mockEntradas;
+  })
   const [filterNome, setFilterNome] = useState("")
   const [filterNFe, setFilterNFe] = useState("")
   const [filterStatus, setFilterStatus] = useState("")
@@ -94,6 +105,22 @@ export default function EstoqueEntradas() {
   // Conciliation
   const [conciliateItem, setConciliateItem] = useState<{ entrada: EntradaNF; itemNF: ItemNF } | null>(null)
   const [conciliateWith, setConciliateWith] = useState("")
+
+  // Check for new entries on focus (when user returns from NovaEntrada)
+  useEffect(() => {
+    const handleFocus = () => {
+      const saved = sessionStorage.getItem("novas_entradas");
+      if (saved) {
+        try {
+          const newEntries = JSON.parse(saved) as EntradaNF[];
+          sessionStorage.removeItem("novas_entradas");
+          setItems(prev => [...newEntries, ...prev]);
+        } catch { /* ignore */ }
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
 
   const toggleRow = (id: number) => {
     setExpandedRows(prev => {
@@ -312,90 +339,70 @@ export default function EstoqueEntradas() {
                                 setConciliateWith(v);
                               }}
                             >
-                              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selecione se já existir no estoque" /></SelectTrigger>
+                              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selecione..." /></SelectTrigger>
                               <SelectContent className="bg-popover">
                                 {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                               </SelectContent>
                             </Select>
                           </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="gap-1 text-xs h-8"
-                            disabled={!(conciliateItem?.itemNF.id === item.id && conciliateWith)}
-                            onClick={() => {
-                              handleConciliate();
-                              // Refresh approvalItem with updated data
-                              setApprovalItem(prev => {
-                                if (!prev) return prev;
-                                return {
-                                  ...prev,
-                                  itens: prev.itens.map(it =>
-                                    it.id === item.id
-                                      ? { ...it, tipo: "existente" as const, item: itensEstoqueMock.find(i => i.value === conciliateWith)?.label || it.item }
-                                      : it
-                                  )
-                                };
-                              });
-                            }}
-                          >
-                            <Link2 className="w-3 h-3" /> Conciliar
-                          </Button>
+                          {conciliateItem?.itemNF.id === item.id && conciliateWith && (
+                            <Button size="sm" variant="outline" className="h-8 text-xs gap-1" onClick={handleConciliate}>
+                              <Link2 className="w-3 h-3" /> Conciliar
+                            </Button>
+                          )}
                         </div>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
+
+              <DialogFooter className="gap-2 pt-4">
+                <Button variant="outline" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }} className="gap-1.5 text-destructive border-destructive/30 hover:bg-destructive/10">
+                  <XCircle className="w-4 h-4" /> Negar
+                </Button>
+                <Button onClick={() => handleApprove(approvalItem)} className="gap-1.5">
+                  <ClipboardCheck className="w-4 h-4" /> Aprovar Entrada
+                </Button>
+              </DialogFooter>
             </div>
           )}
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
-            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>
-              <XCircle className="w-4 h-4 mr-1" /> Reprovar
-            </Button>
-            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>
-              <ClipboardCheck className="w-4 h-4 mr-1" /> Aprovar
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Reject Dialog */}
       <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Reprovar Entrada</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Informe a justificativa para reprovar a entrada <strong>{rejectItem?.notaFiscal}</strong>.</p>
-            <div className="space-y-2">
-              <Label>Justificativa <span className="text-destructive">*</span></Label>
-              <Textarea value={rejectJustificativa} onChange={e => setRejectJustificativa(e.target.value)} placeholder="Motivo da reprovação..." className="min-h-[100px]" />
-            </div>
+          <DialogHeader>
+            <DialogTitle>Justificativa de Rejeição</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">Informe o motivo para rejeitar a entrada <strong>{rejectItem?.notaFiscal}</strong>.</p>
+            <Textarea value={rejectJustificativa} onChange={(e) => setRejectJustificativa(e.target.value)} placeholder="Motivo da rejeição..." className="min-h-[100px]" />
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => { setRejectItem(null); setRejectJustificativa(""); }}>Cancelar</Button>
-            <Button variant="destructive" onClick={handleReject} disabled={!rejectJustificativa.trim()}>Reprovar</Button>
+            <Button variant="destructive" onClick={handleReject} disabled={!rejectJustificativa.trim()}>Confirmar Rejeição</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Conciliation Dialog */}
-      <Dialog open={!!conciliateItem} onOpenChange={() => { setConciliateItem(null); setConciliateWith(""); }}>
+      {/* Conciliate Dialog (from table) */}
+      <Dialog open={!!conciliateItem && !approvalItem} onOpenChange={() => { setConciliateItem(null); setConciliateWith(""); }}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Conciliar Item</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Conciliar Item</DialogTitle>
+          </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">O item <strong>{conciliateItem?.itemNF.item}</strong> foi marcado como novo. Se já existe no estoque, selecione o item correspondente para conciliar.</p>
-            <div className="space-y-2">
-              <Label>Item do Estoque</Label>
-              <Select value={conciliateWith} onValueChange={setConciliateWith}>
-                <SelectTrigger><SelectValue placeholder="Selecione o item existente" /></SelectTrigger>
-                <SelectContent className="bg-popover">
-                  {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
+            <p className="text-sm text-muted-foreground">Vincule <strong>{conciliateItem?.itemNF.item}</strong> a um item existente no estoque:</p>
+            <Select value={conciliateWith} onValueChange={setConciliateWith}>
+              <SelectTrigger><SelectValue placeholder="Selecione o item de estoque" /></SelectTrigger>
+              <SelectContent className="bg-popover">
+                {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => { setConciliateItem(null); setConciliateWith(""); }}>Cancelar</Button>
             <Button onClick={handleConciliate} disabled={!conciliateWith}>Conciliar</Button>
           </DialogFooter>
@@ -405,21 +412,31 @@ export default function EstoqueEntradas() {
       {/* View Dialog */}
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent className="max-w-2xl">
-          <DialogHeader><DialogTitle>Detalhes da Entrada</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Detalhes da Entrada — {viewItem?.notaFiscal}</DialogTitle></DialogHeader>
           {viewItem && (
             <div className="space-y-4">
-              <div className="space-y-2">
-                {Object.entries({ Data: viewItem.data, Responsável: viewItem.responsavel, "Nota Fiscal": viewItem.notaFiscal, Fornecedor: viewItem.fornecedor, Unidade: viewItem.unidade, "Custo Total": viewItem.custoTotal, Status: viewItem.status }).map(([k, v]) => (
-                  <div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>
-                ))}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Data:</span><p className="font-medium">{viewItem.data}</p></div>
+                <div><span className="text-muted-foreground">Responsável:</span><p className="font-medium">{viewItem.responsavel}</p></div>
+                <div><span className="text-muted-foreground">Fornecedor:</span><p className="font-medium">{viewItem.fornecedor}</p></div>
+                <div><span className="text-muted-foreground">Unidade:</span><p className="font-medium">{viewItem.unidade}</p></div>
+                <div><span className="text-muted-foreground">Custo Total:</span><p className="font-medium">{viewItem.custoTotal}</p></div>
+                <div><span className="text-muted-foreground">Status:</span><StatusBadge status={viewItem.status} /></div>
               </div>
               <div>
                 <p className="text-sm font-semibold mb-2">Itens</p>
                 <Table>
-                  <TableHeader><TableRow><TableHead className="text-center">Item</TableHead><TableHead className="text-center">Marca</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-center">Custo Unit.</TableHead><TableHead className="text-center">Especificações</TableHead><TableHead className="text-center">Tipo</TableHead></TableRow></TableHeader>
+                  <TableHeader><TableRow>
+                    <TableHead className="text-center">Item</TableHead><TableHead className="text-center">Qtd</TableHead><TableHead className="text-center">Custo</TableHead><TableHead className="text-center">Tipo</TableHead>
+                  </TableRow></TableHeader>
                   <TableBody>
-                    {viewItem.itens.map(item => (
-                      <TableRow key={item.id}><TableCell className="text-center">{item.item}</TableCell><TableCell className="text-center">{item.marca}</TableCell><TableCell className="text-center">{item.quantidade}</TableCell><TableCell className="text-center">{item.custoUnitario}</TableCell><TableCell className="text-center">{item.especificacoes}</TableCell><TableCell className="text-center"><StatusBadge status={item.tipo === "novo" ? "Pré-Cadastro" : "Aprovada"} className="text-[10px] min-w-[60px]" /></TableCell></TableRow>
+                    {viewItem.itens.map(it => (
+                      <TableRow key={it.id}>
+                        <TableCell className="text-center">{it.item}</TableCell>
+                        <TableCell className="text-center">{it.quantidade}</TableCell>
+                        <TableCell className="text-center">{it.custoUnitario}</TableCell>
+                        <TableCell className="text-center"><StatusBadge status={it.tipo === "novo" ? "Pré-Cadastro" : "Aprovada"} className="text-[10px]" /></TableCell>
+                      </TableRow>
                     ))}
                   </TableBody>
                 </Table>
@@ -431,23 +448,25 @@ export default function EstoqueEntradas() {
 
       {/* Edit Dialog */}
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-        <DialogContent><DialogHeader><DialogTitle>Editar Entrada</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <div><Label>Nota Fiscal</Label><Input value={editData.notaFiscal} onChange={e => setEditData({ ...editData, notaFiscal: e.target.value })} /></div>
-            <div><Label>Fornecedor</Label><Input value={editData.fornecedor} onChange={e => setEditData({ ...editData, fornecedor: e.target.value })} /></div>
-            <div><Label>Unidade</Label><Input value={editData.unidade} onChange={e => setEditData({ ...editData, unidade: e.target.value })} /></div>
-            <div><Label>Responsável</Label><Input value={editData.responsavel} onChange={e => setEditData({ ...editData, responsavel: e.target.value })} /></div>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Editar Entrada</DialogTitle></DialogHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="space-y-2"><Label>Nota Fiscal</Label><Input value={editData.notaFiscal} onChange={e => setEditData(p => ({ ...p, notaFiscal: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Fornecedor</Label><Input value={editData.fornecedor} onChange={e => setEditData(p => ({ ...p, fornecedor: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Unidade</Label><Input value={editData.unidade} onChange={e => setEditData(p => ({ ...p, unidade: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Responsável</Label><Input value={editData.responsavel} onChange={e => setEditData(p => ({ ...p, responsavel: e.target.value }))} /></div>
           </div>
-          <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={handleSaveEdit}>Salvar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Delete Dialog */}
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir entrada?</AlertDialogTitle><AlertDialogDescription>Deseja excluir a NF "{deleteItem?.notaFiscal}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir a entrada <strong>{deleteItem?.notaFiscal}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }
