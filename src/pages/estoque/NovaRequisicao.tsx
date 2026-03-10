@@ -19,7 +19,6 @@ import { toast } from "@/hooks/use-toast";
 interface ItemRequisicao {
   id: number;
   item: string;
-  itemSource: "cadastrado" | "manual";
   marca: string;
   quantidade: string;
   especificacoes: string;
@@ -44,8 +43,7 @@ export default function NovaRequisicao() {
   const navigate = useNavigate();
   const { handleSave, isSaving } = useSaveWithDelay();
   const [itens, setItens] = useState<ItemRequisicao[]>([]);
-  const [itemForm, setItemForm] = useState({ itemCadastrado: "", itemManual: "", marca: "", quantidade: "", especificacoes: "" });
-  const [itemMode, setItemMode] = useState<"cadastrado" | "manual">("cadastrado");
+  const [itemForm, setItemForm] = useState({ itemCadastrado: "", marca: "", quantidade: "", especificacoes: "" });
   const [showNoItemDialog, setShowNoItemDialog] = useState(false);
 
   const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
@@ -61,16 +59,14 @@ export default function NovaRequisicao() {
   ]);
 
   const handleAddItem = () => {
-    const itemName = itemMode === "cadastrado"
-      ? itensCadastrados.find(i => i.value === itemForm.itemCadastrado)?.label || ""
-      : itemForm.itemManual;
+    const itemName = itensCadastrados.find(i => i.value === itemForm.itemCadastrado)?.label || "";
 
     if (!itemName || !itemForm.quantidade) {
-      toast({ title: "Campos obrigatórios", description: "Informe o item e a quantidade.", variant: "destructive" });
+      toast({ title: "Campos obrigatórios", description: "Selecione um item e informe a quantidade.", variant: "destructive" });
       return;
     }
-    setItens([...itens, { id: Date.now(), item: itemName, itemSource: itemMode, marca: itemForm.marca, quantidade: itemForm.quantidade, especificacoes: itemForm.especificacoes }]);
-    setItemForm({ itemCadastrado: "", itemManual: "", marca: "", quantidade: "", especificacoes: "" });
+    setItens([...itens, { id: Date.now(), item: itemName, marca: itemForm.marca, quantidade: itemForm.quantidade, especificacoes: itemForm.especificacoes }]);
+    setItemForm({ itemCadastrado: "", marca: "", quantidade: "", especificacoes: "" });
   };
 
   const handleRemoveItem = (id: number) => setItens(itens.filter((item) => item.id !== id));
@@ -91,7 +87,6 @@ export default function NovaRequisicao() {
       formData,
       itens,
       itemForm,
-      itemMode,
       setorOptions,
       projetoOptions,
     };
@@ -108,7 +103,6 @@ export default function NovaRequisicao() {
         const state = JSON.parse(saved);
         if (state.itens) setItens(state.itens);
         if (state.itemForm) setItemForm(state.itemForm);
-        if (state.itemMode) setItemMode(state.itemMode);
         if (state.formData) {
           const fd = state.formData as Record<string, string>;
           if (fd.setor) setFieldValue("setor", fd.setor);
@@ -154,45 +148,22 @@ export default function NovaRequisicao() {
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Itens</h3>
 
-              <div className="flex gap-3 mb-4">
-                <Button
-                  type="button"
-                  variant={itemMode === "cadastrado" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setItemMode("cadastrado")}
-                >
-                  Item Cadastrado
-                </Button>
-                <Button
-                  type="button"
-                  variant={itemMode === "manual" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setItemMode("manual")}
-                >
-                  Digitar Manualmente
-                </Button>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Item</Label>
-                  {itemMode === "cadastrado" ? (
-                    <div className="flex gap-2">
-                      <div className="flex-1">
-                        <Select value={itemForm.itemCadastrado} onValueChange={(v) => setItemForm(p => ({ ...p, itemCadastrado: v }))}>
-                          <SelectTrigger className="form-input"><SelectValue placeholder="Selecione um item cadastrado" /></SelectTrigger>
-                          <SelectContent className="bg-popover">
-                            {itensCadastrados.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Button type="button" variant="outline" size="icon" className="shrink-0" onClick={() => setShowNoItemDialog(true)} title="Item não encontrado? Cadastre um novo">
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Select value={itemForm.itemCadastrado} onValueChange={(v) => setItemForm(p => ({ ...p, itemCadastrado: v }))}>
+                        <SelectTrigger className="form-input"><SelectValue placeholder="Selecione um item cadastrado" /></SelectTrigger>
+                        <SelectContent className="bg-popover">
+                          {itensCadastrados.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  ) : (
-                    <Input value={itemForm.itemManual} onChange={(e) => setItemForm(p => ({ ...p, itemManual: e.target.value }))} placeholder="Digite o nome do item" className="form-input" />
-                  )}
+                    <Button type="button" variant="outline" size="icon" className="shrink-0" onClick={() => setShowNoItemDialog(true)} title="Item não encontrado? Cadastre um novo">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Marca</Label>
@@ -218,7 +189,6 @@ export default function NovaRequisicao() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center">Item</TableHead>
-                  <TableHead className="text-center">Origem</TableHead>
                   <TableHead className="text-center">Marca</TableHead>
                   <TableHead className="text-center">Quantidade</TableHead>
                   <TableHead className="text-center">Especificações</TableHead>
@@ -227,16 +197,11 @@ export default function NovaRequisicao() {
               </TableHeader>
               <TableBody>
                 {itens.length === 0 ? (
-                  <TableRow><TableCell className="text-center text-muted-foreground" colSpan={6}>Nenhum item adicionado</TableCell></TableRow>
+                  <TableRow><TableCell className="text-center text-muted-foreground" colSpan={5}>Nenhum item adicionado</TableCell></TableRow>
                 ) : (
                   itens.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="text-center">{item.item}</TableCell>
-                      <TableCell className="text-center">
-                        <span className={`text-xs px-2 py-0.5 rounded ${item.itemSource === "cadastrado" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
-                          {item.itemSource === "cadastrado" ? "Cadastrado" : "Manual"}
-                        </span>
-                      </TableCell>
                       <TableCell className="text-center">{item.marca}</TableCell>
                       <TableCell className="text-center">{item.quantidade}</TableCell>
                       <TableCell className="text-center">{item.especificacoes}</TableCell>

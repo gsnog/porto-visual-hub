@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,14 +8,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, ExternalLink } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
 
 interface ItemOrdem {
   id: number;
   item: string;
-  itemSource: "cadastrado" | "manual";
   marca: string;
   quantidade: string;
   especificacoes: string;
@@ -49,30 +50,52 @@ export default function NovaOrdemCompra() {
   const [itens, setItens] = useState<ItemOrdem[]>([]);
   const [formData, setFormData] = useState({
     unidade: "", setor: "", descricao: "", justificativa: "",
-    itemCadastrado: "", itemManual: "", marca: "", quantidade: "", especificacoes: "",
+    itemCadastrado: "", marca: "", quantidade: "", especificacoes: "",
   });
-  const [itemMode, setItemMode] = useState<"cadastrado" | "manual">("cadastrado");
+  const [showNoItemDialog, setShowNoItemDialog] = useState(false);
+
+  // Restore state from sessionStorage on mount
+  useState(() => {
+    const saved = sessionStorage.getItem("novaOrdemCompra_state");
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        if (state.itens) setItens(state.itens);
+        if (state.formData) setFormData(prev => ({ ...prev, ...state.formData }));
+        sessionStorage.removeItem("novaOrdemCompra_state");
+      } catch (e) {
+        console.error("Erro ao restaurar estado:", e);
+      }
+    }
+  });
 
   const handleAddItem = () => {
-    const itemName = itemMode === "cadastrado"
-      ? itensCadastrados.find(i => i.value === formData.itemCadastrado)?.label || ""
-      : formData.itemManual;
-    if (!itemName || !formData.quantidade) return;
+    const itemName = itensCadastrados.find(i => i.value === formData.itemCadastrado)?.label || "";
+    if (!itemName || !formData.quantidade) {
+      toast({ title: "Campos obrigatórios", description: "Selecione um item e informe a quantidade.", variant: "destructive" });
+      return;
+    }
     const novoItem: ItemOrdem = {
       id: Date.now(),
       item: itemName,
-      itemSource: itemMode,
       marca: formData.marca,
       quantidade: formData.quantidade,
       especificacoes: formData.especificacoes,
     };
     setItens([...itens, novoItem]);
-    setFormData({ ...formData, itemCadastrado: "", itemManual: "", marca: "", quantidade: "", especificacoes: "" });
+    setFormData({ ...formData, itemCadastrado: "", marca: "", quantidade: "", especificacoes: "" });
   };
 
   const handleRemoveItem = (id: number) => setItens(itens.filter((item) => item.id !== id));
   const handleSalvar = () => handleSave("/estoque/ordem-compra", "Ordem de compra salva com sucesso!");
   const handleCancelar = () => navigate("/estoque/ordem-compra");
+
+  const handleGoToCadastroItem = () => {
+    const stateToSave = { formData, itens };
+    sessionStorage.setItem("novaOrdemCompra_state", JSON.stringify(stateToSave));
+    setShowNoItemDialog(false);
+    navigate("/cadastro/estoque/itens/novo?returnTo=/estoque/ordem-compra/nova");
+  };
 
   return (
     <SimpleFormWizard title="Nova Ordem de Compra">
@@ -138,38 +161,22 @@ export default function NovaOrdemCompra() {
             <div className="border-t pt-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">Adicionar Item</h3>
 
-              <div className="flex gap-3 mb-4">
-                <Button
-                  type="button"
-                  variant={itemMode === "cadastrado" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setItemMode("cadastrado")}
-                >
-                  Item Cadastrado
-                </Button>
-                <Button
-                  type="button"
-                  variant={itemMode === "manual" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setItemMode("manual")}
-                >
-                  Digitar Manualmente
-                </Button>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Item</Label>
-                  {itemMode === "cadastrado" ? (
-                    <Select value={formData.itemCadastrado} onValueChange={(v) => setFormData({ ...formData, itemCadastrado: v })}>
-                      <SelectTrigger className="form-input"><SelectValue placeholder="Selecione um item cadastrado" /></SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {itensCadastrados.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input value={formData.itemManual} onChange={(e) => setFormData({ ...formData, itemManual: e.target.value })} placeholder="Digite o nome do item" className="form-input" />
-                  )}
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Select value={formData.itemCadastrado} onValueChange={(v) => setFormData({ ...formData, itemCadastrado: v })}>
+                        <SelectTrigger className="form-input"><SelectValue placeholder="Selecione um item cadastrado" /></SelectTrigger>
+                        <SelectContent className="bg-popover">
+                          {itensCadastrados.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button type="button" variant="outline" size="icon" className="shrink-0" onClick={() => setShowNoItemDialog(true)} title="Item não encontrado? Cadastre um novo">
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Marca</Label>
@@ -197,7 +204,6 @@ export default function NovaOrdemCompra() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center">Item</TableHead>
-                  <TableHead className="text-center">Origem</TableHead>
                   <TableHead className="text-center">Marca</TableHead>
                   <TableHead className="text-center">Quantidade</TableHead>
                   <TableHead className="text-center">Especificações</TableHead>
@@ -206,16 +212,11 @@ export default function NovaOrdemCompra() {
               </TableHeader>
               <TableBody>
                 {itens.length === 0 ? (
-                  <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">Nenhum item adicionado</TableCell></TableRow>
                 ) : (
                   itens.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="text-center">{item.item}</TableCell>
-                      <TableCell className="text-center">
-                        <span className={`text-xs px-2 py-0.5 rounded ${item.itemSource === "cadastrado" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
-                          {item.itemSource === "cadastrado" ? "Cadastrado" : "Manual"}
-                        </span>
-                      </TableCell>
                       <TableCell className="text-center">{item.marca}</TableCell>
                       <TableCell className="text-center">{item.quantidade}</TableCell>
                       <TableCell className="text-center">{item.especificacoes}</TableCell>
@@ -232,6 +233,29 @@ export default function NovaOrdemCompra() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Dialog: Item não encontrado */}
+      <Dialog open={showNoItemDialog} onOpenChange={setShowNoItemDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Item não encontrado?</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              O item que você precisa não está cadastrado no sistema. Deseja ir para a página de cadastro de itens?
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Suas informações preenchidas neste formulário serão <strong>salvas automaticamente</strong> e restauradas quando você voltar.
+            </p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowNoItemDialog(false)}>Cancelar</Button>
+            <Button onClick={handleGoToCadastroItem} className="gap-2">
+              <ExternalLink className="w-4 h-4" /> Ir para Cadastro de Itens
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SimpleFormWizard>
   );
 }

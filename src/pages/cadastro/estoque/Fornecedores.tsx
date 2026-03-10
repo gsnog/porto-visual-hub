@@ -21,7 +21,18 @@ type Fornecedor = typeof mockFornecedores[0];
 
 const FornecedoresEstoque = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockFornecedores);
+  const [items, setItems] = useState<Fornecedor[]>(() => {
+    // Load auto-registered suppliers from sessionStorage
+    const saved = sessionStorage.getItem("novos_fornecedores");
+    if (saved) {
+      try {
+        const newSuppliers = JSON.parse(saved) as Fornecedor[];
+        sessionStorage.removeItem("novos_fornecedores");
+        return [...mockFornecedores, ...newSuppliers];
+      } catch { /* ignore */ }
+    }
+    return mockFornecedores;
+  });
   const [searchNome, setSearchNome] = useState("");
   const [searchCnpj, setSearchCnpj] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
