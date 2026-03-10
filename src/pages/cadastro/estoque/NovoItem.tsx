@@ -21,6 +21,8 @@ const validationFields = [
 
 const NovoItem = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
   const { handleSave, isSaving } = useSaveWithDelay();
 
   const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
@@ -45,7 +47,8 @@ const NovoItem = () => {
 
   const handleSalvar = async () => {
     if (validateAll()) {
-      await handleSave("/cadastro/estoque/itens", "Item salvo com sucesso!");
+      const redirectTo = returnTo || "/cadastro/estoque/itens";
+      await handleSave(redirectTo, "Item salvo com sucesso!");
     }
   };
 
