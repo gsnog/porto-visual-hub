@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,7 +35,7 @@ const setorOptions = [
   { value: "operacional", label: "Operacional" },
 ];
 
-const itensCadastrados = [
+const itensCadastradosBase = [
   { value: "parafuso-m8", label: "Parafuso M8" },
   { value: "parafuso-m10", label: "Parafuso M10" },
   { value: "cabo-hdmi", label: "Cabo HDMI" },
@@ -44,10 +44,26 @@ const itensCadastrados = [
   { value: "toner-hp", label: "Toner HP" },
 ];
 
+function loadItensCadastrados() {
+  const novos = JSON.parse(sessionStorage.getItem("novos_itens_cadastrados") || "[]");
+  const extras = novos.map((n: any) => ({ value: n.value, label: n.label }));
+  // Merge without duplicates
+  const allValues = new Set(itensCadastradosBase.map(i => i.value));
+  const merged = [...itensCadastradosBase];
+  for (const e of extras) {
+    if (!allValues.has(e.value)) {
+      merged.push(e);
+      allValues.add(e.value);
+    }
+  }
+  return merged;
+}
+
 export default function NovaOrdemCompra() {
   const navigate = useNavigate();
   const { isSaving, handleSave } = useSaveWithDelay();
   const [itens, setItens] = useState<ItemOrdem[]>([]);
+  const [itensCadastrados, setItensCadastrados] = useState(loadItensCadastrados);
   const [formData, setFormData] = useState({
     unidade: "", setor: "", descricao: "", justificativa: "",
     itemCadastrado: "", marca: "", quantidade: "", especificacoes: "",
@@ -68,6 +84,15 @@ export default function NovaOrdemCompra() {
       }
     }
   });
+
+  // Reload items list when window regains focus (returning from cadastro)
+  useEffect(() => {
+    const handleFocus = () => {
+      setItensCadastrados(loadItensCadastrados());
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
 
   const handleAddItem = () => {
     const itemName = itensCadastrados.find(i => i.value === formData.itemCadastrado)?.label || "";
@@ -137,24 +162,14 @@ export default function NovaOrdemCompra() {
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Descrição</Label>
-                <Textarea 
-                  value={formData.descricao} 
-                  onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} 
-                  placeholder="Digite a descrição" 
-                  className="form-input min-h-[100px]" 
-                />
+                <Textarea value={formData.descricao} onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} placeholder="Digite a descrição" className="form-input min-h-[100px]" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Justificativa</Label>
-                <Textarea 
-                  value={formData.justificativa} 
-                  onChange={(e) => setFormData({ ...formData, justificativa: e.target.value })} 
-                  placeholder="Digite a justificativa da ordem de compra" 
-                  className="form-input min-h-[100px]" 
-                />
+                <Textarea value={formData.justificativa} onChange={(e) => setFormData({ ...formData, justificativa: e.target.value })} placeholder="Digite a justificativa da ordem de compra" className="form-input min-h-[100px]" />
               </div>
             </div>
 

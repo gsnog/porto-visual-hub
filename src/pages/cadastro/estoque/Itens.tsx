@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, FileText } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
@@ -19,15 +19,61 @@ const mockItens = [
 
 type Item = typeof mockItens[0];
 
+function loadNewItems(): Item[] {
+  // Load items from NovoItem registration
+  const novosItens = JSON.parse(sessionStorage.getItem("novos_itens_cadastrados") || "[]");
+  // Load items from entry approval (novo items)
+  const novosEntrada = JSON.parse(sessionStorage.getItem("novos_itens_entrada") || "[]");
+  
+  const all: Item[] = [];
+  for (const n of novosItens) {
+    if (n.id) {
+      all.push({
+        id: n.id,
+        codigo: n.codigo || `EST${String(n.id).slice(-3)}`,
+        dataCadastro: n.dataCadastro || new Date().toLocaleDateString("pt-BR"),
+        item: n.label || n.item || "",
+        formaApresentacao: n.formaApresentacao || "",
+        setores: n.setores || "",
+      });
+    }
+  }
+  for (const n of novosEntrada) {
+    all.push(n);
+  }
+  // Clear entry items after loading
+  sessionStorage.removeItem("novos_itens_entrada");
+  return all;
+}
+
 const Itens = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockItens);
+  const [items, setItems] = useState<Item[]>(() => {
+    const newItems = loadNewItems();
+    return [...newItems, ...mockItens];
+  });
   const [searchNome, setSearchNome] = useState("");
   const [searchData, setSearchData] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<Item | null>(null);
   const [editItem, setEditItem] = useState<Item | null>(null);
   const [editData, setEditData] = useState({ item: "", formaApresentacao: "", setores: "" });
+
+  // Reload when window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      const newItems = loadNewItems();
+      if (newItems.length > 0) {
+        setItems(prev => {
+          const existingIds = new Set(prev.map(i => i.id));
+          const unique = newItems.filter(n => !existingIds.has(n.id));
+          return [...unique, ...prev];
+        });
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
 
   const filterFields = [
     { type: "text" as const, label: "Nome", placeholder: "Buscar por nome...", value: searchNome, onChange: setSearchNome, width: "flex-1 min-w-[200px]" },
