@@ -1,73 +1,54 @@
-# Welcome to your Lovable project
-
-## Project info
-
-**URL**: https://lovable.dev/projects/330d0e7c-2a8e-483a-a996-bbe5ec8d9b4c
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/330d0e7c-2a8e-483a-a996-bbe5ec8d9b4c) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# SerpTech - Sistema de Gestão e Comunicação (Estaleiro)
+Bem-vindo ao **SerpTech**, uma plataforma integrada de gestão empresarial (ERP) com foco em comunicação em tempo real, gestão de pessoas e produtividade (Kanban/Agenda).
+## 🚀 Arquitetura do Projeto
+O projeto é dividido em duas partes principais:
+1.  **Backend (Django)**: Localizado na pasta `/DLC`. Utiliza Django REST Framework para APIs, Django Channels para WebSockets e PostgreSQL como banco de dados.
+2.  **Frontend (React)**: Localizado na pasta `/front-end-serptech`. Desenvolvido com Vite, React, TypeScript, Tailwind CSS e Shadcn/UI.
+---
+## ✨ Funcionalidades Principais (Foco em Comunicação)
+Recentemente, o sistema de chat passou por uma evolução de 12 fases para garantir estabilidade e UX premium:
+-   **Comunicação em Tempo Real**: Mensageria instantânea via WebSockets (Django Channels).
+-   **WebRTC Video/Audio**: Chamadas de voz e vídeo integradas diretamente no chat.
+-   **Notificações Globais**: Badges de mensagens não lidas que persistem em qualquer tela do sistema.
+-   **Preview WhatsApp Style**: Visualização da última mensagem na barra lateral com atualização automática.
+-   **Gestão de Pessoas**: Integração com a base real de usuários para criação de conversas privadas e grupos.
+-   **Kanban & Agenda**: Sincronização em tempo real de atribuições de tarefas e convites de eventos.
+---
+## 🛠 Como Rodar o Projeto Localmente
+### 1. Pré-requisitos
+-   Python 3.10+
+-   Node.js 18+
+-   Redis (necessário para o Django Channels / WebSockets)
+-   PostgreSQL (configurado no `settings.py`)
+### 2. Configurando o Backend (Django)
+```bash
+# Entre na pasta do backend
+cd DLC
+# Crie e ative um ambiente virtual
+python -m venv venv
+source venv/bin/activate  # No Windows: venv\Scripts\activate
+# Instale as dependências
+pip install -r requirements.txt
+# Execute as migrações
+python manage.py migrate
+# Inicie o servidor de desenvolvimento (Daphne para suporte a WebSocket)
+daphne -b 127.0.0.1 -p 8000 app.asgi:application
+```
+### 3. Configurando o Frontend (React)
+```bash
+# Entre na pasta do frontend
+cd front-end-serptech
+# Instale as dependências
+npm install
+# Inicie o servidor de desenvolvimento
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/330d0e7c-2a8e-483a-a996-bbe5ec8d9b4c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+O frontend estará acessível em `http://localhost:5173`.
+---
+## 📂 Documentação de Desenvolvimento
+Para um histórico detalhado das implementações e correções técnicas, consulte os documentos na pasta de brain do agente:
+-   [Walkthrough Completo (12 Fases)](file:///Users/giovananogueira/.gemini/antigravity/brain/ecf790fe-6dde-47c3-bcda-edbaba79c68b/walkthrough.md): Detalhamento técnico de cada sprint de desenvolvimento.
+-   [Plano de Implementação](file:///Users/giovananogueira/.gemini/antigravity/brain/ecf790fe-6dde-47c3-bcda-edbaba79c68b/implementation_plan.md): Estrutura de mudanças aprovadas.
+---
+## 🛡 Licença
+Este projeto é de uso restrito e confidencial da SerpTech.
