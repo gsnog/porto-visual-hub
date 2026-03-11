@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,67 +9,103 @@ import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, FileText } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
+import {
+  fetchTransferencias, createTransferencia, updateTransferencia, deleteTransferencia,
+  fetchContasBancarias,
+  transferenciasQueryKey, type Transacao,
+} from "@/services/financeiro";
 
-const mockTransferencias = [
-  { id: 1, data: "15/01/2026", contaOrigem: "Banco do Brasil - 12345-6", contaDestino: "Itaú - 98765-4", valor: "R$ 10.000,00" },
-  { id: 2, data: "18/01/2026", contaOrigem: "Itaú - 98765-4", contaDestino: "Bradesco - 54321-0", valor: "R$ 5.000,00" },
-];
-type Transferencia = typeof mockTransferencias[0];
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return <div className="flex justify-between items-center py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{label}</span><span className="text-sm font-medium text-foreground">{value}</span></div>;
+}
 
 const Transferencias = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockTransferencias);
-  const [searchData, setSearchData] = useState("");
+  const queryClient = useQueryClient();
   const [searchConta, setSearchConta] = useState("");
+  const [searchData, setSearchData] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [viewItem, setViewItem] = useState<Transferencia | null>(null);
-  const [editItem, setEditItem] = useState<Transferencia | null>(null);
-  const [editData, setEditData] = useState({ data: "", contaOrigem: "", contaDestino: "", valor: "" });
-  const filtered = items.filter(t => t.contaOrigem.toLowerCase().includes(searchConta.toLowerCase()));
-  const getExportData = () => filtered.map(t => ({ Data: t.data, "Conta Origem": t.contaOrigem, "Conta Destino": t.contaDestino, Valor: t.valor }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Transferência excluída." }); } };
-  const deleteItem = items.find(i => i.id === deleteId);
-  const openEdit = (t: Transferencia) => { setEditItem(t); setEditData({ data: t.data, contaOrigem: t.contaOrigem, contaDestino: t.contaDestino, valor: t.valor }); };
+  const [viewItem, setViewItem] = useState<Transacao | null>(null);
+  const [editItem, setEditItem] = useState<Transacao | null>(null);
+  const [editForm, setEditForm] = useState({ valor: 0, descricao: "", conta_origem: 0, conta_destino: 0 });
+
+  const { data: items = [], isLoading } = useQuery({ queryKey: transferenciasQueryKey, queryFn: fetchTransferencias });
+  const { data: contas = [] } = useQuery({ queryKey: ['contasBancarias'], queryFn: fetchContasBancarias });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransferencia,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: transferenciasQueryKey }); setDeleteId(null); toast({ title: "Removida", description: "Transferência excluída." }); },
+    onError: () => toast({ title: "Erro", description: "Não foi possível excluir.", variant: "destructive" }),
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: (payload: Partial<Transacao> & { id?: number }) =>
+      payload.id ? updateTransferencia(payload.id, payload) : createTransferencia(payload),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: transferenciasQueryKey }); setEditItem(null); toast({ title: "Salvo", description: "Transferência salva." }); },
+    onError: () => toast({ title: "Erro", description: "Não foi possível salvar.", variant: "destructive" }),
+  });
+
+  const filtered = items.filter(t => t.conta_origem_nome?.toLowerCase().includes(searchConta.toLowerCase()) || t.conta_destino_nome?.toLowerCase().includes(searchConta.toLowerCase()));
+  const getExportData = () => filtered.map(t => ({ Data: t.data_de_lancamento, "Conta Origem": t.conta_origem_nome, "Conta Destino": t.conta_destino_nome, Valor: t.valor }));
+  const deleteItemObj = items.find(i => i.id === deleteId);
+
+  const openEdit = (t: Transacao) => { setEditItem(t); setEditForm({ valor: t.valor, descricao: t.descricao || "", conta_origem: t.conta_origem, conta_destino: t.conta_destino }); };
 
   return (
     <div className="flex flex-col h-full bg-background"><div className="space-y-6">
       <div className="flex flex-wrap gap-3 items-center">
-        <Button onClick={() => navigate("/cadastro/financeiro/transferencias/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Transferência</Button>
+        <Button onClick={() => { setEditItem({ id: 0, data_de_lancamento: "", valor: 0, conta_origem: 0, conta_destino: 0 }); setEditForm({ valor: 0, descricao: "", conta_origem: 0, conta_destino: 0 }); }} className="gap-2"><Plus className="w-4 h-4" />Nova Transferência</Button>
         <ExportButton getData={getExportData} fileName="transferencias" />
       </div>
       <FilterSection fields={[
-        { type: "text" as const, label: "Conta Origem", placeholder: "Buscar conta origem...", value: searchConta, onChange: setSearchConta, width: "flex-1 min-w-[200px]" },
+        { type: "text" as const, label: "Conta", placeholder: "Buscar conta...", value: searchConta, onChange: setSearchConta, width: "flex-1 min-w-[200px]" },
         { type: "date" as const, label: "Data", value: searchData, onChange: setSearchData, width: "min-w-[160px]" }
       ]} resultsCount={filtered.length} />
       <div className="rounded border border-border overflow-hidden"><Table><TableHeader><TableRow className="bg-table-header">
         <TableHead className="text-center font-semibold">Data</TableHead><TableHead className="text-center font-semibold">Conta Origem</TableHead><TableHead className="text-center font-semibold">Conta Destino</TableHead><TableHead className="text-center font-semibold">Valor</TableHead><TableHead className="text-center font-semibold">Ações</TableHead>
       </TableRow></TableHeader><TableBody>
-        {filtered.length === 0 ? <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Nenhuma transferência encontrada.</TableCell></TableRow> :
-          filtered.map(t => <TableRow key={t.id} className="hover:bg-table-hover transition-colors"><TableCell className="text-center">{t.data}</TableCell><TableCell className="text-center font-medium">{t.contaOrigem}</TableCell><TableCell className="text-center">{t.contaDestino}</TableCell><TableCell className="text-center font-semibold">{t.valor}</TableCell><TableCell className="text-center"><TableActions onView={() => setViewItem(t)} onEdit={() => openEdit(t)} onDelete={() => setDeleteId(t.id)} /></TableCell></TableRow>)}
-      </TableBody></Table></div>
+          {isLoading ? <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow> :
+            filtered.length === 0 ? <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Nenhuma transferência encontrada.</TableCell></TableRow> :
+              filtered.map(t => <TableRow key={t.id} className="hover:bg-table-hover transition-colors">
+                <TableCell className="text-center">{t.data_de_lancamento}</TableCell>
+                <TableCell className="text-center font-medium">{t.conta_origem_nome}</TableCell>
+                <TableCell className="text-center">{t.conta_destino_nome}</TableCell>
+                <TableCell className="text-center font-semibold">R$ {t.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                <TableCell className="text-center"><TableActions onView={() => setViewItem(t)} onEdit={() => openEdit(t)} onDelete={() => setDeleteId(t.id)} /></TableCell>
+              </TableRow>)}
+        </TableBody></Table></div>
     </div>
-    <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}><DialogContent><DialogHeader><DialogTitle>Transferência</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2"><InfoRow label="Data" value={viewItem.data} /><InfoRow label="Conta Origem" value={viewItem.contaOrigem} /><InfoRow label="Conta Destino" value={viewItem.contaDestino} /><InfoRow label="Valor" value={viewItem.valor} /></div>}</DialogContent></Dialog>
-    <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-      <DialogContent>
-        <DialogHeader><DialogTitle>Editar Transferência</DialogTitle></DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2"><Label>Data</Label><Input value={editData.data} onChange={e => setEditData(p => ({ ...p, data: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Conta Origem</Label><Input value={editData.contaOrigem} onChange={e => setEditData(p => ({ ...p, contaOrigem: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Conta Destino</Label><Input value={editData.contaDestino} onChange={e => setEditData(p => ({ ...p, contaDestino: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Valor</Label><Input value={editData.valor} onChange={e => setEditData(p => ({ ...p, valor: e.target.value }))} /></div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-          <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Transferência atualizada." }); } }}>Salvar</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-    <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir esta transferência de <strong>{deleteItem?.valor}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+      <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}><DialogContent><DialogHeader><DialogTitle>Transferência</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2"><InfoRow label="Data" value={viewItem.data_de_lancamento} /><InfoRow label="Conta Origem" value={viewItem.conta_origem_nome || String(viewItem.conta_origem)} /><InfoRow label="Conta Destino" value={viewItem.conta_destino_nome || String(viewItem.conta_destino)} /><InfoRow label="Valor" value={`R$ ${viewItem.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} /></div>}</DialogContent></Dialog>
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{editItem?.id ? "Editar Transferência" : "Nova Transferência"}</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2"><Label>Conta Origem</Label>
+              <select className="w-full border rounded px-3 py-2 bg-background text-sm" value={editForm.conta_origem} onChange={e => setEditForm(p => ({ ...p, conta_origem: Number(e.target.value) }))}>
+                <option value={0}>Selecione...</option>
+                {contas.map(c => <option key={c.id} value={c.id}>{c.banco}</option>)}
+              </select>
+            </div>
+            <div className="space-y-2"><Label>Conta Destino</Label>
+              <select className="w-full border rounded px-3 py-2 bg-background text-sm" value={editForm.conta_destino} onChange={e => setEditForm(p => ({ ...p, conta_destino: Number(e.target.value) }))}>
+                <option value={0}>Selecione...</option>
+                {contas.map(c => <option key={c.id} value={c.id}>{c.banco}</option>)}
+              </select>
+            </div>
+            <div className="space-y-2"><Label>Valor (R$)</Label><Input type="number" value={editForm.valor} onChange={e => setEditForm(p => ({ ...p, valor: Number(e.target.value) }))} /></div>
+            <div className="space-y-2"><Label>Descrição</Label><Input value={editForm.descricao} onChange={e => setEditForm(p => ({ ...p, descricao: e.target.value }))} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={() => saveMutation.mutate({ id: editItem?.id || undefined, ...editForm })} disabled={saveMutation.isPending}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir esta transferência de <strong>R$ {deleteItemObj?.valor}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => deleteId && deleteMutation.mutate(deleteId)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
     </div>
   );
 };
-function InfoRow({ label, value }: { label: string; value: string }) { return <div className="flex justify-between items-center py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{label}</span><span className="text-sm font-medium text-foreground">{value}</span></div>; }
 export default Transferencias;

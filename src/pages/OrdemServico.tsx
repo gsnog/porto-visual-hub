@@ -1,215 +1,92 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { FilterSection } from "@/components/FilterSection";
-import { Plus, ClipboardCheck, Flag } from "lucide-react";
 import { TableActions } from "@/components/TableActions";
 import { StatusBadge } from "@/components/StatusBadge";
-import { ExportButton } from "@/components/ExportButton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
+import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
+import {
+  fetchOrdensServico, deleteOrdemServico, ordensServicoQueryKey, type OrdemServico,
+} from "@/services/estoque";
 
-const mockOrdens = [
-  { id: 1, tipo: "Serviços Gerais", data: "19/12/2024", descricao: "Limpeza geral", responsavel: "João Silva", status: "Concluído" },
-  { id: 2, tipo: "Patrimônio", data: "18/12/2024", descricao: "Manutenção de ar-condicionado", responsavel: "Maria Santos", status: "Em Andamento" },
-  { id: 3, tipo: "Suporte", data: "17/12/2024", descricao: "Instalação de software", responsavel: "Carlos Pereira", status: "Aguardando Aprovação" },
-  { id: 4, tipo: "Serviços Gerais", data: "16/12/2024", descricao: "Reparo elétrico", responsavel: "Ana F.", status: "Pendente" },
-]
-
-type Ordem = typeof mockOrdens[0];
-
-export default function OrdemServico() {
+const OrdemServicoPage = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockOrdens);
-  const [filterDescricao, setFilterDescricao] = useState("");
-  const [filterTipo, setFilterTipo] = useState("");
-  const [filterDataInicio, setFilterDataInicio] = useState("");
-  const [filterDataFim, setFilterDataFim] = useState("");
-  const [viewItem, setViewItem] = useState<Ordem | null>(null);
+  const queryClient = useQueryClient();
+  const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [editItem, setEditItem] = useState<Ordem | null>(null);
-  const [editData, setEditData] = useState({ tipo: "", descricao: "", responsavel: "" });
+  const [viewItem, setViewItem] = useState<OrdemServico | null>(null);
 
-  const [approvalItem, setApprovalItem] = useState<Ordem | null>(null);
-  const [rejectItem, setRejectItem] = useState<Ordem | null>(null);
-  const [rejectJustificativa, setRejectJustificativa] = useState("");
-  const [finalizarItem, setFinalizarItem] = useState<Ordem | null>(null);
+  const { data: items = [], isLoading } = useQuery({ queryKey: ordensServicoQueryKey, queryFn: fetchOrdensServico });
 
-  const filtered = useMemo(() => {
-    return items.filter(ordem => {
-      const matchDescricao = ordem.descricao.toLowerCase().includes(filterDescricao.toLowerCase())
-      const matchTipo = filterTipo && filterTipo !== "todos" ? ordem.tipo.toLowerCase().includes(filterTipo.replace("_", " ")) : true
-      const matchDataInicio = filterDataInicio ? ordem.data.includes(filterDataInicio.split("-").reverse().join("/")) : true
-      const matchDataFim = filterDataFim ? ordem.data.includes(filterDataFim.split("-").reverse().join("/")) : true
-      return matchDescricao && matchTipo && matchDataInicio && matchDataFim
-    })
-  }, [items, filterDescricao, filterTipo, filterDataInicio, filterDataFim])
+  const deleteMutation = useMutation({
+    mutationFn: deleteOrdemServico,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ordensServicoQueryKey }); setDeleteId(null); toast({ title: "Removida", description: "Ordem de serviço excluída." }); },
+    onError: () => toast({ title: "Erro", description: "Não foi possível excluir.", variant: "destructive" }),
+  });
 
-  const getExportData = () => filtered.map(o => ({ ID: o.id, Tipo: o.tipo, Data: o.data, Descrição: o.descricao, Responsável: o.responsavel, Status: o.status }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Ordem de serviço excluída." }); } };
-  const openEdit = (o: Ordem) => { setEditItem(o); setEditData({ tipo: o.tipo, descricao: o.descricao, responsavel: o.responsavel }); };
-  const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Ordem atualizada." }); } };
-  const deleteItemData = items.find(i => i.id === deleteId);
-
-  const handleFinalizar = (ordem: Ordem) => {
-    setItems(prev => prev.map(i => i.id === ordem.id ? { ...i, status: "Aguardando Aprovação" } : i));
-    setFinalizarItem(null);
-    toast({ title: "Finalizada", description: `Ordem "${ordem.descricao}" enviada para aprovação do gerente.` });
-  };
-
-  const handleApprove = (ordem: Ordem) => {
-    setItems(prev => prev.map(i => i.id === ordem.id ? { ...i, status: "Concluído" } : i));
-    setApprovalItem(null);
-    toast({ title: "Aprovada", description: `Ordem "${ordem.descricao}" aprovada e concluída.` });
-  };
-
-  const handleReject = () => {
-    if (rejectItem) {
-      setItems(prev => prev.map(i => i.id === rejectItem.id ? { ...i, status: "Em Andamento" } : i));
-      setRejectItem(null);
-      setRejectJustificativa("");
-      toast({ title: "Negada", description: `Ordem "${rejectItem.descricao}" foi devolvida para correção.` });
-    }
-  };
+  const filtered = items.filter(o =>
+    o.descricao?.toLowerCase().includes(search.toLowerCase()) ||
+    o.tipo_de_ordem?.toLowerCase().includes(search.toLowerCase()) ||
+    o.usuario_nome?.toLowerCase().includes(search.toLowerCase())
+  );
+  const getExportData = () => filtered.map(o => ({ Nº: o.numero, Tipo: o.tipo_de_ordem, Descrição: o.descricao, Status: o.status, Solicitante: o.usuario_nome }));
+  const deleteItemObj = items.find(i => i.id === deleteId);
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
-        {/* Page description */}
-        <div className="bg-muted/30 border border-border rounded-lg p-4">
-          <p className="text-sm text-muted-foreground">
-            Abra ordens para solicitação de serviços como manutenção, suporte técnico, reparos e serviços gerais. Acompanhe a execução e aprovação de cada ordem.
-          </p>
-        </div>
-
         <div className="flex flex-wrap gap-3 items-center">
-          <Button className="gap-2" onClick={() => navigate("/estoque/ordem-servico/nova")}><Plus className="w-4 h-4" />Nova Ordem</Button>
-          <ExportButton getData={getExportData} fileName="ordem-servico" />
+          <Button onClick={() => navigate("/ordens-de-servico/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Ordem de Serviço</Button>
+          <ExportButton getData={getExportData} fileName="ordens-servico" />
         </div>
-
-        <FilterSection
-          fields={[
-            { type: "text", label: "Descrição", placeholder: "Buscar descrição...", value: filterDescricao, onChange: setFilterDescricao, width: "flex-1 min-w-[200px]" },
-            { type: "select", label: "Tipo de Ordem", placeholder: "Selecione...", value: filterTipo, onChange: setFilterTipo, options: [{ value: "todos", label: "Todos" }, { value: "serviços gerais", label: "Serviços Gerais" }, { value: "patrimônio", label: "Patrimônio" }, { value: "suporte", label: "Suporte" }], width: "min-w-[180px]" },
-            { type: "date", label: "Data Início", value: filterDataInicio, onChange: setFilterDataInicio, width: "min-w-[160px]" },
-            { type: "date", label: "Data Fim", value: filterDataFim, onChange: setFilterDataFim, width: "min-w-[160px]" }
-          ]}
-          resultsCount={filtered.length}
-        />
-
-        <Table>
-          <TableHeader><TableRow><TableHead className="text-center">ID</TableHead><TableHead className="text-center">Tipo</TableHead><TableHead className="text-center">Data</TableHead><TableHead className="text-center">Descrição</TableHead><TableHead className="text-center">Responsável</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Finalizar</TableHead><TableHead className="text-center">Aprovação</TableHead><TableHead className="text-center">Ações</TableHead></TableRow></TableHeader>
-          <TableBody>
-            {filtered.length === 0 ? (<TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Nenhuma ordem encontrada.</TableCell></TableRow>) : (
-              filtered.map((ordem) => (
-                <TableRow key={ordem.id}>
-                  <TableCell className="text-center">{ordem.id}</TableCell><TableCell className="text-center">{ordem.tipo}</TableCell><TableCell className="text-center">{ordem.data}</TableCell><TableCell className="text-center">{ordem.descricao}</TableCell><TableCell className="text-center">{ordem.responsavel}</TableCell>
-                  <TableCell className="text-center"><StatusBadge status={ordem.status} /></TableCell>
-                  <TableCell className="text-center">
-                    {(ordem.status === "Em Andamento" || ordem.status === "Pendente") ? (
-                      <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setFinalizarItem(ordem)}>
-                        <Flag className="w-3.5 h-3.5" /> Finalizar
-                      </Button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {ordem.status === "Aguardando Aprovação" ? (
-                      <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setApprovalItem(ordem)}>
-                        <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
-                      </Button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <TableActions onView={() => setViewItem(ordem)} onEdit={() => openEdit(ordem)} onDelete={() => setDeleteId(ordem.id)} />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+        <FilterSection fields={[{ type: "text" as const, label: "Buscar", placeholder: "Buscar por tipo ou descrição...", value: search, onChange: setSearch, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered.length} />
+        <div className="rounded border border-border overflow-hidden">
+          <Table>
+            <TableHeader><TableRow className="bg-table-header">
+              <TableHead className="text-center font-semibold">Nº</TableHead>
+              <TableHead className="text-center font-semibold">Tipo</TableHead>
+              <TableHead className="text-center font-semibold">Descrição</TableHead>
+              <TableHead className="text-center font-semibold">Solicitante</TableHead>
+              <TableHead className="text-center font-semibold">Status</TableHead>
+              <TableHead className="text-center font-semibold">Ações</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>
+              {isLoading ? <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow> :
+                filtered.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhuma ordem de serviço encontrada.</TableCell></TableRow> :
+                  filtered.map(o => (
+                    <TableRow key={o.id} className="hover:bg-table-hover transition-colors">
+                      <TableCell className="text-center font-mono">{o.numero}</TableCell>
+                      <TableCell className="text-center">{o.tipo_de_ordem?.replace('_', ' ')}</TableCell>
+                      <TableCell className="text-center font-medium">{o.descricao}</TableCell>
+                      <TableCell className="text-center">{o.usuario_nome}</TableCell>
+                      <TableCell className="text-center"><StatusBadge status={o.status || ''} /></TableCell>
+                      <TableCell className="text-center"><TableActions onView={() => setViewItem(o)} onEdit={() => navigate(`/ordens-de-servico/${o.id}`)} onDelete={() => setDeleteId(o.id)} /></TableCell>
+                    </TableRow>
+                  ))
+              }
+            </TableBody>
+          </Table>
+        </div>
       </div>
-
-      {/* Finalizar Dialog */}
-      <AlertDialog open={!!finalizarItem} onOpenChange={() => setFinalizarItem(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader><AlertDialogTitle>Finalizar Ordem de Serviço?</AlertDialogTitle>
-            <AlertDialogDescription>Ao finalizar, a ordem "{finalizarItem?.descricao}" será enviada para aprovação do gerente.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => finalizarItem && handleFinalizar(finalizarItem)}>Finalizar</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Analysis / Approval Dialog */}
-      <Dialog open={!!approvalItem} onOpenChange={() => setApprovalItem(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Análise — Ordem de Serviço</DialogTitle></DialogHeader>
-          {approvalItem && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><span className="text-muted-foreground">Tipo:</span><p className="font-medium">{approvalItem.tipo}</p></div>
-                <div><span className="text-muted-foreground">Descrição:</span><p className="font-medium">{approvalItem.descricao}</p></div>
-                <div><span className="text-muted-foreground">Responsável:</span><p className="font-medium">{approvalItem.responsavel}</p></div>
-                <div><span className="text-muted-foreground">Data:</span><p className="font-medium">{approvalItem.data}</p></div>
-              </div>
-            </div>
-          )}
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setApprovalItem(null)}>Cancelar</Button>
-            <Button variant="destructive" onClick={() => { setRejectItem(approvalItem); setApprovalItem(null); }}>Negar</Button>
-            <Button onClick={() => approvalItem && handleApprove(approvalItem)}>Aprovar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Reject Dialog with justification */}
-      <Dialog open={!!rejectItem} onOpenChange={() => { setRejectItem(null); setRejectJustificativa(""); }}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Negar Ordem de Serviço</DialogTitle></DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Informe a justificativa para negar a ordem "{rejectItem?.descricao}".</p>
-            <div className="space-y-2">
-              <Label>Justificativa <span className="text-destructive">*</span></Label>
-              <Textarea value={rejectJustificativa} onChange={e => setRejectJustificativa(e.target.value)} placeholder="Motivo da negação..." className="min-h-[100px]" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => { setRejectItem(null); setRejectJustificativa(""); }}>Cancelar</Button>
-            <Button variant="destructive" onClick={handleReject} disabled={!rejectJustificativa.trim()}>Negar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
-        <DialogContent><DialogHeader><DialogTitle>Detalhes da Ordem de Serviço</DialogTitle></DialogHeader>
-          {viewItem && <div className="space-y-2">{Object.entries({ ID: viewItem.id, Tipo: viewItem.tipo, Data: viewItem.data, Descrição: viewItem.descricao, Responsável: viewItem.responsavel, Status: viewItem.status }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>))}</div>}
-        </DialogContent>
+        <DialogContent><DialogHeader><DialogTitle>OS #{viewItem?.numero} — {viewItem?.tipo_de_ordem}</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2">
+          <div className="flex justify-between"><span className="text-sm text-muted-foreground">Descrição</span><span className="text-sm font-medium">{viewItem.descricao}</span></div>
+          <div className="flex justify-between"><span className="text-sm text-muted-foreground">Solicitante</span><span className="text-sm font-medium">{viewItem.usuario_nome}</span></div>
+          <div className="flex justify-between"><span className="text-sm text-muted-foreground">Fornecedor</span><span className="text-sm font-medium">{viewItem.fornecedor_nome || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-sm text-muted-foreground">Data Solicitação</span><span className="text-sm font-medium">{viewItem.data_solicitacao}</span></div>
+          <div className="flex justify-between"><span className="text-sm text-muted-foreground">Status</span><span className="text-sm font-medium">{viewItem.status}</span></div>
+        </div>}</DialogContent>
       </Dialog>
-
-      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-        <DialogContent><DialogHeader><DialogTitle>Editar Ordem de Serviço</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <div><Label>Tipo</Label><Input value={editData.tipo} onChange={e => setEditData({ ...editData, tipo: e.target.value })} /></div>
-            <div><Label>Descrição</Label><Input value={editData.descricao} onChange={e => setEditData({ ...editData, descricao: e.target.value })} /></div>
-            <div><Label>Responsável</Label><Input value={editData.responsavel} onChange={e => setEditData({ ...editData, responsavel: e.target.value })} /></div>
-          </div>
-          <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir ordem?</AlertDialogTitle><AlertDialogDescription>Deseja excluir a ordem "{deleteItemData?.descricao}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
-        </AlertDialogContent>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir a OS <strong>#{deleteItemObj?.numero}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => deleteId && deleteMutation.mutate(deleteId)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
       </AlertDialog>
     </div>
   );
-}
+};
+export default OrdemServicoPage;

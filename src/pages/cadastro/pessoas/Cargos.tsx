@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Search, FileText } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { TableActions } from "@/components/TableActions";
-import { cargosMock as cargosOriginal, type Cargo } from "@/data/pessoas-mock";
+import { cargosMock as cargosOriginal, type Cargo } from "@/services/pessoas";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 

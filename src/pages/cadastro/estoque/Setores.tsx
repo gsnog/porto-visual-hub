@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,25 +9,37 @@ import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, FileText } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
+import { fetchSetores, updateSetor, deleteSetor, type Setor } from "@/services/pessoas";
 
-const mockSetores = [{ id: 1, nome: "Produção" }, { id: 2, nome: "Manutenção" }];
-
-const Setores = () => {
+const SetoresCadastro = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockSetores);
+  const queryClient = useQueryClient();
   const [searchSetor, setSearchSetor] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [viewItem, setViewItem] = useState<typeof mockSetores[0] | null>(null);
-  const [editItem, setEditItem] = useState<typeof mockSetores[0] | null>(null);
+  const [viewItem, setViewItem] = useState<Setor | null>(null);
+  const [editItem, setEditItem] = useState<Setor | null>(null);
   const [editNome, setEditNome] = useState("");
 
-  const filterFields = [{ type: "text" as const, label: "Setor", placeholder: "Buscar setor...", value: searchSetor, onChange: setSearchSetor, width: "flex-1 min-w-[200px]" }];
-  const filtered = items.filter(s => s.nome.toLowerCase().includes(searchSetor.toLowerCase()));
-  const getExportData = () => filtered.map(s => ({ Setor: s.nome }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Setor excluído." }); } };
+  const { data: items = [], isLoading } = useQuery({ queryKey: ["setores"], queryFn: fetchSetores });
+
+  const updateMut = useMutation({
+    mutationFn: (d: { id: number; payload: Partial<Setor> }) => updateSetor(d.id, d.payload),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["setores"] }); setEditItem(null); toast({ title: "Salvo", description: "Setor atualizado." }); },
+    onError: () => toast({ title: "Erro", description: "Falha ao atualizar.", variant: "destructive" }),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: deleteSetor,
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["setores"] }); setDeleteId(null); toast({ title: "Removido", description: "Setor excluído." }); },
+    onError: () => toast({ title: "Erro", description: "Falha ao excluir.", variant: "destructive" }),
+  });
+
+  const getName = (s: Setor) => s.nome || s.setor || "—";
+  const filtered = items.filter(s => getName(s).toLowerCase().includes(searchSetor.toLowerCase()));
+  const getExportData = () => filtered.map(s => ({ Setor: getName(s) }));
   const deleteItem = items.find(i => i.id === deleteId);
 
   return (
@@ -36,25 +49,29 @@ const Setores = () => {
           <Button onClick={() => navigate("/cadastro/estoque/setores/novo")} className="gap-2"><Plus className="w-4 h-4" />Novo Setor</Button>
           <ExportButton getData={getExportData} fileName="setores-estoque" />
         </div>
-        <FilterSection fields={filterFields} resultsCount={filtered.length} />
+        <FilterSection fields={[{ type: "text" as const, label: "Setor", placeholder: "Buscar setor...", value: searchSetor, onChange: setSearchSetor, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">
           <Table>
             <TableHeader><TableRow className="bg-table-header"><TableHead className="text-center font-semibold">Setor</TableHead><TableHead className="text-center font-semibold">Ações</TableHead></TableRow></TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (<TableRow><TableCell colSpan={2} className="text-center py-8 text-muted-foreground">Nenhum setor encontrado.</TableCell></TableRow>) : (
-                filtered.map((setor) => (
-                  <TableRow key={setor.id} className="hover:bg-table-hover transition-colors">
-                    <TableCell className="text-center font-medium">{setor.nome}</TableCell>
-                    <TableCell className="text-center"><TableActions onView={() => setViewItem(setor)} onEdit={() => { setEditItem(setor); setEditNome(setor.nome); }} onDelete={() => setDeleteId(setor.id)} /></TableCell>
-                  </TableRow>
-                ))
-              )}
+              {isLoading ? (
+                <TableRow><TableCell colSpan={2} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
+              ) : filtered.length === 0 ? (
+                <TableRow><TableCell colSpan={2} className="text-center py-8 text-muted-foreground">Nenhum setor encontrado.</TableCell></TableRow>
+              ) : filtered.map((setor) => (
+                <TableRow key={setor.id} className="hover:bg-table-hover transition-colors">
+                  <TableCell className="text-center font-medium">{getName(setor)}</TableCell>
+                  <TableCell className="text-center"><TableActions onView={() => setViewItem(setor)} onEdit={() => { setEditItem(setor); setEditNome(getName(setor)); }} onDelete={() => setDeleteId(setor.id)} /></TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
       </div>
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
-        <DialogContent><DialogHeader><DialogTitle>{viewItem?.nome}</DialogTitle></DialogHeader>{viewItem && <div className="py-2"><div className="flex justify-between py-1"><span className="text-sm text-muted-foreground">Setor</span><span className="text-sm font-medium">{viewItem.nome}</span></div></div>}</DialogContent>
+        <DialogContent><DialogHeader><DialogTitle>{viewItem ? getName(viewItem) : ""}</DialogTitle></DialogHeader>
+          {viewItem && <div className="py-2"><div className="flex justify-between py-1"><span className="text-sm text-muted-foreground">Setor</span><span className="text-sm font-medium">{getName(viewItem)}</span></div></div>}
+        </DialogContent>
       </Dialog>
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
         <DialogContent>
@@ -62,15 +79,17 @@ const Setores = () => {
           <div className="space-y-4 py-4"><div className="space-y-2"><Label>Nome</Label><Input value={editNome} onChange={e => setEditNome(e.target.value)} /></div></div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, nome: editNome } : i)); setEditItem(null); toast({ title: "Salvo", description: "Setor atualizado." }); } }}>Salvar</Button>
+            <Button onClick={() => { if (editItem) updateMut.mutate({ id: editItem.id, payload: { setor: editNome, nome: editNome } }); }}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem?.nome}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem ? getName(deleteItem) : ""}</strong>?</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={() => { if (deleteId) deleteMut.mutate(deleteId); }} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
       </AlertDialog>
     </div>
   );
 };
 
-export default Setores;
+export default SetoresCadastro;

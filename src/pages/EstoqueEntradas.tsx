@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Upload, ChevronDown, ChevronRight, XCircle, Link2, ClipboardCheck } from "lucide-react"
+import { Plus, Upload, ChevronDown, ChevronRight, XCircle, Link2, ClipboardCheck, CheckCircle, User, CalendarCheck } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState, useMemo, useEffect } from "react"
 import { FilterSection } from "@/components/FilterSection"
@@ -13,7 +13,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
 import { toast } from "@/hooks/use-toast"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import api from "@/lib/api"
+import { usePermissions } from "@/contexts/PermissionsContext"
+import { Entradas } from "@/types/estoque"
+import { fetchItensEstoque } from "@/services/estoque"
 
 interface ItemNF {
   id: number;
@@ -37,41 +43,10 @@ interface EntradaNF {
   itens: ItemNF[];
 }
 
-const mockEntradas: EntradaNF[] = [
-  {
-    id: 1, data: "02/06/2025", responsavel: "Lucas V.", notaFiscal: "NF-123456", fornecedor: "ABC Distribuidora", unidade: "Almoxarifado SP", custoTotal: "R$ 300,00", status: "Pré-Cadastro",
-    itens: [
-      { id: 1, item: "Parafuso M8", marca: "Fischer", quantidade: 100, custoUnitario: "R$ 0,50", especificacoes: "Aço inox", tipo: "novo" },
-      { id: 2, item: "Parafuso M10", marca: "Fischer", quantidade: 200, custoUnitario: "R$ 1,25", especificacoes: "Aço carbono", tipo: "existente" },
-    ]
-  },
-  {
-    id: 2, data: "01/06/2025", responsavel: "Ana F.", notaFiscal: "NF-789012", fornecedor: "TechParts Ltda", unidade: "TI Central", custoTotal: "R$ 250,00", status: "Aprovada",
-    itens: [
-      { id: 3, item: "Cabo HDMI", marca: "StarTech", quantidade: 10, custoUnitario: "R$ 25,00", especificacoes: "2m 4K", tipo: "existente" },
-    ]
-  },
-  {
-    id: 3, data: "30/05/2025", responsavel: "Pedro S.", notaFiscal: "NF-345678", fornecedor: "Lubrificantes SA", unidade: "Manutenção", custoTotal: "R$ 225,00", status: "Pré-Cadastro",
-    itens: [
-      { id: 4, item: "Óleo Lubrificante", marca: "Shell", quantidade: 5, custoUnitario: "R$ 45,00", especificacoes: "10W40", tipo: "novo" },
-    ]
-  },
-  {
-    id: 4, data: "28/05/2025", responsavel: "Maria C.", notaFiscal: "NF-901234", fornecedor: "ABC Distribuidora", unidade: "Almoxarifado RJ", custoTotal: "R$ 110,00", status: "Rejeitada",
-    itens: [
-      { id: 5, item: "Parafuso M8", marca: "Fischer", quantidade: 200, custoUnitario: "R$ 0,55", especificacoes: "Aço inox", tipo: "existente" },
-    ]
-  },
-]
+// --- Mocks removidos ---
+const mockEntradas: EntradaNF[] = [];
 
-const itensEstoqueMock = [
-  { value: "parafuso-m8", label: "Parafuso M8" },
-  { value: "parafuso-m10", label: "Parafuso M10" },
-  { value: "cabo-hdmi", label: "Cabo HDMI" },
-  { value: "oleo-lubrificante", label: "Óleo Lubrificante" },
-  { value: "papel-a4", label: "Papel A4" },
-]
+// --- Mocks removidos ---
 
 function loadSavedEntries(): EntradaNF[] {
   const saved = sessionStorage.getItem("novas_entradas");
@@ -85,10 +60,106 @@ function loadSavedEntries(): EntradaNF[] {
 
 export default function EstoqueEntradas() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient();
+  const { currentUser } = usePermissions();
+
+  // ── RBAC guard: only gestor/diretor/admin see and trigger approval actions
+  const APPROVAL_ROLES = ["admin", "diretor", "gestor"];
+  const currentRole = (currentUser?.roles?.[0] ?? "usuario").toLowerCase();
+  const canApprove = APPROVAL_ROLES.includes(currentRole);
+
+  // Fetch reais da API
+  const { data: entradasApi = [], isLoading, isError } = useQuery<Entradas[]>({
+    queryKey: ['entradas_estoque'],
+    queryFn: async () => {
+      const response = await api.get('/api/estoque/entradas/');
+      return response.data;
+    }
+  });
+
+  const { data: itensEstoque = [] } = useQuery({
+    queryKey: ['itens_estoque'],
+    queryFn: fetchItensEstoque
+  });
+
+  const optionsEstoque = useMemo(() =>
+    itensEstoque.map((i: any) => ({ value: String(i.id), label: i.itens_do_estoque })),
+    [itensEstoque]
+  );
+
+  // Delete Mutation da API
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await api.delete(`/api/estoque/entradas/${id}/`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entradas_estoque'] });
+      toast({ title: "Removido", description: "Entrada excluída com sucesso da base de dados." });
+    },
+    onError: () => {
+      toast({ title: "Erro", description: "Ocorreu um erro ao excluir a entrada. Tente novamente.", variant: "destructive" });
+    }
+  });
+
+  // Approval Mutations (real API — protected by CanApproveEntradas on backend)
+  const aprovarMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await api.post(`/api/estoque/entradas/${id}/aprovar/`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entradas_estoque'] });
+      setApprovalItem(null);
+      toast({ title: "Entrada aprovada!", description: "Status atualizado para Aprovado." });
+    },
+    onError: (error: any) => {
+      const status = error.response?.status;
+      if (status === 403) {
+        toast({ title: "Sem permissão", description: "Apenas gestores, diretores ou admins podem aprovar entradas.", variant: "destructive" });
+      } else {
+        toast({ title: "Erro ao aprovar", description: error.response?.data?.detail ?? "Verifique o status da entrada.", variant: "destructive" });
+      }
+      setApprovalItem(null);
+    }
+  });
+
+  const rejeitarMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await api.post(`/api/estoque/entradas/${id}/rejeitar/`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entradas_estoque'] });
+      setRejectItem(null);
+      setRejectJustificativa("");
+      toast({ title: "Entrada recusada.", description: "Status atualizado para Recusado." });
+    },
+    onError: (error: any) => {
+      const status = error.response?.status;
+      if (status === 403) {
+        toast({ title: "Sem permissão", description: "Apenas gestores, diretores ou admins podem recusar entradas.", variant: "destructive" });
+      } else {
+        toast({ title: "Erro ao recusar", description: error.response?.data?.detail ?? "Verifique o status da entrada.", variant: "destructive" });
+      }
+      setRejectItem(null);
+    }
+  });
+
   const [items, setItems] = useState<EntradaNF[]>(() => {
     const newEntries = loadSavedEntries();
     return [...newEntries, ...mockEntradas];
-  })
+  });
+
+  useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Erro na API",
+        description: "Não foi possível carregar as entradas do servidor.",
+        variant: "destructive"
+      });
+    }
+  }, [isError]);
+
   const [filterNome, setFilterNome] = useState("")
   const [filterNFe, setFilterNFe] = useState("")
   const [filterStatus, setFilterStatus] = useState("")
@@ -137,8 +208,39 @@ export default function EstoqueEntradas() {
     })
   }
 
+  // Mapeamos os dados reais para se unirem/substituirem o conceito de "items" filtrados
+  // Nota: A API retorna Entradas brutas, o mapping visual dependerá das propriedades retornadas (notas, fornecedores, ids)
   const filtered = useMemo(() => {
-    return items.filter(entrada => {
+    // Simularemos o merge ou substituição dos mocks. Aqui substituiremos na base de "entradasApi" se disponíveis,
+    // ou deixamos o mock para não quebrar a UI se a API ainda estiver vazia/sendo povoada localmente.
+    const hasApiData = Array.isArray(entradasApi) && entradasApi.length > 0;
+    const baseList = hasApiData ?
+      entradasApi.map(e => ({
+        id: e?.id || 0,
+        data: e?.data || e?.data_de_chegada || "",
+        responsavel: e?.criado_por_nome || "—",
+        notaFiscal: e?.nota_fiscal || e?.numeracao_nf || `NF-${e?.id}`,
+        fornecedor: e?.fornecedor_nome || String(e?.fornecedor || ""),
+        unidade: "—",
+        custoTotal: e?.custo_total != null
+          ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(e.custo_total)
+          : "R$ 0,00",
+        status: (() => {
+          // Map backend lowercase to display label for StatusBadge
+          if (e?.status === 'aprovado') return 'Aprovada';
+          if (e?.status === 'recusado') return 'Rejeitada';
+          return 'Pré-Cadastro'; // pendente default
+        })(),
+        _rawStatus: e?.status as string | undefined,
+        _rawId: e?.id,
+        _criado_por_nome: e?.criado_por_nome,
+        _aprovado_por_nome: e?.aprovado_por_nome,
+        _aprovado_em: e?.aprovado_em,
+        itens: []
+      } as EntradaNF & { _rawStatus?: string; _rawId?: number; _criado_por_nome?: string; _aprovado_por_nome?: string; _aprovado_em?: string | null }))
+      : items;
+
+    return baseList.filter(entrada => {
       const matchNome = entrada.notaFiscal.toLowerCase().includes(filterNome.toLowerCase()) || entrada.fornecedor.toLowerCase().includes(filterNome.toLowerCase())
       const matchNFe = entrada.notaFiscal.toLowerCase().includes(filterNFe.toLowerCase())
       const matchStatus = filterStatus && filterStatus !== "todos" ? entrada.status.toLowerCase() === filterStatus.toLowerCase() : true
@@ -146,56 +248,38 @@ export default function EstoqueEntradas() {
       const matchDataFim = filterDataFim ? entrada.data <= filterDataFim.split("-").reverse().join("/") : true
       return matchNome && matchNFe && matchStatus && matchDataInicio && matchDataFim
     })
-  }, [items, filterNome, filterNFe, filterStatus, filterDataInicio, filterDataFim])
+  }, [items, entradasApi, filterNome, filterNFe, filterStatus, filterDataInicio, filterDataFim])
 
   const getExportData = () => filtered.map(e => ({ Data: e.data, Responsável: e.responsavel, "Nota Fiscal": e.notaFiscal, Fornecedor: e.fornecedor, Unidade: e.unidade, "Custo Total": e.custoTotal, Status: e.status }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Entrada excluída." }); } };
+
+  const handleDelete = () => {
+    if (deleteId !== null) {
+      // Se a entrada existir apenas no state (mock), deleta do state
+      if (items.some(i => i.id === deleteId)) {
+        setItems(prev => prev.filter(i => i.id !== deleteId));
+        toast({ title: "Removido", description: "Entrada (Mock) excluída." });
+      } else {
+        // Se existir na API, invoca a mutação
+        deleteMutation.mutate(deleteId);
+      }
+      setDeleteId(null);
+    }
+  };
+
   const openEdit = (e: EntradaNF) => { setEditItem(e); setEditData({ notaFiscal: e.notaFiscal, fornecedor: e.fornecedor, unidade: e.unidade, responsavel: e.responsavel }); };
   const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Entrada atualizada." }); } };
   const deleteItem = items.find(i => i.id === deleteId);
 
-  const handleApprove = (entrada: EntradaNF) => {
-    // Save "novo" items to cadastro>estoque>itens via sessionStorage
-    const novosItens = entrada.itens.filter(it => it.tipo === "novo");
-    if (novosItens.length > 0) {
-      const existing = JSON.parse(sessionStorage.getItem("novos_itens_entrada") || "[]");
-      for (const item of novosItens) {
-        existing.push({
-          id: Date.now() + item.id,
-          codigo: `EST${String(Date.now() + item.id).slice(-3)}`,
-          dataCadastro: new Date().toLocaleDateString("pt-BR"),
-          item: item.item,
-          formaApresentacao: "",
-          setores: "",
-        });
-      }
-      sessionStorage.setItem("novos_itens_entrada", JSON.stringify(existing));
-
-      // Also add to novos_itens_cadastrados so dropdowns pick them up
-      const existingCad = JSON.parse(sessionStorage.getItem("novos_itens_cadastrados") || "[]");
-      for (const item of novosItens) {
-        existingCad.push({
-          value: item.item.toLowerCase().replace(/\s+/g, "-"),
-          label: item.item,
-          id: Date.now() + item.id,
-          codigo: `EST${String(Date.now() + item.id).slice(-3)}`,
-          dataCadastro: new Date().toLocaleDateString("pt-BR"),
-        });
-      }
-      sessionStorage.setItem("novos_itens_cadastrados", JSON.stringify(existingCad));
-    }
-
-    setItems(prev => prev.map(i => i.id === entrada.id ? { ...i, status: "Aprovada" } : i));
-    setApprovalItem(null);
-    toast({ title: "Aprovada", description: `Entrada ${entrada.notaFiscal} aprovada com sucesso.${novosItens.length > 0 ? ` ${novosItens.length} novo(s) item(ns) cadastrado(s) no sistema.` : ""}` });
+  const handleApprove = (entrada: EntradaNF & { _rawId?: number }) => {
+    const apiId = entrada._rawId ?? entrada.id;
+    // Call the real backend endpoint
+    aprovarMutation.mutate(apiId);
   };
 
   const handleReject = () => {
     if (rejectItem) {
-      setItems(prev => prev.map(i => i.id === rejectItem.id ? { ...i, status: "Rejeitada" } : i));
-      setRejectItem(null);
-      setRejectJustificativa("");
-      toast({ title: "Rejeitada", description: `Entrada ${rejectItem.notaFiscal} foi rejeitada.` });
+      const apiId = (rejectItem as any)._rawId ?? rejectItem.id;
+      rejeitarMutation.mutate(apiId);
     }
   };
 
@@ -205,7 +289,7 @@ export default function EstoqueEntradas() {
         if (entrada.id === conciliateItem.entrada.id) {
           return {
             ...entrada,
-            itens: entrada.itens.map(it => it.id === conciliateItem.itemNF.id ? { ...it, tipo: "existente" as const, item: itensEstoqueMock.find(i => i.value === conciliateWith)?.label || it.item } : it)
+            itens: entrada.itens.map(it => it.id === conciliateItem.itemNF.id ? { ...it, tipo: "existente" as const, item: optionsEstoque.find(i => i.value === conciliateWith)?.label || it.item } : it)
           }
         }
         return entrada
@@ -253,7 +337,11 @@ export default function EstoqueEntradas() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (
+              {isLoading ? (
+                <TableRow><TableCell colSpan={10} className="text-center py-8 text-muted-foreground">Carregando entradas...</TableCell></TableRow>
+              ) : isError ? (
+                <TableRow><TableCell colSpan={10} className="text-center py-8 text-destructive">Erro ao carregar os dados. Verifique a conexão com a API.</TableCell></TableRow>
+              ) : filtered.length === 0 ? (
                 <TableRow><TableCell colSpan={10} className="text-center py-8 text-muted-foreground">Nenhuma entrada encontrada.</TableCell></TableRow>
               ) : (
                 filtered.map((entrada) => (
@@ -272,10 +360,38 @@ export default function EstoqueEntradas() {
                       <TableCell className="text-center">{entrada.custoTotal}</TableCell>
                       <TableCell className="text-center"><StatusBadge status={entrada.status} /></TableCell>
                       <TableCell className="text-center">
-                        {entrada.status === "Pré-Cadastro" ? (
-                          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setApprovalItem(entrada)}>
-                            <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
-                          </Button>
+                        {/* Approval column — ONLY rendered when canApprove=true.
+                            Rule of Gold: assistente/usuario roles → these cells do NOT exist in the DOM. */}
+                        {canApprove ? (
+                          (entrada as any)._rawStatus === 'pendente' ? (
+                            <div className="flex justify-center">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="gap-1.5 text-xs"
+                                disabled={aprovarMutation.isPending || rejeitarMutation.isPending}
+                                onClick={() => setApprovalItem(entrada)}
+                              >
+                                <ClipboardCheck className="w-3.5 h-3.5" /> Analisar
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="text-xs text-muted-foreground space-y-0.5">
+                              {(entrada as any)._aprovado_por_nome && (
+                                <div className="flex items-center justify-center gap-1">
+                                  <User className="h-3 w-3" />
+                                  {(entrada as any)._aprovado_por_nome}
+                                </div>
+                              )}
+                              {(entrada as any)._aprovado_em && (
+                                <div className="flex items-center justify-center gap-1">
+                                  <CalendarCheck className="h-3 w-3" />
+                                  {new Date((entrada as any)._aprovado_em).toLocaleDateString('pt-BR')}
+                                </div>
+                              )}
+                              {!(entrada as any)._aprovado_por_nome && <span>—</span>}
+                            </div>
+                          )
                         ) : (
                           <span className="text-xs text-muted-foreground">—</span>
                         )}
@@ -377,7 +493,7 @@ export default function EstoqueEntradas() {
                             >
                               <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selecione..." /></SelectTrigger>
                               <SelectContent className="bg-popover">
-                                {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                {optionsEstoque.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                               </SelectContent>
                             </Select>
                           </div>
@@ -438,7 +554,7 @@ export default function EstoqueEntradas() {
             <Select value={conciliateWith} onValueChange={setConciliateWith}>
               <SelectTrigger><SelectValue placeholder="Selecione o item de estoque" /></SelectTrigger>
               <SelectContent className="bg-popover">
-                {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                {optionsEstoque.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>

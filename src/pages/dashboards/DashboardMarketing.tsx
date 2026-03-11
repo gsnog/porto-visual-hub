@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Target, DollarSign, TrendingUp, Users, Filter } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { getMetricasGerais, funilMarketingData, leadsPorCanalData, roiPorCampanhaData } from "@/data/marketing-mock";
+import { fetchCampanhas, fetchCanais, fetchLeadsMarketing } from "@/services/marketing";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 
 const formatCurrency = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -34,7 +35,37 @@ const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 export default function DashboardMarketing() {
   const [periodo, setPeriodo] = useState("30d");
-  const metricas = getMetricasGerais();
+
+  const { data: campanhas = [] } = useQuery({ queryKey: ['marketing_campanhas'], queryFn: fetchCampanhas });
+  const { data: canais = [] } = useQuery({ queryKey: ['marketing_canais'], queryFn: fetchCanais });
+  const { data: leads = [] } = useQuery({ queryKey: ['marketing_leads'], queryFn: fetchLeadsMarketing });
+
+  const metricas = {
+    leads: leads.length,
+    mql: leads.filter(l => l.status === 'mql').length,
+    sql: leads.filter(l => l.status === 'sql').length,
+    conversoes: leads.filter(l => l.status === 'convertido').length,
+    roi: 0,
+    cac: 0
+  };
+
+  const funilMarketingData = [
+    { etapa: 'Leads', valor: metricas.leads },
+    { etapa: 'MQL', valor: metricas.mql },
+    { etapa: 'SQL', valor: metricas.sql },
+    { etapa: 'Convertidos', valor: metricas.conversoes }
+  ];
+
+  const leadsPorCanalData = canais.map(c => ({
+    canal: c.nome,
+    leads: leads.filter(l => l.canal_origem === c.id).length
+  }));
+
+  const roiPorCampanhaData = campanhas.map(c => ({
+    campanha: c.nome,
+    gasto: Number(c.custo_real) || 0,
+    roi: 0 // Placeholder
+  }));
 
   return (
     <div className="space-y-6">
@@ -152,11 +183,10 @@ export default function DashboardMarketing() {
                 <span className="font-medium text-sm text-foreground">{c.campanha}</span>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-muted-foreground">{formatCurrency(c.gasto)} investido</span>
-                  <span className={`font-bold text-sm px-3 py-1 rounded-full ${
-                    c.roi >= 0 
-                      ? 'bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400' 
+                  <span className={`font-bold text-sm px-3 py-1 rounded-full ${c.roi >= 0
+                      ? 'bg-lime-400/10 text-lime-600 dark:bg-lime-400/15 dark:text-lime-400'
                       : 'bg-rose-400/10 text-rose-600 dark:bg-rose-400/15 dark:text-rose-400'
-                  }`}>
+                    }`}>
                     {c.roi > 0 ? '+' : ''}{c.roi.toFixed(0)}%
                   </span>
                 </div>

@@ -11,26 +11,32 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
-
-const mockInventario = [
-  { id: 1, item: "Parafuso M8", quantidade: 250, unidade: "Almoxarifado SP" },
-  { id: 2, item: "Cabo HDMI", quantidade: 8, unidade: "TI Central" },
-  { id: 3, item: "Óleo Lubrificante", quantidade: 4, unidade: "Manutenção" },
-  { id: 4, item: "Papel A4", quantidade: 50, unidade: "Almoxarifado SP" },
-  { id: 5, item: "Toner HP", quantidade: 3, unidade: "TI Central" },
-]
-
-type Item = typeof mockInventario[0];
+import { useQuery } from "@tanstack/react-query"
+import { fetchInventario } from "@/services/estoque"
+import { Loader2 } from "lucide-react"
 
 export default function EstoqueInventario() {
   const navigate = useNavigate()
-  const [items, setItems] = useState(mockInventario)
+  const { data: inventario, isLoading } = useQuery({
+    queryKey: ['inventario'],
+    queryFn: fetchInventario
+  })
+
   const [filterNome, setFilterNome] = useState("")
   const [filterCidade, setFilterCidade] = useState("")
-  const [viewItem, setViewItem] = useState<Item | null>(null)
+  const [viewItem, setViewItem] = useState<any>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
-  const [editItem, setEditItem] = useState<Item | null>(null)
+  const [editItem, setEditItem] = useState<any>(null)
   const [editData, setEditData] = useState({ item: "", quantidade: "", unidade: "" })
+
+  const items = useMemo(() => {
+    return (inventario || []).map(i => ({
+      id: i.id,
+      item: i.item_nome,
+      quantidade: i.quantidade_disponivel,
+      unidade: i.unidade_nome
+    }))
+  }, [inventario])
 
   const filtered = useMemo(() => {
     return items.filter(item => {
@@ -41,10 +47,14 @@ export default function EstoqueInventario() {
   }, [items, filterNome, filterCidade])
 
   const getExportData = () => filtered.map(i => ({ Item: i.item, Quantidade: i.quantidade, Unidade: i.unidade }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Item excluído do inventário." }); } };
-  const openEdit = (i: Item) => { setEditItem(i); setEditData({ item: i.item, quantidade: String(i.quantidade), unidade: i.unidade }); };
-  const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, item: editData.item, quantidade: Number(editData.quantidade), unidade: editData.unidade } : i)); setEditItem(null); toast({ title: "Salvo", description: "Item atualizado." }); } };
+  const handleDelete = () => { if (deleteId !== null) { toast({ title: "Exclusão requer API" }); setDeleteId(null); } };
+  const openEdit = (i: any) => { setEditItem(i); setEditData({ item: i.item, quantidade: String(i.quantidade), unidade: i.unidade }); };
+  const handleSaveEdit = () => { if (editItem) { toast({ title: "Edição requer API" }); setEditItem(null); } };
   const deleteItem = items.find(i => i.id === deleteId);
+
+  if (isLoading) {
+    return <div className="flex justify-center p-8"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">

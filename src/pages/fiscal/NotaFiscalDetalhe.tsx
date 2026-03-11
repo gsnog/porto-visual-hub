@@ -6,7 +6,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "@/components/StatusBadge";
 import { ArrowLeft, FileDown, RotateCcw, Send, XCircle, CheckCircle, AlertTriangle, Clock, FileText, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { mockNotasFiscais } from "@/data/fiscal-mock";
+// Fiscal-mock removed — stub until /api/fiscal/ endpoints exist
+const mockNotasFiscais: any[] = [];
 
 export default function NotaFiscalDetalhe() {
   const { id } = useParams<{ id: string }>();
@@ -239,10 +240,9 @@ export default function NotaFiscalDetalhe() {
                 <div className="space-y-3">
                   {nota.eventos.map(ev => (
                     <div key={ev.id} className="flex items-start gap-3 p-3 rounded-xl border border-border bg-muted/30">
-                      <div className={`mt-0.5 flex-shrink-0 w-2 h-2 rounded-full ${
-                        ev.status === "Sucesso" || ev.status === "Autorizada" || ev.status === "Homologado" ? "bg-primary" :
-                        ev.status === "Rejeitada" ? "bg-destructive" : "bg-yellow-500"
-                      }`} />
+                      <div className={`mt-0.5 flex-shrink-0 w-2 h-2 rounded-full ${ev.status === "Sucesso" || ev.status === "Autorizada" || ev.status === "Homologado" ? "bg-primary" :
+                          ev.status === "Rejeitada" ? "bg-destructive" : "bg-yellow-500"
+                        }`} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-semibold">{ev.tipo}</span>

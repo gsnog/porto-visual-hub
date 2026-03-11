@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { chatSocket, rtcSocket } from '@/lib/socket';
 
 // Tipos de permissão
 export type PermissionScope = 'self' | 'team' | 'area' | 'all';
@@ -78,6 +79,15 @@ export const systemRoles: Role[] = [
       { module: 'dashboard', page: 'all', actions: ['view'], scope: 'all' },
       { module: 'gestao_pessoas', page: 'hierarquia', actions: ['view'], scope: 'all' }
     ]
+  },
+  {
+    id: 'assistente',
+    name: 'Assistente',
+    description: 'Acesso operacional básico',
+    permissions: [
+      { module: 'all', page: 'all', actions: ['view'], scope: 'all' },
+      { module: 'estoque', page: 'entradas', actions: ['view', 'create'], scope: 'all' }
+    ]
   }
 ];
 
@@ -104,29 +114,82 @@ interface PermissionsContextType {
   hasMenuAccess: (menuPath: string) => boolean;
   hasDashboardAccess: (dashboardId: string, sensitive?: boolean) => boolean;
   getScope: (module: string, page: string) => PermissionScope;
-  setUserRole: (roleId: string) => void;
+  setUserPermissions: (permissions: UserPermissions | null) => void;
+  login: (token: string, refreshToken: string, permissions: UserPermissions) => void;
+  logout: () => void;
 }
 
 const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined);
 
-// Mock: usuário atual com role de admin para desenvolvimento
-const defaultUserPermissions: UserPermissions = {
-  userId: '1',
-  roles: ['admin'], // Alterar para testar diferentes permissões
-  dashboardAccess: availableDashboards.map(d => ({ dashboardId: d.id, canView: true, canViewSensitive: true })),
-  exceptions: []
-};
-
 export function PermissionsProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<UserPermissions>(defaultUserPermissions);
+  const [currentUser, setCurrentUser] = useState<UserPermissions>(() => {
+    const saved = localStorage.getItem('userPermissions');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Erro ao ler permissões do localStorage:', e);
+      }
+    }
+    return {
+      userId: '',
+      roles: [],
+      dashboardAccess: [],
+      exceptions: []
+    };
+  });
+
+  const setUserPermissions = (permissions: UserPermissions | null) => {
+    if (permissions) {
+      setCurrentUser(permissions);
+      localStorage.setItem('userPermissions', JSON.stringify(permissions));
+    } else {
+      const empty = { userId: '', roles: [], dashboardAccess: [], exceptions: [] };
+      setCurrentUser(empty);
+      localStorage.removeItem('userPermissions');
+    }
+  };
+
+  // Connect sockets on app load if token exists
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      chatSocket.connect();
+      rtcSocket.connect();
+    }
+  }, [currentUser]);
+
+  const login = (token: string, refreshToken: string, permissions: UserPermissions) => {
+    localStorage.setItem('accessToken', token);
+    localStorage.setItem('refreshToken', refreshToken);
+    setUserPermissions(permissions);
+
+    // Connect sockets upon successful login
+    chatSocket.connect();
+    rtcSocket.connect();
+  };
+
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userPermissions');
+    setUserPermissions(null);
+
+    // Disconnect sockets purely on logout
+    chatSocket.disconnect();
+    rtcSocket.disconnect();
+
+    window.location.href = '/login';
+  };
 
   const getUserRoles = (): Role[] => {
     return currentUser.roles.map(roleId => systemRoles.find(r => r.id === roleId)).filter(Boolean) as Role[];
   };
 
+
   const hasPermission = (module: string, page: string, action: string): boolean => {
     const roles = getUserRoles();
-    
+
     // Verifica exceções primeiro
     const exception = currentUser.exceptions.find(
       e => e.module === module && (e.page === page || e.page === 'all')
@@ -209,7 +272,9 @@ export function PermissionsProvider({ children }: { children: ReactNode }) {
       hasMenuAccess,
       hasDashboardAccess,
       getScope,
-      setUserRole
+      setUserPermissions,
+      login,
+      logout
     }}>
       {children}
     </PermissionsContext.Provider>

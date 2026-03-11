@@ -1,45 +1,35 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { StatusBadge } from "@/components/StatusBadge";
-import { ArrowLeft } from "lucide-react";
-
-const mockConciliacoes = [
-  { id: 1, data: "15/01/2026", conta: "Banco do Brasil - 12345-6", descricao: "Pagamento Fornecedor", valor: "R$ 5.000,00", status: "Pendente" },
-  { id: 2, data: "18/01/2026", conta: "Itaú - 98765-4", descricao: "Recebimento Cliente", valor: "R$ 12.000,00", status: "Conciliado" },
-];
+import {
+  fetchConciliacoes, deleteConciliacao,
+  conciliacoesQueryKey, type Conciliacao,
+} from "@/services/financeiro";
 
 const ConciliacaoBancaria = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchConta, setSearchConta] = useState("");
   const [searchData, setSearchData] = useState("");
 
+  const { data: items = [], isLoading } = useQuery({ queryKey: conciliacoesQueryKey, queryFn: fetchConciliacoes });
+
   const filterFields = [
-    {
-      type: "text" as const,
-      label: "Conta",
-      placeholder: "Buscar conta...",
-      value: searchConta,
-      onChange: setSearchConta,
-      width: "flex-1 min-w-[200px]"
-    },
-    {
-      type: "date" as const,
-      label: "Data",
-      value: searchData,
-      onChange: setSearchData,
-      width: "min-w-[160px]"
-    }
+    { type: "text" as const, label: "Conta", placeholder: "Buscar conta...", value: searchConta, onChange: setSearchConta, width: "flex-1 min-w-[200px]" },
+    { type: "date" as const, label: "Data", value: searchData, onChange: setSearchData, width: "min-w-[160px]" }
   ];
 
-  const filteredConciliacoes = mockConciliacoes.filter(c =>
-    c.conta.toLowerCase().includes(searchConta.toLowerCase())
+  const filteredConciliacoes = items.filter(c =>
+    c.descricao?.toLowerCase().includes(searchConta.toLowerCase()) ||
+    c.numero_conta?.includes(searchConta)
   );
 
-  const pendingCount = mockConciliacoes.filter(c => c.status === "Pendente").length;
+  const pendingCount = items.filter(c => c.conciliacao === "Não Efetuado").length;
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -51,12 +41,7 @@ const ConciliacaoBancaria = () => {
             </span>
           </div>
         </div>
-
-        <FilterSection 
-          fields={filterFields}
-          resultsCount={filteredConciliacoes.length}
-        />
-
+        <FilterSection fields={filterFields} resultsCount={filteredConciliacoes.length} />
         <div className="rounded border border-border overflow-hidden">
           <Table>
             <TableHeader>
@@ -70,29 +55,19 @@ const ConciliacaoBancaria = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredConciliacoes.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Nenhuma conciliação encontrada.
-                  </TableCell>
-                </TableRow>
+              {isLoading ? (
+                <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
+              ) : filteredConciliacoes.length === 0 ? (
+                <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nenhuma conciliação encontrada.</TableCell></TableRow>
               ) : (
                 filteredConciliacoes.map((c) => (
                   <TableRow key={c.id} className="hover:bg-table-hover transition-colors">
                     <TableCell className="text-center">{c.data}</TableCell>
-                    <TableCell className="text-center font-medium">{c.conta}</TableCell>
+                    <TableCell className="text-center font-medium">{c.numero_conta}</TableCell>
                     <TableCell className="text-center">{c.descricao}</TableCell>
-                    <TableCell className="text-center font-semibold">{c.valor}</TableCell>
-                    <TableCell className="text-center">
-                      <StatusBadge status={c.status} />
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <TableActions 
-                        onView={() => console.log('View', c.id)}
-                        onEdit={() => console.log('Conciliar', c.id)}
-                        onDelete={() => console.log('Delete', c.id)}
-                      />
-                    </TableCell>
+                    <TableCell className="text-center font-semibold">R$ {c.valor_total?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                    <TableCell className="text-center"><StatusBadge status={c.conciliacao} /></TableCell>
+                    <TableCell className="text-center"><TableActions onView={() => { }} onEdit={() => { }} onDelete={() => { }} /></TableCell>
                   </TableRow>
                 ))
               )}

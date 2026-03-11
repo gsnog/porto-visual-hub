@@ -1,0 +1,338 @@
+import api from '@/lib/api';
+
+// ─── Interfaces ──────────────────────────────────────────────────────────────
+
+export interface EstatisticasFinanceiras {
+    saldo: number;
+    entradas: number;
+    saidas: number;
+}
+
+export interface Parcela {
+    id: number;
+    conta_receber?: number;
+    conta_pagar?: number;
+    conta_receber_nome?: string;
+    conta_pagar_nome?: string;
+    numero: number;
+    data_de_vencimento: string;
+    valor: number;
+    valor_pago: number;
+    data_de_pagamento: string | null;
+    status: string;
+}
+
+export interface ContaPagar {
+    id: number;
+    beneficiario?: number;
+    fornecedor_nome?: string;
+    documento?: string;
+    valor_do_titulo?: number;
+    valor_total?: number;
+    data_de_lancamento?: string;
+    data_de_faturamento?: string;
+    data_de_vencimento?: string;
+    status?: string;
+}
+
+export interface ContaReceber {
+    id: number;
+    cliente?: number;
+    cliente_nome?: string;
+    documento?: string;
+    valor_do_titulo?: number;
+    valor_total?: number;
+    data_de_lancamento?: string;
+    data_de_faturamento?: string;
+    data_de_vencimento?: string;
+    status?: string;
+}
+
+export interface ContaBancaria {
+    id: number;
+    codigo_banco?: string;
+    banco?: string;
+    agencia?: string;
+    numero_conta?: string;
+    tipo?: string;
+    saldo?: number;
+}
+
+export interface CentroCusto {
+    id: number;
+    centro_id?: string;
+    setor?: number;
+    setor_nome?: string;
+    area?: number;
+    area_nome?: string;
+    area_final?: number | null;
+}
+
+export interface CentroReceita {
+    id: number;
+    centro_id?: string;
+    setor?: number;
+    setor_nome?: string;
+    area?: number;
+    area_nome?: string;
+    area_final?: number | null;
+}
+
+export interface Area {
+    id: number;
+    nome: string;
+}
+
+export interface CategoriaFinanceira {
+    id: number;
+    nome: string;
+}
+
+export interface ClassificacaoFinanceira {
+    id: number;
+    nome: string;
+}
+
+export interface PlanoContas {
+    id: number;
+    id_plano: string;
+    categoria?: number;
+    categoria_nome?: string;
+    classificacao?: number;
+    classificacao_nome?: string;
+}
+
+export interface Conciliacao {
+    id: number;
+    data: string;
+    valor_total: number;
+    descricao: string;
+    codigo_banco: string;
+    agencia?: string;
+    numero_conta: string;
+    conciliacao: string;
+    conta_nome?: string;
+}
+
+export interface Transacao {
+    id: number;
+    data_de_lancamento: string;
+    valor: number;
+    descricao?: string;
+    conta_origem: number;
+    conta_origem_nome?: string;
+    conta_destino: number;
+    conta_destino_nome?: string;
+}
+
+// ─── Estatísticas ────────────────────────────────────────────────────────────
+
+export const fetchEstatisticasFinanceiras = async (): Promise<EstatisticasFinanceiras> => {
+    const res = await api.get('/api/financeiro/estatisticas/');
+    return res.data;
+};
+
+export const fetchDashboardFull = async (): Promise<any> => {
+    const res = await api.get('/api/dashboard-full/');
+    return res.data;
+};
+
+// ─── Parcelas ─────────────────────────────────────────────────────────────────
+
+export const fetchParcelas = async (): Promise<Parcela[]> => {
+    const res = await api.get('/api/financeiro/parcelas/');
+    return res.data;
+};
+
+// ─── Contas a Pagar ───────────────────────────────────────────────────────────
+
+export const fetchContasPagar = async (): Promise<ContaPagar[]> => {
+    const res = await api.get('/api/financial/contas_pagar/');
+    return res.data;
+};
+export const createContaPagar = async (data: Partial<ContaPagar>): Promise<ContaPagar> => {
+    const res = await api.post('/api/financial/contas_pagar/', data);
+    return res.data;
+};
+export const updateContaPagar = async (id: number, data: Partial<ContaPagar>): Promise<ContaPagar> => {
+    const res = await api.put(`/api/financial/contas_pagar/${id}/`, data);
+    return res.data;
+};
+export const deleteContaPagar = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/contas_pagar/${id}/`);
+};
+
+// ─── Contas a Receber ─────────────────────────────────────────────────────────
+
+export const fetchContasReceber = async (): Promise<ContaReceber[]> => {
+    const res = await api.get('/api/financial/contas_receber/');
+    return res.data;
+};
+export const createContaReceber = async (data: Partial<ContaReceber>): Promise<ContaReceber> => {
+    const res = await api.post('/api/financial/contas_receber/', data);
+    return res.data;
+};
+export const updateContaReceber = async (id: number, data: Partial<ContaReceber>): Promise<ContaReceber> => {
+    const res = await api.put(`/api/financial/contas_receber/${id}/`, data);
+    return res.data;
+};
+export const deleteContaReceber = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/contas_receber/${id}/`);
+};
+
+// ─── Conta Bancária ───────────────────────────────────────────────────────────
+
+export const fetchContasBancarias = async (): Promise<ContaBancaria[]> => {
+    const res = await api.get('/api/financial/contas_bancarias/');
+    return res.data;
+};
+export const createContaBancaria = async (data: Partial<ContaBancaria>): Promise<ContaBancaria> => {
+    const res = await api.post('/api/financial/contas_bancarias/', data);
+    return res.data;
+};
+export const updateContaBancaria = async (id: number, data: Partial<ContaBancaria>): Promise<ContaBancaria> => {
+    const res = await api.put(`/api/financial/contas_bancarias/${id}/`, data);
+    return res.data;
+};
+export const deleteContaBancaria = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/contas_bancarias/${id}/`);
+};
+
+// ─── Centro de Custo ──────────────────────────────────────────────────────────
+
+export const fetchCentrosCusto = async (): Promise<CentroCusto[]> => {
+    const res = await api.get('/api/financial/centro-custo/');
+    return res.data;
+};
+export const createCentroCusto = async (data: Partial<CentroCusto>): Promise<CentroCusto> => {
+    const res = await api.post('/api/financial/centro-custo/', data);
+    return res.data;
+};
+export const updateCentroCusto = async (id: number, data: Partial<CentroCusto>): Promise<CentroCusto> => {
+    const res = await api.put(`/api/financial/centro-custo/${id}/`, data);
+    return res.data;
+};
+export const deleteCentroCusto = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/centro-custo/${id}/`);
+};
+
+// ─── Centro de Receita ────────────────────────────────────────────────────────
+
+export const fetchCentrosReceita = async (): Promise<CentroReceita[]> => {
+    const res = await api.get('/api/financial/centro-receita/');
+    return res.data;
+};
+export const createCentroReceita = async (data: Partial<CentroReceita>): Promise<CentroReceita> => {
+    const res = await api.post('/api/financial/centro-receita/', data);
+    return res.data;
+};
+export const updateCentroReceita = async (id: number, data: Partial<CentroReceita>): Promise<CentroReceita> => {
+    const res = await api.put(`/api/financial/centro-receita/${id}/`, data);
+    return res.data;
+};
+export const deleteCentroReceita = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/centro-receita/${id}/`);
+};
+
+// ─── Areas ────────────────────────────────────────────────────────────────────
+
+export const fetchAreas = async (): Promise<Area[]> => {
+    const res = await api.get('/api/financial/areas/');
+    return res.data;
+};
+
+// ─── Categorias Financeiras ───────────────────────────────────────────────────
+
+export const fetchCategoriasFinanceiras = async (): Promise<CategoriaFinanceira[]> => {
+    const res = await api.get('/api/financial/categorias/');
+    return res.data;
+};
+export const createCategoriaFinanceira = async (data: Partial<CategoriaFinanceira>): Promise<CategoriaFinanceira> => {
+    const res = await api.post('/api/financial/categorias/', data);
+    return res.data;
+};
+export const updateCategoriaFinanceira = async (id: number, data: Partial<CategoriaFinanceira>): Promise<CategoriaFinanceira> => {
+    const res = await api.put(`/api/financial/categorias/${id}/`, data);
+    return res.data;
+};
+export const deleteCategoriaFinanceira = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/categorias/${id}/`);
+};
+
+// ─── Classificações ───────────────────────────────────────────────────────────
+
+export const fetchClassificacoesFinanceiras = async (): Promise<ClassificacaoFinanceira[]> => {
+    const res = await api.get('/api/financial/classificacoes/');
+    return res.data;
+};
+export const createClassificacaoFinanceira = async (data: Partial<ClassificacaoFinanceira>): Promise<ClassificacaoFinanceira> => {
+    const res = await api.post('/api/financial/classificacoes/', data);
+    return res.data;
+};
+export const updateClassificacaoFinanceira = async (id: number, data: Partial<ClassificacaoFinanceira>): Promise<ClassificacaoFinanceira> => {
+    const res = await api.put(`/api/financial/classificacoes/${id}/`, data);
+    return res.data;
+};
+export const deleteClassificacaoFinanceira = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/classificacoes/${id}/`);
+};
+
+// ─── Plano de Contas ──────────────────────────────────────────────────────────
+
+export const fetchPlanoContas = async (): Promise<PlanoContas[]> => {
+    const res = await api.get('/api/financial/plano-contas/');
+    return res.data;
+};
+export const createPlanoContas = async (data: Partial<PlanoContas>): Promise<PlanoContas> => {
+    const res = await api.post('/api/financial/plano-contas/', data);
+    return res.data;
+};
+export const updatePlanoContas = async (id: number, data: Partial<PlanoContas>): Promise<PlanoContas> => {
+    const res = await api.put(`/api/financial/plano-contas/${id}/`, data);
+    return res.data;
+};
+export const deletePlanoContas = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/plano-contas/${id}/`);
+};
+
+// ─── Conciliações ─────────────────────────────────────────────────────────────
+
+export const fetchConciliacoes = async (): Promise<Conciliacao[]> => {
+    const res = await api.get('/api/financial/conciliacoes/');
+    return res.data;
+};
+export const deleteConciliacao = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/conciliacoes/${id}/`);
+};
+
+// ─── Transferências ───────────────────────────────────────────────────────────
+
+export const fetchTransferencias = async (): Promise<Transacao[]> => {
+    const res = await api.get('/api/financial/transferencias/');
+    return res.data;
+};
+export const createTransferencia = async (data: Partial<Transacao>): Promise<Transacao> => {
+    const res = await api.post('/api/financial/transferencias/', data);
+    return res.data;
+};
+export const updateTransferencia = async (id: number, data: Partial<Transacao>): Promise<Transacao> => {
+    const res = await api.put(`/api/financial/transferencias/${id}/`, data);
+    return res.data;
+};
+export const deleteTransferencia = async (id: number): Promise<void> => {
+    await api.delete(`/api/financial/transferencias/${id}/`);
+};
+
+// ─── Query Keys ───────────────────────────────────────────────────────────────
+export const parcelasQueryKey = ['parcelas'] as const;
+export const contasPagarQueryKey = ['contasPagar'] as const;
+export const contasReceberQueryKey = ['contasReceber'] as const;
+export const contasBancariasQueryKey = ['contasBancarias'] as const;
+export const centrosCustoQueryKey = ['centrosCusto'] as const;
+export const centrosReceitaQueryKey = ['centrosReceita'] as const;
+export const areasQueryKey = ['areas'] as const;
+export const categoriasFinanceirasQueryKey = ['categoriasFinanceiras'] as const;
+export const classificacoesFinanceirasQueryKey = ['classificacoesFinanceiras'] as const;
+export const planoContasQueryKey = ['planoContas'] as const;
+export const conciliacoesQueryKey = ['conciliacoes'] as const;
+export const transferenciasQueryKey = ['transferencias'] as const;

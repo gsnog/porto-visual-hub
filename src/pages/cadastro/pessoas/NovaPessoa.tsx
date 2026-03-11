@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -7,12 +8,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ValidatedSelect } from "@/components/ui/validated-select"
 import { Card, CardContent } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom"
-import { 
-  User, 
-  Phone, 
-  MapPin, 
-  Landmark, 
-  FileText, 
+import {
+  User,
+  Phone,
+  MapPin,
+  Landmark,
+  FileText,
   Heart,
   Building2,
   Check,
@@ -24,9 +25,11 @@ import {
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { estadosBrasil, opcoesSelecao, bancosBrasil } from "@/data/brasil-localidades"
-import { setoresMock, cargosMock, tiposVinculo, pessoasMock } from "@/data/pessoas-mock"
+import { fetchSetores, fetchCargos, setoresQueryKey, tiposVinculo, fetchPessoas, pessoasQueryKey, createPessoa } from "@/services/pessoas";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay"
 import {
+
+
   AlertDialog,
   AlertDialogAction,
   AlertDialogContent,
@@ -35,6 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+
 
 interface ViaCepResponse {
   cep: string;
@@ -219,6 +223,21 @@ const initialFormData: FormData = {
 export default function NovaPessoa() {
   const navigate = useNavigate()
   const { isSaving, handleSave } = useSaveWithDelay()
+
+  const { data: setores = [] } = useQuery({
+    queryKey: setoresQueryKey,
+    queryFn: fetchSetores
+  })
+
+  const { data: cargos = [] } = useQuery({
+    queryKey: ['cargos'],
+    queryFn: fetchCargos
+  })
+
+  const { data: pessoas = [] } = useQuery({
+    queryKey: pessoasQueryKey,
+    queryFn: fetchPessoas
+  })
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<FormData>(initialFormData)
   const [showValidationDialog, setShowValidationDialog] = useState(false)
@@ -232,12 +251,12 @@ export default function NovaPessoa() {
   const fetchAddressByCep = useCallback(async (cep: string) => {
     const cleanCep = cep.replace(/\D/g, '')
     if (cleanCep.length !== 8) return
-    
+
     setIsLoadingCep(true)
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
       const data: ViaCepResponse = await response.json()
-      
+
       if (data.erro) {
         toast({
           title: "CEP não encontrado",
@@ -246,7 +265,7 @@ export default function NovaPessoa() {
         })
         return
       }
-      
+
       setFormData(prev => ({
         ...prev,
         endereco: data.logradouro || prev.endereco,
@@ -255,7 +274,7 @@ export default function NovaPessoa() {
         estado: data.uf || prev.estado,
         complemento: data.complemento || prev.complemento,
       }))
-      
+
       toast({
         title: "Endereço encontrado!",
         description: `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`,
@@ -274,7 +293,7 @@ export default function NovaPessoa() {
   const validateStep = (step: number): boolean => {
     const required = requiredFieldsByStep[step] || []
     const missing = required.filter(field => !formData[field as keyof FormData])
-    
+
     if (missing.length > 0) {
       setMissingFields(missing.map(f => fieldLabels[f] || f))
       setShowValidationDialog(true)
@@ -283,9 +302,29 @@ export default function NovaPessoa() {
     return true
   }
 
-  const handleSalvar = () => {
+  const handleSalvar = async () => {
     if (validateStep(currentStep)) {
-      handleSave("/cadastro/pessoas/pessoas", "Pessoa cadastrada com sucesso!")
+      try {
+        const payload = {
+          first_name: formData.nomeCompleto.split(' ')[0],
+          last_name: formData.nomeCompleto.substring(formData.nomeCompleto.indexOf(' ') + 1),
+          email: formData.emailCorporativo || formData.emailPessoal,
+          telefone: formData.celular,
+          endereco: `${formData.endereco}, ${formData.numero} - ${formData.bairro}, ${formData.cidade} - ${formData.estado}, ${formData.cep}`,
+          cargo: formData.cargo,
+          setor_id: formData.setor,
+          supervisor_id: formData.gestorDireto === 'none' ? null : formData.gestorDireto,
+          data_admissao: formData.dataAdmissao,
+        };
+        await createPessoa(payload);
+        handleSave("/cadastro/pessoas/pessoas", "Pessoa cadastrada com sucesso!")
+      } catch (e: any) {
+        toast({
+          title: "Erro ao cadastrar",
+          description: e?.response?.data?.error || "Informativo técnico: Ocorreu um erro ao salvar.",
+          variant: "destructive"
+        })
+      }
     }
   }
 
@@ -314,7 +353,7 @@ export default function NovaPessoa() {
   }
 
   // Gestores disponíveis (pessoas ativas)
-  const gestoresDisponiveis = pessoasMock.filter(p => p.status === 'Ativo')
+  const gestoresDisponiveis = pessoas.filter((p: any) => p.role === 'admin' || p.role === 'gestor' || p.role === 'diretor')
 
   return (
     <div className="flex flex-col h-full bg-background items-center">
@@ -337,8 +376,8 @@ export default function NovaPessoa() {
                       currentStep === step.id
                         ? "bg-primary text-primary-foreground scale-110"
                         : currentStep > step.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground group-hover:bg-muted/80"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground group-hover:bg-muted/80"
                     )}
                   >
                     {currentStep > step.id ? (
@@ -353,8 +392,8 @@ export default function NovaPessoa() {
                       currentStep === step.id
                         ? "text-primary"
                         : currentStep > step.id
-                        ? "text-primary"
-                        : "text-muted-foreground"
+                          ? "text-primary"
+                          : "text-muted-foreground"
                     )}
                   >
                     {step.title}
@@ -391,16 +430,16 @@ export default function NovaPessoa() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <ValidatedSelect label="Setor/Área" required value={formData.setor} onValueChange={(v) => updateField("setor", v)}
-                    placeholder="Selecionar setor" options={setoresMock.map(s => ({ value: s.id, label: s.nome }))} />
+                    placeholder="Selecionar setor" options={setores.map((s: any) => ({ value: s.id.toString(), label: s.nome }))} />
                   <ValidatedSelect label="Cargo" required value={formData.cargo} onValueChange={(v) => updateField("cargo", v)}
-                    placeholder="Selecionar cargo" options={cargosMock.map(c => ({ value: c.nome, label: c.nome }))} />
+                    placeholder="Selecionar cargo" options={cargos.map((c: any) => ({ value: c.nome, label: c.nome }))} />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <ValidatedSelect label="Gestor Direto" value={formData.gestorDireto} onValueChange={(v) => updateField("gestorDireto", v)}
                     placeholder="Selecionar gestor" options={[
                       { value: "none", label: "Sem gestor (cargo de liderança)" },
-                      ...gestoresDisponiveis.map(p => ({ value: p.id, label: `${p.nome} - ${p.cargo}` }))
+                      ...gestoresDisponiveis.map(p => ({ value: p.id.toString(), label: `${p.nome} - ${p.cargo}` }))
                     ]} />
                   <ValidatedSelect label="Tipo de Vínculo" required value={formData.tipoVinculo} onValueChange={(v) => updateField("tipoVinculo", v)}
                     placeholder="Selecionar vínculo" options={tiposVinculo} />
@@ -409,9 +448,9 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Admissão <span className="text-destructive">*</span></Label>
-                    <Input 
-                      type="date" 
-                      className="form-input" 
+                    <Input
+                      type="date"
+                      className="form-input"
                       value={formData.dataAdmissao}
                       onChange={(e) => updateField("dataAdmissao", e.target.value)}
                     />
@@ -426,9 +465,9 @@ export default function NovaPessoa() {
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Função / Descrição do que faz</Label>
-                  <Input 
-                    placeholder="Descreva as principais atividades" 
-                    className="form-input" 
+                  <Input
+                    placeholder="Descreva as principais atividades"
+                    className="form-input"
                     value={formData.funcaoDescricao}
                     onChange={(e) => updateField("funcaoDescricao", e.target.value)}
                   />
@@ -436,10 +475,10 @@ export default function NovaPessoa() {
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Salário (R$) - Campo Sensível</Label>
-                  <Input 
-                    type="number" 
-                    placeholder="0,00" 
-                    className="form-input" 
+                  <Input
+                    type="number"
+                    placeholder="0,00"
+                    className="form-input"
                     value={formData.salario}
                     onChange={(e) => updateField("salario", e.target.value)}
                   />
@@ -466,18 +505,18 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nome Completo <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="Nome igual ao RG" 
-                      className="form-input" 
+                    <Input
+                      placeholder="Nome igual ao RG"
+                      className="form-input"
                       value={formData.nomeCompleto}
                       onChange={(e) => updateField("nomeCompleto", e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Nascimento <span className="text-destructive">*</span></Label>
-                    <Input 
-                      type="date" 
-                      className="form-input" 
+                    <Input
+                      type="date"
+                      className="form-input"
                       value={formData.dataNascimento}
                       onChange={(e) => updateField("dataNascimento", e.target.value)}
                     />
@@ -487,8 +526,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nome do Pai</Label>
-                    <Input 
-                      placeholder="Nome completo" 
+                    <Input
+                      placeholder="Nome completo"
                       className="form-input"
                       value={formData.nomePai}
                       onChange={(e) => updateField("nomePai", e.target.value)}
@@ -496,8 +535,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Nome da Mãe</Label>
-                    <Input 
-                      placeholder="Nome completo" 
+                    <Input
+                      placeholder="Nome completo"
                       className="form-input"
                       value={formData.nomeMae}
                       onChange={(e) => updateField("nomeMae", e.target.value)}
@@ -539,8 +578,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Celular <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="(00) 00000-0000" 
+                    <Input
+                      placeholder="(00) 00000-0000"
                       className="form-input"
                       value={formData.celular}
                       onChange={(e) => updateField("celular", e.target.value)}
@@ -548,8 +587,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Telefone Fixo</Label>
-                    <Input 
-                      placeholder="(00) 0000-0000" 
+                    <Input
+                      placeholder="(00) 0000-0000"
                       className="form-input"
                       value={formData.telefoneFixo}
                       onChange={(e) => updateField("telefoneFixo", e.target.value)}
@@ -560,9 +599,9 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">E-mail Pessoal <span className="text-destructive">*</span></Label>
-                    <Input 
-                      type="email" 
-                      placeholder="email@exemplo.com" 
+                    <Input
+                      type="email"
+                      placeholder="email@exemplo.com"
                       className="form-input"
                       value={formData.emailPessoal}
                       onChange={(e) => updateField("emailPessoal", e.target.value)}
@@ -570,9 +609,9 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">E-mail Corporativo</Label>
-                    <Input 
-                      type="email" 
-                      placeholder="email@empresa.com" 
+                    <Input
+                      type="email"
+                      placeholder="email@empresa.com"
                       className="form-input"
                       value={formData.emailCorporativo}
                       onChange={(e) => updateField("emailCorporativo", e.target.value)}
@@ -583,8 +622,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Contato de Emergência - Nome</Label>
-                    <Input 
-                      placeholder="Nome do contato" 
+                    <Input
+                      placeholder="Nome do contato"
                       className="form-input"
                       value={formData.contatoEmergenciaNome}
                       onChange={(e) => updateField("contatoEmergenciaNome", e.target.value)}
@@ -592,8 +631,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Contato de Emergência - Telefone</Label>
-                    <Input 
-                      placeholder="(00) 00000-0000" 
+                    <Input
+                      placeholder="(00) 00000-0000"
                       className="form-input"
                       value={formData.contatoEmergenciaTelefone}
                       onChange={(e) => updateField("contatoEmergenciaTelefone", e.target.value)}
@@ -620,8 +659,8 @@ export default function NovaPessoa() {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">CEP <span className="text-destructive">*</span></Label>
                     <div className="relative">
-                      <Input 
-                        placeholder="00000-000" 
+                      <Input
+                        placeholder="00000-000"
                         className="form-input"
                         value={formData.cep}
                         onChange={(e) => updateField("cep", e.target.value)}
@@ -634,8 +673,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label className="text-sm font-medium">Endereço <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="Rua, Avenida, etc." 
+                    <Input
+                      placeholder="Rua, Avenida, etc."
                       className="form-input"
                       value={formData.endereco}
                       onChange={(e) => updateField("endereco", e.target.value)}
@@ -646,8 +685,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Número</Label>
-                    <Input 
-                      placeholder="Nº" 
+                    <Input
+                      placeholder="Nº"
                       className="form-input"
                       value={formData.numero}
                       onChange={(e) => updateField("numero", e.target.value)}
@@ -655,8 +694,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label className="text-sm font-medium">Complemento</Label>
-                    <Input 
-                      placeholder="Apto, Bloco, etc." 
+                    <Input
+                      placeholder="Apto, Bloco, etc."
                       className="form-input"
                       value={formData.complemento}
                       onChange={(e) => updateField("complemento", e.target.value)}
@@ -667,8 +706,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Bairro <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="Bairro" 
+                    <Input
+                      placeholder="Bairro"
                       className="form-input"
                       value={formData.bairro}
                       onChange={(e) => updateField("bairro", e.target.value)}
@@ -676,8 +715,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Cidade <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="Cidade" 
+                    <Input
+                      placeholder="Cidade"
                       className="form-input"
                       value={formData.cidade}
                       onChange={(e) => updateField("cidade", e.target.value)}
@@ -730,8 +769,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Agência <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="0000" 
+                    <Input
+                      placeholder="0000"
                       className="form-input"
                       value={formData.agencia}
                       onChange={(e) => updateField("agencia", e.target.value)}
@@ -739,8 +778,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Conta <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="00000000" 
+                    <Input
+                      placeholder="00000000"
                       className="form-input"
                       value={formData.conta}
                       onChange={(e) => updateField("conta", e.target.value)}
@@ -748,8 +787,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Dígito</Label>
-                    <Input 
-                      placeholder="0" 
+                    <Input
+                      placeholder="0"
                       className="form-input"
                       value={formData.digito}
                       onChange={(e) => updateField("digito", e.target.value)}
@@ -759,8 +798,8 @@ export default function NovaPessoa() {
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Chave PIX</Label>
-                  <Input 
-                    placeholder="CPF, e-mail, telefone ou chave aleatória" 
+                  <Input
+                    placeholder="CPF, e-mail, telefone ou chave aleatória"
                     className="form-input"
                     value={formData.chavePix}
                     onChange={(e) => updateField("chavePix", e.target.value)}
@@ -784,8 +823,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">CPF <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="000.000.000-00" 
+                    <Input
+                      placeholder="000.000.000-00"
                       className="form-input"
                       value={formData.cpf}
                       onChange={(e) => updateField("cpf", e.target.value)}
@@ -793,8 +832,8 @@ export default function NovaPessoa() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">RG <span className="text-destructive">*</span></Label>
-                    <Input 
-                      placeholder="00.000.000-0" 
+                    <Input
+                      placeholder="00.000.000-0"
                       className="form-input"
                       value={formData.rg}
                       onChange={(e) => updateField("rg", e.target.value)}
@@ -805,8 +844,8 @@ export default function NovaPessoa() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Órgão Expedidor</Label>
-                    <Input 
-                      placeholder="SSP" 
+                    <Input
+                      placeholder="SSP"
                       className="form-input"
                       value={formData.orgaoExpedidor}
                       onChange={(e) => updateField("orgaoExpedidor", e.target.value)}
@@ -816,8 +855,8 @@ export default function NovaPessoa() {
                     placeholder="UF" options={estadosBrasil.map(uf => ({ value: uf.sigla, label: uf.sigla }))} />
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Data de Expedição</Label>
-                    <Input 
-                      type="date" 
+                    <Input
+                      type="date"
                       className="form-input"
                       value={formData.dataExpedicaoRg}
                       onChange={(e) => updateField("dataExpedicaoRg", e.target.value)}
@@ -827,8 +866,8 @@ export default function NovaPessoa() {
 
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">PIS/PASEP</Label>
-                  <Input 
-                    placeholder="000.00000.00-0" 
+                  <Input
+                    placeholder="000.00000.00-0"
                     className="form-input"
                     value={formData.pisPasep}
                     onChange={(e) => updateField("pisPasep", e.target.value)}
@@ -852,8 +891,8 @@ export default function NovaPessoa() {
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <Label className="text-sm font-medium">Você se identifica como LGBTQIA+?</Label>
-                    <RadioGroup 
-                      value={formData.lgbtqia} 
+                    <RadioGroup
+                      value={formData.lgbtqia}
                       onValueChange={(v) => updateField("lgbtqia", v)}
                       className="flex gap-4"
                     >
@@ -874,8 +913,8 @@ export default function NovaPessoa() {
 
                   <div className="space-y-3">
                     <Label className="text-sm font-medium">Você é pessoa com deficiência (PCD)?</Label>
-                    <RadioGroup 
-                      value={formData.pcd} 
+                    <RadioGroup
+                      value={formData.pcd}
                       onValueChange={(v) => updateField("pcd", v)}
                       className="flex gap-4"
                     >
@@ -892,8 +931,8 @@ export default function NovaPessoa() {
 
                   <div className="space-y-3">
                     <Label className="text-sm font-medium">Você é neurodivergente?</Label>
-                    <RadioGroup 
-                      value={formData.neurodivergente} 
+                    <RadioGroup
+                      value={formData.neurodivergente}
                       onValueChange={(v) => updateField("neurodivergente", v)}
                       className="flex gap-4"
                     >

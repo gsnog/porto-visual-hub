@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import { 
-  LayoutGrid, 
-  ClipboardList, 
-  Package, 
+import {
+  LayoutGrid,
+  ClipboardList,
+  Package,
   TrendingUp,
   DollarSign,
   Building2,
@@ -19,6 +19,7 @@ import { NavLink, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/hooks/useTheme"
 import { Badge } from "@/components/ui/badge"
+import { usePermissions } from "@/contexts/PermissionsContext"
 import logoSerpLight from "@/assets/logo-serp-light.png"
 import logoSerpDark from "@/assets/logo-serp-dark.png"
 import logoIcone from "@/assets/Logo_Serp_27.png"
@@ -26,40 +27,46 @@ import logoIcone from "@/assets/Logo_Serp_27.png"
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutGrid, help: "Visão geral com indicadores e métricas do sistema." },
-  { 
-    title: "Cadastro", 
+  {
+    title: "Cadastro",
     icon: ClipboardList,
     basePath: "/cadastro",
     help: "Cadastro de dados mestres: itens, fornecedores, clientes, setores e contas.",
     subItems: [
-      { title: "Estoque", help: "Cadastros relacionados ao controle de estoque.", subItems: [
-        { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
-        { title: "Itens", url: "/cadastro/estoque/itens" },
-        { title: "Setores", url: "/cadastro/estoque/setores" },
-        { title: "Unidades", url: "/cadastro/estoque/unidades" },
-      ]},
-      { title: "Financeiro", help: "Cadastros financeiros: contas, centros de custo e planos de contas.", subItems: [
-        { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
-        { title: "Conciliação Bancária", url: "/cadastro/financeiro/conciliacao-bancaria" },
-        { title: "Transferências", url: "/cadastro/financeiro/transferencias" },
-        { title: "Clientes", url: "/cadastro/financeiro/clientes" },
-        { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
-        { title: "Centro de Receita", url: "/cadastro/financeiro/centro-receita" },
-        { title: "Contábil", url: "/cadastro/financeiro/contabil" },
-        { title: "Categorias", url: "/cadastro/financeiro/categorias" },
-        { title: "Fornecedores", url: "/cadastro/financeiro/fornecedores" },
-        { title: "Subcategorias", url: "/cadastro/financeiro/subcategorias" },
-        { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
-      ]},
-      { title: "Pessoas", help: "Cadastro de pessoas, setores e cargos.", subItems: [
-        { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
-        { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
-        { title: "Cargos", url: "/cadastro/pessoas/cargos" },
-      ]},
+      {
+        title: "Estoque", help: "Cadastros relacionados ao controle de estoque.", subItems: [
+          { title: "Fornecedores", url: "/cadastro/estoque/fornecedores" },
+          { title: "Itens", url: "/cadastro/estoque/itens" },
+          { title: "Setores", url: "/cadastro/estoque/setores" },
+          { title: "Unidades", url: "/cadastro/estoque/unidades" },
+        ]
+      },
+      {
+        title: "Financeiro", help: "Cadastros financeiros: contas, centros de custo e planos de contas.", subItems: [
+          { title: "Conta Bancária", url: "/cadastro/financeiro/conta-bancaria" },
+          { title: "Conciliação Bancária", url: "/cadastro/financeiro/conciliacao-bancaria" },
+          { title: "Transferências", url: "/cadastro/financeiro/transferencias" },
+          { title: "Clientes", url: "/cadastro/financeiro/clientes" },
+          { title: "Centro de Custo", url: "/cadastro/financeiro/centro-custo" },
+          { title: "Centro de Receita", url: "/cadastro/financeiro/centro-receita" },
+          { title: "Contábil", url: "/cadastro/financeiro/contabil" },
+          { title: "Categorias", url: "/cadastro/financeiro/categorias" },
+          { title: "Fornecedores", url: "/cadastro/financeiro/fornecedores" },
+          { title: "Subcategorias", url: "/cadastro/financeiro/subcategorias" },
+          { title: "Plano de Contas", url: "/cadastro/financeiro/plano-contas" },
+        ]
+      },
+      {
+        title: "Pessoas", help: "Cadastro de pessoas, setores e cargos.", subItems: [
+          { title: "Pessoas", url: "/cadastro/pessoas/pessoas" },
+          { title: "Setores/Áreas", url: "/cadastro/pessoas/setores" },
+          { title: "Cargos", url: "/cadastro/pessoas/cargos" },
+        ]
+      },
     ]
   },
-  { 
-    title: "Comercial", 
+  {
+    title: "Comercial",
     icon: TrendingUp,
     basePath: "/comercial",
     badge: "BETA",
@@ -73,8 +80,8 @@ const menuItems = [
       { title: "Atividades", url: "/comercial/atividades" },
     ]
   },
-  { 
-    title: "Estoque", 
+  {
+    title: "Estoque",
     icon: Package,
     basePath: "/estoque",
     help: "Controle de estoque: entradas, saídas, inventário, requisições e patrimônio.",
@@ -89,8 +96,8 @@ const menuItems = [
       { title: "Patrimônio", url: "/patrimonio" },
     ]
   },
-  { 
-    title: "Financeiro", 
+  {
+    title: "Financeiro",
     icon: DollarSign,
     basePath: "/financeiro",
     help: "Módulo financeiro: contas a pagar/receber, fluxo de caixa e XML.",
@@ -101,8 +108,8 @@ const menuItems = [
       { title: "XML", url: "/financeiro/xml" },
     ]
   },
-  { 
-    title: "Operacional", 
+  {
+    title: "Operacional",
     icon: BarChart3,
     basePath: "/operacional",
     help: "Gestão operacional: setores, embarcações, operações e serviços.",
@@ -113,9 +120,9 @@ const menuItems = [
       { title: "Serviços", url: "/operacional/servicos" },
     ]
   },
-  
-  { 
-    title: "Gestão de Pessoas", 
+
+  {
+    title: "Gestão de Pessoas",
     icon: UserRoundPlus,
     basePath: "/gestao-pessoas",
     badge: "BETA",
@@ -141,17 +148,18 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
   const [openMenus, setOpenMenus] = useState<string[]>([])
   const [activeItem, setActiveItem] = useState<string>("Dashboard")
   const { theme, toggleTheme } = useTheme()
+  const { logout } = usePermissions()
 
   const toggleMenu = (label: string, isSubMenu = false) => {
     setOpenMenus((prev) => {
       if (prev.includes(label)) {
         return prev.filter((item) => item !== label)
       }
-      
+
       if (isSubMenu) {
         return [...prev, label]
       }
-      
+
       const mainMenuTitles = menuItems.filter(item => item.subItems).map(item => item.title)
       const filteredMenus = prev.filter(item => !mainMenuTitles.includes(item))
       return [...filteredMenus, label]
@@ -205,7 +213,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
             )}
           />
         </div>
-        
+
         {/* Toggle button */}
         <button
           onClick={onToggle}
@@ -235,9 +243,9 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                         <span className="flex-1 text-left text-sm text-[hsl(var(--sidebar-foreground))] flex items-center gap-2">
                           {item.title}
                           {'badge' in item && item.badge && (
-                             <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-primary bg-primary text-primary-foreground font-semibold">
-                               {item.badge}
-                             </Badge>
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-primary bg-primary text-primary-foreground font-semibold">
+                              {item.badge}
+                            </Badge>
                           )}
                         </span>
                         {openMenus.includes(item.title) ? (
@@ -248,7 +256,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                       </>
                     )}
                   </button>
-                  
+
                   {!collapsed && openMenus.includes(item.title) && (
                     <ul className="mt-1 space-y-1 pl-4">
                       {item.subItems.map((subItem) => (
@@ -261,14 +269,14 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                               <span className="flex-1 text-left text-[hsl(var(--sidebar-muted))]">
                                 {subItem.title}
                               </span>
-                              
+
                               {openMenus.includes(`${item.title}-${subItem.title}`) ? (
                                 <ChevronDown className="h-3 w-3 text-foreground dark:text-primary" />
                               ) : (
                                 <ChevronRight className="h-3 w-3 text-foreground dark:text-primary" />
                               )}
                             </button>
-                            
+
                             {openMenus.includes(`${item.title}-${subItem.title}`) && (
                               <ul className="mt-1 space-y-1 pl-4">
                                 {subItem.subItems.map((nestedItem) => (
@@ -277,7 +285,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                                       to={nestedItem.url}
                                       className={({ isActive }) =>
                                         cn(
-                                      "sidebar-item text-xs",
+                                          "sidebar-item text-xs",
                                           isActive
                                             ? "sidebar-nav-active"
                                             : "text-[hsl(var(--sidebar-muted))] hover:text-[hsl(var(--sidebar-foreground))]"
@@ -325,7 +333,7 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
                       <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
                         {item.title}
                       </span>
-                      
+
                     </>
                   )}
                 </NavLink>
@@ -353,18 +361,21 @@ export function AppSidebar({ collapsed, onToggle }: SidebarProps) {
               <span className="text-sm text-[hsl(var(--sidebar-foreground))]">
                 {theme === "dark" ? "Modo Diurno" : "Modo Noturno"}
               </span>
-              
+
             </>
           )}
         </button>
 
         {/* Logout */}
-        <button className="sidebar-item w-full text-red-500 hover:bg-red-500/20">
+        <button
+          className="sidebar-item w-full text-red-500 hover:bg-red-500/20"
+          onClick={logout}
+        >
           <LogOut className="h-5 w-5 shrink-0" />
           {!collapsed && (
             <>
               <span className="text-sm">Sair</span>
-              
+
             </>
           )}
         </button>

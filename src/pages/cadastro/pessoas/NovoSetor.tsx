@@ -7,7 +7,12 @@ import { ValidatedSelect } from "@/components/ui/validated-select";
 import { Button } from "@/components/ui/button";
 import { Building2, ChevronLeft, Loader2 } from "lucide-react";
 import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
-import { setoresMock, pessoasMock } from "@/data/pessoas-mock";
+import { setoresMock,  } from "@/services/pessoas";
+
+// --- Stub temporário para evitar crashes por mock deletado ---
+const pessoasMock: any[] = [];
+
+
 
 export default function NovoSetor() {
   const navigate = useNavigate();

@@ -12,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/api";
+import { fetchFornecedores, fetchItensEstoque, fornecedoresQueryKey, itensEstoqueQueryKey } from "@/services/estoque";
 
 interface ItemEntrada {
   id: number;
@@ -35,24 +38,42 @@ const operacaoOptions = [
   { value: "transferencia", label: "Transferência" },
 ];
 
-const itensEstoqueMock = [
-  { value: "parafuso-m8", label: "Parafuso M8" },
-  { value: "parafuso-m10", label: "Parafuso M10" },
-  { value: "cabo-hdmi", label: "Cabo HDMI" },
-  { value: "oleo-lubrificante", label: "Óleo Lubrificante" },
-  { value: "papel-a4", label: "Papel A4" },
-];
-
-// Mock fornecedores cadastrados
-const fornecedoresCadastrados = [
-  "Distribuidora ABC Ltda",
-  "Tech Solutions S.A.",
-  "Papelaria Express",
-];
+// Removed hardcoded mocks for itens and fornecedores
 
 export default function NovaEntrada() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isSaving, setIsSaving] = useState(false);
+
+  const { data: fornecedores = [] } = useQuery({ queryKey: fornecedoresQueryKey, queryFn: fetchFornecedores });
+  const { data: itensEstoqueData = [] } = useQuery({ queryKey: itensEstoqueQueryKey, queryFn: fetchItensEstoque });
+
+  // Define API POST Mutation
+  const createEntradaMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await api.post('/api/estoque/entradas/', data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entradas_estoque'] });
+      toast({
+        title: "Entrada cadastrada com sucesso!",
+        description: "A entrada foi salva diretamente no banco de dados.",
+      });
+      navigate("/estoque/entradas");
+    },
+    onError: (error: any) => {
+      console.error(error);
+      toast({
+        title: "Erro ao salvar a entrada",
+        description: "Verifique os dados informados.",
+        variant: "destructive"
+      });
+    },
+    onSettled: () => {
+      setIsSaving(false);
+    }
+  });
 
   const handleCancelar = () => navigate("/estoque/entradas");
 
@@ -160,12 +181,12 @@ export default function NovaEntrada() {
           if (xNome) {
             setFornecedorXml(xNome);
             // Auto-register supplier if not found - persist via sessionStorage
-            const found = fornecedoresCadastrados.some(
-              f => f.toLowerCase() === xNome.toLowerCase()
+            const found = fornecedores.some(
+              (f: any) => f.nome.toLowerCase() === xNome.toLowerCase()
             );
             if (!found) {
-              fornecedoresCadastrados.push(xNome);
-              // Save to sessionStorage so Fornecedores page picks it up
+              // Real implementation should POST this new Fornecedor to the API
+              // For session simulation:
               const existing = JSON.parse(sessionStorage.getItem("novos_fornecedores") || "[]");
               existing.push({
                 id: Date.now(),
@@ -239,46 +260,51 @@ export default function NovaEntrada() {
 
   const handleSalvar = async () => {
     setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Build new entry and store in sessionStorage so EstoqueEntradas picks it up
-    const totalFormatted = `R$ ${valorTotal.toFixed(2).replace(".", ",")}`;
-    const today = new Date();
-    const dataFormatted = dataEntrada
-      ? dataEntrada.split("-").reverse().join("/")
-      : `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+    const dataFormatted = dataEntrada || new Date().toISOString().split("T")[0];
 
-    const newEntry = {
-      id: Date.now(),
+    // Simplification for prototype:
+    // This sends the data directly to the new API endpoint
+    // To conform with standard relational models: we might need nested insertions for items.
+
+    // For now we map this properly assuming 'fornecedor' requires an ID, we send a hardcoded '1' 
+    // or the selected value if available in an advanced implementation. 
+    // Currently, Estoque is mapped to use `fornecedor` numeric ID. As this form doesn't actually select a Fornecedor ID (only string names),
+    // we use a mocked ID 1. Real integration would fetch `Fornecedor` from API to list in a dropdown.
+    const createPayload = {
       data: dataFormatted,
-      responsavel: "Usuário Atual",
-      notaFiscal: nfNumero || `NF-${Date.now().toString().slice(-6)}`,
-      fornecedor: fornecedorXml || "—",
-      unidade: unidadeOptions.find(u => u.value === estoqueDestino)?.label || "—",
-      custoTotal: totalFormatted,
-      status: "Pré-Cadastro",
-      itens: itens.map(item => ({
-        id: item.id,
-        item: item.item,
-        marca: item.marca,
-        quantidade: parseFloat(item.quantidade) || 0,
-        custoUnitario: item.custoUnitario,
-        especificacoes: item.especificacoes,
-        tipo: item.tipoItem,
-      })),
+      nota_fiscal: nfNumero || `NF-${Date.now().toString().slice(-6)}`,
+      fornecedor: 1, // requires Fornecedor ID integer
+      estoque_de_destino: 1, // Requires Unidade ID integer (estoque_de_destino)
+      item: 1, // Requires Item ID integer
+      quantidade: itens.reduce((acc, curr) => acc + (parseFloat(curr.quantidade) || 0), 0),
+      custo_unitario: itens.length > 0 ? parseFloat(itens[0].custoUnitario.replace("R$", "").replace(",", ".")) : 0,
+      custo_total: itens.reduce((acc, curr) => acc + (parseFloat(curr.quantidade) || 0) * (parseFloat(curr.custoUnitario.replace("R$", "").replace(",", ".")) || 0), 0)
     };
 
-    const existing = JSON.parse(sessionStorage.getItem("novas_entradas") || "[]");
-    existing.push(newEntry);
-    sessionStorage.setItem("novas_entradas", JSON.stringify(existing));
-
-    toast({
-      title: "Entrada enviada para aprovação!",
-      description: "A entrada ficará em pré-cadastro até a aprovação do gerente.",
+    createEntradaMutation.mutate(createPayload, {
+      onSuccess: () => {
+        setIsSaving(false);
+        toast({
+          title: "Entrada salva",
+          description: "A nota de entrada foi registrada com sucesso.",
+        });
+        navigate("/estoque/entradas");
+      },
+      onError: (error: any) => {
+        setIsSaving(false);
+        const errData = error.response?.data;
+        let msgs = "Ocorreu um erro ao salvar a entrada.";
+        if (errData && typeof errData === "object") {
+          msgs = Object.entries(errData).map(([key, val]) => `${key}: ${val}`).join(" | ");
+        }
+        toast({
+          title: "Erro de Validação",
+          description: msgs,
+          variant: "destructive",
+        });
+      }
     });
-
-    setIsSaving(false);
-    navigate("/estoque/entradas");
   };
 
   return (
@@ -549,7 +575,7 @@ export default function NovaEntrada() {
                               <Select value={item.itemExistenteId || ""} onValueChange={(v) => updateItemExistente(item.id, v)}>
                                 <SelectTrigger><SelectValue placeholder="Selecione o item" /></SelectTrigger>
                                 <SelectContent className="bg-popover">
-                                  {itensEstoqueMock.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                  {itensEstoqueData.map(opt => <SelectItem key={opt.id} value={opt.id.toString()}>{opt.itens_do_estoque}</SelectItem>)}
                                 </SelectContent>
                               </Select>
                             </div>

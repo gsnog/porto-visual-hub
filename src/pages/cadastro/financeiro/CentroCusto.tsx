@@ -12,15 +12,12 @@ import { Plus, FileText } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
-const mockCentrosCusto = [
-  { id: 1, nome: "Centro de Custo A", diretoria: "Diretoria Financeira", gerencia: "Gerência de Custos", departamento: "Contabilidade" },
-  { id: 2, nome: "Centro de Custo B", diretoria: "Diretoria Operacional", gerencia: "Gerência de Produção", departamento: "Produção" },
-];
-type CC = typeof mockCentrosCusto[0];
+// CentroCusto — endpoint ainda não disponível; empty state pronto
+type CC = { id: number; nome: string; diretoria: string; gerencia: string; departamento: string; };
 
 const CentroCusto = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockCentrosCusto);
+  const [items] = useState<CC[]>([]);
   const [searchCentro, setSearchCentro] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<CC | null>(null);
@@ -30,7 +27,7 @@ const CentroCusto = () => {
   const filterFields = [{ type: "text" as const, label: "Centro de Custo", placeholder: "Buscar centro de custo...", value: searchCentro, onChange: setSearchCentro, width: "flex-1 min-w-[200px]" }];
   const filtered = items.filter(c => c.nome.toLowerCase().includes(searchCentro.toLowerCase()));
   const getExportData = () => filtered.map(c => ({ "Centro de Custo": c.nome, Diretoria: c.diretoria, Gerência: c.gerencia, Departamento: c.departamento }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Centro de custo excluído." }); } };
+  const handleDelete = () => { setDeleteId(null); toast({ title: "Aguardando API", description: "Endpoint de exclusão ainda não configurado." }); };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (c: CC) => { setEditItem(c); setEditData({ nome: c.nome, diretoria: c.diretoria, gerencia: c.gerencia, departamento: c.departamento }); };
 
@@ -81,7 +78,7 @@ const CentroCusto = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Centro de custo atualizado." }); } }}>Salvar</Button>
+            <Button onClick={() => { toast({ title: "Aguardando API", description: "Endpoint de salvamento ainda não configurado." }); setEditItem(null); }}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

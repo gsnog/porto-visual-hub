@@ -12,12 +12,11 @@ import { Plus, FileText } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
-const mockSubcategorias = [{ id: 1, nome: "Energia Elétrica", categoria: "Despesas Operacionais" }, { id: 2, nome: "Água e Esgoto", categoria: "Despesas Operacionais" }, { id: 3, nome: "Consultoria", categoria: "Receitas de Serviços" }];
-type Sub = typeof mockSubcategorias[0];
+type Sub = { id: number; nome: string; categoria: string; };
 
 const Subcategorias = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockSubcategorias);
+  const [items] = useState<Sub[]>([]);
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<Sub | null>(null);
@@ -25,7 +24,7 @@ const Subcategorias = () => {
   const [editData, setEditData] = useState({ nome: "", categoria: "" });
   const filtered = items.filter(s => s.nome.toLowerCase().includes(search.toLowerCase()));
   const getExportData = () => filtered.map(s => ({ Subcategoria: s.nome, Categoria: s.categoria }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Subcategoria excluída." }); } };
+  const handleDelete = () => { setDeleteId(null); toast({ title: "Aguardando API", description: "Endpoint ainda não configurado." }); };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (s: Sub) => { setEditItem(s); setEditData({ nome: s.nome, categoria: s.categoria }); };
 
@@ -41,21 +40,21 @@ const Subcategorias = () => {
           filtered.map(s => <TableRow key={s.id} className="hover:bg-table-hover transition-colors"><TableCell className="text-center font-medium">{s.nome}</TableCell><TableCell className="text-center">{s.categoria}</TableCell><TableCell className="text-center"><TableActions onView={() => setViewItem(s)} onEdit={() => openEdit(s)} onDelete={() => setDeleteId(s.id)} /></TableCell></TableRow>)}
       </TableBody></Table></div>
     </div>
-    <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}><DialogContent><DialogHeader><DialogTitle>{viewItem?.nome}</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2"><InfoRow label="Subcategoria" value={viewItem.nome} /><InfoRow label="Categoria" value={viewItem.categoria} /></div>}</DialogContent></Dialog>
-    <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-      <DialogContent>
-        <DialogHeader><DialogTitle>Editar Subcategoria</DialogTitle></DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2"><Label>Nome</Label><Input value={editData.nome} onChange={e => setEditData(p => ({ ...p, nome: e.target.value }))} /></div>
-          <div className="space-y-2"><Label>Categoria</Label><Input value={editData.categoria} onChange={e => setEditData(p => ({ ...p, categoria: e.target.value }))} /></div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-          <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Subcategoria atualizada." }); } }}>Salvar</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-    <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem?.nome}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+      <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}><DialogContent><DialogHeader><DialogTitle>{viewItem?.nome}</DialogTitle></DialogHeader>{viewItem && <div className="space-y-2 py-2"><InfoRow label="Subcategoria" value={viewItem.nome} /><InfoRow label="Categoria" value={viewItem.categoria} /></div>}</DialogContent></Dialog>
+      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar Subcategoria</DialogTitle></DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2"><Label>Nome</Label><Input value={editData.nome} onChange={e => setEditData(p => ({ ...p, nome: e.target.value }))} /></div>
+            <div className="space-y-2"><Label>Categoria</Label><Input value={editData.categoria} onChange={e => setEditData(p => ({ ...p, categoria: e.target.value }))} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button onClick={() => { toast({ title: "Aguardando API", description: "Endpoint ainda não configurado." }); setEditItem(null); }}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Deseja excluir <strong>{deleteItem?.nome}</strong>?</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
     </div>
   );
 };

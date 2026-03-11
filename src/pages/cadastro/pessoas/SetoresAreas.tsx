@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,48 +15,40 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Search, FileText } from "lucide-react";
-import { StatusBadge } from "@/components/StatusBadge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Plus, Search, Building2 } from "lucide-react";
 import { TableActions } from "@/components/TableActions";
-import { setoresMock as setoresOriginal, type Setor } from "@/data/pessoas-mock";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSetores, setoresQueryKey, type Setor } from "@/services/pessoas";
 
 export default function SetoresAreas() {
   const navigate = useNavigate();
-  const [items, setItems] = useState<Setor[]>(setoresOriginal);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<Setor | null>(null);
-  const [editItem, setEditItem] = useState<Setor | null>(null);
-  const [editNome, setEditNome] = useState("");
 
-  const filteredSetores = items.filter((setor) => {
-    const matchesSearch = setor.nome.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || setor.status === statusFilter;
-    return matchesSearch && matchesStatus;
+  const { data: setores = [], isLoading, isError } = useQuery<Setor[]>({
+    queryKey: setoresQueryKey,
+    queryFn: fetchSetores,
   });
 
-  const getExportData = () => filteredSetores.map(s => ({ Nome: s.nome, "Área Pai": s.areaPaiNome || "—", Responsável: s.responsavelNome || "—", "Qtde Pessoas": s.qtdePessoas, Status: s.status }));
+  const filteredSetores = useMemo(() =>
+    setores.filter((setor) =>
+      setor.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    ), [setores, searchTerm]);
 
-  const handleDelete = () => {
-    if (deleteId) {
-      setItems(prev => prev.filter(i => i.id !== deleteId));
-      setDeleteId(null);
-      toast({ title: "Setor removido", description: "Registro excluído com sucesso." });
-    }
-  };
+  const getExportData = () => filteredSetores.map(s => ({ Nome: s.nome }));
 
-  const deleteItem = items.find(s => s.id === deleteId);
+  const deleteItem = setores.find(s => s.id === deleteId);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => navigate("/cadastro/pessoas/setores/novo")} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Novo Setor
+            <Plus className="h-4 w-4" /> Novo Setor
           </Button>
           <ExportButton getData={getExportData} fileName="cadastro-setores-areas" />
         </div>
@@ -68,14 +60,6 @@ export default function SetoresAreas() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Buscar por nome do setor..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger><SelectValue placeholder="Status" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os status</SelectItem>
-              <SelectItem value="Ativo">Ativo</SelectItem>
-              <SelectItem value="Inativo">Inativo</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
@@ -84,60 +68,66 @@ export default function SetoresAreas() {
           <TableHeader>
             <TableRow className="bg-[hsl(var(--sidebar-bg))] hover:bg-[hsl(var(--sidebar-bg))]">
               <TableHead className="text-foreground font-semibold">Nome</TableHead>
-              <TableHead className="text-foreground font-semibold">Área Pai</TableHead>
-              <TableHead className="text-foreground font-semibold">Responsável</TableHead>
-              <TableHead className="text-foreground font-semibold text-center">Qtde Pessoas</TableHead>
-              <TableHead className="text-foreground font-semibold">Status</TableHead>
               <TableHead className="text-foreground font-semibold text-center">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredSetores.map((setor) => (
-              <TableRow key={setor.id} className="hover:bg-muted/50">
-                <TableCell className="font-medium">{setor.nome}</TableCell>
-                <TableCell>{setor.areaPaiNome || "-"}</TableCell>
-                <TableCell>{setor.responsavelNome || "-"}</TableCell>
-                <TableCell className="text-center">{setor.qtdePessoas}</TableCell>
-                <TableCell><StatusBadge status={setor.status} /></TableCell>
-                <TableCell className="text-center">
-                  <TableActions
-                    onView={() => setViewItem(setor)}
-                    onEdit={() => { setEditItem(setor); setEditNome(setor.nome); }}
-                    onDelete={() => setDeleteId(setor.id)}
-                  />
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16 mx-auto" /></TableCell>
+                </TableRow>
+              ))
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={2} className="text-center py-8 text-destructive">
+                  Erro ao carregar setores da API.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : filteredSetores.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={2} className="text-center py-12">
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <Building2 className="h-8 w-8" />
+                    <p className="font-medium">Nenhum setor cadastrado</p>
+                    <p className="text-sm">Crie um setor para organizar a estrutura da empresa.</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredSetores.map((setor) => (
+                <TableRow key={setor.id} className="hover:bg-muted/50">
+                  <TableCell className="font-medium">{setor.nome}</TableCell>
+                  <TableCell className="text-center">
+                    <TableActions
+                      onView={() => setViewItem(setor)}
+                      onEdit={() => navigate(`/cadastro/pessoas/setores/${setor.id}`)}
+                      onDelete={() => setDeleteId(setor.id)}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
 
-      <div className="text-sm text-muted-foreground">Exibindo {filteredSetores.length} de {items.length} setores</div>
+      {!isLoading && (
+        <div className="text-sm text-muted-foreground">
+          Exibindo {filteredSetores.length} de {setores.length} setores
+        </div>
+      )}
 
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>{viewItem?.nome}</DialogTitle></DialogHeader>
           {viewItem && (
             <div className="space-y-3 py-2">
-              <InfoRow label="Área Pai" value={viewItem.areaPaiNome || "—"} />
-              <InfoRow label="Responsável" value={viewItem.responsavelNome || "—"} />
-              <InfoRow label="Qtde Pessoas" value={String(viewItem.qtdePessoas)} />
-              <InfoRow label="Status" value={viewItem.status} />
+              <InfoRow label="ID" value={String(viewItem.id)} />
+              <InfoRow label="Nome" value={viewItem.nome} />
             </div>
           )}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Editar Setor</DialogTitle></DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2"><Label>Nome do Setor</Label><Input value={editNome} onChange={e => setEditNome(e.target.value)} /></div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, nome: editNome } : i)); setEditItem(null); toast({ title: "Salvo", description: "Setor atualizado." }); } }}>Salvar</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -149,7 +139,15 @@ export default function SetoresAreas() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                toast({ title: "Em desenvolvimento", description: "Exclusão de setores disponível em breve." });
+                setDeleteId(null);
+              }}
+            >
+              Excluir
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

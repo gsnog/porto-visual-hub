@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LayoutShell from "@/layouts/LayoutShell";
 import { PermissionsProvider } from "@/contexts/PermissionsContext";
+import { WebRTCProvider } from "@/contexts/WebRTCContext";
+import { ChatProvider } from "@/contexts/ChatContext";
 import Dashboard from "./pages/Dashboard";
 import FluxoCaixa from "./pages/FluxoCaixa";
 import NovaTransacao from "./pages/financeiro/NovaTransacao";
@@ -138,148 +140,152 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <PermissionsProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-          <Route element={<LayoutShell />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
-            <Route path="/financeiro/fluxo-caixa/nova" element={<NovaTransacao />} />
-            <Route path="/financeiro/fluxo-caixa/relatorio" element={<RelatorioFluxoCaixa />} />
-            <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
-            <Route path="/financeiro/contas-pagar/nova" element={<NovaContaPagar />} />
-            <Route path="/financeiro/contas-pagar/relatorio" element={<RelatorioContasPagar />} />
-            <Route path="/financeiro/contas-receber" element={<ContasReceber />} />
-            <Route path="/financeiro/contas-receber/nova" element={<NovaContaReceber />} />
-            <Route path="/financeiro/contas-receber/relatorio" element={<RelatorioContasReceber />} />
-            <Route path="/financeiro/lancamento-saida" element={<LancamentoSaida />} />
-            <Route path="/financeiro/saidas-pendentes" element={<SaidasPendentes />} />
-            <Route path="/financeiro/xml" element={<NFe />} />
-            <Route path="/financeiro/xml/relatorio" element={<RelatorioNFe />} />
-            <Route path="/nfe" element={<NFe />} />
-            <Route path="/nfe/nova" element={<NovoNFe />} />
-            <Route path="/novo-nfe" element={<NovoNFe />} />
-            <Route path="/estoque/xml" element={<NFe />} />
-            <Route path="/patrimonio" element={<Patrimonio />} />
-            <Route path="/relatorio" element={<Relatorio />} />
-            <Route path="/relatorios" element={<Relatorios />} />
-            <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
-            <Route path="/estoque/entradas/nova" element={<NovaEntrada />} />
-            <Route path="/estoque/entradas/upload-nfe" element={<UploadNFe />} />
-            <Route path="/estoque/entradas/relatorio" element={<RelatorioEntradas />} />
-            <Route path="/estoque/inventario" element={<EstoqueInventario />} />
-            <Route path="/estoque/inventario/relatorio" element={<RelatorioInventario />} />
-            <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
-            <Route path="/estoque/saidas/nova" element={<NovaSaida />} />
-            <Route path="/estoque/saidas/relatorio" element={<RelatorioSaidas />} />
-            <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
-            <Route path="/estoque/locacoes/nova" element={<NovaLocacao />} />
-            <Route path="/estoque/locacoes/relatorio" element={<RelatorioLocacoes />} />
-            <Route path="/estoque/pedidos-internos" element={<EstoqueRequisicoes />} />
-            <Route path="/estoque/pedidos-internos/nova" element={<NovaRequisicao />} />
-            <Route path="/estoque/pedidos-internos/relatorio" element={<RelatorioRequisicoes />} />
-            <Route path="/estoque/requisicoes" element={<EstoqueRequisicoes />} />
-            <Route path="/estoque/requisicoes/nova" element={<NovaRequisicao />} />
-            <Route path="/estoque/requisicoes/relatorio" element={<RelatorioRequisicoes />} />
-            <Route path="/estoque/ordem-compra" element={<OrdemCompra />} />
-            <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
-            <Route path="/estoque/ordem-compra/relatorio" element={<RelatorioOrdemCompra />} />
-            <Route path="/estoque/ordem-servico" element={<OrdemServico />} />
-            <Route path="/estoque/ordem-servico/nova" element={<NovaOrdemServico />} />
-            
-            {/* Cadastro - Estoque */}
-            <Route path="/cadastro/estoque/fornecedores" element={<FornecedoresEstoque />} />
-            <Route path="/cadastro/estoque/fornecedores/novo" element={<NovoFornecedor />} />
-            <Route path="/cadastro/estoque/itens" element={<Itens />} />
-            <Route path="/cadastro/estoque/itens/novo" element={<NovoItem />} />
-            <Route path="/cadastro/estoque/setores" element={<Setores />} />
-            <Route path="/cadastro/estoque/setores/novo" element={<NovoSetor />} />
-            <Route path="/cadastro/estoque/unidades" element={<Unidades />} />
-            <Route path="/cadastro/estoque/unidades/nova" element={<NovaUnidade />} />
-            
-            {/* Cadastro - Financeiro */}
-            <Route path="/cadastro/financeiro/conta-bancaria" element={<ContaBancaria />} />
-            <Route path="/cadastro/financeiro/conta-bancaria/nova" element={<NovaContaBancaria />} />
-            <Route path="/cadastro/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
-            <Route path="/cadastro/financeiro/transferencias" element={<Transferencias />} />
-            <Route path="/cadastro/financeiro/transferencias/nova" element={<NovaTransferencia />} />
-            <Route path="/cadastro/financeiro/clientes" element={<Clientes />} />
-            <Route path="/cadastro/financeiro/clientes/novo" element={<NovoCliente />} />
-            <Route path="/cadastro/financeiro/centro-custo" element={<CentroCusto />} />
-            <Route path="/cadastro/financeiro/centro-custo/novo" element={<NovoCentroCusto />} />
-            <Route path="/cadastro/financeiro/centro-receita" element={<CentroReceita />} />
-            <Route path="/cadastro/financeiro/centro-receita/novo" element={<NovoCentroReceita />} />
-            <Route path="/cadastro/financeiro/contabil" element={<Contabil />} />
-            <Route path="/cadastro/financeiro/contabil/novo" element={<NovoContabil />} />
-            <Route path="/cadastro/financeiro/categorias" element={<Categorias />} />
-            <Route path="/cadastro/financeiro/categorias/nova" element={<NovaCategoria />} />
-            <Route path="/cadastro/financeiro/fornecedores" element={<FornecedoresFinanceiro />} />
-            <Route path="/cadastro/financeiro/fornecedores/novo" element={<NovoFornecedorFinanceiro />} />
-            <Route path="/cadastro/financeiro/subcategorias" element={<Subcategorias />} />
-            <Route path="/cadastro/financeiro/subcategorias/nova" element={<NovaSubcategoria />} />
-            <Route path="/cadastro/financeiro/plano-contas" element={<PlanoContas />} />
-            <Route path="/cadastro/financeiro/plano-contas/novo" element={<NovoPlanoContas />} />
-            
-            {/* Operacional */}
-            <Route path="/operacional/setor" element={<SetorOperacional />} />
-            <Route path="/operacional/setor/novo" element={<NovoSetorOperacional />} />
-            <Route path="/operacional/embarcacoes" element={<Embarcacoes />} />
-            <Route path="/operacional/embarcacoes/nova" element={<NovaEmbarcacao />} />
-            <Route path="/operacional/operacao" element={<Operacao />} />
-            <Route path="/operacional/operacao/nova" element={<NovaOperacao />} />
-            <Route path="/operacional/servicos" element={<Servicos />} />
-            <Route path="/operacional/servicos/novo" element={<NovoServico />} />
-            
-            <Route path="/novo-usuario" element={<NovaPessoa />} />
-            <Route path="/planos" element={<Dashboard />} />
-            
-            {/* Cadastro - Pessoas */}
-            <Route path="/cadastro/pessoas/pessoas" element={<Pessoas />} />
-            <Route path="/cadastro/pessoas/pessoas/nova" element={<NovaPessoa />} />
-            <Route path="/cadastro/pessoas/setores" element={<SetoresAreas />} />
-            <Route path="/cadastro/pessoas/setores/novo" element={<NovoSetorPessoas />} />
-            <Route path="/cadastro/pessoas/cargos" element={<Cargos />} />
-            <Route path="/cadastro/pessoas/cargos/novo" element={<NovoCargo />} />
-            
-            {/* Gestão de Pessoas */}
-            <Route path="/gestao-pessoas/pessoas" element={<PessoasVisao360 />} />
-            <Route path="/gestao-pessoas/pessoas/:id" element={<PessoaDetalhe />} />
-            <Route path="/gestao-pessoas/hierarquia" element={<Hierarquia />} />
-            <Route path="/gestao-pessoas/acessos" element={<Acessos />} />
-            <Route path="/gestao-pessoas/dashboards" element={<DashboardsGestao />} />
-            <Route path="/gestao-pessoas/auditoria" element={<Auditoria />} />
-            
-            {/* Usuário e Notificações */}
-            <Route path="/usuario/visualizar" element={<VisualizarPerfil />} />
-            <Route path="/notificacoes" element={<Notificacoes />} />
-            
-            {/* Módulos Globais - Header */}
-            <Route path="/calendario" element={<Calendario />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/kanban" element={<Kanban />} />
-            
-            {/* Comercial */}
-            <Route path="/comercial/leads" element={<LeadsComercial />} />
-            <Route path="/comercial/leads/novo" element={<NovoLead />} />
-            <Route path="/comercial/contas" element={<ContasComercial />} />
-            <Route path="/comercial/contas/nova" element={<NovaContaComercial />} />
-            <Route path="/comercial/contatos" element={<ContatosComercial />} />
-            <Route path="/comercial/contatos/novo" element={<NovoContato />} />
-            <Route path="/comercial/oportunidades" element={<OportunidadesComercial />} />
-            <Route path="/comercial/oportunidades/nova" element={<NovaOportunidade />} />
-            <Route path="/comercial/propostas" element={<PropostasComercial />} />
-            <Route path="/comercial/propostas/nova" element={<NovaProposta />} />
-            <Route path="/comercial/atividades" element={<AtividadesComercial />} />
-            <Route path="/comercial/atividades/nova" element={<NovaAtividade />} />
-            
-            {/* Dashboards Globais */}
-            <Route path="/dashboards/comercial" element={<DashboardComercial />} />
-          </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <ChatProvider>
+          <WebRTCProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route element={<LayoutShell />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/financeiro/fluxo-caixa" element={<FluxoCaixa />} />
+                  <Route path="/financeiro/fluxo-caixa/nova" element={<NovaTransacao />} />
+                  <Route path="/financeiro/fluxo-caixa/relatorio" element={<RelatorioFluxoCaixa />} />
+                  <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
+                  <Route path="/financeiro/contas-pagar/nova" element={<NovaContaPagar />} />
+                  <Route path="/financeiro/contas-pagar/relatorio" element={<RelatorioContasPagar />} />
+                  <Route path="/financeiro/contas-receber" element={<ContasReceber />} />
+                  <Route path="/financeiro/contas-receber/nova" element={<NovaContaReceber />} />
+                  <Route path="/financeiro/contas-receber/relatorio" element={<RelatorioContasReceber />} />
+                  <Route path="/financeiro/lancamento-saida" element={<LancamentoSaida />} />
+                  <Route path="/financeiro/saidas-pendentes" element={<SaidasPendentes />} />
+                  <Route path="/financeiro/xml" element={<NFe />} />
+                  <Route path="/financeiro/xml/relatorio" element={<RelatorioNFe />} />
+                  <Route path="/nfe" element={<NFe />} />
+                  <Route path="/nfe/nova" element={<NovoNFe />} />
+                  <Route path="/novo-nfe" element={<NovoNFe />} />
+                  <Route path="/estoque/xml" element={<NFe />} />
+                  <Route path="/patrimonio" element={<Patrimonio />} />
+                  <Route path="/relatorio" element={<Relatorio />} />
+                  <Route path="/relatorios" element={<Relatorios />} />
+                  <Route path="/estoque/entradas" element={<EstoqueEntradas />} />
+                  <Route path="/estoque/entradas/nova" element={<NovaEntrada />} />
+                  <Route path="/estoque/entradas/upload-nfe" element={<UploadNFe />} />
+                  <Route path="/estoque/entradas/relatorio" element={<RelatorioEntradas />} />
+                  <Route path="/estoque/inventario" element={<EstoqueInventario />} />
+                  <Route path="/estoque/inventario/relatorio" element={<RelatorioInventario />} />
+                  <Route path="/estoque/saidas" element={<EstoqueSaidas />} />
+                  <Route path="/estoque/saidas/nova" element={<NovaSaida />} />
+                  <Route path="/estoque/saidas/relatorio" element={<RelatorioSaidas />} />
+                  <Route path="/estoque/locacoes" element={<EstoqueLocacoes />} />
+                  <Route path="/estoque/locacoes/nova" element={<NovaLocacao />} />
+                  <Route path="/estoque/locacoes/relatorio" element={<RelatorioLocacoes />} />
+                  <Route path="/estoque/pedidos-internos" element={<EstoqueRequisicoes />} />
+                  <Route path="/estoque/pedidos-internos/nova" element={<NovaRequisicao />} />
+                  <Route path="/estoque/pedidos-internos/relatorio" element={<RelatorioRequisicoes />} />
+                  <Route path="/estoque/requisicoes" element={<EstoqueRequisicoes />} />
+                  <Route path="/estoque/requisicoes/nova" element={<NovaRequisicao />} />
+                  <Route path="/estoque/requisicoes/relatorio" element={<RelatorioRequisicoes />} />
+                  <Route path="/estoque/ordem-compra" element={<OrdemCompra />} />
+                  <Route path="/estoque/ordem-compra/nova" element={<NovaOrdemCompra />} />
+                  <Route path="/estoque/ordem-compra/relatorio" element={<RelatorioOrdemCompra />} />
+                  <Route path="/estoque/ordem-servico" element={<OrdemServico />} />
+                  <Route path="/estoque/ordem-servico/nova" element={<NovaOrdemServico />} />
+
+                  {/* Cadastro - Estoque */}
+                  <Route path="/cadastro/estoque/fornecedores" element={<FornecedoresEstoque />} />
+                  <Route path="/cadastro/estoque/fornecedores/novo" element={<NovoFornecedor />} />
+                  <Route path="/cadastro/estoque/itens" element={<Itens />} />
+                  <Route path="/cadastro/estoque/itens/novo" element={<NovoItem />} />
+                  <Route path="/cadastro/estoque/setores" element={<Setores />} />
+                  <Route path="/cadastro/estoque/setores/novo" element={<NovoSetor />} />
+                  <Route path="/cadastro/estoque/unidades" element={<Unidades />} />
+                  <Route path="/cadastro/estoque/unidades/nova" element={<NovaUnidade />} />
+
+                  {/* Cadastro - Financeiro */}
+                  <Route path="/cadastro/financeiro/conta-bancaria" element={<ContaBancaria />} />
+                  <Route path="/cadastro/financeiro/conta-bancaria/nova" element={<NovaContaBancaria />} />
+                  <Route path="/cadastro/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
+                  <Route path="/cadastro/financeiro/transferencias" element={<Transferencias />} />
+                  <Route path="/cadastro/financeiro/transferencias/nova" element={<NovaTransferencia />} />
+                  <Route path="/cadastro/financeiro/clientes" element={<Clientes />} />
+                  <Route path="/cadastro/financeiro/clientes/novo" element={<NovoCliente />} />
+                  <Route path="/cadastro/financeiro/centro-custo" element={<CentroCusto />} />
+                  <Route path="/cadastro/financeiro/centro-custo/novo" element={<NovoCentroCusto />} />
+                  <Route path="/cadastro/financeiro/centro-receita" element={<CentroReceita />} />
+                  <Route path="/cadastro/financeiro/centro-receita/novo" element={<NovoCentroReceita />} />
+                  <Route path="/cadastro/financeiro/contabil" element={<Contabil />} />
+                  <Route path="/cadastro/financeiro/contabil/novo" element={<NovoContabil />} />
+                  <Route path="/cadastro/financeiro/categorias" element={<Categorias />} />
+                  <Route path="/cadastro/financeiro/categorias/nova" element={<NovaCategoria />} />
+                  <Route path="/cadastro/financeiro/fornecedores" element={<FornecedoresFinanceiro />} />
+                  <Route path="/cadastro/financeiro/fornecedores/novo" element={<NovoFornecedorFinanceiro />} />
+                  <Route path="/cadastro/financeiro/subcategorias" element={<Subcategorias />} />
+                  <Route path="/cadastro/financeiro/subcategorias/nova" element={<NovaSubcategoria />} />
+                  <Route path="/cadastro/financeiro/plano-contas" element={<PlanoContas />} />
+                  <Route path="/cadastro/financeiro/plano-contas/novo" element={<NovoPlanoContas />} />
+
+                  {/* Operacional */}
+                  <Route path="/operacional/setor" element={<SetorOperacional />} />
+                  <Route path="/operacional/setor/novo" element={<NovoSetorOperacional />} />
+                  <Route path="/operacional/embarcacoes" element={<Embarcacoes />} />
+                  <Route path="/operacional/embarcacoes/nova" element={<NovaEmbarcacao />} />
+                  <Route path="/operacional/operacao" element={<Operacao />} />
+                  <Route path="/operacional/operacao/nova" element={<NovaOperacao />} />
+                  <Route path="/operacional/servicos" element={<Servicos />} />
+                  <Route path="/operacional/servicos/novo" element={<NovoServico />} />
+
+                  <Route path="/novo-usuario" element={<NovaPessoa />} />
+                  <Route path="/planos" element={<Dashboard />} />
+
+                  {/* Cadastro - Pessoas */}
+                  <Route path="/cadastro/pessoas/pessoas" element={<Pessoas />} />
+                  <Route path="/cadastro/pessoas/pessoas/nova" element={<NovaPessoa />} />
+                  <Route path="/cadastro/pessoas/setores" element={<SetoresAreas />} />
+                  <Route path="/cadastro/pessoas/setores/novo" element={<NovoSetorPessoas />} />
+                  <Route path="/cadastro/pessoas/cargos" element={<Cargos />} />
+                  <Route path="/cadastro/pessoas/cargos/novo" element={<NovoCargo />} />
+
+                  {/* Gestão de Pessoas */}
+                  <Route path="/gestao-pessoas/pessoas" element={<PessoasVisao360 />} />
+                  <Route path="/gestao-pessoas/pessoas/:id" element={<PessoaDetalhe />} />
+                  <Route path="/gestao-pessoas/hierarquia" element={<Hierarquia />} />
+                  <Route path="/gestao-pessoas/acessos" element={<Acessos />} />
+                  <Route path="/gestao-pessoas/dashboards" element={<DashboardsGestao />} />
+                  <Route path="/gestao-pessoas/auditoria" element={<Auditoria />} />
+
+                  {/* Usuário e Notificações */}
+                  <Route path="/usuario/visualizar" element={<VisualizarPerfil />} />
+                  <Route path="/notificacoes" element={<Notificacoes />} />
+
+                  {/* Módulos Globais - Header */}
+                  <Route path="/calendario" element={<Calendario />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/kanban" element={<Kanban />} />
+
+                  {/* Comercial */}
+                  <Route path="/comercial/leads" element={<LeadsComercial />} />
+                  <Route path="/comercial/leads/novo" element={<NovoLead />} />
+                  <Route path="/comercial/contas" element={<ContasComercial />} />
+                  <Route path="/comercial/contas/nova" element={<NovaContaComercial />} />
+                  <Route path="/comercial/contatos" element={<ContatosComercial />} />
+                  <Route path="/comercial/contatos/novo" element={<NovoContato />} />
+                  <Route path="/comercial/oportunidades" element={<OportunidadesComercial />} />
+                  <Route path="/comercial/oportunidades/nova" element={<NovaOportunidade />} />
+                  <Route path="/comercial/propostas" element={<PropostasComercial />} />
+                  <Route path="/comercial/propostas/nova" element={<NovaProposta />} />
+                  <Route path="/comercial/atividades" element={<AtividadesComercial />} />
+                  <Route path="/comercial/atividades/nova" element={<NovaAtividade />} />
+
+                  {/* Dashboards Globais */}
+                  <Route path="/dashboards/comercial" element={<DashboardComercial />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </WebRTCProvider>
+        </ChatProvider>
       </PermissionsProvider>
     </TooltipProvider>
   </QueryClientProvider>

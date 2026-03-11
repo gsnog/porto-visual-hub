@@ -1,0 +1,369 @@
+import api from '@/lib/api';
+
+// ─── Interfaces ──────────────────────────────────────────────────────────────
+
+export interface Fornecedor {
+    id: number;
+    nome: string;
+    cnpj?: string;
+    cpf?: string;
+    razao_social?: string;
+    endereco?: string;
+    vendedor?: string;
+    email?: string;
+    telefone?: string;
+}
+
+export interface ItemEstoque {
+    id: number;
+    itens_do_estoque: string;
+}
+
+export interface InventarioItem {
+    id: number;
+    item: number;
+    item_nome: string;
+    unidade: number;
+    unidade_nome: string;
+    quantidade_disponivel: number;
+}
+
+export interface Locacao {
+    id: number;
+    locador: number;
+    locador_nome: string;
+    data_inicio: string;
+    previsao_de_entrega: string;
+    data_fim: string | null;
+    valor: number;
+    valor_total: number;
+    status: string;
+    unidade: number;
+    unidade_nome: string;
+    descricao: string;
+}
+
+export interface OrdemCompra {
+    id: number;
+    data?: string;
+    data_de_entrega?: string;
+    data_de_compra?: string;
+    setor?: number;
+    setor_nome?: string;
+    unidade?: number;
+    unidade_nome?: string;
+    descricao_material?: string;
+    justificativa?: string;
+    status?: string;
+    status_da_compra?: string;
+    feedback?: string;
+    itens?: OrdemCompraItem[];
+}
+
+export interface OrdemCompraItem {
+    id: number;
+    ordem_de_compra: number;
+    item: string;
+    marca?: string;
+    quantidade: number;
+    especificacoes?: string;
+}
+
+export interface OrdemServico {
+    id: number;
+    numero?: number;
+    data_solicitacao?: string;
+    data_de_resolucao?: string;
+    tipo_de_ordem?: string;
+    descricao?: string;
+    fornecedor?: number;
+    fornecedor_nome?: string;
+    feedback?: string;
+    status?: string;
+    usuario_nome?: string;
+}
+
+export interface RequisicaoSetor {
+    id: number;
+    data?: string;
+    unidade?: number;
+    unidade_nome?: string;
+    setor_requisicao?: number;
+    setor_nome?: string;
+    requisitante_nome?: string;
+    status?: string;
+    status_entrega?: string;
+    observacao?: string;
+    itens?: RequisicaoItem[];
+}
+
+export interface RequisicaoItem {
+    id: number;
+    requisicao: number;
+    item?: number;
+    item_nome?: string;
+    quantidade: number;
+    quantidade_aprovada?: number;
+}
+
+export interface Patrimonio {
+    id: number;
+    item?: number;
+    item_nome?: string;
+    data_de_aquisicao?: string;
+    valor?: number;
+    unidade?: number;
+    unidade_nome?: string;
+    descricao?: string;
+    codigo?: string;
+}
+
+export interface NotaFiscal {
+    id: number;
+    numero: string;
+    xml_arquivo?: string;
+    pdf_arquivo?: string;
+    valor_total?: number;
+    data_emissao: string;
+}
+
+export interface Setor {
+    id: number;
+    setor: string;
+}
+
+export interface Unidade {
+    id: number;
+    unidade: string;
+    cnpj?: string;
+    estado?: string;
+    cidade?: string;
+}
+
+export interface FormaApresentacao {
+    id: number;
+    forma_apresentacao: string;
+}
+
+export interface Saida {
+    id: number;
+    data: string;
+    quantidade: number;
+    produto?: number;
+    produto_nome?: string;
+    setor?: number;
+    setor_nome?: string;
+    criado_por?: number;
+    criado_por_nome?: string;
+}
+
+// ─── Fornecedores ─────────────────────────────────────────────────────────────
+
+export const fetchFornecedores = async (): Promise<Fornecedor[]> => {
+    const res = await api.get('/api/estoque/fornecedores/');
+    return res.data;
+};
+export const createFornecedor = async (data: Partial<Fornecedor>): Promise<Fornecedor> => {
+    const res = await api.post('/api/estoque/fornecedores/', data);
+    return res.data;
+};
+export const updateFornecedor = async (id: number, data: Partial<Fornecedor>): Promise<Fornecedor> => {
+    const res = await api.put(`/api/estoque/fornecedores/${id}/`, data);
+    return res.data;
+};
+export const deleteFornecedor = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/fornecedores/${id}/`);
+};
+
+// ─── Itens ────────────────────────────────────────────────────────────────────
+
+export const fetchItensEstoque = async (): Promise<ItemEstoque[]> => {
+    const res = await api.get('/api/estoque/itens/');
+    return res.data;
+};
+
+// ─── Inventário ───────────────────────────────────────────────────────────────
+
+export const fetchInventario = async (): Promise<InventarioItem[]> => {
+    const res = await api.get('/api/estoque/inventario/');
+    return res.data;
+};
+export const createInventarioItem = async (data: Partial<InventarioItem>): Promise<InventarioItem> => {
+    const res = await api.post('/api/estoque/inventario/', data);
+    return res.data;
+};
+export const updateInventarioItem = async (id: number, data: Partial<InventarioItem>): Promise<InventarioItem> => {
+    const res = await api.put(`/api/estoque/inventario/${id}/`, data);
+    return res.data;
+};
+export const deleteInventarioItem = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/inventario/${id}/`);
+};
+
+// ─── Locações ─────────────────────────────────────────────────────────────────
+
+export const fetchLocacoes = async (): Promise<Locacao[]> => {
+    const res = await api.get('/api/estoque/locacoes/');
+    return res.data;
+};
+
+// ─── Ordens de Compra ─────────────────────────────────────────────────────────
+
+export const fetchOrdensCompra = async (): Promise<OrdemCompra[]> => {
+    const res = await api.get('/api/estoque/ordens-compra/');
+    return res.data;
+};
+export const createOrdemCompra = async (data: Partial<OrdemCompra>): Promise<OrdemCompra> => {
+    const res = await api.post('/api/estoque/ordens-compra/', data);
+    return res.data;
+};
+export const updateOrdemCompra = async (id: number, data: Partial<OrdemCompra>): Promise<OrdemCompra> => {
+    const res = await api.put(`/api/estoque/ordens-compra/${id}/`, data);
+    return res.data;
+};
+export const deleteOrdemCompra = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/ordens-compra/${id}/`);
+};
+
+// ─── Ordens de Serviço ────────────────────────────────────────────────────────
+
+export const fetchOrdensServico = async (): Promise<OrdemServico[]> => {
+    const res = await api.get('/api/estoque/ordens-servico/');
+    return res.data;
+};
+export const createOrdemServico = async (data: Partial<OrdemServico>): Promise<OrdemServico> => {
+    const res = await api.post('/api/estoque/ordens-servico/', data);
+    return res.data;
+};
+export const updateOrdemServico = async (id: number, data: Partial<OrdemServico>): Promise<OrdemServico> => {
+    const res = await api.put(`/api/estoque/ordens-servico/${id}/`, data);
+    return res.data;
+};
+export const deleteOrdemServico = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/ordens-servico/${id}/`);
+};
+
+// ─── Requisições de Setor ─────────────────────────────────────────────────────
+
+export const fetchRequisicoes = async (): Promise<RequisicaoSetor[]> => {
+    const res = await api.get('/api/estoque/requisicoes/');
+    return res.data;
+};
+export const createRequisicao = async (data: Partial<RequisicaoSetor>): Promise<RequisicaoSetor> => {
+    const res = await api.post('/api/estoque/requisicoes/', data);
+    return res.data;
+};
+export const updateRequisicao = async (id: number, data: Partial<RequisicaoSetor>): Promise<RequisicaoSetor> => {
+    const res = await api.put(`/api/estoque/requisicoes/${id}/`, data);
+    return res.data;
+};
+export const deleteRequisicao = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/requisicoes/${id}/`);
+};
+
+// ─── Patrimônio ───────────────────────────────────────────────────────────────
+
+export const fetchPatrimonio = async (): Promise<Patrimonio[]> => {
+    const res = await api.get('/api/estoque/patrimonio/');
+    return res.data;
+};
+export const createPatrimonio = async (data: Partial<Patrimonio>): Promise<Patrimonio> => {
+    const res = await api.post('/api/estoque/patrimonio/', data);
+    return res.data;
+};
+export const updatePatrimonio = async (id: number, data: Partial<Patrimonio>): Promise<Patrimonio> => {
+    const res = await api.put(`/api/estoque/patrimonio/${id}/`, data);
+    return res.data;
+};
+export const deletePatrimonio = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/patrimonio/${id}/`);
+};
+
+// ─── Notas Fiscais ─────────────────────────────────────────────────────────────
+
+export const fetchNotasFiscais = async (): Promise<NotaFiscal[]> => {
+    const res = await api.get('/api/estoque/notas-fiscais/');
+    return res.data;
+};
+export const deleteNotaFiscal = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/notas-fiscais/${id}/`);
+};
+
+// ─── Saídas ───────────────────────────────────────────────────────────────────
+
+export const fetchSaidas = async (): Promise<Saida[]> => {
+    const res = await api.get('/api/estoque/saidas/');
+    return res.data;
+};
+export const deleteSaida = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/saidas/${id}/`);
+};
+
+// ─── Setores ──────────────────────────────────────────────────────────────────
+
+export const fetchSetoresEstoque = async (): Promise<Setor[]> => {
+    const res = await api.get('/api/setores-estoque/');
+    return res.data;
+};
+export const createSetorEstoque = async (data: Partial<Setor>): Promise<Setor> => {
+    const res = await api.post('/api/setores-estoque/', data);
+    return res.data;
+};
+export const updateSetorEstoque = async (id: number, data: Partial<Setor>): Promise<Setor> => {
+    const res = await api.put(`/api/setores-estoque/${id}/`, data);
+    return res.data;
+};
+export const deleteSetorEstoque = async (id: number): Promise<void> => {
+    await api.delete(`/api/setores-estoque/${id}/`);
+};
+
+// ─── Unidades ─────────────────────────────────────────────────────────────────
+
+export const fetchUnidades = async (): Promise<Unidade[]> => {
+    const res = await api.get('/api/estoque/unidades/');
+    return res.data;
+};
+export const createUnidade = async (data: Partial<Unidade>): Promise<Unidade> => {
+    const res = await api.post('/api/estoque/unidades/', data);
+    return res.data;
+};
+export const updateUnidade = async (id: number, data: Partial<Unidade>): Promise<Unidade> => {
+    const res = await api.put(`/api/estoque/unidades/${id}/`, data);
+    return res.data;
+};
+export const deleteUnidade = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/unidades/${id}/`);
+};
+
+// ─── Formas de Apresentação ───────────────────────────────────────────────────
+
+export const fetchFormasApresentacao = async (): Promise<FormaApresentacao[]> => {
+    const res = await api.get('/api/estoque/formas-apresentacao/');
+    return res.data;
+};
+export const createFormaApresentacao = async (data: Partial<FormaApresentacao>): Promise<FormaApresentacao> => {
+    const res = await api.post('/api/estoque/formas-apresentacao/', data);
+    return res.data;
+};
+export const updateFormaApresentacao = async (id: number, data: Partial<FormaApresentacao>): Promise<FormaApresentacao> => {
+    const res = await api.put(`/api/estoque/formas-apresentacao/${id}/`, data);
+    return res.data;
+};
+export const deleteFormaApresentacao = async (id: number): Promise<void> => {
+    await api.delete(`/api/estoque/formas-apresentacao/${id}/`);
+};
+
+// ─── Query Keys ───────────────────────────────────────────────────────────────
+export const fornecedoresQueryKey = ['fornecedores'] as const;
+export const itensEstoqueQueryKey = ['itensEstoque'] as const;
+export const inventarioQueryKey = ['inventario'] as const;
+export const locacoesQueryKey = ['locacoes'] as const;
+export const ordensCompraQueryKey = ['ordensCompra'] as const;
+export const ordensServicoQueryKey = ['ordensServico'] as const;
+export const requisicoesQueryKey = ['requisicoes'] as const;
+export const patrimonioQueryKey = ['patrimonio'] as const;
+export const notasFiscaisQueryKey = ['notasFiscais'] as const;
+export const setoresEstoqueQueryKey = ['setoresEstoque'] as const;
+export const unidadesQueryKey = ['unidades'] as const;
+export const formasApresentacaoQueryKey = ['formasApresentacao'] as const;
+export const saidasQueryKey = ['saidas'] as const;

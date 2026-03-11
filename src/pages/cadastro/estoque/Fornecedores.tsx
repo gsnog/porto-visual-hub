@@ -8,37 +8,35 @@ import { FilterSection } from "@/components/FilterSection";
 import { TableActions } from "@/components/TableActions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, Loader2 } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
-
-const mockFornecedores = [
-  { id: 1, fornecedor: "Fornecedor ABC", cnpj: "12.345.678/0001-90", razaoSocial: "ABC Ltda", vendedor: "João", email: "contato@abc.com", telefone: "(11) 1234-5678" },
-  { id: 2, fornecedor: "Fornecedor XYZ", cnpj: "98.765.432/0001-10", razaoSocial: "XYZ S.A.", vendedor: "Maria", email: "contato@xyz.com", telefone: "(21) 9876-5432" },
-];
-
-type Fornecedor = typeof mockFornecedores[0];
+import { useQuery } from "@tanstack/react-query";
+import { fetchFornecedores } from "@/services/estoque";
 
 const FornecedoresEstoque = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState<Fornecedor[]>(() => {
-    // Load auto-registered suppliers from sessionStorage
-    const saved = sessionStorage.getItem("novos_fornecedores");
-    if (saved) {
-      try {
-        const newSuppliers = JSON.parse(saved) as Fornecedor[];
-        sessionStorage.removeItem("novos_fornecedores");
-        return [...mockFornecedores, ...newSuppliers];
-      } catch { /* ignore */ }
-    }
-    return mockFornecedores;
+  const { data: fornecedoresApi, isLoading } = useQuery({
+    queryKey: ['fornecedores'],
+    queryFn: fetchFornecedores
   });
+
   const [searchNome, setSearchNome] = useState("");
   const [searchCnpj, setSearchCnpj] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [viewItem, setViewItem] = useState<Fornecedor | null>(null);
-  const [editItem, setEditItem] = useState<Fornecedor | null>(null);
+  const [viewItem, setViewItem] = useState<any>(null);
+  const [editItem, setEditItem] = useState<any>(null);
   const [editData, setEditData] = useState({ fornecedor: "", cnpj: "", razaoSocial: "", vendedor: "", email: "", telefone: "" });
+
+  const items = (fornecedoresApi || []).map(f => ({
+    id: f.id,
+    fornecedor: f.nome,
+    cnpj: f.cnpj || "-",
+    razaoSocial: "-",
+    vendedor: "-",
+    email: "-",
+    telefone: "-"
+  }));
 
   const filterFields = [
     { type: "text" as const, label: "Nome do Fornecedor", placeholder: "Buscar fornecedor...", value: searchNome, onChange: setSearchNome, width: "flex-1 min-w-[200px]" },
@@ -46,9 +44,13 @@ const FornecedoresEstoque = () => {
   ];
   const filtered = items.filter(f => f.fornecedor.toLowerCase().includes(searchNome.toLowerCase()) && f.cnpj.includes(searchCnpj));
   const getExportData = () => filtered.map(f => ({ Fornecedor: f.fornecedor, CNPJ: f.cnpj, "Razão Social": f.razaoSocial, Vendedor: f.vendedor, Email: f.email, Telefone: f.telefone }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Fornecedor excluído." }); } };
+  const handleDelete = () => { if (deleteId !== null) { toast({ title: "Esta funcionalidade ainda não foi ligada à API" }); setDeleteId(null); } };
   const deleteItem = items.find(i => i.id === deleteId);
-  const openEdit = (f: Fornecedor) => { setEditItem(f); setEditData({ fornecedor: f.fornecedor, cnpj: f.cnpj, razaoSocial: f.razaoSocial, vendedor: f.vendedor, email: f.email, telefone: f.telefone }); };
+  const openEdit = (f: any) => { setEditItem(f); setEditData({ fornecedor: f.fornecedor, cnpj: f.cnpj, razaoSocial: f.razaoSocial, vendedor: f.vendedor, email: f.email, telefone: f.telefone }); };
+
+  if (isLoading) {
+    return <div className="flex justify-center p-8"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -103,7 +105,7 @@ const FornecedoresEstoque = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Fornecedor atualizado." }); } }}>Salvar</Button>
+            <Button onClick={() => { if (editItem) { toast({ title: "Funcionalidade de edição requer API Backend completa", description: "Fornecedor atualizado mock." }); setEditItem(null); } }}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

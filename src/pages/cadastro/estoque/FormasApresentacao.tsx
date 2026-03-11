@@ -12,26 +12,22 @@ import { Plus, FileText } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
-const mockApresentacoes = [
-  { id: 1, nome: "Caixa" },
-  { id: 2, nome: "Unidade" },
-  { id: 3, nome: "Pacote" },
-];
+type Apresentacao = { id: number; nome: string; };
 
 const FormasApresentacao = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockApresentacoes);
+  const [items] = useState<Apresentacao[]>([]);
   const [searchApresentacao, setSearchApresentacao] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [viewItem, setViewItem] = useState<typeof mockApresentacoes[0] | null>(null);
-  const [editItem, setEditItem] = useState<typeof mockApresentacoes[0] | null>(null);
+  const [viewItem, setViewItem] = useState<Apresentacao | null>(null);
+  const [editItem, setEditItem] = useState<Apresentacao | null>(null);
   const [editNome, setEditNome] = useState("");
 
   const filterFields = [{ type: "text" as const, label: "Apresentação", placeholder: "Buscar apresentação...", value: searchApresentacao, onChange: setSearchApresentacao, width: "flex-1 min-w-[200px]" }];
   const filtered = items.filter(ap => ap.nome.toLowerCase().includes(searchApresentacao.toLowerCase()));
 
   const getExportData = () => filtered.map(a => ({ Apresentação: a.nome }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Registro excluído." }); } };
+  const handleDelete = () => { setDeleteId(null); toast({ title: "Aguardando API", description: "Endpoint de exclusão ainda não configurado." }); };
   const deleteItem = items.find(i => i.id === deleteId);
 
   return (
@@ -67,7 +63,7 @@ const FormasApresentacao = () => {
           <div className="space-y-4 py-4"><div className="space-y-2"><Label>Nome</Label><Input value={editNome} onChange={e => setEditNome(e.target.value)} /></div></div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, nome: editNome } : i)); setEditItem(null); toast({ title: "Salvo", description: "Apresentação atualizada." }); } }}>Salvar</Button>
+            <Button onClick={() => { toast({ title: "Aguardando API", description: "Endpoint ainda não configurado." }); setEditItem(null); }}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

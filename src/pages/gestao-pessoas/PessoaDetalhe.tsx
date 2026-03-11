@@ -4,29 +4,121 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { ArrowLeft, User, Phone, MapPin, Landmark, FileText, Briefcase, Users, Pencil } from "lucide-react";
-import { pessoasMock, setoresMock, getSubordinados, getCadeiaGestores } from "@/data/pessoas-mock";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, User, Phone, Briefcase, Users, Pencil, Loader2 } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { toast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  fetchPessoa,
+  fetchPessoas,
+  fetchSetores,
+  updatePessoa,
+  pessoasQueryKey,
+  setoresQueryKey,
+  type Pessoa,
+} from "@/services/pessoas";
+
+const CARGO_OPTIONS = [
+  { value: "estagiario", label: "Estagiário" },
+  { value: "auxiliar", label: "Auxiliar" },
+  { value: "assistente", label: "Assistente" },
+  { value: "analista", label: "Analista" },
+  { value: "gestor", label: "Gestor" },
+  { value: "diretor", label: "Diretor" },
+];
 
 export default function PessoaDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const pessoa = pessoasMock.find(p => p.id === id);
+  const queryClient = useQueryClient();
+  const numericId = Number(id);
+
+  const { data: pessoa, isLoading } = useQuery<Pessoa>({
+    queryKey: ['pessoa', numericId],
+    queryFn: () => fetchPessoa(numericId),
+    enabled: !!numericId,
+  });
+
+  // Get all pessoas to find subordinates and for supervisor dropdown
+  const { data: todas = [] } = useQuery<Pessoa[]>({
+    queryKey: pessoasQueryKey,
+    queryFn: fetchPessoas,
+    enabled: !!pessoa,
+  });
+
+  // Sectors for the dropdown
+  const { data: setores = [] } = useQuery({
+    queryKey: setoresQueryKey,
+    queryFn: fetchSetores,
+  });
 
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState({
-    nome: pessoa?.nome || "",
-    email: pessoa?.email || "",
-    telefone: pessoa?.telefone || "",
-    cargo: pessoa?.cargo || "",
-    endereco: pessoa?.endereco || "",
-    cidade: pessoa?.cidade || "",
-    estado: pessoa?.estado || "",
-    cep: pessoa?.cep || "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    cargo: "",
+    setor_id: "" as string | number,
+    supervisor_id: "" as string | number,
   });
+
+  const openEdit = () => {
+    if (!pessoa) return;
+    setEditData({
+      first_name: pessoa.first_name || "",
+      last_name: pessoa.last_name || "",
+      email: pessoa.email || "",
+      cargo: pessoa.cargo || "",
+      setor_id: pessoa.setor_id ?? "",
+      supervisor_id: pessoa.supervisor_id ?? "",
+    });
+    setEditOpen(true);
+  };
+
+  const updateMutation = useMutation({
+    mutationFn: (data: any) => updatePessoa(numericId, data),
+    onSuccess: (updated) => {
+      toast({ title: "Perfil atualizado com sucesso!" });
+      queryClient.invalidateQueries({ queryKey: ['pessoa', numericId] });
+      queryClient.invalidateQueries({ queryKey: pessoasQueryKey });
+      setEditOpen(false);
+    },
+    onError: (err: any) => {
+      const msg = err?.response?.data
+        ? JSON.stringify(err.response.data)
+        : err.message;
+      toast({ title: "Erro ao atualizar", description: msg, variant: "destructive" });
+    },
+  });
+
+  const handleSaveEdit = () => {
+    const payload: any = {
+      first_name: editData.first_name,
+      last_name: editData.last_name,
+      email: editData.email,
+      cargo: editData.cargo || "",
+    };
+    if (editData.setor_id !== "") payload.setor_id = Number(editData.setor_id);
+    if (editData.supervisor_id !== "") {
+      payload.supervisor_id = Number(editData.supervisor_id);
+    } else {
+      payload.supervisor_id = null;
+    }
+    updateMutation.mutate(payload);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-20 w-full" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
 
   if (!pessoa) {
     return (
@@ -37,14 +129,11 @@ export default function PessoaDetalhe() {
     );
   }
 
-  const subordinados = getSubordinados(pessoa.id);
-  const cadeiaGestores = getCadeiaGestores(pessoa.id);
-  const setor = setoresMock.find(s => s.id === pessoa.setorId);
+  const subordinados = todas.filter(p => p.supervisor_id === pessoa.id);
+  const supervisor = pessoa.supervisor_id ? todas.find(p => p.id === pessoa.supervisor_id) : null;
 
-  const handleSaveEdit = () => {
-    setEditOpen(false);
-    toast({ title: "Perfil atualizado", description: `Dados de "${editData.nome}" foram salvos.` });
-  };
+  // Possible supervisors = everyone except the person themselves
+  const supervisorOptions = todas.filter(p => p.id !== pessoa.id);
 
   return (
     <div className="space-y-6">
@@ -54,93 +143,59 @@ export default function PessoaDetalhe() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex items-center gap-4 flex-1">
-          <div className="flex h-16 w-16 items-center justify-center rounded bg-primary text-primary-foreground text-2xl font-bold">
-            {pessoa.iniciais}
-          </div>
+          {pessoa.profile_image ? (
+            <img src={pessoa.profile_image} alt={pessoa.iniciais} className="h-16 w-16 rounded object-cover" />
+          ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded bg-primary text-primary-foreground text-2xl font-bold">
+              {pessoa.iniciais}
+            </div>
+          )}
           <div>
             <h1 className="text-2xl font-bold text-foreground">{pessoa.nome}</h1>
-            <p className="text-muted-foreground">{pessoa.cargo} · {pessoa.setor}</p>
+            <p className="text-muted-foreground">{pessoa.cargo || "—"} · {pessoa.setor || "—"}</p>
           </div>
           <div className="ml-auto flex items-center gap-3">
-            <Button variant="outline" className="gap-2" onClick={() => setEditOpen(true)}>
-              <Pencil className="h-4 w-4" />
-              Editar Perfil
+            <Button variant="outline" className="gap-2" onClick={openEdit}>
+              <Pencil className="h-4 w-4" /> Editar Perfil
             </Button>
-            <StatusBadge status={pessoa.status} />
+            <StatusBadge status={pessoa.role} />
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="pessoal">
+      <Tabs defaultValue="profissional">
         <TabsList>
-          <TabsTrigger value="pessoal" className="gap-2"><User className="h-4 w-4" />Dados Pessoais</TabsTrigger>
           <TabsTrigger value="profissional" className="gap-2"><Briefcase className="h-4 w-4" />Profissional</TabsTrigger>
+          <TabsTrigger value="contato" className="gap-2"><User className="h-4 w-4" />Contato</TabsTrigger>
           <TabsTrigger value="equipe" className="gap-2"><Users className="h-4 w-4" />Equipe</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="pessoal" className="mt-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-border">
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Phone className="h-5 w-5 text-primary" />Contato</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
-                <InfoRow label="E-mail" value={pessoa.email} />
-                <InfoRow label="Telefone" value={pessoa.telefone} />
-              </CardContent>
-            </Card>
-            <Card className="border-border">
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><MapPin className="h-5 w-5 text-primary" />Endereço</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
-                <InfoRow label="Endereço" value={pessoa.endereco || "—"} />
-                <InfoRow label="Cidade/UF" value={pessoa.cidade && pessoa.estado ? `${pessoa.cidade}/${pessoa.estado}` : "—"} />
-                <InfoRow label="CEP" value={pessoa.cep || "—"} />
-              </CardContent>
-            </Card>
-            <Card className="border-border">
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><FileText className="h-5 w-5 text-primary" />Documentos</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
-                <InfoRow label="CPF" value={pessoa.cpf || "—"} />
-                <InfoRow label="RG" value={pessoa.rg || "—"} />
-                <InfoRow label="Data de Nascimento" value={pessoa.dataNascimento || "—"} />
-              </CardContent>
-            </Card>
-            <Card className="border-border">
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Landmark className="h-5 w-5 text-primary" />Dados Bancários</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">Dados bancários não disponíveis nesta visualização.</p>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
 
         <TabsContent value="profissional" className="mt-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border-border">
               <CardHeader><CardTitle className="text-lg">Informações Profissionais</CardTitle></CardHeader>
               <CardContent className="space-y-3">
-                <InfoRow label="Cargo" value={pessoa.cargo} />
-                <InfoRow label="Setor/Área" value={pessoa.setor} />
-                <InfoRow label="Tipo de Vínculo" value={pessoa.tipoVinculo} />
-                <InfoRow label="Data de Admissão" value={pessoa.dataAdmissao} />
-                <InfoRow label="Gestor Direto" value={pessoa.gestorNome || "—"} />
+                <InfoRow label="Cargo" value={pessoa.cargo || "—"} />
+                <InfoRow label="Setor/Área" value={pessoa.setor || "—"} />
+                <InfoRow label="Role" value={pessoa.role} />
+                <InfoRow label="Supervisor Direto" value={pessoa.supervisor_nome || "—"} />
               </CardContent>
             </Card>
             <Card className="border-border">
               <CardHeader><CardTitle className="text-lg">Cadeia Hierárquica</CardTitle></CardHeader>
               <CardContent>
-                {cadeiaGestores.length > 0 ? (
+                {supervisor ? (
                   <div className="space-y-2">
-                    {cadeiaGestores.map((g, i) => (
-                      <div key={g.id} className="flex items-center gap-2" style={{ paddingLeft: `${i * 16}px` }}>
-                        <div className="flex h-8 w-8 items-center justify-center rounded bg-muted text-muted-foreground text-xs font-bold">
-                          {g.iniciais}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">{g.nome}</p>
-                          <p className="text-xs text-muted-foreground">{g.cargo}</p>
-                        </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 items-center justify-center rounded bg-muted text-muted-foreground text-xs font-bold">
+                        {supervisor.iniciais}
                       </div>
-                    ))}
-                    <div className="flex items-center gap-2" style={{ paddingLeft: `${cadeiaGestores.length * 16}px` }}>
+                      <div>
+                        <p className="text-sm font-medium">{supervisor.nome}</p>
+                        <p className="text-xs text-muted-foreground">{supervisor.cargo}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 ml-6">
                       <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
                         {pessoa.iniciais}
                       </div>
@@ -158,11 +213,21 @@ export default function PessoaDetalhe() {
           </div>
         </TabsContent>
 
+        <TabsContent value="contato" className="mt-6">
+          <Card className="border-border">
+            <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Phone className="h-5 w-5 text-primary" />Contato</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <InfoRow label="E-mail" value={pessoa.email} />
+              <InfoRow label="Username" value={pessoa.username} />
+              {pessoa.telefone && <InfoRow label="Telefone" value={pessoa.telefone} />}
+              {pessoa.endereco && <InfoRow label="Endereço" value={pessoa.endereco} />}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="equipe" className="mt-6">
           <Card className="border-border">
-            <CardHeader>
-              <CardTitle className="text-lg">Subordinados Diretos ({subordinados.length})</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle className="text-lg">Subordinados Diretos ({subordinados.length})</CardTitle></CardHeader>
             <CardContent>
               {subordinados.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -177,7 +242,7 @@ export default function PessoaDetalhe() {
                       </div>
                       <div>
                         <p className="font-medium text-foreground">{sub.nome}</p>
-                        <p className="text-sm text-muted-foreground">{sub.cargo}</p>
+                        <p className="text-sm text-muted-foreground">{sub.cargo || "—"}</p>
                       </div>
                     </button>
                   ))}
@@ -190,23 +255,91 @@ export default function PessoaDetalhe() {
         </TabsContent>
       </Tabs>
 
-      {/* Edit Modal */}
+      {/* Edit Modal — Full hierarchy edit */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Editar Perfil 360</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Editar Perfil</DialogTitle></DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-            <div className="space-y-2"><Label>Nome</Label><Input value={editData.nome} onChange={e => setEditData(p => ({ ...p, nome: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Cargo</Label><Input value={editData.cargo} onChange={e => setEditData(p => ({ ...p, cargo: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>E-mail</Label><Input value={editData.email} onChange={e => setEditData(p => ({ ...p, email: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Telefone</Label><Input value={editData.telefone} onChange={e => setEditData(p => ({ ...p, telefone: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Endereço</Label><Input value={editData.endereco} onChange={e => setEditData(p => ({ ...p, endereco: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Cidade</Label><Input value={editData.cidade} onChange={e => setEditData(p => ({ ...p, cidade: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>Estado</Label><Input value={editData.estado} onChange={e => setEditData(p => ({ ...p, estado: e.target.value }))} /></div>
-            <div className="space-y-2"><Label>CEP</Label><Input value={editData.cep} onChange={e => setEditData(p => ({ ...p, cep: e.target.value }))} /></div>
+            <div className="space-y-2">
+              <Label>Nome</Label>
+              <Input
+                value={editData.first_name}
+                onChange={e => setEditData(p => ({ ...p, first_name: e.target.value }))}
+                placeholder="Primeiro nome"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Sobrenome</Label>
+              <Input
+                value={editData.last_name}
+                onChange={e => setEditData(p => ({ ...p, last_name: e.target.value }))}
+                placeholder="Sobrenome"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>E-mail</Label>
+              <Input
+                type="email"
+                value={editData.email}
+                onChange={e => setEditData(p => ({ ...p, email: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Cargo</Label>
+              <Select
+                value={editData.cargo}
+                onValueChange={v => setEditData(p => ({ ...p, cargo: v }))}
+              >
+                <SelectTrigger><SelectValue placeholder="Selecionar cargo" /></SelectTrigger>
+                <SelectContent className="bg-popover">
+                  {CARGO_OPTIONS.map(c => (
+                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Setor / Área</Label>
+              <Select
+                value={editData.setor_id ? String(editData.setor_id) : "__none__"}
+                onValueChange={v => setEditData(p => ({ ...p, setor_id: v === "__none__" ? "" : v }))}
+              >
+                <SelectTrigger><SelectValue placeholder="Selecionar setor" /></SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="__none__">— Sem setor —</SelectItem>
+                  {setores.map(s => (
+                    <SelectItem key={s.id} value={String(s.id)}>{s.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Supervisor / Gestor</Label>
+              <Select
+                value={editData.supervisor_id ? String(editData.supervisor_id) : "__none__"}
+                onValueChange={v => setEditData(p => ({ ...p, supervisor_id: v === "__none__" ? "" : v }))}
+              >
+                <SelectTrigger><SelectValue placeholder="Selecionar supervisor" /></SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="__none__">— Sem supervisor —</SelectItem>
+                  {supervisorOptions.map(sup => (
+                    <SelectItem key={sup.id} value={String(sup.id)}>
+                      {sup.nome} {sup.cargo ? `· ${sup.cargo}` : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditOpen(false)}>Cancelar</Button>
-            <Button onClick={handleSaveEdit}>Salvar</Button>
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={updateMutation.isPending}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSaveEdit} disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Salvando...</>
+              ) : "Salvar"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

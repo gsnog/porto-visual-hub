@@ -12,44 +12,63 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
+import { useQuery } from "@tanstack/react-query"
+import { fetchLocacoes, Locacao } from "@/services/estoque"
+import { Loader2 } from "lucide-react"
 
-const mockLocacoes = [
-  {
-    id: 1, unidade: "Almoxarifado SP", dataInicio: "02/06/2025", previsaoEntrega: "02/07/2025", dataFim: "-", locador: "João Silva", contrato: "CONTR-001", valor: "R$ 3.500,00", status: "Em Andamento",
-    itens: [
-      { item: "Guindaste 20t", marca: "Liebherr", quantidade: "1", especificacoes: "Capacidade 20 toneladas" },
-      { item: "Andaime tubular", marca: "Mills", quantidade: "10", especificacoes: "6m altura" },
-    ]
-  },
-  {
-    id: 2, unidade: "Depósito RJ", dataInicio: "15/05/2025", previsaoEntrega: "15/08/2025", dataFim: "-", locador: "Maria Santos", contrato: "CONTR-002", valor: "R$ 8.200,00", status: "Em Andamento",
-    itens: [
-      { item: "Compressor de ar", marca: "Atlas Copco", quantidade: "2", especificacoes: "150 PSI" },
-    ]
-  },
-  {
-    id: 3, unidade: "TI Central", dataInicio: "01/04/2025", previsaoEntrega: "01/06/2025", dataFim: "30/05/2025", locador: "Carlos Pereira", contrato: "CONTR-003", valor: "R$ 1.800,00", status: "Finalizado",
-    itens: [
-      { item: "Servidor rack", marca: "Dell", quantidade: "1", especificacoes: "PowerEdge R740" },
-      { item: "Switch 48p", marca: "Cisco", quantidade: "2", especificacoes: "Catalyst 9300" },
-      { item: "UPS 3kVA", marca: "APC", quantidade: "1", especificacoes: "Smart-UPS" },
-    ]
-  },
-]
-
-type Locacao = typeof mockLocacoes[0];
+interface DisplayLocacao {
+  id: number;
+  unidade: string;
+  dataInicio: string;
+  previsaoEntrega: string;
+  dataFim: string;
+  locador: string;
+  contrato: string;
+  valor: string;
+  status: string;
+  itens: {
+    item: string;
+    marca: string;
+    quantidade: string;
+    especificacoes: string;
+  }[];
+}
 
 export default function EstoqueLocacoes() {
   const navigate = useNavigate()
-  const [items, setItems] = useState(mockLocacoes)
+  const { data: locacoes, isLoading } = useQuery({
+    queryKey: ['locacoes'],
+    queryFn: fetchLocacoes
+  })
+
   const [filterLocador, setFilterLocador] = useState("")
   const [filterDataInicio, setFilterDataInicio] = useState("")
   const [filterDataFim, setFilterDataFim] = useState("")
-  const [viewItem, setViewItem] = useState<Locacao | null>(null)
+  const [viewItem, setViewItem] = useState<DisplayLocacao | null>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
-  const [editItem, setEditItem] = useState<Locacao | null>(null)
+  const [editItem, setEditItem] = useState<DisplayLocacao | null>(null)
   const [editData, setEditData] = useState({ unidade: "", locador: "", contrato: "" })
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set())
+
+  const items: DisplayLocacao[] = useMemo(() => {
+    return (locacoes || []).map(l => ({
+      id: l.id,
+      unidade: l.unidade_nome,
+      dataInicio: l.data_inicio || "-",
+      previsaoEntrega: l.previsao_de_entrega || "-",
+      dataFim: l.data_fim || "-",
+      locador: l.locador_nome,
+      contrato: "CONTRATO REAL",
+      valor: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(l.valor),
+      status: l.status || "Pendente",
+      itens: (l as any).item_locacao?.map((i: any) => ({
+        item: i.item_nome,
+        marca: "-",
+        quantidade: String(i.quantidade),
+        especificacoes: "-"
+      })) || []
+    }))
+  }, [locacoes])
 
   const filtered = useMemo(() => {
     return items.filter(loc => {
@@ -69,13 +88,17 @@ export default function EstoqueLocacoes() {
   };
 
   const getExportData = () => filtered.map(l => ({ Unidade: l.unidade, "Data Início": l.dataInicio, "Previsão Entrega": l.previsaoEntrega, "Data Fim": l.dataFim, Locador: l.locador, Contrato: l.contrato, Valor: l.valor, Status: l.status }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Locação excluída." }); } };
-  const openEdit = (l: Locacao) => { setEditItem(l); setEditData({ unidade: l.unidade, locador: l.locador, contrato: l.contrato }); };
-  const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Locação atualizada." }); } };
+  const handleDelete = () => { if (deleteId !== null) { toast({ title: "Exclusão requer API" }); setDeleteId(null); } };
+  const openEdit = (l: DisplayLocacao) => { setEditItem(l); setEditData({ unidade: l.unidade, locador: l.locador, contrato: l.contrato }); };
+  const handleSaveEdit = () => { if (editItem) { toast({ title: "Edição requer API" }); setEditItem(null); } };
   const deleteItem = items.find(i => i.id === deleteId);
 
-  const getItensCount = (loc: Locacao) => loc.itens.length;
-  const getQuantidadeTotal = (loc: Locacao) => loc.itens.reduce((acc, i) => acc + (parseInt(i.quantidade) || 0), 0);
+  if (isLoading) {
+    return <div className="flex justify-center p-8"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
+
+  const getItensCount = (loc: DisplayLocacao) => loc.itens.length;
+  const getQuantidadeTotal = (loc: DisplayLocacao) => loc.itens.reduce((acc, i) => acc + (parseInt(i.quantidade) || 0), 0);
 
   return (
     <div className="flex flex-col h-full bg-background">

@@ -5,7 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "@/components/StatusBadge";
 import { toast } from "@/hooks/use-toast";
 import { RotateCcw, Eye, CheckCircle2, XCircle, AlertTriangle, Wifi, WifiOff, RefreshCw, ShieldCheck, Clock } from "lucide-react";
-import { mockNotasFiscais } from "@/data/fiscal-mock";
+// Fiscal-mock removed — stub until /api/fiscal/ endpoints exist
+const mockNotasFiscais: any[] = [];
 
 interface MonitorItem {
   id: number;

@@ -8,7 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FileDown, BarChart3, FileText, FileSpreadsheet, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { mockNotasFiscais } from "@/data/fiscal-mock";
+// Fiscal-mock removed — stub until /api/fiscal/ endpoints exist
+const mockNotasFiscais: any[] = [];
 import { exportData } from "@/lib/exportData";
 
 const ExportacoesRelatorios = () => {

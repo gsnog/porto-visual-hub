@@ -5,9 +5,15 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Target, DollarSign, TrendingUp, Users, AlertTriangle, Filter } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { oportunidadesMock, etapasFunil, getPipelineTotal, getForecastPonderado, metasMock, atividadesMock } from "@/data/comercial-mock";
-import { pessoasMock } from "@/data/pessoas-mock";
+import { fetchOportunidades, fetchMetas, fetchAtividades, etapasFunil } from "@/services/comercial";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMeuTime } from "@/services/pessoas";
+
 import { motion } from "framer-motion";
+
+// --- Mocks removidos ---
+
+
 
 const formatCurrency = (value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 
@@ -37,17 +43,22 @@ const FadeIn = ({ children, delay = 0, className = "" }: { children: React.React
 
 export default function DashboardComercial() {
   const [periodo, setPeriodo] = useState("30d");
-  const [vendedor, setVendedor] = useState("__all__");
+  const [vendedorFilter, setVendedorFilter] = useState("__all__");
 
-  const pipelineTotal = getPipelineTotal();
-  const forecastMes = getForecastPonderado();
-  const metaTotal = metasMock.filter(m => m.tipo === 'receita').reduce((sum, m) => sum + m.valorMeta, 0);
-  const realizadoTotal = metasMock.filter(m => m.tipo === 'receita').reduce((sum, m) => sum + m.valorRealizado, 0);
-  const atividadesVencidas = atividadesMock.filter(a => a.status === 'pendente' && new Date(a.data) < new Date()).length;
+  const { data: oportunidades = [] } = useQuery({ queryKey: ['crm_oportunidades'], queryFn: fetchOportunidades });
+  const { data: metas = [] } = useQuery({ queryKey: ['crm_metas'], queryFn: fetchMetas });
+  const { data: atividades = [] } = useQuery({ queryKey: ['crm_atividades'], queryFn: fetchAtividades });
+  const { data: time = [] } = useQuery({ queryKey: ['meu_time'], queryFn: fetchMeuTime });
+
+  const pipelineTotal = oportunidades.filter(o => !['ganho', 'perdido'].includes(o.estagio)).reduce((sum, o) => sum + (Number(o.valor_estimado) || 0), 0);
+  const forecastMes = pipelineTotal * 0.7; // Simple weighted forecast
+  const metaTotal = metas.filter(m => m.tipo === 'receita').reduce((sum, m) => sum + Number(m.valor_meta), 0);
+  const realizadoTotal = metas.filter(m => m.tipo === 'receita').reduce((sum, m) => sum + Number(m.valor_realizado), 0);
+  const atividadesVencidas = atividades.filter(a => a.status === 'pendente' && new Date(a.data) < new Date()).length;
 
   const funilData = etapasFunil.filter(e => !['ganho', 'perdido'].includes(e.id)).map(etapa => ({
-    name: etapa.nome, value: oportunidadesMock.filter(o => o.etapa === etapa.id).length,
-    amount: oportunidadesMock.filter(o => o.etapa === etapa.id).reduce((sum, o) => sum + o.valorEstimado, 0)
+    name: etapa.nome, value: oportunidades.filter(o => o.estagio === etapa.id).length,
+    amount: oportunidades.filter(o => o.estagio === etapa.id).reduce((sum, o) => sum + (Number(o.valor_estimado) || 0), 0)
   }));
 
   const motivosPerdaData = [
@@ -73,11 +84,11 @@ export default function DashboardComercial() {
                 ))}
               </div>
             </div>
-            <Select value={vendedor} onValueChange={setVendedor}>
+            <Select value={vendedorFilter} onValueChange={setVendedorFilter}>
               <SelectTrigger className="w-[180px] h-7 text-xs rounded-full"><SelectValue placeholder="Todos os vendedores" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="__all__">Todos</SelectItem>
-                {pessoasMock.slice(0, 5).map(p => <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>)}
+                {time.slice(0, 10).map(p => <SelectItem key={p.id} value={String(p.id)}>{p.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -88,7 +99,7 @@ export default function DashboardComercial() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <GradientCard title="Pipeline Total" value={formatCurrency(pipelineTotal)} icon={DollarSign} variant="info" trend={{ value: "+18%", positive: true }} delay={1} />
         <GradientCard title="Forecast Ponderado" value={formatCurrency(forecastMes)} icon={TrendingUp} variant="warning" delay={2} />
-        <GradientCard title="Meta vs Realizado" value={`${(realizadoTotal/metaTotal*100).toFixed(0)}%`} icon={Target} variant="success" delay={3} />
+        <GradientCard title="Meta vs Realizado" value={`${(realizadoTotal / metaTotal * 100).toFixed(0)}%`} icon={Target} variant="success" delay={3} />
         <GradientCard title="Atividades Vencidas" value={atividadesVencidas.toString()} icon={AlertTriangle} variant="danger" delay={4} />
       </div>
 

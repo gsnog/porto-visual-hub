@@ -1,21 +1,74 @@
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import logo from "@/assets/logo-serp.png";
+import api from "@/lib/api";
+import { LoginResponse } from "@/types/auth";
+import { usePermissions, availableDashboards } from "@/contexts/PermissionsContext";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { login } = usePermissions();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log("Login attempt:", { email, password, rememberMe });
+
+    if (!email || !password) {
+      toast.error("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // DRF SimpleJWT espera "username" e "password"
+      const response = await api.post<LoginResponse>("/api/token/", {
+        username: email,
+        password: password,
+      });
+
+      const { access, refresh, user } = response.data;
+
+      if (user) {
+        const normalizedRole = user.role?.toLowerCase() || 'usuario';
+        login(access, refresh, {
+          userId: String(user.id),
+          roles: [normalizedRole],
+          dashboardAccess: availableDashboards.map(d => ({
+            dashboardId: d.id,
+            canView: true,
+            canViewSensitive: normalizedRole === 'admin'
+          })),
+          exceptions: []
+        });
+        // Store full user info so components can access name, etc.
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      }
+
+      toast.success("Login realizado com sucesso!");
+      navigate("/"); // Redireciona para o painel principal
+    } catch (error: any) {
+      console.error("Erro no login:", error);
+      const status = error.response?.status;
+      if (status === 401 || status === 400 || status === 422) {
+        toast.error("E-mail ou senha incorretos. Verifique suas credenciais.");
+      } else if (!status) {
+        toast.error("Servidor indisponível. Verifique se o backend está ativo.");
+      } else {
+        toast.error("Ocorreu um erro ao tentar fazer login. Tente novamente.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -28,12 +81,12 @@ const Login = () => {
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-2xl" />
         </div>
-        
+
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center items-center w-full px-12">
-          <img 
-            src={logo} 
-            alt="SERP Logo" 
+          <img
+            src={logo}
+            alt="SERP Logo"
             className="w-48 mb-8 drop-shadow-2xl"
           />
           <h1 className="text-4xl font-bold text-white text-center mb-4">
@@ -50,9 +103,9 @@ const Login = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center mb-8">
-            <img 
-              src={logo} 
-              alt="SERP Logo" 
+            <img
+              src={logo}
+              alt="SERP Logo"
               className="w-32"
             />
           </div>
@@ -143,9 +196,17 @@ const Login = () => {
             {/* Submit Button */}
             <Button
               type="submit"
+              disabled={isLoading}
               className="w-full h-12 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30"
             >
-              Entrar
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Entrando...</span>
+                </div>
+              ) : (
+                "Entrar"
+              )}
             </Button>
           </form>
 

@@ -9,204 +9,56 @@ import { SummaryCards } from "@/components/financeiro/SummaryCards"
 import { GradientCard } from "@/components/financeiro/GradientCard"
 import { StatusBadge } from "@/components/StatusBadge"
 import { motion } from "framer-motion"
-import { 
+import {
   TrendingUp, TrendingDown, DollarSign, Package, Building2, AlertTriangle,
   ArrowUpRight, ArrowDownRight, Wallet, CreditCard, Receipt, BarChart3, Filter,
   LayoutGrid, UserRoundPlus, UserCircle
 } from "lucide-react"
-import { 
+import {
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid, Label
 } from "recharts"
 import VisaoGeralComercial from "@/pages/comercial/VisaoGeral"
 import VisaoGeralRH from "@/pages/gestao-pessoas/VisaoGeralRH"
 
+import { useQuery } from "@tanstack/react-query"
+import { fetchEstatisticasFinanceiras, fetchDashboardFull } from "@/services/financeiro"
+import { fetchProjetos, fetchTarefas } from "@/services/operacional"
+import { fetchPessoas, fetchSetores, fetchMe, fetchMeuTime, type Pessoa } from "@/services/pessoas"
+
 type DashboardType = "geral" | "meu-perfil" | "financeiro" | "estoque" | "patrimonio" | "operacional" | "comercial" | "rh"
 type PeriodoType = "1h" | "24h" | "7d" | "30d" | "90d" | "1y"
 type TipoType = "todos" | "financeiro" | "estoque" | "patrimonio"
 
-// ===== MOCK DATA (unchanged) =====
-const evolutionData = [
-  { month: "Jan", entradas: 45000, saidas: 32000, saldo: 13000 },
-  { month: "Fev", entradas: 52000, saidas: 38000, saldo: 27000 },
-  { month: "Mar", entradas: 48000, saidas: 35000, saldo: 40000 },
-  { month: "Abr", entradas: 61000, saidas: 42000, saldo: 59000 },
-  { month: "Mai", entradas: 55000, saidas: 48000, saldo: 66000 },
-  { month: "Jun", entradas: 67000, saidas: 45000, saldo: 88000 },
-]
+// ===== DASHBOARD DATA HOOK =====
+export const useDashboardData = () => {
+  const { data = {}, isLoading } = useQuery({ queryKey: ['dashboard_full'], queryFn: fetchDashboardFull });
+  return { dash: data, isLoading };
+}
 
-const consumoSetorData = [
-  { setor: "Produção", valor: 25000 },
-  { setor: "Manutenção", valor: 18000 },
-  { setor: "TI", valor: 12000 },
-  { setor: "Administrativo", valor: 8000 },
-  { setor: "Operacional", valor: 15000 },
-]
-
-const patrimonioTipoData = [
-  { name: "Automóveis", value: 450000, color: "hsl(var(--primary))" },
-  { name: "Equipamentos", value: 280000, color: "hsl(72 80% 60%)" },
-  { name: "Mobiliário", value: 95000, color: "hsl(var(--chart-3))" },
-  { name: "Software", value: 75000, color: "hsl(var(--chart-4))" },
-]
-
-const contasStatusData = [
-  { status: "Em Aberto", receber: 45000, pagar: 28000 },
-  { status: "Vencidas", receber: 12000, pagar: 8000 },
-  { status: "Pagas/Recebidas", receber: 85000, pagar: 62000 },
-]
-
-const contasReceberData = [
-  { codigo: "CR001", cliente: "Cliente ABC", vencimento: "20/01/2026", valor: "R$ 15.000,00", status: "Em Aberto" },
-  { codigo: "CR002", cliente: "Cliente XYZ", vencimento: "25/01/2026", valor: "R$ 8.500,00", status: "Em Aberto" },
-  { codigo: "CR003", cliente: "Cliente DEF", vencimento: "15/01/2026", valor: "R$ 12.000,00", status: "Vencida" },
-  { codigo: "CR004", cliente: "Cliente GHI", vencimento: "10/01/2026", valor: "R$ 21.500,00", status: "Recebida" },
-]
-
-const contasPagarData = [
-  { codigo: "CP001", beneficiario: "Fornecedor A", vencimento: "22/01/2026", valor: "R$ 8.000,00", status: "Em Aberto" },
-  { codigo: "CP002", beneficiario: "Fornecedor B", vencimento: "18/01/2026", valor: "R$ 5.500,00", status: "Vencida" },
-  { codigo: "CP003", beneficiario: "Fornecedor C", vencimento: "28/01/2026", valor: "R$ 14.500,00", status: "Em Aberto" },
-  { codigo: "CP004", beneficiario: "Fornecedor D", vencimento: "05/01/2026", valor: "R$ 10.000,00", status: "Paga" },
-]
-
-const documentosFiscaisData = [
-  { numero: "NF-001234", tipo: "NF-e", emissao: "10/01/2026", valor: "R$ 25.000,00", status: "Processada" },
-  { numero: "NF-001235", tipo: "NF-e", emissao: "12/01/2026", valor: "R$ 18.500,00", status: "Processada" },
-  { numero: "XML-5678", tipo: "XML", emissao: "14/01/2026", valor: "R$ 32.000,00", status: "Pendente" },
-  { numero: "NI-0089", tipo: "NI", emissao: "15/01/2026", valor: "R$ 5.200,00", status: "Processada" },
-]
-
-const tipoDocumentoData = [
-  { name: "NF-e", value: 65, color: "hsl(var(--primary))" },
-  { name: "XML", value: 25, color: "hsl(var(--chart-3))" },
-  { name: "NI", value: 10, color: "hsl(var(--chart-4))" },
-]
-
-const estoqueUnidadeData = [
-  { unidade: "Almoxarifado SP", valor: 125000 },
-  { unidade: "TI Central", valor: 85000 },
-  { unidade: "Manutenção", valor: 45000 },
-  { unidade: "Almoxarifado RJ", valor: 65000 },
-]
-
-const topCustosData = [
-  { codigo: "0001", item: "Automóvel Ford", valor: "R$ 85.000,00" },
-  { codigo: "0015", item: "Servidor Dell", valor: "R$ 45.000,00" },
-  { codigo: "0023", item: "Equipamento CNC", valor: "R$ 38.000,00" },
-  { codigo: "0008", item: "Veículo Utilitário", valor: "R$ 32.000,00" },
-  { codigo: "0042", item: "Sistema ERP", valor: "R$ 28.000,00" },
-]
-
-const topPatrimonioData = [
-  { codigo: "0001", item: "Automóvel Ford Ranger", valor: "R$ 185.000,00" },
-  { codigo: "0002", item: "Caminhão Mercedes", valor: "R$ 320.000,00" },
-  { codigo: "0003", item: "Equipamento Industrial", valor: "R$ 95.000,00" },
-  { codigo: "0004", item: "Servidor Principal", valor: "R$ 75.000,00" },
-  { codigo: "0005", item: "Mobiliário Escritório", valor: "R$ 45.000,00" },
-]
-
-const ultimasMovimentacoes = [
-  { tipo: "Pagamento", descricao: "Fornecedor ABC", valor: "R$ 5.430,00", data: "há 2 horas" },
-  { tipo: "Recebimento", descricao: "Cliente XYZ", valor: "R$ 12.800,00", data: "há 4 horas" },
-  { tipo: "Saída Estoque", descricao: "Parafusos M8 - 500un", valor: "R$ 250,00", data: "há 6 horas" },
-  { tipo: "Pagamento", descricao: "Energia Elétrica", valor: "R$ 3.200,00", data: "ontem" },
-  { tipo: "Recebimento", descricao: "Cliente ABC", valor: "R$ 8.500,00", data: "ontem" },
-]
-
-const inventarioData = [
-  { item: "Parafuso M8", quantidade: 2500, unidade: "Almoxarifado SP", valor: "R$ 1.250,00", status: "Normal" },
-  { item: "Cabo HDMI", quantidade: 85, unidade: "TI Central", valor: "R$ 2.125,00", status: "Normal" },
-  { item: "Óleo Lubrificante", quantidade: 120, unidade: "Manutenção", valor: "R$ 5.400,00", status: "Crítico" },
-  { item: "Papel A4", quantidade: 500, unidade: "Administrativo", valor: "R$ 1.500,00", status: "Normal" },
-  { item: "Tinta Impressora", quantidade: 8, unidade: "TI Central", valor: "R$ 640,00", status: "Crítico" },
-]
-
-const estoqueEvolutionData = [
-  { month: "Jan", quantidade: 3200, valor: 280000 },
-  { month: "Fev", quantidade: 3350, valor: 295000 },
-  { month: "Mar", quantidade: 3180, valor: 285000 },
-  { month: "Abr", quantidade: 3420, valor: 310000 },
-  { month: "Mai", quantidade: 3380, valor: 315000 },
-  { month: "Jun", quantidade: 3485, valor: 320000 },
-]
-
-const topItensEstoqueData = [
-  { codigo: "EST001", item: "Parafuso M8", quantidade: 2500, valor: "R$ 1.250,00" },
-  { codigo: "EST002", item: "Porca Sextavada", quantidade: 1800, valor: "R$ 900,00" },
-  { codigo: "EST003", item: "Arruela Lisa", quantidade: 1500, valor: "R$ 450,00" },
-  { codigo: "EST004", item: "Cabo Elétrico 2.5mm", quantidade: 1200, valor: "R$ 3.600,00" },
-  { codigo: "EST005", item: "Papel A4", quantidade: 500, valor: "R$ 1.500,00" },
-  { codigo: "EST006", item: "Lubrificante WD-40", quantidade: 450, valor: "R$ 2.250,00" },
-  { codigo: "EST007", item: "Fita Isolante", quantidade: 380, valor: "R$ 570,00" },
-  { codigo: "EST008", item: "Conector RJ45", quantidade: 350, valor: "R$ 175,00" },
-  { codigo: "EST009", item: "Óleo Hidráulico", quantidade: 120, valor: "R$ 5.400,00" },
-  { codigo: "EST010", item: "Cabo HDMI", quantidade: 85, valor: "R$ 2.125,00" },
-]
-
-const topItensConsumidosData = [
-  { codigo: "EST001", item: "Parafuso M8", consumo: 850, setor: "Produção" },
-  { codigo: "EST003", item: "Arruela Lisa", consumo: 620, setor: "Produção" },
-  { codigo: "EST004", item: "Cabo Elétrico 2.5mm", consumo: 480, setor: "Manutenção" },
-  { codigo: "EST006", item: "Lubrificante WD-40", consumo: 320, setor: "Manutenção" },
-  { codigo: "EST002", item: "Porca Sextavada", consumo: 280, setor: "Produção" },
-  { codigo: "EST005", item: "Papel A4", consumo: 250, setor: "Administrativo" },
-  { codigo: "EST009", item: "Óleo Hidráulico", consumo: 45, setor: "Manutenção" },
-  { codigo: "EST007", item: "Fita Isolante", consumo: 120, setor: "TI" },
-  { codigo: "EST008", item: "Conector RJ45", consumo: 95, setor: "TI" },
-  { codigo: "EST010", item: "Cabo HDMI", consumo: 28, setor: "TI" },
-]
-
-const historicoMovimentacoesEstoque = [
-  { data: "16/01/2026", tipo: "Entrada", item: "Parafuso M8", quantidade: 500, requisitante: "João Silva", setor: "Produção" },
-  { data: "15/01/2026", tipo: "Saída", item: "Cabo Elétrico 2.5mm", quantidade: 50, requisitante: "Maria Santos", setor: "Manutenção" },
-  { data: "15/01/2026", tipo: "Saída", item: "Óleo Hidráulico", quantidade: 10, requisitante: "Carlos Lima", setor: "Manutenção" },
-  { data: "14/01/2026", tipo: "Entrada", item: "Papel A4", quantidade: 100, requisitante: "Ana Costa", setor: "Administrativo" },
-  { data: "14/01/2026", tipo: "Saída", item: "Conector RJ45", quantidade: 25, requisitante: "Pedro Alves", setor: "TI" },
-]
-
-const historicoPatrimonio = [
-  { data: "05/01/2026", codigo: "0089", item: "Notebook Dell", tipo: "Equipamentos", valor: "R$ 8.500,00" },
-  { data: "28/12/2025", codigo: "0088", item: "Impressora HP", tipo: "Equipamentos", valor: "R$ 3.200,00" },
-  { data: "15/12/2025", codigo: "0087", item: "Ar Condicionado", tipo: "Equipamentos", valor: "R$ 4.800,00" },
-  { data: "01/12/2025", codigo: "0086", item: "Mesa Escritório", tipo: "Mobiliário", valor: "R$ 1.200,00" },
-  { data: "20/11/2025", codigo: "0085", item: "Cadeira Ergonômica", tipo: "Mobiliário", valor: "R$ 2.100,00" },
-  { data: "10/11/2025", codigo: "0084", item: "Monitor 27\"", tipo: "Equipamentos", valor: "R$ 1.800,00" },
-]
-
-const patrimonioEvolutionData = [
-  { month: "Jan", valor: 820000 },
-  { month: "Fev", valor: 835000 },
-  { month: "Mar", valor: 848000 },
-  { month: "Abr", valor: 865000 },
-  { month: "Mai", valor: 882000 },
-  { month: "Jun", valor: 900000 },
-]
-
-const patrimonioQuantidadeData = [
-  { name: "Automóveis", value: 12, color: "hsl(var(--primary))" },
-  { name: "Equipamentos", value: 68, color: "hsl(72 80% 60%)" },
-  { name: "Mobiliário", value: 45, color: "hsl(var(--chart-3))" },
-  { name: "Software", value: 31, color: "hsl(var(--chart-4))" },
-]
-
-const aquisicoesPorPeriodoData = [
-  { month: "Jan", aquisicoes: 5, valor: 32000 },
-  { month: "Fev", aquisicoes: 3, valor: 15000 },
-  { month: "Mar", aquisicoes: 7, valor: 45000 },
-  { month: "Abr", aquisicoes: 4, valor: 28000 },
-  { month: "Mai", aquisicoes: 6, valor: 38000 },
-  { month: "Jun", aquisicoes: 8, valor: 45000 },
-]
-
-const visaoGeralPatrimonioData = [
-  { codigo: "0001", item: "Automóvel Ford Ranger", tipo: "Automóveis", valorUnit: "R$ 185.000,00", status: "Ativo" },
-  { codigo: "0002", item: "Caminhão Mercedes", tipo: "Automóveis", valorUnit: "R$ 320.000,00", status: "Ativo" },
-  { codigo: "0003", item: "Equipamento Industrial", tipo: "Equipamentos", valorUnit: "R$ 95.000,00", status: "Ativo" },
-  { codigo: "0004", item: "Servidor Principal", tipo: "Equipamentos", valorUnit: "R$ 75.000,00", status: "Ativo" },
-  { codigo: "0005", item: "Mobiliário Escritório", tipo: "Mobiliário", valorUnit: "R$ 45.000,00", status: "Ativo" },
-  { codigo: "0006", item: "Sistema ERP", tipo: "Software", valorUnit: "R$ 28.000,00", status: "Ativo" },
-]
+// ===== MOCK DATA FALLBACKS =====
+const defaultEvolutionData: any[] = []
+const defaultConsumoSetorData: any[] = []
+const defaultPatrimonioTipoData: any[] = []
+const defaultContasStatusData: any[] = []
+const defaultContasReceberData: any[] = []
+const defaultContasPagarData: any[] = []
+const defaultDocumentosFiscaisData: any[] = []
+const defaultTipoDocumentoData: any[] = []
+const defaultEstoqueUnidadeData: any[] = []
+const defaultTopCustosData: any[] = []
+const defaultTopPatrimonioData: any[] = []
+const defaultUltimasMovimentacoes: any[] = []
+const defaultInventarioData: any[] = []
+const defaultEstoqueEvolutionData: any[] = []
+const defaultTopItensEstoqueData: any[] = []
+const defaultTopItensConsumidosData: any[] = []
+const defaultHistoricoMovimentacoesEstoque: any[] = []
+const defaultHistoricoPatrimonio: any[] = []
+const defaultPatrimonioEvolutionData: any[] = []
+const defaultPatrimonioQuantidadeData: any[] = []
+const defaultAquisicoesPorPeriodoData: any[] = []
+const defaultVisaoGeralPatrimonioData: any[] = []
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)
@@ -318,6 +170,22 @@ const renderDonutCenter = (text: string, subtext?: string) => (
 
 // ===== DASHBOARD GERAL =====
 const DashboardGeral = () => {
+  const { dash } = useDashboardData();
+  const evolutionData = dash.evolutionData || defaultEvolutionData;
+  const consumoSetorData = dash.consumoSetorData || defaultConsumoSetorData;
+  const patrimonioTipoData = dash.patrimonioTipoData || defaultPatrimonioTipoData;
+  const topCustosData = dash.topCustosData || defaultTopCustosData;
+  const topPatrimonioData = dash.topPatrimonioData || defaultTopPatrimonioData;
+  const ultimasMovimentacoes = dash.ultimasMovimentacoes || defaultUltimasMovimentacoes;
+
+  const contasReceberData = dash.contasReceberData || defaultContasReceberData;
+  const contasPagarData = dash.contasPagarData || defaultContasPagarData;
+  const inventarioData = dash.inventarioData || defaultInventarioData;
+
+  const contasPagarAbertas = contasPagarData.filter((col: any) => col.status === 'Em Aberto').length;
+  const contasReceberAbertas = contasReceberData.filter((col: any) => col.status === 'Em Aberto').length;
+  const itensCriticosEstoque = inventarioData.filter((col: any) => col.status === 'Crítico').length;
+
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
   const [setor, setSetor] = useState<string>("todos")
   const [tipo, setTipo] = useState<TipoType>("todos")
@@ -359,10 +227,10 @@ const DashboardGeral = () => {
           <FadeIn delay={1}>
             <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Financeiro</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <GradientCard title="Total a Receber" value="R$ 57.000,00" icon={ArrowUpRight} variant="success" delay={1} />
-              <GradientCard title="Total a Pagar" value="R$ 36.000,00" icon={ArrowDownRight} variant="danger" delay={2} />
-              <GradientCard title="Resultado do Período" value="R$ 22.000,00" icon={TrendingUp} trend={{ value: "+8,3%", positive: true }} variant="success" delay={3} />
-              <GradientCard title="Saldo Atual em Caixa" value="R$ 87.939,88" icon={Wallet} trend={{ value: "+12,5%", positive: true }} variant="info" delay={4} />
+              <GradientCard title="Total a Receber" value={formatCurrency(dash.contasStatusData?.find((s: any) => s.status === 'Em Aberto')?.receber || 0)} icon={ArrowUpRight} variant="success" delay={1} />
+              <GradientCard title="Total a Pagar" value={formatCurrency(dash.contasStatusData?.find((s: any) => s.status === 'Em Aberto')?.pagar || 0)} icon={ArrowDownRight} variant="danger" delay={2} />
+              <GradientCard title="Resultado do Período" value={formatCurrency(dash.evolutionData?.[dash.evolutionData.length - 1]?.saldo || 0)} icon={TrendingUp} variant="success" delay={3} />
+              <GradientCard title="Saldo Atual em Caixa" value={formatCurrency(dash.evolutionData?.[dash.evolutionData.length - 1]?.saldo || 0)} icon={Wallet} variant="info" delay={4} />
             </div>
           </FadeIn>
 
@@ -387,7 +255,7 @@ const DashboardGeral = () => {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-                  <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
                   <Tooltip content={<ChartTooltip />} cursor={false} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                   <Area type="monotone" dataKey="entradas" name="Entradas" stroke="hsl(72 100% 50%)" fill="url(#gradEntradas)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: "hsl(72 100% 50%)", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
@@ -411,7 +279,7 @@ const DashboardGeral = () => {
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-                  <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
                   <Tooltip content={<ChartTooltip />} cursor={false} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                   <Bar dataKey="entradas" name="Entradas" fill="url(#barGradEntradas)" radius={[4, 4, 4, 4]} />
@@ -422,8 +290,8 @@ const DashboardGeral = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <AlertCard title="Contas a Pagar em Aberto" count={8} type="danger" delay={5} />
-            <AlertCard title="Contas a Receber em Aberto" count={12} type="warning" delay={6} />
+            <AlertCard title="Contas a Pagar em Aberto" count={contasPagarAbertas} type="danger" delay={5} />
+            <AlertCard title="Contas a Receber em Aberto" count={contasReceberAbertas} type="warning" delay={6} />
           </div>
 
           <FadeIn delay={7}>
@@ -454,10 +322,10 @@ const DashboardGeral = () => {
           <FadeIn delay={8}>
             <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Estoque</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" delay={3} />
-              <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-5,2%", positive: false }} variant="warning" delay={4} />
-              <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={Package} variant="info" delay={5} />
-              <GradientCard title="Quantidade de Itens" value="3.485" icon={Package} variant="neutral" delay={6} />
+              <GradientCard title="Entradas no Período" value={formatCurrency(dash.evolutionData?.[dash.evolutionData.length - 1]?.entradas || 0)} icon={ArrowUpRight} variant="success" delay={3} />
+              <GradientCard title="Saídas no Período" value={formatCurrency(dash.evolutionData?.[dash.evolutionData.length - 1]?.saidas || 0)} icon={ArrowDownRight} variant="warning" delay={4} />
+              <GradientCard title="Valor Total em Estoque" value={formatCurrency(dash.inventarioData?.reduce((s: number, i: any) => s + (parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) || 0), 0) || 0)} icon={Package} variant="info" delay={5} />
+              <GradientCard title="Quantidade de Itens" value={dash.stats?.total_itens_estoque?.toString() || "0"} icon={Package} variant="neutral" delay={6} />
             </div>
           </FadeIn>
 
@@ -470,7 +338,7 @@ const DashboardGeral = () => {
                     <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
                   </linearGradient>
                 </defs>
-                <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+                <XAxis type="number" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
                 <Tooltip content={<ChartTooltip />} cursor={false} />
                 <Bar dataKey="valor" name="Consumo" fill="url(#barHorizGrad)" radius={[4, 4, 4, 4]} />
@@ -478,7 +346,7 @@ const DashboardGeral = () => {
             </ResponsiveContainer>
           </ChartCard>
 
-          <AlertCard title="Itens de Estoque Críticos" count={5} type="info" delay={10} />
+          <AlertCard title="Itens de Estoque Críticos" count={itensCriticosEstoque} type="info" delay={10} />
         </>
       )}
 
@@ -488,9 +356,8 @@ const DashboardGeral = () => {
           <FadeIn delay={11}>
             <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Patrimônio</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <GradientCard title="Aquisições no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+12%", positive: true }} variant="success" delay={4} />
-              <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={Building2} trend={{ value: "+3,2%", positive: true }} variant="info" delay={5} />
-              <GradientCard title="Itens Patrimoniais" value="156" icon={Building2} variant="neutral" delay={6} />
+              <GradientCard title="Valor Total do Patrimônio" value={formatCurrency(patrimonioTotal)} icon={Building2} variant="info" delay={5} />
+              <GradientCard title="Itens Patrimoniais" value={patrimonioTipoData?.length?.toString() || "0"} icon={Building2} variant="neutral" delay={6} />
             </div>
           </FadeIn>
 
@@ -560,6 +427,15 @@ const DashboardGeral = () => {
 
 // ===== DASHBOARD FINANCEIRO =====
 const DashboardFinanceiro = () => {
+  const { dash } = useDashboardData();
+  const evolutionData = dash.evolutionData || defaultEvolutionData;
+  const contasStatusData = dash.contasStatusData || defaultContasStatusData;
+  const contasReceberData = dash.contasReceberData || defaultContasReceberData;
+  const contasPagarData = dash.contasPagarData || defaultContasPagarData;
+  const documentosFiscaisData = dash.documentosFiscaisData || defaultDocumentosFiscaisData;
+  const tipoDocumentoData = dash.tipoDocumentoData || defaultTipoDocumentoData;
+  const ultimasMovimentacoes = dash.ultimasMovimentacoes || defaultUltimasMovimentacoes;
+
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
   const [cliente, setCliente] = useState<string>("todos")
   const [beneficiario, setBeneficiario] = useState<string>("todos")
@@ -568,6 +444,18 @@ const DashboardFinanceiro = () => {
   const clientes = ["todos", "Cliente ABC", "Cliente XYZ", "Cliente DEF", "Cliente GHI"]
   const beneficiarios = ["todos", "Fornecedor A", "Fornecedor B", "Fornecedor C", "Fornecedor D"]
   const statusList = ["todos", "Em Aberto", "Vencida", "Paga", "Recebida", "Processada", "Pendente"]
+
+  const { data: estatisticasFinanceiras, isLoading: isLoadingFin } = useQuery({
+    queryKey: ['estatisticasFinanceiras'],
+    queryFn: fetchEstatisticasFinanceiras
+  })
+
+  // Placeholder data mapping for cards
+  const summaryCards = [
+    { title: "Saldo Atual", value: estatisticasFinanceiras ? formatCurrency(estatisticasFinanceiras.saldo) : "R$ 0,00", icon: DollarSign, trend: { value: "+12.5%", positive: true }, variant: "success" as const },
+    { title: "Receitas Confirmadas", value: estatisticasFinanceiras ? formatCurrency(estatisticasFinanceiras.entradas) : "R$ 0,00", icon: TrendingUp, trend: { value: "+8%", positive: true }, variant: "info" as const },
+    { title: "Despesas Pagas", value: estatisticasFinanceiras ? formatCurrency(estatisticasFinanceiras.saidas) : "R$ 0,00", icon: TrendingDown, trend: { value: "-3%", positive: true }, variant: "warning" as const },
+  ]
 
   const tipoDocTotal = tipoDocumentoData.reduce((s, d) => s + d.value, 0)
 
@@ -598,7 +486,19 @@ const DashboardFinanceiro = () => {
         </div>
       </FilterBar>
 
-      <SummaryCards />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {summaryCards.map((card, i) => (
+          <GradientCard
+            key={i}
+            title={card.title}
+            value={isLoadingFin ? "Carregando..." : card.value}
+            icon={card.icon}
+            trend={card.trend}
+            variant={card.variant}
+            delay={1 + i}
+          />
+        ))}
+      </div>
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -612,7 +512,7 @@ const DashboardFinanceiro = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="saldo" name="Saldo" stroke="hsl(var(--primary))" fill="url(#colorSaldoFin)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
@@ -633,7 +533,7 @@ const DashboardFinanceiro = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="entradas" name="Entradas" fill="url(#finBarEntradas)" radius={[4, 4, 4, 4]} />
@@ -655,7 +555,7 @@ const DashboardFinanceiro = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Bar dataKey="receber" name="A Receber" fill="url(#recStatusGrad)" radius={[4, 4, 4, 4]} />
             </BarChart>
@@ -672,7 +572,7 @@ const DashboardFinanceiro = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="status" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Bar dataKey="pagar" name="A Pagar" fill="url(#pagStatusGrad)" radius={[4, 4, 4, 4]} />
             </BarChart>
@@ -792,6 +692,15 @@ const DashboardFinanceiro = () => {
 
 // ===== DASHBOARD ESTOQUE =====
 const DashboardEstoque = () => {
+  const { dash } = useDashboardData();
+  const estoqueUnidadeData = dash.estoqueUnidadeData || defaultEstoqueUnidadeData;
+  const inventarioData = dash.inventarioData || defaultInventarioData;
+  const estoqueEvolutionData = dash.estoqueEvolutionData || defaultEstoqueEvolutionData;
+  const topItensEstoqueData = dash.topItensEstoqueData || defaultTopItensEstoqueData;
+  const topItensConsumidosData = dash.topItensConsumidosData || defaultTopItensConsumidosData;
+  const historicoMovimentacoesEstoque = dash.historicoMovimentacoesEstoque || defaultHistoricoMovimentacoesEstoque;
+  const consumoSetorData = dash.consumoSetorData || defaultConsumoSetorData;
+
   const [periodo, setPeriodo] = useState<PeriodoType>("30d")
   const [unidade, setUnidade] = useState<string>("todos")
   const [setor, setSetor] = useState<string>("todos")
@@ -830,14 +739,14 @@ const DashboardEstoque = () => {
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <GradientCard title="Entradas no Período" value="R$ 45.000,00" icon={ArrowUpRight} trend={{ value: "+15%", positive: true }} variant="success" delay={1} />
-        <GradientCard title="Saídas no Período" value="R$ 32.000,00" icon={ArrowDownRight} trend={{ value: "-8%", positive: false }} variant="warning" delay={2} />
-        <GradientCard title="Valor Total em Estoque" value="R$ 320.000,00" icon={DollarSign} variant="success" delay={3} />
+        <GradientCard title="Entradas no Período" value={formatCurrency(dash.evolutionData?.[dash.evolutionData.length - 1]?.entradas || 0)} icon={ArrowUpRight} variant="success" delay={1} />
+        <GradientCard title="Saídas no Período" value={formatCurrency(dash.evolutionData?.[dash.evolutionData.length - 1]?.saidas || 0)} icon={ArrowDownRight} variant="warning" delay={2} />
+        <GradientCard title="Valor Total em Estoque" value={formatCurrency(dash.inventarioData?.reduce((s: number, i: any) => s + (parseFloat(i.valor.replace(/[^\d,]/g, '').replace(',', '.')) || 0), 0) || 0)} icon={DollarSign} variant="success" delay={3} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <GradientCard title="Itens em Estoque" value="3.485" icon={Package} variant="info" delay={4} />
-        <GradientCard title="Requisições Pendentes" value="12" icon={Receipt} variant="warning" delay={5} />
-        <GradientCard title="Itens Críticos" value="5" icon={AlertTriangle} variant="danger" delay={6} />
+        <GradientCard title="Itens em Estoque" value={dash.stats?.total_itens_estoque?.toString() || "0"} icon={Package} variant="info" delay={4} />
+        <GradientCard title="Ordens de Compra Pendentes" value={dash.stats?.oc_pendentes?.toString() || "0"} icon={Receipt} variant="warning" delay={5} />
+        <GradientCard title="Itens Críticos" value={dash.inventarioData?.filter((i: any) => i.status === "Crítico").length.toString() || "0"} icon={AlertTriangle} variant="danger" delay={6} />
       </div>
 
       {/* Charts */}
@@ -869,7 +778,7 @@ const DashboardEstoque = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="valor" name="Valor (R$)" stroke="hsl(72 100% 50%)" fill="url(#colorValorEstoque)" strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
             </AreaChart>
@@ -885,7 +794,7 @@ const DashboardEstoque = () => {
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
                 </linearGradient>
               </defs>
-              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <XAxis type="number" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="setor" tick={axisStyle} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Bar dataKey="valor" name="Consumo" fill="url(#estSetorGrad)" radius={[4, 4, 4, 4]} />
@@ -903,7 +812,7 @@ const DashboardEstoque = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="unidade" tick={{ ...axisStyle, fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Bar dataKey="valor" name="Valor" fill="url(#estUnidGrad)" radius={[4, 4, 4, 4]} />
             </BarChart>
@@ -1003,8 +912,17 @@ const DashboardEstoque = () => {
     </div>
   )
 }
-
+// ===== DASHBOARD PATRIMÔNIO =====
 const DashboardPatrimonio = () => {
+  const { dash } = useDashboardData();
+  const patrimonioTipoData = dash.patrimonioTipoData || defaultPatrimonioTipoData;
+  const historicoPatrimonio = dash.historicoPatrimonio || defaultHistoricoPatrimonio;
+  const patrimonioEvolutionData = dash.patrimonioEvolutionData || defaultPatrimonioEvolutionData;
+  const patrimonioQuantidadeData = dash.patrimonioQuantidadeData || defaultPatrimonioQuantidadeData;
+  const aquisicoesPorPeriodoData = dash.aquisicoesPorPeriodoData || defaultAquisicoesPorPeriodoData;
+  const visaoGeralPatrimonioData = dash.visaoGeralPatrimonioData || defaultVisaoGeralPatrimonioData;
+  const topPatrimonioData = dash.topPatrimonioData || defaultTopPatrimonioData;
+
   const [dataAquisicao, setDataAquisicao] = useState<string>("")
   const [codigoItem, setCodigoItem] = useState<string>("todos")
   const [tipoItem, setTipoItem] = useState<string>("todos")
@@ -1057,12 +975,10 @@ const DashboardPatrimonio = () => {
       </FilterBar>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <GradientCard title="Valor Adquirido no Período" value="R$ 45.000,00" icon={ArrowUpRight} variant="success" trend={{ value: "+12%", positive: true }} delay={1} />
-        <GradientCard title="Baixas no Período" value="R$ 8.000,00" icon={ArrowDownRight} variant="warning" trend={{ value: "-2%", positive: false }} delay={2} />
-        <GradientCard title="Valor Total do Patrimônio" value="R$ 900.000,00" icon={DollarSign} variant="success" trend={{ value: "+5.2%", positive: true }} delay={3} />
-        <GradientCard title="Total de Itens Patrimoniais" value="156" icon={Building2} variant="info" delay={4} />
-        <GradientCard title="Tipos de Patrimônio Ativos" value="4" icon={BarChart3} variant="neutral" delay={5} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <GradientCard title="Valor Total do Patrimônio" value={formatCurrency(patrimonioTotal)} icon={DollarSign} variant="success" delay={3} />
+        <GradientCard title="Total de Itens Patrimoniais" value={patrimonioTipoData?.length?.toString() || "0"} icon={Building2} variant="info" delay={4} />
+        <GradientCard title="Tipos de Patrimônio Ativos" value={patrimonioTipoData?.length?.toString() || "0"} icon={BarChart3} variant="neutral" delay={5} />
       </div>
 
       {/* Charts Row 1 */}
@@ -1077,7 +993,7 @@ const DashboardPatrimonio = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Area type="monotone" dataKey="valor" name="Valor Patrimonial" stroke="hsl(var(--primary))" fill="url(#patrimonioGradient)" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 3 }} />
             </AreaChart>
@@ -1122,7 +1038,7 @@ const DashboardPatrimonio = () => {
                   <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={1} />
                 </linearGradient>
               </defs>
-              <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <XAxis type="number" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="item" tick={{ ...axisStyle, fontSize: 9 }} width={100} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Bar dataKey="valorNum" name="Valor" fill="url(#patTopGrad)" radius={[4, 4, 4, 4]} />
@@ -1145,7 +1061,7 @@ const DashboardPatrimonio = () => {
               </defs>
               <XAxis dataKey="month" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis yAxisId="left" tick={axisStyle} axisLine={false} tickLine={false} />
-              <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
+              <YAxis yAxisId="right" orientation="right" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="aquisicoes" name="Qtd. Aquisições" fill="url(#patAqGrad1)" radius={[4, 4, 4, 4]} />
@@ -1209,6 +1125,9 @@ const DashboardMeuPerfil = () => {
   const [popupTitle, setPopupTitle] = useState("")
   const [popupContent, setPopupContent] = useState<React.ReactNode>(null)
 
+  const { data: me, isLoading } = useQuery({ queryKey: ['me'], queryFn: fetchMe })
+  const { data: meuTime, isLoading: isLoadingTime } = useQuery({ queryKey: ['meu_time'], queryFn: fetchMeuTime })
+
   const openPopup = (title: string, content: React.ReactNode) => {
     setPopupTitle(title)
     setPopupContent(content)
@@ -1216,36 +1135,37 @@ const DashboardMeuPerfil = () => {
   }
 
   const accessCards = [
-    { label: "Setores", value: "3", content: (
-      <ul className="space-y-2">
-        <li className="flex justify-between py-2 border-b border-border/30"><span>Operacional</span><span className="text-xs text-muted-foreground">Admin</span></li>
-        <li className="flex justify-between py-2 border-b border-border/30"><span>Estoque</span><span className="text-xs text-muted-foreground">Editor</span></li>
-        <li className="flex justify-between py-2"><span>Financeiro</span><span className="text-xs text-muted-foreground">Visualizador</span></li>
-      </ul>
-    )},
-    { label: "Módulos", value: "12", content: (
-      <div className="grid grid-cols-2 gap-2">{["Dashboard","Estoque","Financeiro","Operacional","Cadastro","Comercial","Patrimônio","Kanban","Chat","Agenda","Relatórios","Gestão de Pessoas"].map(m => (
-        <span key={m} className="text-sm py-1.5 px-3 rounded-lg bg-muted/50">{m}</span>
-      ))}</div>
-    )},
-    { label: "Equipe", value: "8", content: (
-      <ul className="space-y-2">
-        {["Ana Costa - Analista","Carlos Lima - Técnico","Maria Santos - Coordenadora","José Alves - Operador","Fernanda Souza - Assistente","Ricardo Mendes - Engenheiro","Paula Oliveira - Analista","Bruno Silva - Auxiliar"].map(p => (
-          <li key={p} className="flex items-center gap-2 py-1.5 border-b border-border/20 last:border-0">
-            <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">{p.split(' ').map(n=>n[0]).slice(0,2).join('')}</div>
-            <span className="text-sm">{p}</span>
-          </li>
-        ))}
-      </ul>
-    )},
-    { label: "Perfil", value: "Gestor", content: (
-      <div className="space-y-3">
-        <div className="flex justify-between py-2 border-b border-border/30"><span className="text-muted-foreground">Tipo</span><span className="font-medium">Gestor</span></div>
-        <div className="flex justify-between py-2 border-b border-border/30"><span className="text-muted-foreground">Permissão</span><span className="font-medium">Leitura e Escrita</span></div>
-        <div className="flex justify-between py-2"><span className="text-muted-foreground">Aprovação</span><span className="font-medium">Sim</span></div>
-      </div>
-    )},
+    {
+      label: "Módulos", value: "12", content: (
+        <div className="grid grid-cols-2 gap-2">{["Dashboard", "Estoque", "Financeiro", "Operacional", "Cadastro", "Comercial", "Patrimônio", "Kanban", "Chat", "Agenda", "Relatórios", "Gestão de Pessoas"].map(m => (
+          <span key={m} className="text-sm py-1.5 px-3 rounded-lg bg-muted/50">{m}</span>
+        ))}</div>
+      )
+    },
+    {
+      label: "Equipe", value: meuTime?.length.toString() || "0", content: (
+        <ul className="space-y-2">
+          {meuTime?.map(p => (
+            <li key={p.id} className="flex items-center gap-2 py-1.5 border-b border-border/20 last:border-0">
+              <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">{p.iniciais}</div>
+              <span className="text-sm">{p.nome} - {p.cargo}</span>
+            </li>
+          )) || <li className="text-sm text-muted-foreground text-center py-4">Sem subordinados diretos</li>}
+        </ul>
+      )
+    },
+    {
+      label: "Perfil", value: me?.role || "Usuário", content: (
+        <div className="space-y-3">
+          <div className="flex justify-between py-2 border-b border-border/30"><span className="text-muted-foreground">Tipo</span><span className="font-medium capitalize">{me?.role || "Usuário"}</span></div>
+          <div className="flex justify-between py-2 border-b border-border/30"><span className="text-muted-foreground">Permissão</span><span className="font-medium">Total</span></div>
+          <div className="flex justify-between py-2"><span className="text-muted-foreground">Aprovação</span><span className="font-medium">Sim</span></div>
+        </div>
+      )
+    },
   ]
+
+  if (isLoading) return <div className="p-8 text-center text-muted-foreground">Carregando perfil...</div>;
 
   return (
     <div className="space-y-6">
@@ -1253,14 +1173,14 @@ const DashboardMeuPerfil = () => {
         <FadeIn delay={1}>
           <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20 lg:col-span-1">
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">PP</div>
-              <h3 className="text-lg font-bold text-foreground">Pedro Piaes</h3>
-              <p className="text-sm text-muted-foreground">Gerente de Operações</p>
-              <p className="text-xs text-muted-foreground mt-1">pedro.piaes@empresa.com</p>
+              <div className="w-20 h-20 rounded bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">{me?.iniciais || "U"}</div>
+              <h3 className="text-lg font-bold text-foreground">{me?.nome}</h3>
+              <p className="text-sm text-muted-foreground">{me?.cargo || "Cargo Indefinido"}</p>
+              <p className="text-xs text-muted-foreground mt-1">{me?.email}</p>
               <div className="mt-4 w-full space-y-2">
-                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Setor</span><span className="font-medium">Operacional</span></div>
-                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Vínculo</span><span className="font-medium">CLT</span></div>
-                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Admissão</span><span className="font-medium">15/03/2022</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Setor</span><span className="font-medium">{me?.setor || "—"}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Supervisor</span><span className="font-medium">{me?.supervisor_nome || "—"}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">Admissão</span><span className="font-medium">{me?.data_admissao || "—"}</span></div>
                 <div className="flex justify-between text-sm"><span className="text-muted-foreground">Status</span><span className="font-medium text-lime-600">Ativo</span></div>
               </div>
             </div>
@@ -1286,14 +1206,14 @@ const DashboardMeuPerfil = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
               <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20 flex flex-col justify-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Tempo no Sistema</p>
-                <p className="text-2xl font-bold text-foreground">3 anos 11 meses</p>
-                <p className="text-xs text-muted-foreground mt-1">Desde 15/03/2022</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Tarefas Criadas</p>
+                <p className="text-2xl font-bold text-foreground">{me?.stats?.os_criadas || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Ordens de serviço abertas</p>
               </div>
               <div className="bg-card rounded-2xl p-5 shadow-sm shadow-black/[0.04] dark:shadow-black/20 flex flex-col justify-center">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Aprovações Pendentes</p>
-                <p className="text-2xl font-bold text-amber-500">3</p>
-                <p className="text-xs text-muted-foreground mt-1">Requisições aguardando</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-1">Entradas Aprovadas</p>
+                <p className="text-2xl font-bold text-lime-600">{me?.stats?.entradas_aprovadas || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Lançamentos validados</p>
               </div>
             </div>
           </div>
@@ -1305,26 +1225,21 @@ const DashboardMeuPerfil = () => {
         <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
           <h3 className="text-sm font-semibold text-foreground mb-4">Meu Time</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { nome: "Ana Costa", cargo: "Analista", status: "Ativo" },
-              { nome: "Carlos Lima", cargo: "Técnico", status: "Ativo" },
-              { nome: "Maria Santos", cargo: "Coordenadora", status: "Ativo" },
-              { nome: "José Alves", cargo: "Operador", status: "Afastado" },
-              { nome: "Fernanda Souza", cargo: "Assistente", status: "Ativo" },
-              { nome: "Ricardo Mendes", cargo: "Engenheiro", status: "Ativo" },
-              { nome: "Paula Oliveira", cargo: "Analista", status: "Ativo" },
-              { nome: "Bruno Silva", cargo: "Auxiliar", status: "Ativo" },
-            ].map((membro) => (
-              <div key={membro.nome} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
+            {isLoadingTime ? (
+              <p className="text-sm text-muted-foreground col-span-full text-center py-4">Carregando time...</p>
+            ) : meuTime && meuTime.length > 0 ? meuTime.map((membro) => (
+              <div key={membro.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
                 <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">
-                  {membro.nome.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                  {membro.iniciais}
                 </div>
                 <div>
                   <p className="text-sm font-medium">{membro.nome}</p>
-                  <p className="text-xs text-muted-foreground">{membro.cargo} · <span className={membro.status === "Ativo" ? "text-lime-600" : "text-amber-500"}>{membro.status}</span></p>
+                  <p className="text-xs text-muted-foreground">{membro.cargo} · <span className="text-lime-600">Ativo</span></p>
                 </div>
               </div>
-            ))}
+            )) : (
+              <p className="text-sm text-muted-foreground col-span-full text-center py-4">Sem subordinados reais vinculados no banco.</p>
+            )}
           </div>
         </div>
       </FadeIn>
@@ -1333,13 +1248,7 @@ const DashboardMeuPerfil = () => {
         <div className="bg-card rounded-2xl p-6 shadow-sm shadow-black/[0.04] dark:shadow-black/20">
           <h3 className="text-sm font-semibold text-foreground mb-5">Últimas Atividades</h3>
           <div className="space-y-1">
-            {[
-              { acao: "Criou Ordem de Compra #OC-2026-045", data: "há 2 horas", modulo: "Estoque" },
-              { acao: "Editou cadastro de Fornecedor ABC", data: "há 4 horas", modulo: "Cadastro" },
-              { acao: "Aprovou requisição #REQ-0089", data: "ontem", modulo: "Estoque" },
-              { acao: "Criou nova conta a pagar", data: "ontem", modulo: "Financeiro" },
-              { acao: "Atualizou dados da embarcação Alfa", data: "2 dias atrás", modulo: "Operacional" },
-            ].map((item, idx) => (
+            {(me?.recentActivity || []).map((item: any, idx: number) => (
               <div key={idx} className="flex items-center justify-between py-3.5 border-b border-border/20 last:border-0">
                 <div>
                   <p className="font-medium text-sm">{item.acao}</p>
@@ -1348,6 +1257,9 @@ const DashboardMeuPerfil = () => {
                 <span className="text-xs text-muted-foreground">{item.data}</span>
               </div>
             ))}
+            {(!me?.recentActivity || me?.recentActivity.length === 0) && (
+              <p className="text-sm text-muted-foreground text-center py-4">Sem atividades recentes.</p>
+            )}
           </div>
         </div>
       </FadeIn>
@@ -1370,28 +1282,37 @@ const DashboardMeuPerfil = () => {
 
 // ===== DASHBOARD OPERACIONAL =====
 const DashboardOperacional = () => {
+  const { dash } = useDashboardData();
+  const { data: projetos, isLoading: isLoadingProjetos } = useQuery({
+    queryKey: ['projetos'],
+    queryFn: fetchProjetos
+  });
+
+  const { data: tarefas, isLoading: isLoadingTarefas } = useQuery({
+    queryKey: ['tarefas'],
+    queryFn: fetchTarefas
+  });
+
+  const operacoesAtivas = projetos ? projetos.filter((p: any) => p.status === 'Em Andamento').length : 0;
+  const servicosAndamento = tarefas ? tarefas.filter((t: any) => t.status === 'Em Andamento').length : 0;
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <GradientCard title="Operações Ativas" value="12" icon={BarChart3} variant="info" delay={1} />
-        <GradientCard title="Embarcações em Serviço" value="8" icon={Package} variant="success" delay={2} />
-        <GradientCard title="Serviços em Andamento" value="15" icon={TrendingUp} variant="warning" delay={3} />
-        <GradientCard title="Setores Operacionais" value="4" icon={Building2} variant="neutral" delay={4} />
+        <GradientCard title="Operações Ativas" value={isLoadingProjetos ? "..." : operacoesAtivas.toString()} icon={BarChart3} variant="info" delay={1} />
+        <GradientCard title="Embarcações Ativas" value={dash.stats?.embarcacoes_ativas?.toString() || "0"} icon={Package} variant="success" delay={2} />
+        <GradientCard title="Serviços em Andamento" value={isLoadingTarefas ? "..." : servicosAndamento.toString()} icon={TrendingUp} variant="warning" delay={3} />
+        <GradientCard title="OS Pendentes de Análise" value={dash.stats?.os_pendentes?.toString() || "0"} icon={Building2} variant="neutral" delay={4} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartCard title="Operações por Setor" delay={5}>
+        <ChartCard title="Embarcações por Setor" delay={5}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={[
-              { setor: "Porto", operacoes: 5 },
-              { setor: "Offshore", operacoes: 3 },
-              { setor: "Manutenção", operacoes: 4 },
-              { setor: "Logística", operacoes: 2 },
-            ]}>
-              <XAxis dataKey="setor" tick={axisStyle} axisLine={false} tickLine={false} />
+            <BarChart data={dash.operacionalCharts?.setorData || []}>
+              <XAxis dataKey="name" tick={axisStyle} axisLine={false} tickLine={false} />
               <YAxis tick={axisStyle} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} cursor={false} />
-              <Bar dataKey="operacoes" name="Operações" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} />
+              <Bar dataKey="value" name="Embarcações" fill="hsl(var(--primary))" radius={[4, 4, 4, 4]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -1399,17 +1320,9 @@ const DashboardOperacional = () => {
         <ChartCard title="Embarcações por Status" delay={6}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={[
-                { name: "Em Operação", value: 8, color: "hsl(var(--primary))" },
-                { name: "Em Manutenção", value: 2, color: "hsl(var(--chart-3))" },
-                { name: "Disponível", value: 3, color: "hsl(72 80% 60%)" },
-              ]} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value" cornerRadius={6}
+              <Pie data={dash.operacionalCharts?.statusData || []} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value" cornerRadius={6}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
-                {[
-                  { name: "Em Operação", value: 8, color: "hsl(var(--primary))" },
-                  { name: "Em Manutenção", value: 2, color: "hsl(var(--chart-3))" },
-                  { name: "Disponível", value: 3, color: "hsl(72 80% 60%)" },
-                ].map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                {(dash.operacionalCharts?.statusData || []).map((entry: any, index: number) => <Cell key={`cell-${index}`} fill={entry.color} />)}
               </Pie>
               <Tooltip content={<ChartTooltip />} cursor={false} />
             </PieChart>
@@ -1424,12 +1337,7 @@ const DashboardOperacional = () => {
             <Table>
               <TableHeader><TableRow><TableHead>Data</TableHead><TableHead>Operação</TableHead><TableHead>Embarcação</TableHead><TableHead>Setor</TableHead><TableHead>Status</TableHead></TableRow></TableHeader>
               <TableBody>
-                {[
-                  { data: "16/01/2026", operacao: "Carga Porto Santos", embarcacao: "MV Alfa", setor: "Porto", status: "Em Andamento" },
-                  { data: "15/01/2026", operacao: "Manutenção Preventiva", embarcacao: "MV Beta", setor: "Manutenção", status: "Concluída" },
-                  { data: "14/01/2026", operacao: "Transporte Offshore", embarcacao: "MV Gama", setor: "Offshore", status: "Em Andamento" },
-                  { data: "13/01/2026", operacao: "Descarga Terminal", embarcacao: "MV Delta", setor: "Porto", status: "Concluída" },
-                ].map((item, idx) => (
+                {(dash.operacionalData?.recentOperations || []).map((item: any, idx: number) => (
                   <TableRow key={idx}>
                     <TableCell className="text-sm">{item.data}</TableCell>
                     <TableCell className="font-medium text-sm">{item.operacao}</TableCell>

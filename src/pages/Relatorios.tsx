@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
@@ -8,33 +9,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { StatusBadge } from "@/components/StatusBadge"
 import { FileText, Download, X } from "lucide-react"
 import { exportData } from "@/lib/exportData"
+import { fetchContasReceber, fetchContasPagar, contasReceberQueryKey, contasPagarQueryKey } from "@/services/financeiro"
 
 type TipoRelatorio = "contas-receber" | "contas-pagar" | "fluxo-caixa"
 type TipoData = "vencimento" | "faturamento" | "pagamento"
 type FiltroTempo = "anual" | "trimestral" | "mensal" | "diario" | "personalizado"
 
-const mockContasReceber = [
-  { codigo: "CR001", cliente: "Cliente ABC", vencimento: "20/01/2026", faturamento: "10/01/2026", pagamento: "-", valor: "R$ 15.000,00", status: "Em Aberto", categoria: "Serviços", contaBancaria: "Banco do Brasil", classificacao: "Receita Operacional" },
-  { codigo: "CR002", cliente: "Cliente XYZ", vencimento: "25/01/2026", faturamento: "15/01/2026", pagamento: "-", valor: "R$ 8.500,00", status: "Em Aberto", categoria: "Produtos", contaBancaria: "Itaú", classificacao: "Receita Operacional" },
-  { codigo: "CR003", cliente: "Cliente DEF", vencimento: "15/01/2026", faturamento: "05/01/2026", pagamento: "14/01/2026", valor: "R$ 12.000,00", status: "Recebida", categoria: "Serviços", contaBancaria: "Bradesco", classificacao: "Receita Operacional" },
-  { codigo: "CR004", cliente: "Cliente GHI", vencimento: "10/01/2026", faturamento: "01/01/2026", pagamento: "10/01/2026", valor: "R$ 21.500,00", status: "Recebida", categoria: "Consultoria", contaBancaria: "Banco do Brasil", classificacao: "Receita Extra" },
-  { codigo: "CR005", cliente: "Cliente JKL", vencimento: "05/02/2026", faturamento: "20/01/2026", pagamento: "-", valor: "R$ 5.800,00", status: "Vencida", categoria: "Produtos", contaBancaria: "Itaú", classificacao: "Receita Operacional" },
-]
-
-const mockContasPagar = [
-  { codigo: "CP001", beneficiario: "Fornecedor A", vencimento: "22/01/2026", faturamento: "12/01/2026", pagamento: "-", valor: "R$ 8.000,00", status: "Em Aberto", categoria: "Material", contaBancaria: "Banco do Brasil", classificacao: "Despesa Operacional" },
-  { codigo: "CP002", beneficiario: "Fornecedor B", vencimento: "18/01/2026", faturamento: "08/01/2026", pagamento: "17/01/2026", valor: "R$ 5.500,00", status: "Paga", categoria: "Serviços", contaBancaria: "Itaú", classificacao: "Despesa Operacional" },
-  { codigo: "CP003", beneficiario: "Fornecedor C", vencimento: "28/01/2026", faturamento: "18/01/2026", pagamento: "-", valor: "R$ 14.500,00", status: "Em Aberto", categoria: "Equipamentos", contaBancaria: "Bradesco", classificacao: "Investimento" },
-  { codigo: "CP004", beneficiario: "Energia Elétrica", vencimento: "05/01/2026", faturamento: "01/01/2026", pagamento: "04/01/2026", valor: "R$ 3.200,00", status: "Paga", categoria: "Utilidades", contaBancaria: "Banco do Brasil", classificacao: "Despesa Fixa" },
-]
-
-const mockFluxoCaixa = [
-  { data: "01/01/2026", descricao: "Saldo Inicial", entrada: "R$ 150.000,00", saida: "-", saldo: "R$ 150.000,00", categoria: "Saldo", contaBancaria: "Todos" },
-  { data: "05/01/2026", descricao: "Recebimento Cliente GHI", entrada: "R$ 21.500,00", saida: "-", saldo: "R$ 171.500,00", categoria: "Receita", contaBancaria: "Banco do Brasil" },
-  { data: "05/01/2026", descricao: "Energia Elétrica", entrada: "-", saida: "R$ 3.200,00", saldo: "R$ 168.300,00", categoria: "Despesa", contaBancaria: "Banco do Brasil" },
-  { data: "14/01/2026", descricao: "Recebimento Cliente DEF", entrada: "R$ 12.000,00", saida: "-", saldo: "R$ 180.300,00", categoria: "Receita", contaBancaria: "Bradesco" },
-  { data: "17/01/2026", descricao: "Pgto Fornecedor B", entrada: "-", saida: "R$ 5.500,00", saldo: "R$ 174.800,00", categoria: "Despesa", contaBancaria: "Itaú" },
-]
+// --- Mocks removidos ---
+const mockFluxoCaixa: any[] = []
 
 const trimestres = [
   { value: "1", label: "1º Trimestre (Jan-Mar)" },
@@ -75,9 +57,40 @@ export default function Relatorios() {
 
   const [showPopup, setShowPopup] = useState(false)
 
+  // Real API data
+  const { data: contasReceberApi = [] } = useQuery({ queryKey: contasReceberQueryKey, queryFn: fetchContasReceber })
+  const { data: contasPagarApi = [] } = useQuery({ queryKey: contasPagarQueryKey, queryFn: fetchContasPagar })
+
+  // Map API data to display format
+  const contasReceberDisplay = contasReceberApi.map(cr => ({
+    codigo: `CR${String(cr.id).padStart(3, '0')}`,
+    cliente: cr.cliente_nome || String(cr.cliente || '—'),
+    vencimento: cr.data_de_vencimento || '—',
+    faturamento: cr.data_de_faturamento || '—',
+    pagamento: '—',
+    valor: cr.valor_do_titulo != null ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cr.valor_do_titulo) : 'R$ 0,00',
+    status: cr.status || '—',
+    categoria: '—',
+    contaBancaria: '—',
+    classificacao: '—',
+  }))
+
+  const contasPagarDisplay = contasPagarApi.map(cp => ({
+    codigo: `CP${String(cp.id).padStart(3, '0')}`,
+    beneficiario: cp.fornecedor_nome || String(cp.beneficiario || '—'),
+    vencimento: cp.data_de_vencimento || '—',
+    faturamento: cp.data_de_faturamento || '—',
+    pagamento: '—',
+    valor: cp.valor_do_titulo != null ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cp.valor_do_titulo) : 'R$ 0,00',
+    status: cp.status || '—',
+    categoria: '—',
+    contaBancaria: '—',
+    classificacao: '—',
+  }))
+
   const getData = () => {
-    if (tipo === "contas-receber") return mockContasReceber
-    if (tipo === "contas-pagar") return mockContasPagar
+    if (tipo === "contas-receber") return contasReceberDisplay
+    if (tipo === "contas-pagar") return contasPagarDisplay
     return mockFluxoCaixa
   }
 
@@ -272,7 +285,7 @@ export default function Relatorios() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockContasReceber.map((item) => (
+                    {contasReceberDisplay.map((item) => (
                       <TableRow key={item.codigo}>
                         <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
                         <TableCell>{item.cliente}</TableCell>
@@ -299,7 +312,7 @@ export default function Relatorios() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockContasPagar.map((item) => (
+                    {contasPagarDisplay.map((item) => (
                       <TableRow key={item.codigo}>
                         <TableCell className="font-medium text-xs">{item.codigo}</TableCell>
                         <TableCell>{item.beneficiario}</TableCell>

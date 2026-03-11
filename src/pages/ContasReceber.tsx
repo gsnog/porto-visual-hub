@@ -14,18 +14,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 
-const mockContas = [
-  { id: 1, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Recebida" },
-  { id: 2, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ABEEMAR", documento: "NI", valorTitulo: "R$ 659,88", valorTotalRecebido: "R$ 659,88", proximoVencimento: "XX/XX/XXXX", status: "Em Aberto" },
-  { id: 3, dataLancamento: "12/05/2025", dataFaturamento: "30/04/2025", cliente: "ALPHA TECNOLOGIA", documento: "NF 1234", valorTitulo: "R$ 12.345,00", valorTotalRecebido: "R$ 0,00", proximoVencimento: "15/12/2025", status: "Vencida" },
-  { id: 4, dataLancamento: "10/05/2025", dataFaturamento: "28/04/2025", cliente: "BETA CORP", documento: "NF 5678", valorTitulo: "R$ 8.500,00", valorTotalRecebido: "R$ 4.250,00", proximoVencimento: "10/01/2026", status: "Pago Parcial" },
-]
-
-type Conta = typeof mockContas[0];
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { fetchContasReceber, updateContaReceber, deleteContaReceber, type ContaReceber as Conta, fetchEstatisticasFinanceiras } from "@/services/financeiro"
 
 const ContasReceber = () => {
   const navigate = useNavigate()
-  const [items, setItems] = useState(mockContas)
+  const queryClient = useQueryClient()
   const [filterCliente, setFilterCliente] = useState("")
   const [filterDocumento, setFilterDocumento] = useState("")
   const [filterDataInicio, setFilterDataInicio] = useState("")
@@ -33,31 +27,61 @@ const ContasReceber = () => {
   const [viewItem, setViewItem] = useState<Conta | null>(null)
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [editItem, setEditItem] = useState<Conta | null>(null)
-  const [editData, setEditData] = useState({ cliente: "", documento: "", valorTitulo: "", valorTotalRecebido: "" })
+  const [editData, setEditData] = useState<Partial<Conta>>({})
+
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ['contas_receber'],
+    queryFn: fetchContasReceber,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (data: { id: number; payload: Partial<Conta> }) => updateContaReceber(data.id, data.payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contas_receber'] });
+      setEditItem(null);
+      toast({ title: "Salvo", description: "Conta a receber atualizada." });
+    },
+    onError: () => toast({ title: "Erro", description: "Falha ao atualizar.", variant: "destructive" }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteContaReceber,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contas_receber'] });
+      setDeleteId(null);
+      toast({ title: "Removida", description: "Conta a receber excluída." });
+    },
+    onError: () => toast({ title: "Erro", description: "Falha ao excluir.", variant: "destructive" }),
+  });
 
   const filtered = useMemo(() => {
-    return items.filter(conta => {
-      const matchCliente = conta.cliente.toLowerCase().includes(filterCliente.toLowerCase())
-      const matchDocumento = conta.documento.toLowerCase().includes(filterDocumento.toLowerCase())
-      const matchDataInicio = filterDataInicio ? conta.dataFaturamento >= filterDataInicio.split("-").reverse().join("/") : true
-      const matchDataFim = filterDataFim ? conta.dataFaturamento <= filterDataFim.split("-").reverse().join("/") : true
+    return items.filter((conta: Conta) => {
+      const matchCliente = (conta.cliente_nome || "").toLowerCase().includes(filterCliente.toLowerCase())
+      const matchDocumento = (conta.documento || "").toLowerCase().includes(filterDocumento.toLowerCase())
+      const matchDataInicio = filterDataInicio ? (conta.data_de_faturamento || "") >= filterDataInicio : true
+      const matchDataFim = filterDataFim ? (conta.data_de_faturamento || "") <= filterDataFim : true
       return matchCliente && matchDocumento && matchDataInicio && matchDataFim
     })
   }, [items, filterCliente, filterDocumento, filterDataInicio, filterDataFim])
 
-  const getExportData = () => filtered.map(c => ({ Lançamento: c.dataLancamento, Faturamento: c.dataFaturamento, Cliente: c.cliente, Documento: c.documento, Título: c.valorTitulo, Recebido: c.valorTotalRecebido, Vencimento: c.proximoVencimento, Status: c.status }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Conta excluída." }); } };
-  const openEdit = (c: Conta) => { setEditItem(c); setEditData({ cliente: c.cliente, documento: c.documento, valorTitulo: c.valorTitulo, valorTotalRecebido: c.valorTotalRecebido }); };
-  const handleSaveEdit = () => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Conta atualizada." }); } };
-  const deleteItemData = items.find(i => i.id === deleteId);
+  const getExportData = () => filtered.map((c: Conta) => ({ Lançamento: c.data_de_lancamento, Faturamento: c.data_de_faturamento, Cliente: c.cliente_nome, Documento: c.documento, Título: c.valor_do_titulo, Total: c.valor_total, Vencimento: c.data_de_vencimento, Status: c.status }));
+  const handleDelete = () => { if (deleteId !== null) { deleteMutation.mutate(deleteId); } };
+  const openEdit = (c: Conta) => { setEditItem(c); setEditData({ ...c }); };
+  const handleSaveEdit = () => { if (editItem) { updateMutation.mutate({ id: editItem.id, payload: editData }); } };
+  const deleteItemData = items.find((i: Conta) => i.id === deleteId);
+
+  const { data: stats } = useQuery({
+    queryKey: ["financeiro_estatisticas"],
+    queryFn: fetchEstatisticasFinanceiras,
+  });
 
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <GradientCard title="Total Recebido" value="R$ 87.939,88" icon={ArrowUpRight} variant="success" />
-          <GradientCard title="Total a Receber" value="R$ 12.345,00" icon={ArrowUpRight} variant="info" />
-          <GradientCard title="Valor Total em Títulos" value="R$ 100.284,88" icon={Wallet} variant="orange" />
+          <GradientCard title="Total Recebido" value={`R$ ${stats?.entradas?.toFixed(2) || "0,00"}`} icon={ArrowUpRight} variant="success" />
+          <GradientCard title="Total a Receber" value={`R$ ${stats?.saidas?.toFixed(2) || "0,00"}`} icon={ArrowUpRight} variant="info" />
+          <GradientCard title="Saldo Projetado" value={`R$ ${stats?.saldo?.toFixed(2) || "0,00"}`} icon={Wallet} variant="orange" />
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
@@ -81,11 +105,21 @@ const ContasReceber = () => {
             <TableHead className="text-center">Lançamento</TableHead><TableHead className="text-center">Faturamento</TableHead><TableHead className="text-center">Cliente</TableHead><TableHead className="text-center">Documento</TableHead><TableHead className="text-center">Título</TableHead><TableHead className="text-center">Recebido</TableHead><TableHead className="text-center">Vencimento</TableHead><TableHead className="text-center">Status</TableHead><TableHead className="text-center">Ações</TableHead>
           </TableRow></TableHeader>
           <TableBody>
-            {filtered.length === 0 ? (<TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Nenhuma conta encontrada.</TableCell></TableRow>) : (
-              filtered.map((conta) => (
+            {isLoading ? (
+              <TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
+            ) : filtered.length === 0 ? (
+              <TableRow><TableCell colSpan={9} className="text-center py-8 text-muted-foreground">Nenhuma conta encontrada.</TableCell></TableRow>
+            ) : (
+              filtered.map((conta: Conta) => (
                 <TableRow key={conta.id}>
-                  <TableCell className="text-center">{conta.dataLancamento}</TableCell><TableCell className="text-center">{conta.dataFaturamento}</TableCell><TableCell className="text-center">{conta.cliente}</TableCell><TableCell className="text-center">{conta.documento}</TableCell><TableCell className="text-center">{conta.valorTitulo}</TableCell><TableCell className="text-center">{conta.valorTotalRecebido}</TableCell><TableCell className="text-center">{conta.proximoVencimento}</TableCell>
-                  <TableCell className="text-center"><StatusBadge status={conta.status} /></TableCell>
+                  <TableCell className="text-center">{conta.data_de_lancamento || "—"}</TableCell>
+                  <TableCell className="text-center">{conta.data_de_faturamento || "—"}</TableCell>
+                  <TableCell className="text-center">{conta.cliente_nome || "—"}</TableCell>
+                  <TableCell className="text-center">{conta.documento || "—"}</TableCell>
+                  <TableCell className="text-center">{conta.valor_do_titulo ? `R$ ${conta.valor_do_titulo.toFixed(2)}` : "—"}</TableCell>
+                  <TableCell className="text-center">{conta.valor_total ? `R$ ${conta.valor_total.toFixed(2)}` : "—"}</TableCell>
+                  <TableCell className="text-center">{conta.data_de_vencimento || "—"}</TableCell>
+                  <TableCell className="text-center"><StatusBadge status={conta.status || "Em Aberto"} /></TableCell>
                   <TableCell className="text-center"><TableActions onView={() => setViewItem(conta)} onEdit={() => openEdit(conta)} onDelete={() => setDeleteId(conta.id)} /></TableCell>
                 </TableRow>
               ))
@@ -96,25 +130,25 @@ const ContasReceber = () => {
 
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Detalhes - Conta a Receber</DialogTitle></DialogHeader>
-          {viewItem && <div className="space-y-2">{Object.entries({ Lançamento: viewItem.dataLancamento, Faturamento: viewItem.dataFaturamento, Cliente: viewItem.cliente, Documento: viewItem.documento, "Valor Título": viewItem.valorTitulo, "Total Recebido": viewItem.valorTotalRecebido, "Próx. Vencimento": viewItem.proximoVencimento, Status: viewItem.status }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>))}</div>}
+          {viewItem && <div className="space-y-2">{Object.entries({ Lançamento: viewItem.data_de_lancamento, Faturamento: viewItem.data_de_faturamento, Cliente: viewItem.cliente_nome, Documento: viewItem.documento, "Valor Título": viewItem.valor_do_titulo, "Valor Total": viewItem.valor_total, "Próx. Vencimento": viewItem.data_de_vencimento, Status: viewItem.status }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{String(v || "—")}</span></div>))}</div>}
         </DialogContent>
       </Dialog>
 
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Editar Conta a Receber</DialogTitle></DialogHeader>
           <div className="space-y-3">
-            <div><Label>Cliente</Label><Input value={editData.cliente} onChange={e => setEditData({ ...editData, cliente: e.target.value })} /></div>
-            <div><Label>Documento</Label><Input value={editData.documento} onChange={e => setEditData({ ...editData, documento: e.target.value })} /></div>
-            <div><Label>Valor Título</Label><Input value={editData.valorTitulo} onChange={e => setEditData({ ...editData, valorTitulo: e.target.value })} /></div>
-            <div><Label>Total Recebido</Label><Input value={editData.valorTotalRecebido} onChange={e => setEditData({ ...editData, valorTotalRecebido: e.target.value })} /></div>
+            <div><Label>Cliente (ID)</Label><Input type="number" value={editData.cliente || ""} onChange={e => setEditData({ ...editData, cliente: parseInt(e.target.value) })} /></div>
+            <div><Label>Documento</Label><Input value={editData.documento || ""} onChange={e => setEditData({ ...editData, documento: e.target.value })} /></div>
+            <div><Label>Valor Título</Label><Input type="number" step="0.01" value={editData.valor_do_titulo || ""} onChange={e => setEditData({ ...editData, valor_do_titulo: parseFloat(e.target.value) })} /></div>
+            <div><Label>Valor Total</Label><Input type="number" step="0.01" value={editData.valor_total || ""} onChange={e => setEditData({ ...editData, valor_total: parseFloat(e.target.value) })} /></div>
           </div>
-          <DialogFooter><Button onClick={handleSaveEdit}>Salvar</Button></DialogFooter>
+          <DialogFooter><Button onClick={handleSaveEdit} disabled={updateMutation.isPending}>{updateMutation.isPending ? "Salvando..." : "Salvar"}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Excluir conta?</AlertDialogTitle><AlertDialogDescription>Deseja excluir a conta de "{deleteItemData?.cliente}"? Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader>
-          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction></AlertDialogFooter>
+          <AlertDialogFooter><AlertDialogCancel>Cancelar</AlertDialogCancel><AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={deleteMutation.isPending}>{deleteMutation.isPending ? "Excluindo..." : "Excluir"}</AlertDialogAction></AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>

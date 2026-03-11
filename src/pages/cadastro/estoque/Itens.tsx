@@ -11,69 +11,32 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Plus } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
-
-const mockItens = [
-  { id: 1, codigo: "EST001", dataCadastro: "10/01/2026", item: "Parafuso M8", formaApresentacao: "Caixa", setores: "Produção" },
-  { id: 2, codigo: "EST002", dataCadastro: "12/01/2026", item: "Cabo HDMI", formaApresentacao: "Unidade", setores: "TI" },
-];
-
-type Item = typeof mockItens[0];
-
-function loadNewItems(): Item[] {
-  // Load items from NovoItem registration
-  const novosItens = JSON.parse(sessionStorage.getItem("novos_itens_cadastrados") || "[]");
-  // Load items from entry approval (novo items)
-  const novosEntrada = JSON.parse(sessionStorage.getItem("novos_itens_entrada") || "[]");
-  
-  const all: Item[] = [];
-  for (const n of novosItens) {
-    if (n.id) {
-      all.push({
-        id: n.id,
-        codigo: n.codigo || `EST${String(n.id).slice(-3)}`,
-        dataCadastro: n.dataCadastro || new Date().toLocaleDateString("pt-BR"),
-        item: n.label || n.item || "",
-        formaApresentacao: n.formaApresentacao || "",
-        setores: n.setores || "",
-      });
-    }
-  }
-  for (const n of novosEntrada) {
-    all.push(n);
-  }
-  // Clear entry items after loading
-  sessionStorage.removeItem("novos_itens_entrada");
-  return all;
-}
+import { useQuery } from "@tanstack/react-query";
+import { fetchItensEstoque } from "@/services/estoque";
+import { Loader2 } from "lucide-react";
 
 const Itens = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState<Item[]>(() => {
-    const newItems = loadNewItems();
-    return [...newItems, ...mockItens];
+  const { data: itensApi, isLoading } = useQuery({
+    queryKey: ['itensEstoque'],
+    queryFn: fetchItensEstoque
   });
+
   const [searchNome, setSearchNome] = useState("");
   const [searchData, setSearchData] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [viewItem, setViewItem] = useState<Item | null>(null);
-  const [editItem, setEditItem] = useState<Item | null>(null);
+  const [viewItem, setViewItem] = useState<any>(null);
+  const [editItem, setEditItem] = useState<any>(null);
   const [editData, setEditData] = useState({ item: "", formaApresentacao: "", setores: "" });
 
-  // Reload when window regains focus
-  useEffect(() => {
-    const handleFocus = () => {
-      const newItems = loadNewItems();
-      if (newItems.length > 0) {
-        setItems(prev => {
-          const existingIds = new Set(prev.map(i => i.id));
-          const unique = newItems.filter(n => !existingIds.has(n.id));
-          return [...unique, ...prev];
-        });
-      }
-    };
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, []);
+  const items = (itensApi || []).map(apiItem => ({
+    id: apiItem.id,
+    codigo: `EST${String(apiItem.id).padStart(3, '0')}`,
+    dataCadastro: "-",
+    item: apiItem.itens_do_estoque,
+    formaApresentacao: "-",
+    setores: "-"
+  }));
 
   const filterFields = [
     { type: "text" as const, label: "Nome", placeholder: "Buscar por nome...", value: searchNome, onChange: setSearchNome, width: "flex-1 min-w-[200px]" },
@@ -81,9 +44,13 @@ const Itens = () => {
   ];
   const filtered = items.filter(item => item.item.toLowerCase().includes(searchNome.toLowerCase()));
   const getExportData = () => filtered.map(i => ({ Código: i.codigo, "Data Cadastro": i.dataCadastro, Item: i.item, "Forma Apresentação": i.formaApresentacao, Setores: i.setores }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Item excluído." }); } };
+  const handleDelete = () => { if (deleteId !== null) { toast({ title: "Esta funcionalidade ainda não foi ligada à API" }); setDeleteId(null); } };
   const deleteItem = items.find(i => i.id === deleteId);
-  const openEdit = (i: Item) => { setEditItem(i); setEditData({ item: i.item, formaApresentacao: i.formaApresentacao, setores: i.setores }); };
+  const openEdit = (i: any) => { setEditItem(i); setEditData({ item: i.item, formaApresentacao: i.formaApresentacao, setores: i.setores }); };
+
+  if (isLoading) {
+    return <div className="flex justify-center p-8"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -133,7 +100,7 @@ const Itens = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Item atualizado." }); } }}>Salvar</Button>
+            <Button onClick={() => { if (editItem) { toast({ title: "Funcionalidade de edição requer API Backend completa", description: "Item atualizado mock." }); setEditItem(null); } }}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

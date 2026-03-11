@@ -1,24 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
+import { fetchMe, updateMe } from "@/services/pessoas";
 
 export default function EditarPerfil() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['me'],
+    queryFn: fetchMe
+  });
+
+  const mutation = useMutation({
+    mutationFn: updateMe,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['me'] });
+      toast.success("Perfil atualizado com sucesso!");
+      navigate("/usuario/visualizar");
+    },
+    onError: () => {
+      toast.error("Erro ao atualizar o perfil. Tente novamente.");
+    }
+  });
 
   const [formData, setFormData] = useState({
-    nome: "Pedro Piaes",
-    email: "pedro.piaes@serp.com.br",
-    telefone: "(11) 99999-9999",
-    cargo: "Desenvolvedor",
-    departamento: "Tecnologia",
-    endereco: "São Paulo, SP",
+    first_name: "",
+    last_name: "",
+    email: "",
+    telefone: "",
+    cargo: "",
+    setor: "",
+    endereco: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        first_name: user.first_name || "",
+        last_name: user.last_name || "",
+        email: user.email || "",
+        telefone: user.telefone || "",
+        cargo: user.cargo || "",
+        setor: user.setor || "",
+        endereco: user.endereco || "",
+      });
+    }
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -27,13 +62,22 @@ export default function EditarPerfil() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Perfil atualizado com sucesso!");
-    navigate("/usuario/visualizar");
+    mutation.mutate({
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      email: formData.email,
+      telefone: formData.telefone,
+      endereco: formData.endereco,
+    });
   };
 
-  const getInitials = (name: string) => {
-    return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
+  const getInitials = (first: string, last: string) => {
+    return `${first?.[0] || ""}${last?.[0] || ""}`.substring(0, 2).toUpperCase();
   };
+
+  if (isLoading) {
+    return <div className="flex justify-center p-8"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -48,7 +92,7 @@ export default function EditarPerfil() {
               <div className="relative">
                 <Avatar className="h-32 w-32 rounded">
                   <AvatarFallback className="bg-primary text-primary-foreground text-4xl font-bold rounded">
-                    {getInitials(formData.nome)}
+                    {user?.iniciais || getInitials(formData.first_name, formData.last_name) || "US"}
                   </AvatarFallback>
                 </Avatar>
                 <button
@@ -63,11 +107,22 @@ export default function EditarPerfil() {
             {/* Campos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="nome" className="form-label">Nome Completo</Label>
+                <Label htmlFor="first_name" className="form-label">Nome</Label>
                 <Input
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  className="form-input"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="last_name" className="form-label">Sobrenome</Label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
                   onChange={handleChange}
                   className="form-input"
                 />
@@ -97,24 +152,24 @@ export default function EditarPerfil() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="cargo" className="form-label">Cargo</Label>
+                <Label htmlFor="cargo" className="form-label">Cargo (Apenas visualização)</Label>
                 <Input
                   id="cargo"
                   name="cargo"
                   value={formData.cargo}
-                  onChange={handleChange}
-                  className="form-input"
+                  disabled
+                  className="form-input bg-muted"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="departamento" className="form-label">Departamento</Label>
+                <Label htmlFor="setor" className="form-label">Setor (Apenas visualização)</Label>
                 <Input
-                  id="departamento"
-                  name="departamento"
-                  value={formData.departamento}
-                  onChange={handleChange}
-                  className="form-input"
+                  id="setor"
+                  name="setor"
+                  value={formData.setor}
+                  disabled
+                  className="form-input bg-muted"
                 />
               </div>
 
@@ -140,8 +195,8 @@ export default function EditarPerfil() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" className="btn-action px-6">
-                Salvar Alterações
+              <Button type="submit" className="btn-action px-6" disabled={mutation.isPending}>
+                {mutation.isPending ? "Salvando..." : "Salvar Alterações"}
               </Button>
             </div>
           </form>

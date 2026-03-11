@@ -10,10 +10,15 @@ import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
 import { ValidatedSelect } from "@/components/ui/validated-select";
-import { pessoasMock } from "@/data/pessoas-mock";
+
 import { estadosBrasil } from "@/data/brasil-localidades";
 import { toast } from "@/hooks/use-toast";
 import { useAuditTrail } from "@/hooks/useAuditTrail";
+
+// --- Stub temporário para evitar crashes por mock deletado ---
+const pessoasMock: any[] = [];
+
+
 
 interface ViaCepResponse {
   cep: string;

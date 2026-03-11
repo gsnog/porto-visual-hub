@@ -12,15 +12,11 @@ import { Plus, FileText } from "lucide-react";
 import { ExportButton } from "@/components/ExportButton";
 import { toast } from "@/hooks/use-toast";
 
-const mockCentrosReceita = [
-  { id: 1, nome: "Centro de Receita A", diretoria: "Diretoria Comercial", gerencia: "Gerência de Vendas", departamento: "Vendas" },
-  { id: 2, nome: "Centro de Receita B", diretoria: "Diretoria de Serviços", gerencia: "Gerência de Projetos", departamento: "Consultoria" },
-];
-type CR = typeof mockCentrosReceita[0];
+type CR = { id: number; nome: string; diretoria: string; gerencia: string; departamento: string; };
 
 const CentroReceita = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(mockCentrosReceita);
+  const [items] = useState<CR[]>([]);
   const [searchCentro, setSearchCentro] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<CR | null>(null);
@@ -30,7 +26,7 @@ const CentroReceita = () => {
   const filterFields = [{ type: "text" as const, label: "Centro de Receita", placeholder: "Buscar centro de receita...", value: searchCentro, onChange: setSearchCentro, width: "flex-1 min-w-[200px]" }];
   const filtered = items.filter(c => c.nome.toLowerCase().includes(searchCentro.toLowerCase()));
   const getExportData = () => filtered.map(c => ({ "Centro de Receita": c.nome, Diretoria: c.diretoria, Gerência: c.gerencia, Departamento: c.departamento }));
-  const handleDelete = () => { if (deleteId !== null) { setItems(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removido", description: "Centro de receita excluído." }); } };
+  const handleDelete = () => { setDeleteId(null); toast({ title: "Aguardando API", description: "Endpoint ainda não configurado." }); };
   const deleteItem = items.find(i => i.id === deleteId);
   const openEdit = (c: CR) => { setEditItem(c); setEditData({ nome: c.nome, diretoria: c.diretoria, gerencia: c.gerencia, departamento: c.departamento }); };
 
@@ -81,7 +77,7 @@ const CentroReceita = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
-            <Button onClick={() => { if (editItem) { setItems(prev => prev.map(i => i.id === editItem.id ? { ...i, ...editData } : i)); setEditItem(null); toast({ title: "Salvo", description: "Centro de receita atualizado." }); } }}>Salvar</Button>
+            <Button onClick={() => { toast({ title: "Aguardando API", description: "Endpoint ainda não configurado." }); setEditItem(null); }}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

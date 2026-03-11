@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,13 +9,17 @@ import { FilterSection } from "@/components/FilterSection";
 import { ExportButton } from "@/components/ExportButton";
 import { Plus, List, GripVertical, Calendar, LayoutList, Filter as FunnelIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { oportunidadesMock, etapasFunil, getContaById } from "@/data/comercial-mock";
-import { pessoasMock } from "@/data/pessoas-mock";
+import { fetchOportunidades, oportunidadesQueryKey, etapasFunil, fetchContas, contasQueryKey } from "@/services/comercial";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+
+// --- Mocks removidos ---
+
+
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
@@ -25,34 +30,32 @@ export default function Oportunidades() {
   const [searchTerm, setSearchTerm] = useState("");
   const [etapaFilter, setEtapaFilter] = useState("");
   const [draggedCard, setDraggedCard] = useState<string | null>(null);
-  const [oportunidades, setOportunidades] = useState(oportunidadesMock);
-  const [viewItem, setViewItem] = useState<typeof oportunidadesMock[0] | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [editItem, setEditItem] = useState<typeof oportunidadesMock[0] | null>(null);
+  const { data: oportunidades = [], isLoading: isLoadingOps } = useQuery({ queryKey: oportunidadesQueryKey, queryFn: fetchOportunidades });
+  const { data: contasData = [] } = useQuery({ queryKey: contasQueryKey, queryFn: fetchContas });
+
+  const getContaById = (id: number) => contasData.find((c: any) => c.id === id);
+
+  const [viewItem, setViewItem] = useState<any | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [editItem, setEditItem] = useState<any | null>(null);
   const [editData, setEditData] = useState({ titulo: "", valorEstimado: "", probabilidade: "" });
 
-  const filteredOps = oportunidades.filter(op => {
-    const conta = getContaById(op.contaId);
-    const matchSearch = !searchTerm || op.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       conta?.nomeFantasia.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchEtapa = !etapaFilter || op.etapa === etapaFilter;
+  const filteredOps = oportunidades.filter((op: any) => {
+    const conta: any = getContaById(op.conta);
+    const matchSearch = !searchTerm || (op.titulo || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (conta?.nome_fantasia || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchEtapa = !etapaFilter || op.estagio === etapaFilter;
     return matchSearch && matchEtapa;
   });
 
   const etapasAtivas = etapasFunil.filter(e => !['ganho', 'perdido'].includes(e.id));
-  const getOwnerName = (ownerId: string) => pessoasMock.find(p => p.id === ownerId)?.nome.split(' ')[0] || 'N/A';
 
   const handleDragStart = (e: React.DragEvent, opId: string) => { setDraggedCard(opId); e.dataTransfer.effectAllowed = "move"; };
   const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; };
   const handleDrop = (e: React.DragEvent, etapaId: string) => {
     e.preventDefault();
-    if (draggedCard) {
-      setOportunidades(prev => prev.map(op => op.id === draggedCard
-        ? { ...op, etapa: etapaId, probabilidade: etapasFunil.find(e => e.id === etapaId)?.probabilidade || op.probabilidade }
-        : op
-      ));
-      setDraggedCard(null);
-    }
+    toast({ title: "Informaçao", description: "Mudança de estágio via API ainda não implementada." });
+    setDraggedCard(null);
   };
 
   const getEtapaBgColor = (etapaId: string) => {
@@ -65,20 +68,20 @@ export default function Oportunidades() {
   };
 
   const funnelData = etapasFunil.filter(e => !['ganho', 'perdido'].includes(e.id)).map(etapa => {
-    const ops = filteredOps.filter(op => op.etapa === etapa.id);
-    return { ...etapa, count: ops.length, total: ops.reduce((s, o) => s + o.valorEstimado, 0) };
+    const ops = filteredOps.filter((op: any) => op.estagio === etapa.id || op.estagio === etapa.nome);
+    return { ...etapa, count: ops.length, total: ops.reduce((s, o) => s + parseFloat(String(o.valor_estimado || '0')), 0) };
   });
 
-  const getExportData = () => filteredOps.map(op => {
-    const conta = getContaById(op.contaId);
-    const etapa = etapasFunil.find(e => e.id === op.etapa);
-    return { Oportunidade: op.titulo, Conta: conta?.nomeFantasia || '', Valor: formatCurrency(op.valorEstimado), Etapa: etapa?.nome || '', Probabilidade: `${op.probabilidade}%`, Previsão: new Date(op.dataPrevisao).toLocaleDateString('pt-BR'), Proprietário: getOwnerName(op.proprietarioId) };
+  const getExportData = () => filteredOps.map((op: any) => {
+    const conta: any = getContaById(op.conta);
+    const etapa = etapasFunil.find(e => e.id === op.estagio || e.nome === op.estagio);
+    return { Oportunidade: op.titulo, Conta: conta?.nome_fantasia || '', Valor: formatCurrency(parseFloat(op.valor_estimado || '0')), Etapa: etapa?.nome || op.estagio, Probabilidade: `${op.probabilidade}%`, Previsão: new Date(op.data_fechamento_esperada).toLocaleDateString('pt-BR'), Proprietário: op.responsavel };
   });
 
-  const openEdit = (op: typeof oportunidadesMock[0]) => { setEditItem(op); setEditData({ titulo: op.titulo, valorEstimado: String(op.valorEstimado), probabilidade: String(op.probabilidade) }); };
-  const handleSaveEdit = () => { if (editItem) { setOportunidades(prev => prev.map(i => i.id === editItem.id ? { ...i, titulo: editData.titulo, valorEstimado: Number(editData.valorEstimado), probabilidade: Number(editData.probabilidade) } : i)); setEditItem(null); toast({ title: "Salvo", description: "Oportunidade atualizada." }); } };
-  const handleDelete = () => { if (deleteId) { setOportunidades(prev => prev.filter(i => i.id !== deleteId)); setDeleteId(null); toast({ title: "Removida", description: "Oportunidade excluída." }); } };
-  const deleteItemData = oportunidades.find(i => i.id === deleteId);
+  const openEdit = (op: any) => { setEditItem(op); setEditData({ titulo: op.titulo, valorEstimado: String(op.valor_estimado), probabilidade: String(op.probabilidade) }); };
+  const handleSaveEdit = () => { toast({ title: "Informação", description: "Edição via API ainda não implementada." }); setEditItem(null); };
+  const handleDelete = () => { toast({ title: "Informação", description: "Exclusão via API ainda não implementada." }); setDeleteId(null); };
+  const deleteItemData = oportunidades.find((i: any) => i.id === deleteId);
 
   return (
     <div className="space-y-6">
@@ -107,8 +110,10 @@ export default function Oportunidades() {
       <FilterSection
         fields={[
           { type: "text", label: "Buscar", placeholder: "Oportunidade ou conta...", value: searchTerm, onChange: setSearchTerm, width: "flex-1 min-w-[200px]" },
-          { type: "select", label: "Etapa", placeholder: "Todas", value: etapaFilter, onChange: setEtapaFilter,
-            options: etapasFunil.map(e => ({ value: e.id, label: e.nome })), width: "min-w-[180px]" }
+          {
+            type: "select", label: "Etapa", placeholder: "Todas", value: etapaFilter, onChange: setEtapaFilter,
+            options: etapasFunil.map(e => ({ value: e.id, label: e.nome })), width: "min-w-[180px]"
+          }
         ]}
         resultsCount={filteredOps.length}
       />
@@ -143,8 +148,8 @@ export default function Oportunidades() {
       {view === "kanban" && (
         <div className="flex gap-4 overflow-x-auto pb-4">
           {etapasAtivas.map(etapa => {
-            const opsEtapa = filteredOps.filter(op => op.etapa === etapa.id);
-            const totalEtapa = opsEtapa.reduce((sum, op) => sum + op.valorEstimado, 0);
+            const opsEtapa = filteredOps.filter((op: any) => op.estagio === etapa.id || op.estagio === etapa.nome);
+            const totalEtapa = opsEtapa.reduce((sum: number, op: any) => sum + parseFloat(op.valor_estimado || '0'), 0);
             return (
               <div key={etapa.id} className="flex-shrink-0 w-[300px]" onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, etapa.id)}>
                 <div className={`rounded p-3 ${getEtapaBgColor(etapa.id)}`}>
@@ -156,27 +161,26 @@ export default function Oportunidades() {
                     <Badge variant="outline" className="text-xs">{etapa.probabilidade}%</Badge>
                   </div>
                   <div className="space-y-2 min-h-[200px]">
-                    {opsEtapa.map(op => {
-                      const conta = getContaById(op.contaId);
+                    {opsEtapa.map((op: any) => {
+                      const conta: any = getContaById(op.conta);
                       return (
-                        <Card key={op.id} className={`border border-border rounded cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow ${draggedCard === op.id ? 'opacity-50' : ''}`}
-                          draggable onDragStart={(e) => handleDragStart(e, op.id)}>
+                        <Card key={op.id} className={`border border-border rounded cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow ${draggedCard === String(op.id) ? 'opacity-50' : ''}`}
+                          draggable onDragStart={(e) => handleDragStart(e, String(op.id))}>
                           <CardContent className="p-3">
                             <div className="flex items-start gap-2">
                               <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-sm truncate">{op.titulo}</p>
-                                <p className="text-xs text-muted-foreground truncate">{conta?.nomeFantasia}</p>
+                                <p className="text-xs text-muted-foreground truncate">{conta?.nome_fantasia}</p>
                                 <div className="flex items-center justify-between mt-2">
-                                  <span className="text-sm font-semibold text-primary">{formatCurrency(op.valorEstimado)}</span>
+                                  <span className="text-sm font-semibold text-primary">{formatCurrency(parseFloat(op.valor_estimado || '0'))}</span>
                                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                     <Calendar className="h-3 w-3" />
-                                    {new Date(op.dataPrevisao).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                    {op.data_fechamento_esperada ? new Date(op.data_fechamento_esperada).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '-'}
                                   </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-2">
-                                  <span className="text-xs text-muted-foreground">{getOwnerName(op.proprietarioId)}</span>
-                                  {op.proximaAcao && <Badge variant="secondary" className="text-xs truncate max-w-[120px]">{op.proximaAcao}</Badge>}
+                                  <span className="text-xs text-muted-foreground">Responsável ID: {op.responsavel}</span>
                                 </div>
                               </div>
                             </div>
@@ -192,7 +196,7 @@ export default function Oportunidades() {
           <div className="flex-shrink-0 w-[300px]">
             <div className="rounded p-3 bg-lime-50 dark:bg-lime-900/30">
               <div className="flex items-center justify-between mb-3">
-                <div><h3 className="font-semibold text-sm text-success">Fechado Ganho</h3><p className="text-xs text-muted-foreground">{filteredOps.filter(op => op.etapa === 'ganho').length} ops</p></div>
+                <div><h3 className="font-semibold text-sm text-success">Fechado Ganho</h3><p className="text-xs text-muted-foreground">{filteredOps.filter((op: any) => op.estagio === 'ganho').length} ops</p></div>
                 <Badge variant="outline" className="text-xs bg-success/10 text-success border-success">100%</Badge>
               </div>
               <div className="min-h-[200px] border-2 border-dashed border-success/30 rounded flex items-center justify-center" onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, 'ganho')}>
@@ -203,7 +207,7 @@ export default function Oportunidades() {
           <div className="flex-shrink-0 w-[300px]">
             <div className="rounded p-3 bg-rose-50 dark:bg-rose-900/30">
               <div className="flex items-center justify-between mb-3">
-                <div><h3 className="font-semibold text-sm text-destructive">Fechado Perdido</h3><p className="text-xs text-muted-foreground">{filteredOps.filter(op => op.etapa === 'perdido').length} ops</p></div>
+                <div><h3 className="font-semibold text-sm text-destructive">Fechado Perdido</h3><p className="text-xs text-muted-foreground">{filteredOps.filter((op: any) => op.estagio === 'perdido').length} ops</p></div>
                 <Badge variant="outline" className="text-xs bg-destructive/10 text-destructive border-destructive">0%</Badge>
               </div>
               <div className="min-h-[200px] border-2 border-dashed border-destructive/30 rounded flex items-center justify-center" onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, 'perdido')}>
@@ -230,15 +234,15 @@ export default function Oportunidades() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredOps.map((op) => {
-                const conta = getContaById(op.contaId);
-                const etapa = etapasFunil.find(e => e.id === op.etapa);
+              {filteredOps.map((op: any) => {
+                const conta: any = getContaById(op.conta);
+                const etapa = etapasFunil.find(e => e.id === op.estagio || e.nome === op.estagio);
                 return (
                   <TableRow key={op.id} className="hover:bg-muted/50 cursor-pointer">
                     <TableCell className="font-medium">{op.titulo}</TableCell>
-                    <TableCell>{conta?.nomeFantasia}</TableCell>
-                    <TableCell className="font-semibold">{formatCurrency(op.valorEstimado)}</TableCell>
-                    <TableCell><Badge variant="outline">{etapa?.nome}</Badge></TableCell>
+                    <TableCell>{conta?.nome_fantasia}</TableCell>
+                    <TableCell className="font-semibold">{formatCurrency(parseFloat(op.valor_estimado || '0'))}</TableCell>
+                    <TableCell><Badge variant="outline">{etapa?.nome || op.estagio}</Badge></TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="w-12 h-2 bg-muted rounded-full overflow-hidden">
@@ -247,8 +251,8 @@ export default function Oportunidades() {
                         <span className="text-sm">{op.probabilidade}%</span>
                       </div>
                     </TableCell>
-                    <TableCell>{new Date(op.dataPrevisao).toLocaleDateString('pt-BR')}</TableCell>
-                    <TableCell>{getOwnerName(op.proprietarioId)}</TableCell>
+                    <TableCell>{op.data_fechamento_esperada ? new Date(op.data_fechamento_esperada).toLocaleDateString('pt-BR') : '-'}</TableCell>
+                    <TableCell>{op.responsavel}</TableCell>
                     <TableCell><TableActions onView={() => setViewItem(op)} onEdit={() => openEdit(op)} onDelete={() => setDeleteId(op.id)} /></TableCell>
                   </TableRow>
                 );
@@ -260,7 +264,7 @@ export default function Oportunidades() {
 
       <Dialog open={!!viewItem} onOpenChange={() => setViewItem(null)}>
         <DialogContent><DialogHeader><DialogTitle>Detalhes da Oportunidade</DialogTitle></DialogHeader>
-          {viewItem && <div className="space-y-2">{Object.entries({ Título: viewItem.titulo, Conta: getContaById(viewItem.contaId)?.nomeFantasia || '', Valor: formatCurrency(viewItem.valorEstimado), Etapa: etapasFunil.find(e => e.id === viewItem.etapa)?.nome || '', Probabilidade: `${viewItem.probabilidade}%`, Previsão: new Date(viewItem.dataPrevisao).toLocaleDateString('pt-BR'), Proprietário: getOwnerName(viewItem.proprietarioId), "Próxima Ação": viewItem.proximaAcao || '-' }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v}</span></div>))}</div>}
+          {viewItem && <div className="space-y-2">{Object.entries({ Título: viewItem.titulo, Conta: (getContaById(viewItem.conta) as any)?.nome_fantasia || '', Valor: formatCurrency(parseFloat(viewItem.valor_estimado || '0')), Etapa: etapasFunil.find(e => e.id === viewItem.estagio)?.nome || viewItem.estagio, Probabilidade: `${viewItem.probabilidade}%`, Previsão: viewItem.data_fechamento_esperada ? new Date(viewItem.data_fechamento_esperada).toLocaleDateString('pt-BR') : '-', Proprietário: viewItem.responsavel }).map(([k, v]) => (<div key={k} className="flex justify-between py-1 border-b border-border last:border-0"><span className="text-sm text-muted-foreground">{k}</span><span className="text-sm font-medium">{v as string}</span></div>))}</div>}
         </DialogContent>
       </Dialog>
 

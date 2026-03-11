@@ -9,10 +9,11 @@ import { SimpleFormWizard } from "@/components/SimpleFormWizard";
 import { FormActionBar } from "@/components/FormActionBar";
 import { DropdownWithAdd } from "@/components/DropdownWithAdd";
 import { Settings, Trash2 } from "lucide-react";
-import { useSaveWithDelay } from "@/hooks/useSaveWithDelay";
-import { useFormValidation } from "@/hooks/useFormValidation";
 import { ValidatedInput } from "@/components/ui/validated-input";
 import { toast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProjeto, createTarefa } from "@/services/operacional";
+import { useFormValidation } from "@/hooks/useFormValidation";
 
 interface ServicoItem {
   id: number;
@@ -31,7 +32,24 @@ const validationFields = [
 
 const NovaOperacao = () => {
   const navigate = useNavigate();
-  const { isSaving, handleSave } = useSaveWithDelay();
+  const queryClient = useQueryClient();
+
+  const mutationProjeto = useMutation({
+    mutationFn: createProjeto,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['projetos'] });
+      return data;
+    }
+  });
+
+  const mutationTarefa = useMutation({
+    mutationFn: createTarefa,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tarefas'] });
+    }
+  });
+
+  const [isSaving, setIsSaving] = useState(false);
 
   const { formData, setFieldValue, setFieldTouched, validateAll, getFieldError, touched } = useFormValidation(
     { dataEntrada: "", embarcacao: "", previsaoEntrega: "", servico: "", setor: "", dataInicio: "", desconto: "0", valorAdicional: "0" },
@@ -71,7 +89,33 @@ const NovaOperacao = () => {
 
   const handleSalvar = async () => {
     if (validateAll()) {
-      await handleSave("/operacional/operacao", "Operação salva com sucesso!");
+      setIsSaving(true);
+      try {
+        const projeto = await mutationProjeto.mutateAsync({
+          nome: formData.embarcacao,
+          data_inicio: formData.dataEntrada,
+          data_fim: formData.previsaoEntrega,
+          status: 'Em Andamento'
+        });
+
+        // Create tasks (serviços) linked to the project
+        for (const item of itens) {
+          await mutationTarefa.mutateAsync({
+            projeto: projeto.id,
+            titulo: item.servico,
+            descricao: item.setor,
+            status: 'Em Andamento',
+            prazo: formData.previsaoEntrega
+          });
+        }
+
+        toast({ title: "Operação salva com sucesso!", description: "Projeto e tarefas criados no sistema." });
+        navigate("/operacional/operacao");
+      } catch (error) {
+        toast({ title: "Erro ao salvar", description: "Verifique os dados e tente novamente.", variant: "destructive" });
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
