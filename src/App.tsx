@@ -22,6 +22,7 @@ import RelatorioContasPagar from "./pages/financeiro/RelatorioContasPagar";
 import ContasReceber from "./pages/ContasReceber";
 import NovaContaReceber from "./pages/financeiro/NovaContaReceber";
 import RelatorioContasReceber from "./pages/financeiro/RelatorioContasReceber";
+import ConciliacaoBancaria from "./pages/financeiro/ConciliacaoBancaria";
 import LancamentoSaida from "./pages/LancamentoSaida";
 import NovoNFe from "./pages/NovoNFe";
 import SaidasPendentes from "./pages/SaidasPendentes";
@@ -61,7 +62,6 @@ import NovaUnidade from "./pages/cadastro/estoque/NovaUnidade";
 // Cadastro - Financeiro
 import ContaBancaria from "./pages/cadastro/financeiro/ContaBancaria";
 import NovaContaBancaria from "./pages/cadastro/financeiro/NovaContaBancaria";
-import ConciliacaoBancaria from "./pages/cadastro/financeiro/ConciliacaoBancaria";
 import Transferencias from "./pages/cadastro/financeiro/Transferencias";
 import NovaTransferencia from "./pages/cadastro/financeiro/NovaTransferencia";
 import Clientes from "./pages/cadastro/financeiro/Clientes";
@@ -155,9 +155,9 @@ const App = () => (
                   <Route path="/financeiro/contas-pagar" element={<ContasPagar />} />
                   <Route path="/financeiro/contas-pagar/nova" element={<NovaContaPagar />} />
                   <Route path="/financeiro/contas-pagar/relatorio" element={<RelatorioContasPagar />} />
-                  <Route path="/financeiro/contas-receber" element={<ContasReceber />} />
-                  <Route path="/financeiro/contas-receber/nova" element={<NovaContaReceber />} />
+                  <Route path="/financeiro/contas-receber/nueva" element={<NovaContaReceber />} />
                   <Route path="/financeiro/contas-receber/relatorio" element={<RelatorioContasReceber />} />
+                  <Route path="/cadastro/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
                   <Route path="/financeiro/lancamento-saida" element={<LancamentoSaida />} />
                   <Route path="/financeiro/saidas-pendentes" element={<SaidasPendentes />} />
                   <Route path="/financeiro/xml" element={<NFe />} />
@@ -206,7 +206,6 @@ const App = () => (
                   {/* Cadastro - Financeiro */}
                   <Route path="/cadastro/financeiro/conta-bancaria" element={<ContaBancaria />} />
                   <Route path="/cadastro/financeiro/conta-bancaria/nova" element={<NovaContaBancaria />} />
-                  <Route path="/cadastro/financeiro/conciliacao-bancaria" element={<ConciliacaoBancaria />} />
                   <Route path="/cadastro/financeiro/transferencias" element={<Transferencias />} />
                   <Route path="/cadastro/financeiro/transferencias/nova" element={<NovaTransferencia />} />
                   <Route path="/cadastro/financeiro/clientes" element={<Clientes />} />

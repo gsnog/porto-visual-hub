@@ -125,6 +125,16 @@ export interface Transacao {
     conta_destino_nome?: string;
 }
 
+export interface TransacaoBancaria {
+    id: number;
+    data_transacao: string;
+    valor: number;
+    descricao: string;
+    tipo: 'credito' | 'debito';
+    id_transacao_banco: string;
+    conciliado: boolean;
+}
+
 // ─── Estatísticas ────────────────────────────────────────────────────────────
 
 export const fetchEstatisticasFinanceiras = async (): Promise<EstatisticasFinanceiras> => {
@@ -321,6 +331,32 @@ export const updateTransferencia = async (id: number, data: Partial<Transacao>):
 };
 export const deleteTransferencia = async (id: number): Promise<void> => {
     await api.delete(`/api/financial/transferencias/${id}/`);
+};
+
+// ─── Conciliação Bancária (Nova) ─────────────────────────────────────────────
+
+export const importarOfxNovo = async (file: File): Promise<TransacaoBancaria[]> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await api.post('/api/financial/importar-ofx-novo/', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return res.data;
+};
+
+export const conciliarLancamento = async (
+    transacaoBancariaId: number,
+    lancamentoId: number,
+    lancamentoTipo: 'contas_pagar' | 'contas_receber'
+): Promise<any> => {
+    const res = await api.post('/api/financial/conciliar-novo/', {
+        transacao_bancaria_id: transacaoBancariaId,
+        lancamento_id: lancamentoId,
+        lancamento_tipo: lancamentoTipo,
+    });
+    return res.data;
 };
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
