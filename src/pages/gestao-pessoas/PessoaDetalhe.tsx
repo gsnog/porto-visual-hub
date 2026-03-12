@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,15 +8,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, User, Phone, Briefcase, Users, Pencil, Loader2 } from "lucide-react";
+import { ArrowLeft, User, Phone, Briefcase, Users, Pencil, Loader2, Camera } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge } from "@/components/StatusBadge";
 import { toast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/api";
 import {
   fetchPessoa,
   fetchPessoas,
   fetchSetores,
   updatePessoa,
+  updatePessoaWithImage,
   pessoasQueryKey,
   setoresQueryKey,
   type Pessoa,
@@ -66,6 +69,12 @@ export default function PessoaDetalhe() {
     supervisor_id: "" as string | number,
   });
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const BASE_URL = api.defaults.baseURL || "http://127.0.0.1:8000";
+
   const openEdit = () => {
     if (!pessoa) return;
     setEditData({
@@ -77,10 +86,12 @@ export default function PessoaDetalhe() {
       supervisor_id: pessoa.supervisor_id ?? "",
     });
     setEditOpen(true);
+    setImageFile(null);
+    setImagePreview(null);
   };
 
   const updateMutation = useMutation({
-    mutationFn: (data: any) => updatePessoa(numericId, data),
+    mutationFn: (data: any) => data.profile_image ? updatePessoaWithImage(numericId, data) : updatePessoa(numericId, data),
     onSuccess: (updated) => {
       toast({ title: "Perfil atualizado com sucesso!" });
       queryClient.invalidateQueries({ queryKey: ['pessoa', numericId] });
@@ -108,7 +119,28 @@ export default function PessoaDetalhe() {
     } else {
       payload.supervisor_id = null;
     }
+
+    if (imageFile) {
+      payload.profile_image = imageFile;
+    }
+
     updateMutation.mutate(payload);
+  };
+
+  const getImageUrl = (url: string | null) => {
+    if (!url) return "";
+    if (url.startsWith('http')) return url;
+    const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+    return `${BASE_URL}${cleanUrl}`;
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
   };
 
   if (isLoading) {
@@ -143,13 +175,16 @@ export default function PessoaDetalhe() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex items-center gap-4 flex-1">
-          {pessoa.profile_image ? (
-            <img src={pessoa.profile_image} alt={pessoa.iniciais} className="h-16 w-16 rounded object-cover" />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded bg-primary text-primary-foreground text-2xl font-bold">
+          <Avatar className="h-16 w-16 rounded">
+            <AvatarImage
+              src={getImageUrl(pessoa.profile_image)}
+              className="object-cover"
+              key={pessoa.profile_image}
+            />
+            <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold rounded">
               {pessoa.iniciais}
-            </div>
-          )}
+            </AvatarFallback>
+          </Avatar>
           <div>
             <h1 className="text-2xl font-bold text-foreground">{pessoa.nome}</h1>
             <p className="text-muted-foreground">{pessoa.cargo || "—"} · {pessoa.setor || "—"}</p>
@@ -185,20 +220,30 @@ export default function PessoaDetalhe() {
               <CardHeader><CardTitle className="text-lg">Cadeia Hierárquica</CardTitle></CardHeader>
               <CardContent>
                 {supervisor ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded bg-muted text-muted-foreground text-xs font-bold">
-                        {supervisor.iniciais}
-                      </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={getImageUrl(supervisor.profile_image)} className="object-cover" />
+                        <AvatarFallback className="bg-muted text-muted-foreground text-xs font-bold">
+                          {supervisor.iniciais}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
                         <p className="text-sm font-medium">{supervisor.nome}</p>
                         <p className="text-xs text-muted-foreground">{supervisor.cargo}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 ml-6">
-                      <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
-                        {pessoa.iniciais}
-                      </div>
+
+                    {/* Arrow connector */}
+                    <div className="ml-5 border-l-2 border-border h-4" />
+
+                    <div className="flex items-center gap-3 ml-2">
+                      <Avatar className="h-10 w-10 border-2 border-primary">
+                        <AvatarImage src={getImageUrl(pessoa.profile_image)} className="object-cover" />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
+                          {pessoa.iniciais}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
                         <p className="text-sm font-medium text-primary">{pessoa.nome}</p>
                         <p className="text-xs text-muted-foreground">{pessoa.cargo}</p>
@@ -237,9 +282,12 @@ export default function PessoaDetalhe() {
                       onClick={() => navigate(`/gestao-pessoas/pessoas/${sub.id}`)}
                       className="flex items-center gap-3 p-3 rounded border border-border hover:bg-muted/50 transition-colors text-left"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded bg-primary text-primary-foreground text-sm font-bold">
-                        {sub.iniciais}
-                      </div>
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={getImageUrl(sub.profile_image)} className="object-cover" />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">
+                          {sub.iniciais}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
                         <p className="font-medium text-foreground">{sub.nome}</p>
                         <p className="text-sm text-muted-foreground">{sub.cargo || "—"}</p>
@@ -259,6 +307,37 @@ export default function PessoaDetalhe() {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Editar Perfil</DialogTitle></DialogHeader>
+
+          {/* Avatar Edit Section */}
+          <div className="flex justify-center py-4">
+            <div className="relative">
+              <Avatar className="h-24 w-24 rounded">
+                <AvatarImage
+                  src={imagePreview || getImageUrl(pessoa?.profile_image)}
+                  className="object-cover"
+                  key={imagePreview || pessoa?.profile_image}
+                />
+                <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold rounded">
+                  {pessoa?.iniciais || "US"}
+                </AvatarFallback>
+              </Avatar>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200"
+              >
+                <Camera className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <div className="space-y-2">
               <Label>Nome</Label>

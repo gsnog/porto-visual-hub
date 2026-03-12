@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { Camera, Loader2 } from "lucide-react";
-import { fetchMe, updateMe } from "@/services/pessoas";
+import { fetchMe, updateMe, updateMeWithImage } from "@/services/pessoas";
+import api from "@/lib/api";
 
 export default function EditarPerfil() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function EditarPerfil() {
   });
 
   const mutation = useMutation({
-    mutationFn: updateMe,
+    mutationFn: (data: any) => data.profile_image ? updateMeWithImage(data) : updateMe(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['me'] });
       toast.success("Perfil atualizado com sucesso!");
@@ -41,6 +42,12 @@ export default function EditarPerfil() {
     endereco: "",
   });
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const BASE_URL = api.defaults.baseURL || "http://127.0.0.1:8000";
+
   useEffect(() => {
     if (user) {
       setFormData({
@@ -60,15 +67,32 @@ export default function EditarPerfil() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate({
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      email: formData.email,
-      telefone: formData.telefone,
-      endereco: formData.endereco,
-    });
+
+    if (imageFile) {
+      mutation.mutate({
+        ...formData,
+        profile_image: imageFile
+      } as any);
+    } else {
+      mutation.mutate({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        telefone: formData.telefone,
+        endereco: formData.endereco,
+      });
+    }
   };
 
   const getInitials = (first: string, last: string) => {
@@ -91,12 +115,25 @@ export default function EditarPerfil() {
             <div className="flex justify-center">
               <div className="relative">
                 <Avatar className="h-32 w-32 rounded">
+                  <AvatarImage
+                    src={imagePreview || (user?.profile_image ? (user.profile_image.startsWith('http') ? user.profile_image : `${BASE_URL}${user.profile_image}`) : "")}
+                    className="object-cover"
+                    key={imagePreview || user?.profile_image}
+                  />
                   <AvatarFallback className="bg-primary text-primary-foreground text-4xl font-bold rounded">
                     {user?.iniciais || getInitials(formData.first_name, formData.last_name) || "US"}
                   </AvatarFallback>
                 </Avatar>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
                 <button
                   type="button"
+                  onClick={() => fileInputRef.current?.click()}
                   className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-200"
                 >
                   <Camera className="h-5 w-5" />

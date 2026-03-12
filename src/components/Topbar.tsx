@@ -78,9 +78,9 @@ export function Topbar({
   const notificationCount = notificacoes?.filter(n => !n.lida).length || 0;
   const kanbanNotifications = 0;
 
-  const hasCalendarAccess = hasPermission('calendario', 'all', 'view');
-  const hasChatAccess = hasPermission('chat', 'all', 'view');
-  const hasKanbanAccess = hasPermission('kanban', 'all', 'view');
+  const hasCalendarAccess = true;
+  const hasChatAccess = true;
+  const hasKanbanAccess = true;
 
   const [appsOrder, setAppsOrder] = useState<AppId[]>(getStoredOrder);
   const [draggedApp, setDraggedApp] = useState<AppId | null>(null);

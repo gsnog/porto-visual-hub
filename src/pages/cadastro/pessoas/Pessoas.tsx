@@ -42,6 +42,8 @@ export default function Pessoas() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [viewItem, setViewItem] = useState<Pessoa | null>(null);
 
+  const BASE_URL = api.defaults.baseURL || "http://127.0.0.1:8000";
+
   const { data: pessoas = [], isLoading, isError } = useQuery<Pessoa[]>({
     queryKey: pessoasQueryKey,
     queryFn: fetchPessoas,
@@ -162,7 +164,7 @@ export default function Pessoas() {
                       <div className="relative h-9 w-9 shrink-0">
                         {pessoa.profile_image ? (
                           <img
-                            src={pessoa.profile_image}
+                            src={pessoa.profile_image.startsWith('http') ? pessoa.profile_image : `${BASE_URL}${pessoa.profile_image}`}
                             alt={pessoa.iniciais}
                             className="h-9 w-9 rounded object-cover"
                             onError={(e) => {

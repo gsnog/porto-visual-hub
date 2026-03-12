@@ -83,6 +83,25 @@ export const updateMe = async (data: Partial<Pessoa>): Promise<Pessoa> => {
     return res.data;
 };
 
+/** PATCH /api/pessoas/me/ — update current authenticated user with image */
+export const updateMeWithImage = async (data: any): Promise<Pessoa> => {
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+        // Only append if value is present and not an empty string for select/id fields if necessary,
+        // but for now let's just ensure profile_image is handled.
+        if (data[key] !== null && data[key] !== undefined) {
+            formData.append(key, data[key]);
+        }
+    });
+
+    const res = await api.patch('/api/pessoas/me/', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return res.data;
+};
+
 /** GET /api/pessoas/meu_time/ — subordinates of current user */
 export const fetchMeuTime = async (): Promise<Pessoa[]> => {
     const res = await api.get('/api/pessoas/meu_time/');
@@ -124,6 +143,23 @@ export const createPessoa = async (data: any): Promise<Pessoa> => {
 /** PATCH /api/pessoas/{id}/ — update user */
 export const updatePessoa = async (id: number, data: any): Promise<Pessoa> => {
     const res = await api.patch(`/api/pessoas/${id}/`, data);
+    return res.data;
+};
+
+/** PATCH /api/pessoas/{id}/ — update user with image */
+export const updatePessoaWithImage = async (id: number, data: any): Promise<Pessoa> => {
+    const formData = new FormData();
+    Object.keys(data).forEach(key => {
+        if (data[key] !== null && data[key] !== undefined) {
+            formData.append(key, data[key]);
+        }
+    });
+
+    const res = await api.patch(`/api/pessoas/${id}/`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return res.data;
 };
 
