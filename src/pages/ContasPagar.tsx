@@ -17,6 +17,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { fetchContasPagar, updateContaPagar, deleteContaPagar, type ContaPagar as Conta, fetchEstatisticasFinanceiras } from "@/services/financeiro"
 
 const ContasPagar = () => {
+  const formatBRL = (value?: number | null) =>
+    value != null
+      ? Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
+      : '—';
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [filterBeneficiario, setFilterBeneficiario] = useState("")
@@ -79,9 +83,9 @@ const ContasPagar = () => {
     <div className="flex flex-col h-full bg-background">
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <GradientCard title="Total Pago" value={`R$ ${stats?.saidas?.toFixed(2) || "0,00"}`} icon={CreditCard} variant="danger" />
-          <GradientCard title="Total a Pagar" value={`R$ ${stats?.entradas?.toFixed(2) || "0,00"}`} icon={Receipt} variant="warning" />
-          <GradientCard title="Saldo Atual" value={`R$ ${stats?.saldo?.toFixed(2) || "0,00"}`} icon={Wallet} variant="orange" />
+          <GradientCard title="Total Pago" value={formatBRL(stats?.saidas)} icon={CreditCard} variant="danger" />
+          <GradientCard title="Total a Pagar" value={formatBRL(stats?.entradas)} icon={Receipt} variant="warning" />
+          <GradientCard title="Saldo Atual" value={formatBRL(stats?.saldo)} icon={Wallet} variant="orange" />
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
@@ -116,8 +120,8 @@ const ContasPagar = () => {
                   <TableCell className="text-center">{conta.data_de_faturamento || "—"}</TableCell>
                   <TableCell className="text-center">{conta.fornecedor_nome || "—"}</TableCell>
                   <TableCell className="text-center">{conta.documento || "—"}</TableCell>
-                  <TableCell className="text-center">{conta.valor_do_titulo ? `R$ ${conta.valor_do_titulo.toFixed(2)}` : "—"}</TableCell>
-                  <TableCell className="text-center">{conta.valor_total ? `R$ ${conta.valor_total.toFixed(2)}` : "—"}</TableCell>
+                  <TableCell className="text-center">{formatBRL(conta.valor_do_titulo)}</TableCell>
+                  <TableCell className="text-center">{formatBRL(conta.valor_total)}</TableCell>
                   <TableCell className="text-center">{conta.data_de_vencimento || "—"}</TableCell>
                   <TableCell className="text-center"><StatusBadge status={conta.status || "Em Aberto"} /></TableCell>
                   <TableCell className="text-center"><TableActions onView={() => setViewItem(conta)} onEdit={() => openEdit(conta)} onDelete={() => setDeleteId(conta.id)} /></TableCell>

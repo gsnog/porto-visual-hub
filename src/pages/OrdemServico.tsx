@@ -45,6 +45,9 @@ const OrdemServicoPage = () => {
           <Button onClick={() => navigate("/ordens-de-servico/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Ordem de Serviço</Button>
           <ExportButton getData={getExportData} fileName="ordens-servico" />
         </div>
+        <p className="text-sm text-muted-foreground">
+          Utilize para registrar e acompanhar serviços de manutenção ou terceirizados.
+        </p>
         <FilterSection fields={[{ type: "text" as const, label: "Buscar", placeholder: "Buscar por tipo ou descrição...", value: search, onChange: setSearch, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">
           <Table>

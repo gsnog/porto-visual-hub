@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/hooks/use-toast"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { fetchRequisicoes, updateRequisicao, deleteRequisicao, type RequisicaoSetor as Requisicao, requisicoesQueryKey } from "@/services/estoque"
+import { fetchSetores, setoresQueryKey } from "@/services/pessoas"
 
 export default function EstoqueRequisicoes() {
   const navigate = useNavigate()
@@ -39,6 +40,21 @@ export default function EstoqueRequisicoes() {
     queryKey: requisicoesQueryKey,
     queryFn: fetchRequisicoes,
   })
+
+  const { data: setores = [] } = useQuery({
+    queryKey: setoresQueryKey,
+    queryFn: fetchSetores,
+  })
+
+  const setorOptions = [
+    { value: "todos", label: "Todos" },
+    ...setores
+      .filter(s => (s.setor != null && String(s.setor).trim() !== '') || (s.nome != null && String(s.nome).trim() !== ''))
+      .map(s => ({
+        value: s.id != null ? String(s.id) : String(s.nome || s.setor),
+        label: String(s.nome || s.setor || ''),
+      }))
+  ]
 
   const updateMutation = useMutation({
     mutationFn: (data: { id: number; payload: Partial<Requisicao> }) => updateRequisicao(data.id, data.payload),
@@ -113,7 +129,7 @@ export default function EstoqueRequisicoes() {
         <FilterSection
           fields={[
             { type: "text", label: "Buscar", placeholder: "Buscar item ou requisitante...", value: filterItem, onChange: setFilterItem, width: "flex-1 min-w-[200px]" },
-            { type: "select", label: "Setor", placeholder: "Selecione o setor", value: filterSetor, onChange: setFilterSetor, options: [{ value: "todos", label: "Todos" }], width: "min-w-[180px]" },
+            { type: "select", label: "Setor", placeholder: "Selecione o setor", value: filterSetor, onChange: setFilterSetor, options: setorOptions, width: "min-w-[180px]" },
             { type: "date", label: "Data Início", value: filterDataInicio, onChange: setFilterDataInicio, width: "min-w-[160px]" },
             { type: "date", label: "Data Fim", value: filterDataFim, onChange: setFilterDataFim, width: "min-w-[160px]" }
           ]}

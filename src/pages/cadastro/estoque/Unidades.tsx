@@ -16,9 +16,9 @@ import api from "@/lib/api";
 
 interface Unidade { id: number; unidade?: string; }
 
-const fetchUnidades = async (): Promise<Unidade[]> => { const res = await api.get("/api/estoque/inventario/"); return res.data; };
-const updateUnidade = async (id: number, data: Partial<Unidade>): Promise<Unidade> => { const res = await api.put(`/api/estoque/inventario/${id}/`, data); return res.data; };
-const deleteUnidade = async (id: number): Promise<void> => { await api.delete(`/api/estoque/inventario/${id}/`); };
+const fetchUnidades = async (): Promise<Unidade[]> => { const res = await api.get("/api/estoque/unidades/"); return res.data; };
+const updateUnidade = async (id: number, data: Partial<Unidade>): Promise<Unidade> => { const res = await api.put(`/api/estoque/unidades/${id}/`, data); return res.data; };
+const deleteUnidade = async (id: number): Promise<void> => { await api.delete(`/api/estoque/unidades/${id}/`); };
 
 const Unidades = () => {
   const navigate = useNavigate();
@@ -43,9 +43,10 @@ const Unidades = () => {
     onError: () => toast({ title: "Erro", description: "Falha ao excluir.", variant: "destructive" }),
   });
 
-  const filtered = items.filter(u => (u.unidade || "").toLowerCase().includes(searchUnidade.toLowerCase()));
-  const getExportData = () => filtered.map(u => ({ Unidade: u.unidade }));
-  const deleteItem = items.find(i => i.id === deleteId);
+  const safeItems = Array.isArray(items) ? items : [];
+  const filtered = safeItems.filter((u: Unidade) => String(u?.unidade ?? '').toLowerCase().includes(searchUnidade.toLowerCase()));
+  const getExportData = () => filtered?.map((u: Unidade) => ({ Unidade: u?.unidade })) || [];
+  const deleteItem = safeItems.find((i: Unidade) => i?.id === deleteId);
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -54,16 +55,16 @@ const Unidades = () => {
           <Button onClick={() => navigate("/cadastro/estoque/unidades/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Unidade</Button>
           <ExportButton getData={getExportData} fileName="unidades-estoque" />
         </div>
-        <FilterSection fields={[{ type: "text" as const, label: "Unidade", placeholder: "Buscar unidade...", value: searchUnidade, onChange: setSearchUnidade, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered.length} />
+        <FilterSection fields={[{ type: "text" as const, label: "Unidade", placeholder: "Buscar unidade...", value: searchUnidade, onChange: setSearchUnidade, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered?.length || 0} />
         <div className="rounded border border-border overflow-hidden">
           <Table>
             <TableHeader><TableRow className="bg-table-header"><TableHead className="text-center font-semibold">Unidade</TableHead><TableHead className="text-center font-semibold">Ações</TableHead></TableRow></TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow><TableCell colSpan={2} className="text-center py-8 text-muted-foreground">Carregando...</TableCell></TableRow>
-              ) : filtered.length === 0 ? (
+              ) : (!filtered || filtered.length === 0) ? (
                 <TableRow><TableCell colSpan={2} className="text-center py-8 text-muted-foreground">Nenhuma unidade encontrada.</TableCell></TableRow>
-              ) : filtered.map((u) => (
+              ) : filtered?.map((u: Unidade) => (
                 <TableRow key={u.id} className="hover:bg-table-hover transition-colors">
                   <TableCell className="text-center font-medium">{u.unidade || "—"}</TableCell>
                   <TableCell className="text-center"><TableActions onView={() => setViewItem(u)} onEdit={() => { setEditItem(u); setEditNome(u.unidade || ""); }} onDelete={() => setDeleteId(u.id)} /></TableCell>

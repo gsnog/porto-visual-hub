@@ -272,6 +272,30 @@ export default function Relatorios() {
             </div>
 
             <div className="flex-1 overflow-auto p-6">
+              {/* Summary */}
+              <div className="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 rounded-xl bg-primary/5 text-center">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Registros</p>
+                  <p className="text-xl font-bold text-primary mt-1">{getData().length}</p>
+                </div>
+                {tipo !== "fluxo-caixa" && (
+                  <>
+                    <div className="p-4 rounded-xl bg-primary/5 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Em Aberto</p>
+                      <p className="text-xl font-bold text-primary mt-1">{getData().filter((i: any) => i.status === "Em Aberto").length}</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-primary/5 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">{tipo === "contas-receber" ? "Recebidas" : "Pagas"}</p>
+                      <p className="text-xl font-bold text-primary mt-1">{getData().filter((i: any) => i.status === "Recebida" || i.status === "Paga").length}</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-primary/5 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Vencidas</p>
+                      <p className="text-xl font-bold text-primary mt-1">{getData().filter((i: any) => i.status === "Vencida").length}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+
               {tipo === "contas-receber" && (
                 <Table>
                   <TableHeader>
@@ -350,30 +374,6 @@ export default function Relatorios() {
                   </TableBody>
                 </Table>
               )}
-
-              {/* Summary */}
-              <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-primary/5 text-center">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Total Registros</p>
-                  <p className="text-xl font-bold text-primary mt-1">{getData().length}</p>
-                </div>
-                {tipo !== "fluxo-caixa" && (
-                  <>
-                    <div className="p-4 rounded-xl bg-primary/5 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Em Aberto</p>
-                      <p className="text-xl font-bold text-primary mt-1">{getData().filter((i: any) => i.status === "Em Aberto").length}</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-primary/5 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider">{tipo === "contas-receber" ? "Recebidas" : "Pagas"}</p>
-                      <p className="text-xl font-bold text-primary mt-1">{getData().filter((i: any) => i.status === "Recebida" || i.status === "Paga").length}</p>
-                    </div>
-                    <div className="p-4 rounded-xl bg-primary/5 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Vencidas</p>
-                      <p className="text-xl font-bold text-primary mt-1">{getData().filter((i: any) => i.status === "Vencida").length}</p>
-                    </div>
-                  </>
-                )}
-              </div>
             </div>
           </div>
         </div>

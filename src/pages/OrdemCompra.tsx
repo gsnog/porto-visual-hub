@@ -45,6 +45,9 @@ const OrdemCompraPage = () => {
           <Button onClick={() => navigate("/ordens-de-compra/nova")} className="gap-2"><Plus className="w-4 h-4" />Nova Ordem de Compra</Button>
           <ExportButton getData={getExportData} fileName="ordens-compra" />
         </div>
+        <p className="text-sm text-muted-foreground">
+          Utilize para abrir solicitações de compra de novos itens para o estoque.
+        </p>
         <FilterSection fields={[{ type: "text" as const, label: "Buscar", placeholder: "Buscar por setor ou material...", value: search, onChange: setSearch, width: "flex-1 min-w-[200px]" }]} resultsCount={filtered.length} />
         <div className="rounded border border-border overflow-hidden">
           <Table>

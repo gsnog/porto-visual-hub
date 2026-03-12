@@ -149,14 +149,63 @@ export default function Hierarquia() {
         </TabsContent>
 
         <TabsContent value="area" className="mt-6">
-          <Card className="border-border">
-            <CardHeader><CardTitle>Por Setor/Área</CardTitle></CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Visualização por área disponível quando setores estiverem cadastrados no sistema.
-              </p>
-            </CardContent>
-          </Card>
+          {(() => {
+            const setoresMapped: Record<string, Pessoa[]> = {};
+            pessoas.forEach(p => {
+              const key = p.setor || "Sem Setor";
+              if (!setoresMapped[key]) setoresMapped[key] = [];
+              setoresMapped[key].push(p);
+            });
+            const setoresKeys = Object.keys(setoresMapped);
+
+            if (isLoading) {
+              return (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} className="h-32 w-full" />
+                  ))}
+                </div>
+              );
+            }
+
+            if (setoresKeys.length === 0) {
+              return (
+                <Card className="border-border">
+                  <CardHeader><CardTitle>Por Setor/Área</CardTitle></CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground py-6 text-center">
+                      Nenhum usuário cadastrado ainda. Adicione colaboradores para visualizar a hierarquia por área.
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            }
+
+            return (
+              <div className="space-y-4">
+                {setoresKeys.map(setor => (
+                  <Card key={setor} className="border-border">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Building2 className="h-5 w-5 text-primary" />
+                        {setor}
+                        <span className="text-sm font-normal text-muted-foreground ml-1">
+                          ({setoresMapped[setor].length} pessoa{setoresMapped[setor].length !== 1 ? "s" : ""})
+                        </span>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {setoresMapped[setor].map(p => (
+                          <PersonCard key={p.id} pessoa={p} />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            );
+          })()}
         </TabsContent>
       </Tabs>
     </div>
