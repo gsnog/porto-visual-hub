@@ -128,7 +128,7 @@ export interface Transacao {
 // ─── Estatísticas ────────────────────────────────────────────────────────────
 
 export const fetchEstatisticasFinanceiras = async (): Promise<EstatisticasFinanceiras> => {
-    const res = await api.get('/api/financeiro/estatisticas/');
+    const res = await api.get('/api/financial/estatisticas/');
     return res.data;
 };
 
@@ -140,7 +140,7 @@ export const fetchDashboardFull = async (): Promise<any> => {
 // ─── Parcelas ─────────────────────────────────────────────────────────────────
 
 export const fetchParcelas = async (): Promise<Parcela[]> => {
-    const res = await api.get('/api/financeiro/parcelas/');
+    const res = await api.get('/api/financial/parcelas/');
     return res.data;
 };
 
